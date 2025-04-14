@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fanteex - Login</title>
+  <!-- Importa le librerie Firebase in modalità compat -->
+  <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-auth-compat.js"></script>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,800;1,800&family=Barlow+Condensed:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/mobile.css">
+  <link rel="stylesheet" href="css/mobile2.css">
+  
+</head>
+<body>
+  <div class="form-container">
+    <h2 class="form-title">Join Fanteex</h2>
+    <button class="close-button" onclick="window.location.href='index.html'">×</button>
+    
+    <form id="loginForm">
+      <div class="form-field">
+        <label class="form-label">Email address</label>
+        <input type="email" id="loginEmail" class="form-input" required>
+      </div>
+      
+      <div class="form-field">
+        <label class="form-label">Password</label>
+        <input type="password" id="loginPassword" class="form-input" required>
+      </div>
+      
+      <button type="submit" class="footer_button footer_button_orange">Sign in</button>
+    </form>
+  </div>
+  
+  <!-- Includi il file auth.js, che contiene la logica per la login -->
+  <script src="auth.js"></script>
+</body>
+</html>
+<style>
+    body {
+      font-family: 'Barlow Condensed', sans-serif;
+      background-image: url('images/GradientBG.png');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    
+    .form-container {
+      background-color: #0A0034;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 450px;
+      padding: 30px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      position: relative;
+    }
+    
+    .form-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: white;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    
+    .close-button {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      width: 30px;
+      height: 30px;
+      background-color: transparent;
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+    
+    .close-button:hover {
+      color: #FE4208;
+    }
+    
+    .form-field {
+      margin-bottom: 20px;
+    }
+    
+    .form-label {
+      display: block;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      text-align: left; /* Allineamento a sinistra esplicito */
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 12px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border: none;
+      border-bottom: 2px solid #5DFDCB;
+      border-radius: 8px 8px 0 0;
+      color: white;
+      font-family: 'montserrat', sans-serif; /* Cambiato a Montserrat regular */
+      font-weight: 400; /* Regular weight */
+      font-size: 14px;
+      outline: none;
+      box-sizing: border-box;
+    }
+    
+    .form-input:focus {
+      border-bottom-color: #FE4208;
+    }
+    
+
+    
+    /* Allinea il pulsante a destra */
+    #loginForm {
+      text-align: right;
+    }
+    
+    /* Stile per le righe sotto il form */
+    .form-input {
+      border-bottom: 2px solid #5DFDCB;
+    }
+</style>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Riassunto Sfida - Fanteex</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    /* Semplice stile base */
+    #budgetInfo {
+      font-weight: bold;
+      margin: 10px 0;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    li {
+      margin: 5px 0;
+    }
+    .disabled {
+      color: grey;
+      cursor: not-allowed;
+    }
+    /* Non influisce su li .disabled (che disattiviamo) */
+    .clickable:hover {
+      background-color: #d7ffd7; /* verde chiaro */
+    }
+    .removeBtn {
+      margin-left: 10px;
+      color: red;
+      cursor: pointer;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Riassunto Sfida</h1>
+  
+  <div id="messaggio"></div>
+
+  <div id="budgetInfo"></div>
+
+  <button id="addPlayerBtn">+ Aggiungi giocatore</button>
+
+  <h3>Giocatori scelti</h3>
+  <ul id="playerList"></ul>
+
+  <button id="confermaSquadraBtn">Conferma squadra</button>
+
+  <script>
+    // ------- GESTIONE LOCALSTORAGE ----------
+    function loadChosenPlayers() {
+      let chosen = localStorage.getItem("chosenPlayers");
+      if (!chosen) return [];
+      try {
+        return JSON.parse(chosen);
+      } catch (err) {
+        console.error("Errore parse chosenPlayers:", err);
+        return [];
+      }
+    }
+    function saveChosenPlayers(list) {
+      localStorage.setItem("chosenPlayers", JSON.stringify(list));
+    }
+
+    // ------- CALCOLO BUDGET ---------------
+    function getAvailableBudget() {
+      // Budget base = 20
+      // Sottraiamo la somma dei costi dei giocatori in chosenPlayers
+      const players = loadChosenPlayers();
+      const totalCost = players.reduce((acc, p) => acc + parseFloat(p.event_unit_cost), 0);
+      let remaining = 20 - totalCost;
+      if (remaining < 0) remaining = 0;
+      return remaining;
+    }
+
+    // ------- RENDER LISTA GIOCATORI SCELTI ----------
+    function renderPlayerList() {
+      const players = loadChosenPlayers();
+      const ul = document.getElementById("playerList");
+      ul.innerHTML = "";
+
+      players.forEach((player, index) => {
+        const li = document.createElement("li");
+        li.textContent = `${player.athlete_name} (${player.position}) - costo: ${player.event_unit_cost}`;
+        // Stile "clickable"? In riassunto non ci serve, ma potresti gestire dettagli
+        // li.classList.add("clickable");
+
+        // Bottone remove
+        const removeBtn = document.createElement("span");
+        removeBtn.textContent = "X";
+        removeBtn.classList.add("removeBtn");
+        removeBtn.title = "Rimuovi calciatore";
+        removeBtn.addEventListener("click", () => {
+          removePlayer(index);
+        });
+
+        li.appendChild(removeBtn);
+        ul.appendChild(li);
+      });
+
+      // Aggiorna info budget
+      const budget = getAvailableBudget();
+      document.getElementById("budgetInfo").textContent = `Budget rimanente: ${budget.toFixed(1)} Teex`;
+    }
+
+    function removePlayer(idx) {
+      const list = loadChosenPlayers();
+      list.splice(idx, 1); // Rimuove l'elemento con quell'indice
+      saveChosenPlayers(list);
+      renderPlayerList();
+    }
+
+    // ------- AVVIO PAGINA -----------
+    document.addEventListener("DOMContentLoaded", () => {
+      // Se stiamo usando un contestId:
+      const params = new URLSearchParams(window.location.search);
+      const contestId = params.get("contest");
+      document.getElementById("messaggio").textContent = `Contest ID: ${contestId}`;
+
+      renderPlayerList();
+
+      // Clic su +Aggiungi
+      document.getElementById("addPlayerBtn").addEventListener("click", () => {
+      // Leggiamo da URL di riassunto.html
+      const params = new URLSearchParams(window.location.search);
+      const ownerId = params.get("owner");
+      const opponentId = params.get("opponent");
+      const contestId = params.get("contest");
+
+      // andiamo su aggiungi-giocatore.html, con tutti i param
+      const eventId = 30; // se fisso
+      const url = `/aggiungi-giocatore.html?owner=${ownerId}&opponent=${opponentId}&contest=${contestId}&event=${eventId}`;
+      window.location.href = url;
+    });
+
+
+      document.getElementById("confermaSquadraBtn").addEventListener("click", async () => {
+      // Suppose you have contestId & userId in the query
+      const params = new URLSearchParams(window.location.search);
+      const ownerId = params.get("owner");
+      const opponentId = params.get("opponent");
+      const contestId = params.get("contest");
+
+      // DECIDO: se opponentId=== <some logic> => userIdAttivo=opponentId, else userIdAttivo=ownerId
+      // Esempio: if window.location.href includes "opponent=..." -> userIdAttivo=opponentId, otherwise userIdAttivo=ownerId
+      let userIdAttivo;
+      if (opponentId && ownerId && window.location.href.includes("opponent=")) {
+        // sto creando la squadra da "opponent"? 
+        // Dipende dal flusso
+        userIdAttivo = opponentId;
+      } else {
+        userIdAttivo = ownerId;
+      }
+
+
+
+
+      // The chosen players
+      const chosen = loadChosenPlayers();
+      const totalCost = chosen.reduce((acc, p) => acc + parseFloat(p.event_unit_cost), 0);
+
+      // Crei un oggetto da mandare
+      const bodyObj = {
+        contestId,
+        userId: userIdAttivo,
+        players: chosen
+      };
+
+      const resp = await fetch("/confirm-squad", { ... });
+      ...
+      // se ok:
+      window.location.href = `/user-landing.html?user=${userIdAttivo}`;
+
+
+      
+      // Fai POST /confirm-squad
+      const resp = await fetch("/confirm-squad", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(bodyObj)
+      });
+
+      if (!resp.ok) {
+        const err = await resp.json();
+        alert("Errore conferma squadra: " + err.error);
+        return;
+      }
+      // Se ok
+      // Torniamo a user-landing.html?user=xxx
+      window.location.href = `/user-landing.html?user=${userIdCheHaConfermato}`;
+    });
+
+    });
+  </script>
+</body>
+</html>

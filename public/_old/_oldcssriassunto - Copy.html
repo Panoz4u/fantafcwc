@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Crea Squadra - Fanteex</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,800;1,800&family=Barlow+Condensed:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/mobile.css">
+  <link rel="stylesheet" href="css/stile.css">
+</head>
+<body>
+  <!-- Updated header using mobile.css styles -->
+  <header class="header">
+    <div class="user-profile">
+      <img src="icons/freccia.png" alt="Back" id="backArrow" style="width: 30px; height: 30px; cursor: pointer; margin-right: 12px;">
+      <div class="user-info">
+        <h1 class="user-name">CREATE TEAM</h1>
+      </div>
+    </div>
+    <div class="teex-balance">
+      <img src="icons/more.png" alt="Add" class="plus-icon">
+      <img src="icons/teex.png" alt="Teex" class="teex-icon">
+      <span id="teexBalance" class="teex_balance">0.0</span>
+    </div>
+  </header>
+
+  <!-- Header della sfida con i due giocatori -->
+  <div class="match-header">
+    <div class="player-container">
+      <img id="currentUserAvatar" src="avatars/avatar.jpg" alt="Current User" class="player-avatar">
+      <div id="currentUserName" class="player-name">Alberto Panoz</div>
+      <div id="currentUserScore" class="player-score">0.0</div>
+    </div>
+    
+    <div class="vs-container">VS</div>
+    
+    <div class="player-container">
+      <img id="opponentAvatar" src="avatars/avatar.jpg" alt="Opponent" class="player-avatar">
+      <div id="opponentName" class="player-name">Pincopallo</div>
+      <div id="opponentScore" class="player-score">-</div>
+    </div>
+  </div>
+  
+  <!-- Barra del budget rimanente -->
+  <div class="budget-bar">
+    <img src="icons/teex.png" alt="Teex" class="teex-left-icon">
+    <span id="teexLeft" class="teex-left-text">20.0 Teex left</span>
+  </div>
+
+  <!-- Pulsanti gem -->
+  <div class="gem-buttons">
+    <div class="gem-button">
+      <img src="icons/gem_yellow.png" alt="Yellow Gem" class="gem-icon">
+      <span class="gem-text">Play at home +0.5</span>
+    </div>
+    <div class="gem-button">
+      <img src="icons/gem_pink.png" alt="Pink Gem" class="gem-icon">
+      <span class="gem-text">Coupon Top Player</span>
+    </div>
+  </div>
+
+  <!-- Contenuto esistente che verrà modificato nelle prossime fasi -->
+  <div id="messaggio" style="display: none;"></div>
+  <div id="userNameDiv" style="display: none;"></div>
+  <div id="teamCostDiv" style="display: none;"></div>
+  <div id="budgetInfo" style="display: none;"></div>
+
+  <!-- Cella Add Player -->
+  <div class="players-grid">
+    <div id="addPlayerCell" class="add-player-cell">
+      <div class="add-icon">+</div>
+      <div class="add-text">Add Player</div>
+    </div>
+    <!-- Funzione per renderizzare i giocatori scelti -->
+    <script>
+      function renderPlayerCards() {
+        const players = loadChosenPlayers();
+        const playersGrid = document.getElementById("playersGrid");
+        playersGrid.innerHTML = "";
+        
+        if (players.length === 0) {
+          // Se non ci sono giocatori, mostra solo la cella "Aggiungi giocatore"
+          playersGrid.appendChild(createAddPlayerCell());
+        } else {
+          // Altrimenti, mostra i giocatori e la cella "Aggiungi giocatore"
+          players.forEach((player, index) => {
+            playersGrid.appendChild(createPlayerCard(player, index));
+          });
+          
+          // Aggiungi la cella "Aggiungi giocatore" se ci sono meno di 5 giocatori
+          if (players.length < 5) {
+            playersGrid.appendChild(createAddPlayerCell());
+          }
+        }
+      }
+      
+      function createPlayerCard(player, index) {
+        const card = document.createElement("div");
+        card.className = "player-card";
+        
+        // Crea il badge della posizione
+        const positionBadge = document.createElement("div");
+        positionBadge.className = `position-badge position-${player.position}`;
+        positionBadge.textContent = player.position;
+        card.appendChild(positionBadge);
+        
+        // Crea l'icona del giocatore
+        const playerIcon = document.createElement("div");
+        playerIcon.className = "player-icon";
+        const playerImg = document.createElement("img");
+        playerImg.src = player.picture ? `pictures/${player.picture}` : 'pictures/player_placeholder.png';
+        playerImg.alt = player.athlete_shortname;
+        playerImg.onerror = function() {
+          this.src = 'pictures/player_placeholder.png';
+        };
+        playerIcon.appendChild(playerImg);
+        card.appendChild(playerIcon);
+        
+        // Crea il nome del giocatore
+        const playerName = document.createElement("div");
+        playerName.className = "player-name";
+        playerName.textContent = player.athlete_shortname;
+        card.appendChild(playerName);
+        
+        // Crea l'informazione sulla partita
+        const matchInfo = document.createElement("div");
+        matchInfo.className = "match-info";
+        
+        if (player.home_team_code && player.away_team_code) {
+          // Determina se il giocatore è della squadra di casa o trasferta
+          const playerTeamId = parseInt(player.team_id);
+          const homeTeamId = parseInt(player.home_team);
+          const awayTeamId = parseInt(player.away_team);
+          
+          const isHomeTeam = playerTeamId === homeTeamId;
+          const isAwayTeam = playerTeamId === awayTeamId;
+          
+          // Crea il testo del match con il team del giocatore in grassetto
+          const homeSpan = document.createElement("span");
+          if (isHomeTeam) {
+            homeSpan.style.fontWeight = "bold";
+          }
+          homeSpan.textContent = player.home_team_code;
+          
+          const dashSpan = document.createElement("span");
+          dashSpan.textContent = "-";
+          
+          const awaySpan = document.createElement("span");
+          if (isAwayTeam) {
+            awaySpan.style.fontWeight = "bold";
+          }
+          awaySpan.textContent = player.away_team_code;
+          
+          matchInfo.appendChild(homeSpan);
+          matchInfo.appendChild(dashSpan);
+          matchInfo.appendChild(awaySpan);
+        } else {
+          matchInfo.textContent = "PARTITA";
+        }
+        
+        card.appendChild(matchInfo);
+        
+        // Crea il costo del giocatore
+        const playerCost = document.createElement("div");
+        playerCost.className = "player-cost";
+        playerCost.textContent = parseFloat(player.event_unit_cost).toFixed(1);
+        card.appendChild(playerCost);
+        
+        // Crea il pulsante di rimozione
+        const removeBtn = document.createElement("div");
+        removeBtn.className = "remove-player";
+        removeBtn.textContent = "×";
+        removeBtn.addEventListener("click", () => {
+          removePlayer(index);
+        });
+        card.appendChild(removeBtn);
+        
+        return card;
+      }
+    </script>
+  </div>
+
+  <ul id="playerList" style="display: none;"></ul>
+
+  <!-- Pulsanti in fondo alla pagina -->
+  <div class="bottom-buttons">
+    <div id="clearBtn" class="bottom-button clear-button">CLEAR</div>
+    <div id="confermaSquadraBtn" class="bottom-button play-button">PLAY</div>
+  </div>
+
+  <script>
+    // Script esistente
+    async function fetchCurrentEventUnit() {
+      try {
+        const resp = await fetch("/current-event-unit");
+        if (!resp.ok) throw new Error("Errore nel recupero dell'unità evento");
+        const unitData = await resp.json();
+        return unitData.event_unit_id;
+      } catch (error) {
+        console.error("fetchCurrentEventUnit:", error);
+        return ""; // fallback: valore vuoto
+      }
+    }
+    
+    function loadChosenPlayers() {
+      const c = localStorage.getItem("chosenPlayers");
+      if (!c) return [];
+      try { return JSON.parse(c); }
+      catch { return []; }
+    }
+    
+    function saveChosenPlayers(list) {
+      localStorage.setItem("chosenPlayers", JSON.stringify(list));
+    }
+    
+    function getTotalCost() {
+      const pl = loadChosenPlayers();
+      return pl.reduce((acc,p)=> acc+parseFloat(p.event_unit_cost||0),0);
+    }
+    
+    function getAvailableBudget() {
+      return Math.max(0, 20 - getTotalCost());
+    }
+
+    // Aggiungi questa funzione dopo loadChosenPlayers
+    async function enrichPlayerData(players) {
+      try {
+        // Per ogni giocatore, recupera i dati completi dal server se manca il campo picture
+        for (let i = 0; i < players.length; i++) {
+          if (!players[i].picture) {
+            const resp = await fetch(`/athlete-details?id=${players[i].athlete_id}`);
+            if (resp.ok) {
+              const athleteData = await resp.json();
+              // Aggiorna i dati del giocatore con quelli dal server
+              players[i].picture = athleteData.picture;
+              players[i].athlete_shortname = athleteData.athlete_shortname;
+            }
+          }
+        }
+        // Salva i dati aggiornati
+        saveChosenPlayers(players);
+        return players;
+      } catch (error) {
+        return players;
+      }
+    }
+
+    // Modifica la funzione renderPlayerList per aggiornare anche il punteggio dell'utente corrente
+    async function renderPlayerList() {
+      let players = loadChosenPlayers();
+      // Arricchisci i dati dei giocatori
+      players = await enrichPlayerData(players);
+      
+      const ul = document.getElementById("playerList");
+      ul.innerHTML = "";
+      
+      // Aggiorna la visualizzazione dei giocatori nella griglia
+      const playersContainer = document.querySelector(".players-grid");
+      
+      // Rimuovi tutti i giocatori esistenti (ma mantieni la cella "Add Player")
+      const existingPlayers = document.querySelectorAll(".player-card");
+      existingPlayers.forEach(el => el.remove());
+      
+      // Calcola il costo totale della squadra
+      const totalTeamCost = getTotalCost();
+      
+      // Aggiorna il punteggio dell'utente corrente nell'header
+      document.getElementById("currentUserScore").textContent = totalTeamCost.toFixed(1);
+      
+      // Aggiungi i giocatori alla griglia
+      players.forEach((p, i) => {
+        // Crea la card del giocatore
+        const playerCard = document.createElement("div");
+        playerCard.classList.add("player-card");
+        
+        // Aggiungi l'icona del giocatore
+        const playerIcon = document.createElement("div");
+        playerIcon.classList.add("player-icon");
+        
+        const playerImg = document.createElement("img");
+        if (p.picture) {
+          playerImg.src = `pictures/${p.picture}`;
+        } else {
+          playerImg.src = "avatars/avatar.jpg";
+        }
+        playerImg.alt = p.athlete_name;
+        playerImg.onerror = function() {
+          this.src = "pictures/player_placeholder.png";
+        };
+        
+        playerIcon.appendChild(playerImg);
+        playerCard.appendChild(playerIcon);
+        
+        // Aggiungi il nome del giocatore
+        const playerName = document.createElement("div");
+        playerName.classList.add("player-name");
+        playerName.textContent = p.athlete_shortname || p.athlete_name;
+        playerCard.appendChild(playerName);
+        
+        // Aggiungi la label del match con il team del giocatore in grassetto e bianco, l'altro in grigio
+        const playerMatch = document.createElement("div");
+        playerMatch.classList.add("match-info");
+        
+        if (p.home_team_code && p.away_team_code) {
+          // Determina se il giocatore è della squadra di casa o trasferta
+          const playerTeamId = parseInt(p.team_id);
+          const homeTeamId = parseInt(p.home_team);
+          const awayTeamId = parseInt(p.away_team);
+          
+          const isHomeTeam = playerTeamId === homeTeamId;
+          const isAwayTeam = playerTeamId === awayTeamId;
+          
+          // Crea il testo del match con il team del giocatore in grassetto e bianco, l'altro in grigio
+          const homeSpan = document.createElement("span");
+          if (isHomeTeam) {
+            homeSpan.style.fontWeight = "bold";
+            homeSpan.style.color = "white";
+          } else {
+            homeSpan.style.color = "#999999"; // Grigio
+          }
+          homeSpan.textContent = p.home_team_code;
+          
+          const dashSpan = document.createElement("span");
+          dashSpan.textContent = "-";
+          
+          const awaySpan = document.createElement("span");
+          if (isAwayTeam) {
+            awaySpan.style.fontWeight = "bold";
+            awaySpan.style.color = "white";
+          } else {
+            awaySpan.style.color = "#999999"; // Grigio
+          }
+          awaySpan.textContent = p.away_team_code;
+          
+          playerMatch.appendChild(homeSpan);
+          playerMatch.appendChild(dashSpan);
+          playerMatch.appendChild(awaySpan);
+        } else {
+          playerMatch.textContent = "PARTITA";
+        }
+        
+        playerCard.appendChild(playerMatch);
+        
+        // Aggiungi il costo del giocatore
+        const playerCost = document.createElement("div");
+        playerCost.classList.add("player-cost");
+        playerCost.textContent = parseFloat(p.event_unit_cost).toFixed(1);
+        playerCard.appendChild(playerCost);
+        
+        // Aggiungi il badge della posizione
+        const positionBadge = document.createElement("div");
+        positionBadge.classList.add("position-badge", `position-${p.position}`);
+        positionBadge.textContent = p.position;
+        playerCard.appendChild(positionBadge);
+        
+        // Aggiungi il pulsante di rimozione
+        const removeBtn = document.createElement("div");
+        removeBtn.classList.add("remove-player");
+        removeBtn.textContent = "×";
+        removeBtn.addEventListener("click", () => {
+          removePlayer(i);
+        });
+        playerCard.appendChild(removeBtn);
+        
+        // Aggiungi la card alla griglia
+        playersContainer.appendChild(playerCard);
+      });
+      
+      // Aggiorna il budget rimanente
+      document.getElementById("teexLeft").textContent = `${getAvailableBudget().toFixed(1)} Teex left`;
+    }
+
+    function removePlayer(idx) {
+      const arr = loadChosenPlayers();
+      arr.splice(idx,1);
+      saveChosenPlayers(arr);
+      renderPlayerList();
+    }
+
+    // Funzione per ottenere l'URL dell'avatar
+    function getAvatarUrl(avatarPath) {
+      if (!avatarPath) {
+        return "avatars/avatar.jpg"; // Avatar di default
+      }
+      
+      // Controlla se è già un URL completo
+      if (avatarPath.startsWith('http://') || avatarPath.startsWith('https://')) {
+        return avatarPath;
+      }
+      
+      // Altrimenti è un nome file, aggiungi il percorso avatars/
+      return `avatars/${avatarPath}`;
+    }
+
+    async function loadUserInfo(userId, opponentId, ownerId, contestId) {
+      try {
+        // First, determine who is the current user and who is the opponent
+        let currentUserId = userId;
+        let actualOpponentId;
+        
+        // If current user is the opponent in the URL, then the owner is the actual opponent
+        if (userId == opponentId) {
+          actualOpponentId = ownerId;
+        } else {
+          actualOpponentId = opponentId;
+        }
+        
+        // Get contest details to get team costs
+        const contestResp = await fetch(`/contest-details?contest=${contestId}&user=${userId}`);
+        const contestData = await contestResp.json();
+        
+        // Get all users
+        const r = await fetch("/users");
+        const allUsers = await r.json();
+        
+        // Find the current user
+        const currentUser = allUsers.find(x => x.user_id == currentUserId);
+        if (currentUser) {
+          document.getElementById("currentUserName").textContent = currentUser.username;
+          document.getElementById("currentUserAvatar").src = getAvatarUrl(currentUser.avatar);
+          document.getElementById("teexBalance").textContent = currentUser.teex_balance.toLocaleString();
+          
+          // Set current user's team cost
+          const isOwner = currentUserId == ownerId;
+          const currentUserCost = isOwner ? contestData.contest.owner_cost : contestData.contest.opponent_cost;
+          document.getElementById("currentUserScore").textContent = currentUserCost ? parseFloat(currentUserCost).toFixed(1) : "0.0";
+        }
+        
+        // Find the actual opponent
+        const opponent = allUsers.find(x => x.user_id == actualOpponentId);
+        if (opponent) {
+          document.getElementById("opponentName").textContent = opponent.username;
+          document.getElementById("opponentAvatar").src = getAvatarUrl(opponent.avatar);
+          
+          // Set opponent's team cost
+          const opponentIsOwner = actualOpponentId == ownerId;
+          const opponentCost = opponentIsOwner ? contestData.contest.owner_cost : contestData.contest.opponent_cost;
+          document.getElementById("opponentScore").textContent = opponentCost ? parseFloat(opponentCost).toFixed(1) : "-";
+        }
+      } catch(e) {
+        console.error("Errore loadUserInfo", e);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      const params = new URLSearchParams(window.location.search);
+      const ownerId = params.get("owner");  // DB info
+      const opponentId = params.get("opponent"); // DB info
+      const contestId = params.get("contest");
+      // UTENTE CORRENTE
+      const userIdAttivo = params.get("user"); 
+      
+      document.getElementById("messaggio").textContent = 
+        `Contest ID: ${contestId} | userAttivo=${userIdAttivo}`;
+
+      // Add back button event listener
+      document.getElementById("backArrow").addEventListener("click", () => {
+        history.back();
+      });
+
+      // Carica le informazioni degli utenti
+      await loadUserInfo(userIdAttivo, opponentId, ownerId, contestId);
+      
+      // Carica e visualizza i giocatori scelti (ora è async)
+      await renderPlayerList();
+
+      // Recupera il current event unit in modo sicuro
+      const eventUnitId = await fetchCurrentEventUnit();
+      window.event_unit_id = eventUnitId;
+      
+      // Aggiungi listener al pulsante "Aggiungi giocatore"
+      document.getElementById("addPlayerCell").addEventListener("click", () => {
+        let url = `/aggiungi-giocatore.html?owner=${ownerId}&opponent=${opponentId}&contest=${contestId}&user=${userIdAttivo}`;
+        if (window.event_unit_id) {
+          url += `&event_unit_id=${window.event_unit_id}`;
+        }
+        window.location.href = url;
+      });
+
+      // Rimuovi il vecchio pulsante se esiste
+      const oldAddBtn = document.getElementById("addPlayerBtn");
+      if (oldAddBtn) {
+        oldAddBtn.style.display = "none";
+      }
+
+      // Aggiungi listener al pulsante CLEAR
+      document.getElementById("clearBtn").addEventListener("click", () => {
+        if (confirm("Sei sicuro di voler cancellare tutti i giocatori selezionati?")) {
+          saveChosenPlayers([]);
+          renderPlayerList();
+        }
+      });
+
+      // Aggiungi listener al pulsante PLAY (conferma squadra)
+      document.getElementById("confermaSquadraBtn").addEventListener("click", async () => {
+        const players = loadChosenPlayers();
+        if (!players.length) {
+          alert("Devi scegliere almeno un giocatore!");
+          return;
+        }
+        const bodyObj = {
+          contestId,
+          userId: userIdAttivo,
+          players
+        };
+        try {
+          const resp = await fetch("/confirm-squad", {
+            method: "POST",
+            headers: { "Content-Type":"application/json" },
+            body: JSON.stringify(bodyObj)
+          });
+          if(!resp.ok) {
+            const err = await resp.json();
+            alert("Errore conferma squadra: " + err.error);
+            return;
+          }
+          // Ok
+          window.location.href = `/user-landing.html?user=${userIdAttivo}`;
+        } catch(e) {
+          alert("Errore di rete");
+          console.error(e);
+        }
+      });
+    });
+  </script>
+</body>
+</html>

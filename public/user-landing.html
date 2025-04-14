@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>User Landing - Fanteex</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,800;1,800&family=Barlow+Condensed:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/mobile.css">
+  <link rel="stylesheet" href="css/mobile2.css">
+ 
+</head>
+<body>
+  <!-- Aggiungo il div sticky-header -->
+  <div class="sticky-header">
+    <header class="header">
+      <div class="user-profile">
+        <img id="userAvatar" class="avatar" src="avatars/default.png" alt="User Avatar">
+        <div class="user-name-progress">
+          <h1 id="userName" class="user-name">PANOZ FOOTBALL CLUB</h1>
+          <div class="progress-bar-container">
+            <div class="progress-bar" style="width: 35%;"></div>
+          </div>
+        </div>
+      </div>
+      <div class="teex-balance">
+        <img src="icons/more.png" alt="Add" class="plus-icon">
+         <img src="icons/teex.png" alt="Teex" class="teex-icon">
+        <span id="teexBalance" class="teex_balance">415.0</span>
+      </div>
+    </header>
+
+    <div class="power-up-section">
+      <div class="power-up-label">POWER UP</div>
+      <div class="power-up-items">
+        <div class="power-up-item">
+          <img src="icons/more.png" alt="Add" class="power-up-plus">
+          <img src="icons/gem_yellow.png" alt="Yellow Gem" class="power-up-icon">
+          <div class="power-up-value-container">
+            <span class="power-up-value">2354</span>
+          </div>
+        </div>
+        <div class="power-up-item">
+          <img src="icons/more.png" alt="Add" class="power-up-plus">
+          <img src="icons/gem_pink.png" alt="Pink Gem" class="power-up-icon">
+          <div class="power-up-value-container">
+            <span class="power-up-value">2354</span>
+          </div>
+        </div>
+        <div class="power-up-item">
+          <img src="icons/more.png" alt="Add" class="power-up-plus">
+          <img src="icons/coin_green.png" alt="Green Coin" class="power-up-icon">
+          <div class="power-up-value-container">
+            <span class="power-up-value">2354</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-container">
+      <div id="tabActive" class="tab">
+        <span class="tab_on">ACTIVE</span>
+      </div>
+      <div id="tabCompleted" class="tab">
+        <span class="tab_off">COMPLETED</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenuto scrollabile -->
+  <div id="activeContainer" class="contests-container"></div>
+  <div id="completedContainer" class="contests-container" style="display: none;"></div>
+
+
+<!-- Blur background for FAB -->
+<div class="fab-background"></div>
+
+<!-- FAB button for New Game -->
+<div id="playButton" class="fab_button" style="position: fixed; bottom: 96px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; justify-content: center; z-index: 101; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
+  <img src="icons/add.png" alt="New Game" style="width: 24px; height: 24px; margin-right: 8px;">
+  <span style="color: #ffffff;">NEW GAME</span>
+</div>
+
+
+
+
+  <footer class="footer-nav">
+    <div class="footer-item">
+      <img src="icons/ranking.png" alt="Leaderboard" class="menu_icon">
+      <span class="menu_item">LEADERBOARD</span>
+    </div>
+    <div class="footer-item">
+      <img src="icons/quality.png" alt="Badges" class="menu_icon">
+      <span class="menu_item">BADGES</span>
+    </div>
+    <div class="footer-item">
+      <img src="icons/stats.png" alt="Statistics" class="menu_icon">
+      <span class="menu_item">STATISTICS</span>
+    </div>
+    <div class="footer-item">
+      <img src="icons/friends.png" alt="Friends" class="menu_icon">
+      <span class="menu_item">FRIENDS</span>
+    </div>
+  </footer>
+
+  <script>
+    function getAvatarSrc(avatar) {
+      if (avatar) {
+        if (avatar.startsWith("http")) {
+          // Per gli URL di Google, assicuriamoci che non ci siano problemi di encoding
+          if (avatar.includes("googleusercontent.com")) {
+            // Decodifica l'URL per assicurarsi che non ci siano problemi di encoding
+            return decodeURIComponent(avatar);
+          }
+          return avatar;
+        } else {
+          return "avatars/" + avatar;
+        }
+      } else {
+        return "avatars/avatar.jpg";
+      }
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const userId = params.get("user");
+
+    async function loadUserLanding() {
+      if (!userId) {
+        alert("User mancante!");
+        return;
+      }
+      const resp = await fetch(`/user-landing-info?user=${userId}`);
+      const data = await resp.json();
+
+      const userAvatarElem = document.getElementById("userAvatar");
+      const avatarSrc = getAvatarSrc(data.user.avatar);
+      userAvatarElem.src = avatarSrc;
+      userAvatarElem.onerror = function() {
+        console.error("Errore caricamento avatar, uso default");
+        this.src = "avatars/avatar.jpg";
+      };
+      document.getElementById("userName").textContent = data.user.username.toUpperCase();
+      // Format teex balance with 1 decimal place
+      const teexValue = parseFloat(data.user.teex_balance).toFixed(1);
+      document.getElementById("teexBalance").textContent = teexValue;
+
+      // Render contest list: Usa contest.status_display (già calcolato dal backend)
+      renderContestList(data.active, document.getElementById("activeContainer"));
+      renderContestList(data.completed, document.getElementById("completedContainer"));
+    }
+
+    function renderContestList(list, container) {
+      container.innerHTML = "";
+      
+      list.forEach(contest => {
+        // Correggiamo la determinazione di iAmOwner confrontando correttamente gli ID
+        const iAmOwner = parseInt(contest.owner_id) === parseInt(userId);
+        console.log(`Contest ${contest.contest_id}: owner_id=${contest.owner_id}, userId=${userId}, iAmOwner=${iAmOwner}`);
+        
+        let myName, myAvatar, myCost, oppName, oppAvatar, oppCost;
+        if (iAmOwner) {
+          myName = contest.owner_name;
+          myAvatar = contest.owner_avatar;
+          myCost = contest.owner_cost || "-";
+          oppName = contest.opponent_name;
+          oppAvatar = contest.opponent_avatar;
+          oppCost = contest.opponent_cost || "-";
+        } else {
+          myName = contest.opponent_name;
+          myAvatar = contest.opponent_avatar;
+          myCost = contest.opponent_cost || "-";
+          oppName = contest.owner_name;
+          oppAvatar = contest.owner_avatar;
+          oppCost = contest.owner_cost || "-";
+        }
+
+        // Truncate names to 19 characters and add "..." if longer
+        myName = myName.length > 19 ? myName.substring(0, 19) + "..." : myName;
+        oppName = oppName.length > 19 ? oppName.substring(0, 19) + "..." : oppName;
+
+        let displayedStatus = contest.status_display;  // valore di default
+        let statusClass = "";
+        if (contest.status == 1 && !iAmOwner) {
+          displayedStatus = "INVITED";
+          statusClass = "invited";
+        } else if (contest.status == 2) {
+          statusClass = "pending";
+        }
+
+        // Create contest card based on the mockup
+        const contestCard = document.createElement("div");
+        contestCard.classList.add("contest-cell", "clickable");
+
+        // Handle status 0 contests like status 1 with "CREATED" text
+        if (contest.status == 0) {
+          contestCard.innerHTML = `
+            <div class="contest-container cc-list">
+              <div class="contest-bar">
+                <img src="${getAvatarSrc(myAvatar)}" alt="${myName}" class="player-avatar-contest left-avatar">
+                <div class="triletter_contest left-name">${myName.substring(0, 6)}</div>
+                <div class="result_bold">VS</div>
+                <div class="triletter_contest right-name">${oppName.substring(0, 6)}</div>
+                <img src="${getAvatarSrc(oppAvatar)}" alt="${oppName}" class="player-avatar-contest right-avatar">
+                <div class="teex_spent left-teex">${myCost}</div>
+                <div class="teex_spent right-teex">-</div>
+              </div>
+              <div class="status-badge-base status-badge">CREATED</div>
+            </div>
+          `;
+        // Special layout for status 1 contests where I am the owner
+        } else if (contest.status == 1 && iAmOwner) {
+          // Special layout for status 1 contests where I am the owner
+          contestCard.innerHTML = `
+            <div class="contest-container cc-list">
+              <div class="contest-bar">
+                <img src="${getAvatarSrc(myAvatar)}" alt="${myName}" class="player-avatar-contest left-avatar">
+                <div class="triletter_contest left-name">${myName.substring(0, 3)}</div>
+                <div class="result_bold">VS</div>
+                <div class="triletter_contest right-name">${oppName.substring(0, 3)}</div>
+                <img src="${getAvatarSrc(oppAvatar)}" alt="${oppName}" class="player-avatar-contest right-avatar">
+                <div class="teex_spent left-teex">${myCost}</div>
+                <div class="teex_spent right-teex">-</div>
+              </div>
+              <div class="status-badge-base status-badge">PENDING</div>
+              ${contest.multiply && parseInt(contest.multiply) > 1 ? `<div class="multiply-contest-mini">${Math.floor(contest.multiply)}</div>` : ''}
+            </div>
+          `;
+        } else if (contest.status == 1 && !iAmOwner) {
+          // Special layout for invited contests (status 1 where I am NOT the owner)
+          contestCard.innerHTML = `
+            <div class="contest-container cc-list">
+              <div class="contest-bar">
+                <img src="${getAvatarSrc(myAvatar)}" alt="${myName}" class="player-avatar-contest left-avatar">
+                <div class="triletter_contest left-name">${myName.substring(0, 3)}</div>
+                <div class="result_bold">VS</div>
+                <div class="triletter_contest right-name">${oppName.substring(0, 3)}</div>
+                <img src="${getAvatarSrc(oppAvatar)}" alt="${oppName}" class="player-avatar-contest right-avatar">
+                <div class="teex_spent left-teex">-</div>
+                <div class="teex_spent right-teex">${oppCost}</div>
+              </div>
+              <div class="status-badge-base status-badge-invited">INVITED</div>
+              ${contest.multiply && parseInt(contest.multiply) > 1 ? `<div class="multiply-contest-mini">${Math.floor(contest.multiply)}</div>` : ''}
+            </div>
+          `;
+        } else if (contest.status == 2) {
+          // Special layout for ready contests (status 2)
+          contestCard.innerHTML = `
+            <div class="contest-container cc-list">
+              <div class="contest-bar">
+                <img src="${getAvatarSrc(myAvatar)}" alt="${myName}" class="player-avatar-contest left-avatar">
+                <div class="triletter_contest left-name">${myName.substring(0, 3)}</div>
+                <div class="result_bold">VS</div>
+                <div class="triletter_contest right-name">${oppName.substring(0, 3)}</div>
+                <img src="${getAvatarSrc(oppAvatar)}" alt="${oppName}" class="player-avatar-contest right-avatar">
+                <div class="teex_spent left-teex">${myCost}</div>
+                <div class="teex_spent right-teex">${oppCost}</div>
+              </div>
+              <div class="status-badge-base status-badge-ready">${contest.stake || ''}</div>
+              ${contest.multiply && parseInt(contest.multiply) > 1 ? `<div class="multiply-contest-mini">${Math.floor(contest.multiply)}</div>` : ''}
+            </div>
+          `;
+        } else if (contest.status == 4) {
+          // Special layout for status 4 (in progress) contests
+          console.log("Contest status 4:", contest);
+          console.log("Status display:", contest.status_display);
+          console.log("iAmOwner:", iAmOwner);
+          
+          // Valori predefiniti
+          let myScore = 0;
+          let oppScore = 0;
+          
+          // Estrai i punteggi dal status_display
+          if (contest.status_display && contest.status_display !== "live") {
+            const parts = contest.status_display.split('-');
+            if (parts.length === 2) {
+              // Assegna direttamente il primo valore al current user e il secondo allo sfidante
+              myScore = parseFloat(parts[0]) || 0;
+              oppScore = parseFloat(parts[1]) || 0;
+              
+              console.log("Raw scores from status_display:", myScore, oppScore);
+              console.log("Punteggio utente corrente:", myScore);
+              console.log("Punteggio sfidante:", oppScore);
+            }
+          }
+          
+          const myScoreStr = myScore.toFixed(1);
+          const oppScoreStr = oppScore.toFixed(1);
+          console.log("Score strings:", myScoreStr, oppScoreStr);
+          
+          const [myScoreInt, myScoreDec = "0"] = myScoreStr.split('.');
+          const [oppScoreInt, oppScoreDec = "0"] = oppScoreStr.split('.');
+          console.log("Score parts:", myScoreInt, myScoreDec, oppScoreInt, oppScoreDec);
+          
+          contestCard.innerHTML = `
+            <div class="contest-container cc-list">
+              <div class="contest-bar">
+                <img src="${getAvatarSrc(myAvatar)}" alt="${myName}" class="player-avatar-contest left-avatar">
+                <div class="triletter_contest left-name">${myName.substring(0, 3)}</div>
+                <div style="position: absolute; top: calc(50% - 14px); left: 50%; transform: translate(-50%, -50%); display: flex; align-items: baseline;">
+                  <span class="result_bold" style="position: static; transform: none; color: #fff">${myScoreInt}</span>
+                  <span class="win_index_perc" style="color: #fff">.${myScoreDec}</span>
+                  <span style="margin: 0 5px; color: white; font-size: 20px;"> </span>
+                  <span class="result_bold" style="position: static; transform: none; color: #fff">${oppScoreInt}</span>
+                  <span class="win_index_perc" style="color: #fff">.${oppScoreDec}</span>
+                </div>
+                <div class="triletter_contest right-name">${oppName.substring(0, 3)}</div>
+                <img src="${getAvatarSrc(oppAvatar)}" alt="${oppName}" class="player-avatar-contest right-avatar">
+                <div class="teex_spent left-teex">${myCost}</div>
+                <div class="teex_spent right-teex">${oppCost}</div>
+              </div>
+              <div class="status-badge-base status-badge-live">${contest.stake || ''}</div>
+              ${contest.multiply && contest.multiply > 1 ? `<div class="multiply-contest-mini">${Math.floor(contest.multiply)}</div>` : ''}
+            </div>
+          `;
+        } else {
+          // Original layout for other contest types
+          const vsContainer = document.createElement("div");
+          vsContainer.classList.add("vs-container");
+
+          // Left player (current user)
+          const leftPlayer = document.createElement("div");
+          leftPlayer.classList.add("player-side");
+          leftPlayer.innerHTML = `
+            <img class="player-avatar" src="${getAvatarSrc(myAvatar)}" alt="${myName}">
+            <div class="player-name">${myName.substring(0, 3)}</div>
+            <div class="player-score">${myCost}</div>
+            ${contest.position_info ? `<div class="player-position">POS:${contest.position_info.my_position || '-'}</div>` : ''}
+          `;
+
+          // Middle VS section
+          const vsMiddle = document.createElement("div");
+          vsMiddle.classList.add("vs-middle");
+          vsMiddle.innerHTML = `
+            <div class="vs-text">VS</div>
+            <div class="contest-status ${statusClass}">${displayedStatus}</div>
+            ${contest.stake ? `<div class="contest-stake">${contest.stake}</div>` : ''}
+            ${contest.badge_count ? `<div class="badge-number">${contest.badge_count}</div>` : ''}
+          `;
+
+          // Right player (opponent)
+          const rightPlayer = document.createElement("div");
+          rightPlayer.classList.add("player-side");
+          rightPlayer.innerHTML = `
+            <img class="player-avatar" src="${getAvatarSrc(oppAvatar)}" alt="${oppName}">
+            <div class="player-name">${oppName.substring(0, 3)}</div>
+            <div class="player-score">${oppCost}</div>
+            ${contest.position_info ? `<div class="player-position">POS:${contest.position_info.opp_position || '-'}</div>` : ''}
+          `;
+
+          vsContainer.appendChild(leftPlayer);
+          vsContainer.appendChild(vsMiddle);
+          vsContainer.appendChild(rightPlayer);
+          contestCard.appendChild(vsContainer);
+        }
+
+        contestCard.addEventListener("click", () => {
+          if (contest.status == 1 && !iAmOwner) {
+            localStorage.removeItem("chosenPlayers");
+            window.location.href = `/riassunto.html?owner=${contest.owner_id}&opponent=${contest.opponent_id}&contest=${contest.contest_id}&user=${userId}`;
+          } else {
+            window.location.href = `/contest-details.html?contest=${contest.contest_id}&user=${userId}`;
+          }
+        });
+
+        container.appendChild(contestCard);
+      });
+
+      if (!list.length) {
+        container.innerHTML = "<p class='no-challenges'>Nessuna sfida</p>";
+      }
+    }
+
+    function showActive() {
+      document.getElementById("tabActive").innerHTML = '<span class="tab_on">ACTIVE</span>';
+      document.getElementById("tabCompleted").innerHTML = '<span class="tab_off">COMPLETED</span>';
+      document.getElementById("activeContainer").style.display = "block";
+      document.getElementById("completedContainer").style.display = "none";
+    }
+    
+    function showCompleted() {
+      document.getElementById("tabActive").innerHTML = '<span class="tab_off">ACTIVE</span>';
+      document.getElementById("tabCompleted").innerHTML = '<span class="tab_on">COMPLETED</span>';
+      document.getElementById("activeContainer").style.display = "none";
+      document.getElementById("completedContainer").style.display = "block";
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      loadUserLanding();
+      document.getElementById("tabActive").addEventListener("click", showActive);
+      document.getElementById("tabCompleted").addEventListener("click", showCompleted);
+      
+      // Play button event listener
+      document.getElementById("playButton").addEventListener("click", async () => {
+        localStorage.removeItem("chosenPlayers");
+        try {
+          // Recupera il current event unit
+          const resp = await fetch("/current-event-unit");
+          if (!resp.ok) {
+            throw new Error("Current event unit non trovata");
+          }
+          const currentUnit = await resp.json();
+          // Passa event_unit_id insieme agli altri parametri
+          window.location.href = `/scegli-opponent.html?owner=${userId}&user=${userId}&event_unit_id=${currentUnit.event_unit_id}`;
+        } catch (error) {
+          console.error("Errore nel recupero del current event unit:", error);
+          alert("Impossibile recuperare l'unità evento corrente");
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+# Dipendenze installate con npm
+node_modules/
+
+# Log di sistema
+npm-debug.log
+yarn-error.log
+
+# File di ambiente (se ne usi uno)
+.env

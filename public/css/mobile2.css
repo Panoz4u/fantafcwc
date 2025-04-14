@@ -1,0 +1,613 @@
+/* Search Container Styles */
+.search-container {
+  position: fixed;
+  top: 70px;
+  left: 0;
+  right: 0;
+  z-index: 101;
+  background-color: #0A0034;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  height: 80px;
+  box-sizing: border-box;
+}
+
+.sc-select {
+  top: 50px;
+}
+
+.search-box {
+  width: calc(100% - 16px);
+  max-width: 100%;
+  padding: 12px 40px;
+  border-radius: 24px;
+  border: none;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 16px;
+  outline: none;
+  height: 44px;
+  box-sizing: border-box;
+}
+
+.search-icon {
+  position: absolute;
+  left: 25px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 18px;
+}
+
+/* Sort Header Styles */
+.sort-header {
+  position: fixed;
+  top: 140px;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background-color: #0A0034;
+  height: 40px;
+  box-sizing: border-box;
+}
+
+
+.sort-item {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: uppercase;
+  cursor: pointer;
+  position: relative;
+  padding-right: 15px;
+}
+
+.sort-item.active {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.sort-triangle {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+}
+
+.sort-triangle.asc {
+  border-bottom: 5px solid #FE4208;
+  border-top: none;
+}
+
+.sort-triangle.desc {
+  border-top: 5px solid #FE4208;
+  border-bottom: none;
+}
+
+
+.player-card {
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 8px;
+}
+
+.player-card.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.player-card.clickable {
+  cursor: pointer;
+}
+
+.player-card.clickable:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Player Icon Styles */
+.player-icon-container {
+  position: relative;
+  margin-right: 12px;
+}
+
+.player-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: #FE4208;
+}
+
+.player-icon img {
+  width: 150%;
+  height: 150%;
+  object-fit: cover;
+  object-position: center;
+  margin-top: -7%;
+  margin-left: -23%;
+}
+
+.position-indicator {
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  color: #0A0034;
+  z-index: 2;
+}
+
+/* Position colors */
+.position-P {
+  background-color: #FFD600; /* Yellow */
+}
+
+.position-D {
+  background-color: #00FF7F; /* Green */
+}
+
+.position-C {
+  background-color: #006eff; /* Blue */
+  color: #ffffff;
+}
+
+.position-A {
+  background-color: #FF4500; /* Red */
+}
+
+/* Player Info Styles */
+.player-info {
+  flex: 1;
+}
+
+.player-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: white;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.match-info {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.player-team {
+  font-weight: 700;
+  color: white;
+}
+
+/* Player Cost Styles */
+.player-cost {
+  background-color: #5DFDCB;
+  border-radius: 12px;
+  padding: 4px 10px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  font-size: 16px;
+  color: #0A0034;
+  min-width: 40px;
+  text-align: center;
+}
+
+/* User profile alignment fix */
+.user-profile {
+  display: flex;
+  align-items: flex-end; /* Align to bottom */
+}
+
+/* Multiply contest mini indicator */
+.multiply-contest-mini {
+  width: 20px;
+  height: 20px;
+  background-color: #ED33B9;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  font-size: 12px;
+  color: white;
+  position: absolute;
+  bottom: -38px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+}
+
+/* Consolidated .user-name (versione completa) */
+.user-name2 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px; /* Same as progress bar width */
+}
+
+/* Player List Styles */
+.player-list {
+  list-style: none;
+  padding-top: 110px; /* Add top padding to account for fixed headers */
+  padding-bottom: 170px;
+  margin: 0 16px;
+  margin-bottom: 80px; /* Space for footer */
+}
+
+
+/* Budget Bar - Make it sticky but position it correctly */
+.budget-bar {
+  position: sticky;
+  top: 60px; /* Keep this value to ensure it sticks right below the header */
+  left: 0;
+  right: 0;
+  z-index: 101;
+  background-color: #0A0034;
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  height: 40px;
+  box-sizing: border-box;
+  justify-content: center;
+  margin-top: 18px; /* Add margin to push it down by 18px */
+}
+
+/* Make sure the contest container and power-up section are not fixed */
+.contest-container, .power-up-section-contest {
+  position: relative;
+  z-index: 99; /* Lower z-index than the fixed elements */
+  top: 0px;
+}
+
+/* Teams Section - Adjust positioning */
+.teams-section {
+  margin-top: 20px; /* Add space between power-ups and teams */
+  padding-top: 0; /* Remove the extra padding */
+}
+
+
+/* Player row styles to ensure proper spacing */
+.player-row {
+  margin-top: 10px;
+}
+
+
+/* Opponent List Styles */
+.opponent-list {
+  list-style: none;
+  padding-top: 110px; /* Add top padding to account for fixed headers */
+  padding-bottom: 80px;
+  margin: 0 16px;
+}
+
+.opponent-item {
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 8px;
+  justify-content: space-between;
+}
+
+.opponent-info {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.opponent-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 12px;
+  object-fit: cover;
+}
+
+.opponent-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: white;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.progress-wrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 200px;
+}
+
+.progress-bar-container {
+  position: relative;
+  height: 6px;
+  background-color: #1A1C3D;
+  border-radius: 3px;
+  overflow: hidden;
+  width: 150px;
+  margin-right: 6px;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  width: 35%;
+  background: linear-gradient(to right, #FE4208, #ED33B9);
+  border-radius: 3px;
+}
+
+.progress-text {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Small Button Main Style */
+.small-button-main {
+  background-color: #0A0034;
+  border: 2px solid #FE4208;
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: white;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.small-button-main:hover {
+  background-color: rgba(254, 66, 8, 0.2);
+}
+
+.play-contest-button {
+  background-color: #0A0034;
+  border: 2px solid #FE4208;
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: white;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.play-contest-button:hover {
+  background-color: rgba(254, 66, 8, 0.2);
+}
+
+
+/* Multiply Window Styles */
+.multiply-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(10, 0, 52, 0.8);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.multiply-container {
+  background: #0A0034;
+  border-radius: 24px 24px 0 0;
+  padding: 24px;
+}
+
+.title_centre {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  font-size: 24px;
+  color: white;
+  text-align: center;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+
+.multiply-circles {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: 32px 0;
+}
+
+.multiply-circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.mc-selected {
+  background-color: #ED33B9;
+  color: white;
+}
+
+.mc-off {
+  background-color: rgba(237, 51, 185, 0.2);
+  border: 2px solid #ED33B9;
+  color: white;
+}
+
+.big-cost {
+  width: 120px;
+  height: 46px;
+  background-color: #5DFDCB;
+  border-radius: 23px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  font-size: 36px;
+  color: #0A0034;
+  margin: 24px auto;
+}
+
+.multiply-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 24px;
+}
+
+.multiply-button {
+  flex: 1;
+  margin: 0 8px;
+  padding: 12px;
+  border-radius: 24px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: none;
+}
+
+.multiply-cancel {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.multiply-confirm {
+  background-color: #FE4208;
+  color: white;
+}
+
+
+.logo {
+  margin-bottom: 40px;
+}
+
+.logo h1 {
+  font-size: 3.5em;
+  margin: 0;
+  color: #00ffff;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+.logo p {
+  margin: 0;
+  font-size: 1em;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.login-container {
+  width: 90%;
+  max-width: 450px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.btn {
+  padding: 15px 20px;
+  border-radius: 25px;
+  font-size: 16px;
+  cursor: pointer;
+  width: 100%;
+  border: none;
+  font-weight: bold;
+}
+
+.btn-google {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: uppercase;
+  color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.btn-email {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 18px;
+  text-transform: uppercase;
+  background-color: #5DFDCB;
+  color: #333;
+}
+
+.btn-create {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 18px;
+  background-color: transparent;
+  text-transform: uppercase;
+  color: #5DFDCB;
+  border: 2px solid #5DFDCB;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 20px 0;
+  color: #ccc;
+}
+
+.divider::before, .divider::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid #ccc;
+}
+
+.divider span {
+  padding: 0 10px;
+}
+
+.terms {
+  margin-top: 30px;
+  font-size: 0.8em;
+  color: #ccc;
+}
+
+.terms a {
+  color: #ccc;
+  text-decoration: underline;
+}
+
+    

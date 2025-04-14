@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>User Landing - Fanteex</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,800;1,800&family=Barlow+Condensed:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- New mobile-first styles -->
+  <style>
+    /* Reset and base styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #0B0C2A;
+      background-image: url('images/GradientBG.png');
+      background-size: cover;
+      background-position: center top;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      color: #fff;
+      padding-bottom: 80px;
+      position: relative;
+      min-height: 100vh;
+    }
+    
+
+    
+    /* Header styles */
+    .header {
+      padding: 16px;
+      background-color: #0A0034;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .user-profile {
+      display: flex;
+      align-items: center;
+    }
+    
+    .avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 12px;
+    }
+    
+    .user-info {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .user-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 24px;
+      font-weight: 400;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    
+    .progress-and-percentage {
+      display: flex;
+      align-items: center;
+    }
+    
+    .progress-bar-container {
+      position: relative;
+      height: 6px;
+      background-color: #1A1C3D;
+      border-radius: 3px;
+      overflow: hidden;
+      width: 150px;
+    }
+    
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(to right, #FE4208, #ED33B9);
+      border-radius: 3px;
+    }
+    
+    .progress-percentage-container {
+      display: flex;
+      align-items: baseline;
+      margin-left: 6px;
+    }
+    
+    .win_index {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 40px;
+      font-weight: 700;
+      color: #fff;
+      padding-left: 10px;
+    }
+    
+    .win_index_perc {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 20px;
+      font-weight: 400;
+      color: #fff;
+    }
+    
+    .teex-balance {
+      display: flex;
+      align-items: center;
+      background-color: #5dFDCB;
+      border-radius: 50px;
+      padding: 6px 0px;
+      height: 24px;
+      margin-left: auto;
+      position: relative;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 16px;
+      color: #0A0034;
+      padding-right: 8px;
+      padding-left: 2px;
+    }
+   
+    .teex-icon {
+      width: 40px;
+      height: 40px;
+      margin-right: -2px;
+    }
+    
+
+    
+    .plus-icon {
+      width: 16px;
+      height: 16px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #FF3B5C;
+      border-radius: 50%;
+      color: white;
+      font-weight: bold;
+      font-size: 12px;
+      position: absolute;
+      top: 16px;
+      right: 50px;
+    }
+    
+    .user-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 24px;
+      font-weight: 400;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 150px; /* Same as progress bar width */
+    }
+    
+    /* Power Up Section Styles */
+    .power-up-section {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      margin-top: 1px;
+
+    }
+    
+    .power-up-label {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 14px;
+      color: #fff;
+      margin-right: 6px;
+    }
+    
+    .power-up-items {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      flex-grow: 1;
+    }
+    
+    .power-up-item {
+      display: flex;
+      align-items: center;
+      position: relative;
+      margin-right: 0px;
+    }
+    
+    .power-up-icon {
+      width: 40px;
+      height: 40px;
+      z-index: 1;
+      position: absolute;
+      left: 6px;
+    }
+    
+    
+    .power-up-value-container {
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 4px 10px 4px 30px;
+      margin-left: 15px;
+    }
+    
+    .power-up-value {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 400;
+      font-size: 16px;
+      color: #fff;
+    }
+    
+    .power-up-plus {
+      width: 16px;
+      height: 16px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #FF3B5C;
+      border-radius: 50%;
+      color: white;
+      font-weight: bold;
+      font-size: 12px;
+      position: absolute;
+      top: 16px;
+      left: 28px;
+      z-index: 3;
+    }
+    
+
+    
+    .power-up-value {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 400;
+      font-size: 16px;
+      color: #fff;
+    }
+    
+
+    
+    /* Tab Container Styles */
+    .tab-container {
+      display: flex;
+      background-color: #0A0034;
+      margin-top: 1px;
+    }
+    
+    .tab {
+      flex: 1;
+      text-align: center;
+      padding: 12px 0;
+      position: relative;
+      cursor: pointer;
+    }
+    
+    .tab_on {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 14px;
+      color: #fff;
+      position: relative;
+    }
+    
+    .tab_on::after {
+      content: '';
+      position: absolute;
+      bottom: -12px;
+      left: 10%;
+      width: 80%;
+      height: 3px;
+      background-color: #5DFDCB;
+    }
+    
+    .tab_off {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 400;
+      font-size: 14px;
+      color: #fff;
+      opacity: 0.7;
+    }
+    
+
+
+      /* Footer Navigation Styles */
+      .footer-nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #0A0034;
+        padding: 8px 16px;
+        z-index: 100;
+      }
+      
+      .footer-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex: 1;
+      }
+      
+      .menu_icon {
+        width: 40px;
+        height: 40px;
+        margin-bottom: 4px;
+      }
+      
+      .menu_item {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 14px;
+        color: #54fdcb;
+        text-align: center;
+        text-transform: uppercase;
+      }
+      
+      .menu_item_blu {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 14px;
+        color: #0A0034;
+        text-align: center;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+      
+      .play-button {
+        width: 80px;
+        height: 80px;
+        background-color: #54fdcb;
+        border-radius: 50%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 4px;
+        position: relative;
+        top: -25px;
+      }
+      
+      /* Add this new style for the play button text */
+      #playButton .menu_item {
+        position: relative;
+        top: -20px; /* Move the text up */
+      }
+      
+      .menu_item {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 14px;
+        color: #54fdcb;
+        text-align: center;
+      }
+      
+      .menu_item_blu {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 14px;
+        color: #0A0034;
+        text-align: center;
+        font-weight: 700;
+      }
+      
+    /* Update these styles for the contest card */
+        .contest-cell {
+          margin-bottom: 20px;
+        }
+        
+        .contest-bar {
+          background-color: #0A0034;
+          height: 48px;
+          margin: 16px 32px;
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          border-radius: 4px;
+        }
+        
+        .player-avatar-contest {
+          width: 62px;
+          height: 62px;
+          border-radius: 50%;
+          position: absolute;
+          bottom: -10px;
+          object-fit: cover;
+          border: 2px solid #0A0034;
+        }
+        
+        .left-avatar {
+          left: 16px;
+        }
+        
+        .right-avatar {
+          right: 16px;
+        }
+        
+        .triletter_contest {
+          font-family: 'Barlow Condensed', sans-serif;
+          font-size: 24px;
+          color: #fff;
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+        }
+        
+        .left-name {
+          left: 90px;
+        }
+        
+        .right-name {
+          right: 90px;
+        }
+        
+        .result_bold {
+          font-family: 'Barlow Condensed', sans-serif;
+          font-weight: 700;
+          font-size: 64px;
+          color: #fff;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+        }
+        
+        .status-badge {
+          background-color: #FE4208;
+          color: #fff;
+          padding: 4px 12px;
+          border-radius: 20px;
+          font-family: 'Montserrat', sans-serif;
+          font-weight: 700;
+          font-size: 14px;
+          position: absolute;
+          bottom: -15px;
+          left: 50%;
+          transform: translateX(-50%);
+          z-index: 2;
+        }
+        
+        .teex_spent {
+          font-family: 'Montserrat', sans-serif;
+          font-weight: 800;
+          font-size: 16px;
+          color: #fff;
+          position: absolute;
+          bottom: -25px;
+        }
+        
+        .left-teex {
+          left: 30px;
+        }
+        
+        .right-teex {
+          right: 30px;
+        }
+    /* Keep all the existing styles below this point */
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="user-profile">
+      <img id="userAvatar" class="avatar" src="avatars/default.png" alt="User Avatar">
+      <div class="user-name-progress">
+        <h1 id="userName" class="user-name">PANOZ FOOTBALL CLUB</h1>
+        <div class="progress-bar-container">
+          <div class="progress-bar" style="width: 35%;"></div>
+        </div>
+      </div>
+      <div class="progress-percentage-container">
+        <span class="win_index">35</span>
+        <span class="win_index_perc">%</span>
+      </div>
+    </div>
+    <div class="teex-balance">
+      <img src="icons/more.png" alt="Add" class="plus-icon">
+       <img src="icons/teex.png" alt="Teex" class="teex-icon">
+      <span id="teexBalance" class="teex_balance">415.0</span>
+    </div>
+  </header>
+
+  <div class="power-up-section">
+    <div class="power-up-label">POWER UP</div>
+    <div class="power-up-items">
+      <div class="power-up-item">
+        <img src="icons/more.png" alt="Add" class="power-up-plus">
+        <img src="icons/gem_yellow.png" alt="Yellow Gem" class="power-up-icon">
+        <div class="power-up-value-container">
+          <span class="power-up-value">2354</span>
+        </div>
+      </div>
+      <div class="power-up-item">
+        <img src="icons/more.png" alt="Add" class="power-up-plus">
+        <img src="icons/gem_pink.png" alt="Pink Gem" class="power-up-icon">
+        <div class="power-up-value-container">
+          <span class="power-up-value">2354</span>
+        </div>
+      </div>
+      <div class="power-up-item">
+        <img src="icons/more.png" alt="Add" class="power-up-plus">
+        <img src="icons/coin_green.png" alt="Green Coin" class="power-up-icon">
+        <div class="power-up-value-container">
+          <span class="power-up-value">2354</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-container">
+    <div id="tabActive" class="tab">
+      <span class="tab_on">ACTIVE</span>
+    </div>
+    <div id="tabCompleted" class="tab">
+      <span class="tab_off">COMPLETED</span>
+    </div>
+  </div>
+
+  <!-- Static example contest card -->
+  <div class="static-example" style="position: relative; margin-bottom: 60px; margin-top: 20px;">
+    <div style="background-color: #0A0034; height: 48px; margin: 0 32px; position: relative;">
+      <img src="avatars/default.png" alt="User" style="width: 62px; height: 62px; border-radius: 50%; position: absolute; bottom: -31px; left: 16px; object-fit: cover; border: 2px solid #0A0034;">
+      <div style="font-family: 'Barlow Condensed', sans-serif; font-size: 24px; color: #fff; position: absolute; top: 50%; transform: translateY(-50%); left: 90px;">SAN</div>
+      <div style="font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 64px; color: #fff; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">VS</div>
+      <div style="font-family: 'Barlow Condensed', sans-serif; font-size: 24px; color: #fff; position: absolute; top: 50%; transform: translateY(-50%); right: 90px;">MAR</div>
+      <img src="avatars/default.png" alt="Opponent" style="width: 62px; height: 62px; border-radius: 50%; position: absolute; bottom: -31px; right: 16px; object-fit: cover; border: 2px solid #0A0034;">
+      <div style="background-color: #FE4208; color: #fff; padding: 4px 12px; border-radius: 20px; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 14px; position: absolute; bottom: -15px; left: 50%; transform: translateX(-50%); z-index: 2;">PENDING</div>
+      <div style="font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 16px; color: #fff; position: absolute; bottom: -25px; left: 30px;">10.0</div>
+      <div style="font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 16px; color: #fff; position: absolute; bottom: -25px; right: 30px;">-</div>
+    </div>
+  </div>
+
+  <div id="activeContainer" class="contests-container"></div>
+  <div id="completedContainer" class="contests-container" style="display: none;"></div>
+
+  <footer class="footer-nav">
+    <div class="footer-item">
+      <img src="icons/ranking.png" alt="Leaderboard" class="menu_icon">
+      <span class="menu_item">LEADERBOARD</span>
+    </div>
+    <div class="footer-item">
+      <img src="icons/quality.png" alt="Badges" class="menu_icon">
+      <span class="menu_item">BADGES</span>
+    </div>
+    <div class="footer-item" id="playButton">
+      <div class="play-button">
+        <img src="icons/add_blu.png" alt="Play" class="menu_icon">
+      </div>
+      <span class="menu_item">PLAY</span>
+    </div>
+    <div class="footer-item">
+      <img src="icons/stats.png" alt="Statistics" class="menu_icon">
+      <span class="menu_item">STATISTICS</span>
+    </div>
+    <div class="footer-item">
+      <img src="icons/friends.png" alt="Friends" class="menu_icon">
+      <span class="menu_item">FRIENDS</span>
+    </div>
+  </footer>
+
+  <script>
+    function getAvatarSrc(avatar) {
+      if (avatar) {
+        if (avatar.startsWith("http")) {
+          // Per gli URL di Google, assicuriamoci che non ci siano problemi di encoding
+          if (avatar.includes("googleusercontent.com")) {
+            // Decodifica l'URL per assicurarsi che non ci siano problemi di encoding
+            return decodeURIComponent(avatar);
+          }
+          return avatar;
+        } else {
+          return "avatars/" + avatar;
+        }
+      } else {
+        return "avatars/avatar.jpg";
+      }
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const userId = params.get("user");
+
+    async function loadUserLanding() {
+      if (!userId) {
+        alert("User mancante!");
+        return;
+      }
+      const resp = await fetch(`/user-landing-info?user=${userId}`);
+      const data = await resp.json();
+
+      const userAvatarElem = document.getElementById("userAvatar");
+      const avatarSrc = getAvatarSrc(data.user.avatar);
+      console.log("Avatar URL:", avatarSrc); // Log per debug
+      userAvatarElem.src = avatarSrc;
+      userAvatarElem.onerror = function() {
+        console.error("Errore caricamento avatar, uso default");
+        this.src = "avatars/avatar.jpg";
+      };
+      document.getElementById("userName").textContent = data.user.username.toUpperCase();
+      // Format teex balance with 1 decimal place
+      const teexValue = parseFloat(data.user.teex_balance).toFixed(1);
+      document.getElementById("teexBalance").textContent = teexValue;
+
+      // Render contest list: Usa contest.status_display (già calcolato dal backend)
+      renderContestList(data.active, document.getElementById("activeContainer"));
+      renderContestList(data.completed, document.getElementById("completedContainer"));
+    }
+
+    function renderContestList(list, container) {
+      container.innerHTML = "";
+      list.forEach(contest => {
+        const iAmOwner = (contest.owner_id == userId);
+        let myName, myAvatar, myCost, oppName, oppAvatar, oppCost;
+        if (iAmOwner) {
+          myName = contest.owner_name;
+          myAvatar = contest.owner_avatar;
+          myCost = contest.owner_cost || "-";
+          oppName = contest.opponent_name;
+          oppAvatar = contest.opponent_avatar;
+          oppCost = contest.opponent_cost || "-";
+        } else {
+          myName = contest.opponent_name;
+          myAvatar = contest.opponent_avatar;
+          myCost = contest.opponent_cost || "-";
+          oppName = contest.owner_name;
+          oppAvatar = contest.owner_avatar;
+          oppCost = contest.owner_cost || "-";
+        }
+
+        let displayedStatus = contest.status_display;  // valore di default
+        let statusClass = "";
+        if (contest.status == 1 && !iAmOwner) {
+          displayedStatus = "INVITED";
+          statusClass = "invited";
+        } else if (contest.status == 2) {
+          statusClass = "pending";
+        }
+
+        // Create contest card based on the mockup
+        const contestCard = document.createElement("div");
+        contestCard.classList.add("contest-cell", "clickable");
+
+        // Special layout for status 2 contests where I am the owner
+        if (contest.status == 2 && iAmOwner) {
+          contestCard.innerHTML = `
+            <div style="position: relative; margin-bottom: 60px; margin-top: 20px;">
+              <div style="background-color: #0A0034; height: 48px; margin: 0 32px; position: relative;">
+                <img src="${getAvatarSrc(myAvatar)}" alt="${myName}" style="width: 62px; height: 62px; border-radius: 50%; position: absolute; bottom: -31px; left: 16px; object-fit: cover; border: 2px solid #0A0034;">
+                <div style="font-family: 'Barlow Condensed', sans-serif; font-size: 24px; color: #fff; position: absolute; top: 50%; transform: translateY(-50%); left: 90px;">${myName.substring(0, 3)}</div>
+                <div style="font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 64px; color: #fff; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">VS</div>
+                <div style="font-family: 'Barlow Condensed', sans-serif; font-size: 24px; color: #fff; position: absolute; top: 50%; transform: translateY(-50%); right: 90px;">${oppName.substring(0, 3)}</div>
+                <img src="${getAvatarSrc(oppAvatar)}" alt="${oppName}" style="width: 62px; height: 62px; border-radius: 50%; position: absolute; bottom: -31px; right: 16px; object-fit: cover; border: 2px solid #0A0034;">
+                <div style="background-color: #FE4208; color: #fff; padding: 4px 12px; border-radius: 20px; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 14px; position: absolute; bottom: -15px; left: 50%; transform: translateX(-50%); z-index: 2;">PENDING</div>
+                <div style="font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 16px; color: #fff; position: absolute; bottom: -25px; left: 30px;">${myCost}</div>
+                <div style="font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 16px; color: #fff; position: absolute; bottom: -25px; right: 30px;">-</div>
+              </div>
+            </div>
+          `;
+        } else {
+          // Original layout for other contest types
+          const vsContainer = document.createElement("div");
+          vsContainer.classList.add("vs-container");
+
+          // Left player (current user)
+          const leftPlayer = document.createElement("div");
+          leftPlayer.classList.add("player-side");
+          leftPlayer.innerHTML = `
+            <img class="player-avatar" src="${getAvatarSrc(myAvatar)}" alt="${myName}">
+            <div class="player-name">${myName.substring(0, 3)}</div>
+            <div class="player-score">${myCost}</div>
+            ${contest.position_info ? `<div class="player-position">POS:${contest.position_info.my_position || '-'}</div>` : ''}
+          `;
+
+          // Middle VS section
+          const vsMiddle = document.createElement("div");
+          vsMiddle.classList.add("vs-middle");
+          vsMiddle.innerHTML = `
+            <div class="vs-text">VS</div>
+            <div class="contest-status ${statusClass}">${displayedStatus}</div>
+            ${contest.stake ? `<div class="contest-stake">${contest.stake}</div>` : ''}
+            ${contest.badge_count ? `<div class="badge-number">${contest.badge_count}</div>` : ''}
+          `;
+
+          // Right player (opponent)
+          const rightPlayer = document.createElement("div");
+          rightPlayer.classList.add("player-side");
+          rightPlayer.innerHTML = `
+            <img class="player-avatar" src="${getAvatarSrc(oppAvatar)}" alt="${oppName}">
+            <div class="player-name">${oppName.substring(0, 3)}</div>
+            <div class="player-score">${oppCost}</div>
+            ${contest.position_info ? `<div class="player-position">POS:${contest.position_info.opp_position || '-'}</div>` : ''}
+          `;
+
+          vsContainer.appendChild(leftPlayer);
+          vsContainer.appendChild(vsMiddle);
+          vsContainer.appendChild(rightPlayer);
+          contestCard.appendChild(vsContainer);
+        }
+
+        contestCard.addEventListener("click", () => {
+          if (contest.status == 1 && !iAmOwner) {
+            localStorage.removeItem("chosenPlayers");
+            window.location.href = `/riassunto.html?owner=${contest.owner_id}&opponent=${contest.opponent_id}&contest=${contest.contest_id}&user=${userId}`;
+          } else {
+            window.location.href = `/contest-details.html?contest=${contest.contest_id}&user=${userId}`;
+          }
+        });
+
+        container.appendChild(contestCard);
+      });
+
+      if (!list.length) {
+        container.innerHTML = "<p class='no-challenges'>Nessuna sfida</p>";
+      }
+    }
+
+    function showActive() {
+      document.getElementById("tabActive").innerHTML = '<span class="tab_on">ACTIVE</span>';
+      document.getElementById("tabCompleted").innerHTML = '<span class="tab_off">COMPLETED</span>';
+      document.getElementById("activeContainer").style.display = "block";
+      document.getElementById("completedContainer").style.display = "none";
+    }
+    
+    function showCompleted() {
+      document.getElementById("tabActive").innerHTML = '<span class="tab_off">ACTIVE</span>';
+      document.getElementById("tabCompleted").innerHTML = '<span class="tab_on">COMPLETED</span>';
+      document.getElementById("activeContainer").style.display = "none";
+      document.getElementById("completedContainer").style.display = "block";
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      loadUserLanding();
+      document.getElementById("tabActive").addEventListener("click", showActive);
+      document.getElementById("tabCompleted").addEventListener("click", showCompleted);
+      
+      // Play button event listener
+      document.getElementById("playButton").addEventListener("click", async () => {
+        localStorage.removeItem("chosenPlayers");
+        try {
+          // Recupera il current event unit
+          const resp = await fetch("/current-event-unit");
+          if (!resp.ok) {
+            throw new Error("Current event unit non trovata");
+          }
+          const currentUnit = await resp.json();
+          // Passa event_unit_id insieme agli altri parametri
+          window.location.href = `/scegli-opponent.html?owner=${userId}&user=${userId}&event_unit_id=${currentUnit.event_unit_id}`;
+        } catch (error) {
+          console.error("Errore nel recupero del current event unit:", error);
+          alert("Impossibile recuperare l'unità evento corrente");
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Contest Details</title>
+  <style>
+    body { font-family: Montserrat, sans-serif; margin:0; padding:0;}
+    .contest-cell {
+      border: 1px solid #ccc;
+      padding: 5px;
+      margin-bottom: 5px;
+    }
+    .row1, .row2 {
+      display: flex; 
+      justify-content: space-between;
+      margin: 3px 0;
+    }
+    .circle {
+      width:32px; 
+      height:32px; 
+      border-radius:50%; 
+      background:#ddd;
+      display:inline-flex; 
+      align-items:center; 
+      justify-content:center;
+      margin-right:5px; 
+    }
+    .bold { font-weight: bold; }
+    .teams-container {
+      display: flex; 
+      justify-content: space-between; 
+      margin-top: 20px;
+    }
+    .team-list {
+      width: 45%; 
+      border:1px solid #ccc; 
+      padding:5px;
+    }
+    .team-list h2 {
+      margin-top:0;
+    }
+    li {
+      margin:5px 0;
+    }
+  </style>
+</head>
+<body>
+  <div id="header"></div>
+  <div class="teams-container">
+    <div class="team-list">
+      <h2 id="leftTitle">My Team</h2>
+      <ul id="leftList"></ul>
+    </div>
+    <div class="team-list">
+      <h2 id="rightTitle">Opponent Team</h2>
+      <ul id="rightList"></ul>
+    </div>
+  </div>
+  <button id="backBtn">Torna alle sfide</button>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const contestId = params.get("contest");
+    const userId = params.get("user"); // current user
+
+    document.addEventListener("DOMContentLoaded", loadDetails);
+
+    async function loadDetails() {
+      if (!contestId || !userId) {
+        alert("Parametri mancanti (contest o user)!");
+        return;
+      }
+      try {
+        const resp = await fetch(`/contest-details?contest=${contestId}`);
+        if (!resp.ok) {
+          document.body.innerHTML = "<h1>Errore caricamento contest!</h1>";
+          return;
+        }
+        const data = await resp.json();
+        renderHeaderAndTeams(data.contest, data.ownerTeam, data.opponentTeam);
+      } catch(e) {
+        console.error("Errore load contest-details", e);
+        document.body.innerHTML = "<h1>Errore caricamento contest!</h1>";
+      }
+    }
+
+    function renderHeaderAndTeams(contestData, ownerTeam, opponentTeam) {
+      // decido chi è l'utente a sinistra e chi è a destra
+      // se userId == contestData.owner_id => left side = owner, right side = opponent
+      // altrimenti left side = opponent, right side = owner
+      const iAmOwner = (parseInt(userId) === parseInt(contestData.owner_id));
+      
+      let leftName, leftCost, leftTeam;
+      let rightName, rightCost, rightTeam;
+
+      if (iAmOwner) {
+        leftName = contestData.owner_name;
+        leftCost = contestData.owner_cost || "-";
+        leftTeam = ownerTeam;
+
+        rightName = contestData.opponent_name;
+        rightCost = contestData.opponent_cost || "-";
+        rightTeam = opponentTeam;
+      } else {
+        leftName = contestData.opponent_name;
+        leftCost = contestData.opponent_cost || "-";
+        leftTeam = opponentTeam;
+
+        rightName = contestData.owner_name;
+        rightCost = contestData.owner_cost || "-";
+        rightTeam = ownerTeam;
+      }
+
+      // 1) Header in alto
+      const headerDiv = document.createElement("div");
+      headerDiv.classList.add("contest-cell");
+
+      const row1 = document.createElement("div");
+      row1.classList.add("row1");
+      // left
+      const leftDiv = document.createElement("div");
+      leftDiv.innerHTML = `<span class="circle">${leftName.substring(0,3).toUpperCase()}</span> ${leftName}`;
+
+      // center
+      const center = document.createElement("div");
+      center.innerHTML = `<span class="bold">${contestData.status_name}</span>`;
+
+      // right
+      const rightDiv = document.createElement("div");
+      rightDiv.innerHTML = `${rightName} <span class="circle">${rightName.substring(0,3).toUpperCase()}</span>`;
+
+      row1.appendChild(leftDiv);
+      row1.appendChild(center);
+      row1.appendChild(rightDiv);
+
+      const row2 = document.createElement("div");
+      row2.classList.add("row2");
+
+      const left2 = document.createElement("div");
+      left2.innerHTML = `<span class="bold">${leftCost}</span>`;
+      const center2 = document.createElement("div");
+      center2.innerHTML = `<span class="bold">${contestData.stake || 0}</span>`;
+      const right2 = document.createElement("div");
+      right2.innerHTML = `<span class="bold">${rightCost}</span>`;
+
+      row2.appendChild(left2);
+      row2.appendChild(center2);
+      row2.appendChild(right2);
+
+      headerDiv.appendChild(row1);
+      headerDiv.appendChild(row2);
+
+      const headerContainer = document.getElementById("header");
+      headerContainer.innerHTML = "";
+      headerContainer.appendChild(headerDiv);
+
+      // 2) Teams in basso
+      // leftTitle, leftList => current user
+      document.getElementById("leftTitle").textContent = leftName + " Team";
+      renderTeamList(leftTeam, "leftList");
+
+      // rightTitle, rightList => other user
+      document.getElementById("rightTitle").textContent = rightName + " Team";
+      renderTeamList(rightTeam, "rightList");
+    }
+
+    function renderTeamList(teamData, ulId) {
+      const ul = document.getElementById(ulId);
+      ul.innerHTML = "";
+      if (!teamData || !teamData.length) {
+        ul.innerHTML = "<li>Nessun calciatore</li>";
+        return;
+      }
+      teamData.forEach(row => {
+        // row.athlete_name, row.cost ...
+        const li = document.createElement("li");
+        li.textContent = `${row.athlete_name} | costo: ${row.cost}`;
+        ul.appendChild(li);
+      });
+    }
+
+    document.getElementById("backBtn").addEventListener("click", () => {
+      // Torna alla landing dell'utente (current user)
+      window.location.href = `/user-landing.html?user=${userId}`;
+    });
+  </script>
+</body>
+</html>

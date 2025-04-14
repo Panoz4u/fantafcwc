@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aggiungi Giocatore</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Barlow Condensed', sans-serif;
+      background-color: #0B0C2A;
+      color: white;
+    }
+    
+    /* Header styles */
+    .cd-top-header {
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px;
+      background: linear-gradient(180deg, #0B0C2A, #131A47);
+    }
+    
+    .cd-left-side {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    
+    .back-arrow {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 24px;
+      color: #FF00C8;
+      cursor: pointer;
+      z-index: 1;
+      text-decoration: none;
+    }
+    
+    .header-title-left {
+      margin-left: 30px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 24px;
+      color: #fff;
+    }
+    
+    /* Search box */
+    .search-container {
+      position: relative;
+      padding: 10px 16px;
+    }
+    
+    .search-box {
+      width: 100%;
+      padding: 10px 40px;
+      border-radius: 20px;
+      border: none;
+      background-color: #131A47;
+      color: white;
+      font-size: 16px;
+    }
+    
+    .search-icon {
+      position: absolute;
+      left: 26px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #666;
+      font-size: 20px;
+    }
+    
+    /* Sort header */
+    .sort-header {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 16px;
+      background-color: #131A47;
+      border-bottom: 1px solid #222;
+    }
+    
+    .sort-item {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      font-size: 14px;
+      color: white;
+    }
+    
+    .sort-item.active {
+      color: #FF00C8;
+    }
+    
+    .sort-triangle {
+      margin-left: 4px;
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+    }
+    
+    .sort-triangle.asc {
+      border-bottom: 8px solid #FF00C8;
+    }
+    
+    .sort-triangle.desc {
+      border-top: 8px solid #FF00C8;
+    }
+    
+    /* Player list */
+    .player-list {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .player-card {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      border-bottom: 1px solid #222;
+    }
+    
+    .player-card.clickable:hover {
+      background-color: #1A2055;
+    }
+    
+    .player-card.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .position-indicator {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: #131A47;
+      position: absolute;
+      top: -5px;
+      left: -5px;
+      z-index: 2;
+    }
+    
+    .position-P {
+      background-color: #FFD600; /* Giallo */
+    }
+    
+    .position-D {
+      background-color: #00FF7F; /* Verde */
+    }
+    
+    .position-C {
+      background-color: #00F2FF; /* Blu */
+    }
+    
+    .position-A {
+      background-color: #FF3D00; /* Rosso */
+    }
+    
+    .player-icon-container {
+      position: relative;
+      margin-right: 15px;
+    }
+    
+    .player-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      overflow: hidden;
+    }
+    
+    .player-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .player-info {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .player-name {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+    
+    .match-info {
+      font-size: 14px;
+      color: #999;
+    }
+    
+    .player-team {
+      font-weight: bold;
+      color: white;
+    }
+    
+    .player-cost {
+      font-size: 24px;
+      font-weight: bold;
+      color: #00F2FF;
+    }
+    
+    #msg {
+      padding: 10px 16px;
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="cd-top-header">
+    <div class="cd-left-side">
+      <a href="javascript:history.back()" class="back-arrow">←</a>
+      <h1 class="header-title-left">SCEGLI CALCIATORE</h1>
+    </div>
+  </div>
+
+  <!-- Search box -->
+  <div class="search-container">
+    <span class="search-icon">🔍</span>
+    <input type="text" class="search-box" placeholder="Search by: Name, Surname, Team">
+  </div>
+
+  <!-- Sort header -->
+  <div class="sort-header">
+    <div class="sort-item" data-sort="position">Position</div>
+    <div class="sort-item active" data-sort="name">
+      Name
+      <div class="sort-triangle asc"></div>
+    </div>
+    <div class="sort-item" data-sort="match">Match</div>
+    <div class="sort-item" data-sort="team">Team</div>
+    <div class="sort-item" data-sort="cost">Cost</div>
+  </div>
+
+  <div id="msg"></div>
+  <ul id="playerList" class="player-list"></ul>
+
+  <script>
+    function loadChosenPlayers() {
+      let c = localStorage.getItem("chosenPlayers");
+      if(!c) return [];
+      try { return JSON.parse(c); } catch{ return []; }
+    }
+    
+    function saveChosenPlayers(list) {
+      localStorage.setItem("chosenPlayers", JSON.stringify(list));
+    }
+    
+    function getAvailableBudget() {
+      const players = loadChosenPlayers();
+      const totalCost = players.reduce((acc,p)=>acc+parseFloat(p.event_unit_cost||0),0);
+      return Math.max(0, 20-totalCost);
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const ownerId = params.get("owner");
+    const opponentId = params.get("opponent");
+    const contestId = params.get("contest");
+    const userId = params.get("user");
+    const eventId = params.get("event") || 30;
+    const eventUnitId = params.get("event_unit_id") || 32;
+
+    // Sorting state
+    let currentSort = {
+      field: 'name',
+      direction: 'asc'
+    };
+    
+    // Search state
+    let searchTerm = '';
+    let allPlayers = [];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      // Add event listener to search box
+      document.querySelector('.search-box').addEventListener('input', (e) => {
+        searchTerm = e.target.value.toLowerCase();
+        filterAndRenderPlayers();
+      });
+      
+      loadPlayers();
+    });
+
+    // Add event listeners to sort headers
+    document.querySelectorAll('.sort-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const sortField = item.dataset.sort;
+        
+        // Toggle direction if clicking the same field
+        if (currentSort.field === sortField) {
+          currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+        } else {
+          currentSort.field = sortField;
+          currentSort.direction = 'asc';
+        }
+        
+        // Update UI to show active sort
+        document.querySelectorAll('.sort-item').forEach(el => {
+          el.classList.remove('active');
+          el.querySelector('.sort-triangle')?.remove();
+        });
+        
+        item.classList.add('active');
+        
+        const triangle = document.createElement('div');
+        triangle.className = `sort-triangle ${currentSort.direction}`;
+        item.appendChild(triangle);
+        
+        // Re-render players with new sort
+        filterAndRenderPlayers();
+      });
+    });
+
+    async function loadPlayers() {
+      if (!ownerId || !contestId || !userId) {
+        document.getElementById("msg").textContent = "Parametri mancanti!";
+        return;
+      }
+      try {
+        const r = await fetch(`/event-players?event=${eventUnitId}`);
+        if (!r.ok) {
+          document.getElementById("msg").textContent = "Errore caricamento giocatori";
+          return;
+        }
+        allPlayers = await r.json();
+        filterAndRenderPlayers();
+      } catch(e) {
+        console.error("Errore fetch event-players", e);
+        document.getElementById("msg").textContent="Impossibile caricare giocatori";
+      }
+    }
+    
+    function filterAndRenderPlayers() {
+      let filteredPlayers = allPlayers;
+      
+      // Apply search filter if there's a search term
+      if (searchTerm) {
+        filteredPlayers = allPlayers.filter(player => {
+          // Search by athlete name
+          if (player.athlete_shortname && player.athlete_shortname.toLowerCase().includes(searchTerm)) {
+            return true;
+          }
+          
+          // Search by match code (e.g., "NAP-EMP")
+          // This will match both teams in the match
+          const matchString = player.home_team_code && player.away_team_code ? 
+            `${player.home_team_code}-${player.away_team_code}`.toLowerCase() : '';
+          if (matchString && matchString.includes(searchTerm)) {
+            return true;
+          }
+          
+          // Search by team code (3-letter code like "JUV")
+          // This will also match both teams in the match
+          if (player.home_team_code && player.home_team_code.toLowerCase() === searchTerm) {
+            return true;
+          }
+          if (player.away_team_code && player.away_team_code.toLowerCase() === searchTerm) {
+            return true;
+          }
+          
+          // Search by full team name (e.g., "Juventus")
+          // This should ONLY match players from that specific team
+          if (player.player_team_name && player.player_team_name.toLowerCase().includes(searchTerm) && searchTerm.length > 3) {
+            return true;
+          }
+          
+          // Search by player's team code
+          if (player.player_team_code && player.player_team_code.toLowerCase().includes(searchTerm)) {
+            return true;
+          }
+          
+          return false;
+        });
+      }
+      
+      // Sort filtered players
+      filteredPlayers = sortPlayers(filteredPlayers, currentSort.field, currentSort.direction);
+      
+      // Render the filtered and sorted players
+      renderPlayers(filteredPlayers);
+    }
+
+    function sortPlayers(players, field, direction) {
+      return [...players].sort((a, b) => {
+        let valueA, valueB;
+        
+        switch(field) {
+          case 'position':
+            valueA = a.position || '';
+            valueB = b.position || '';
+            break;
+          case 'name':
+            valueA = a.athlete_shortname || '';
+            valueB = b.athlete_shortname || '';
+            break;
+          case 'match':
+            valueA = `${a.home_team_code || ''}-${a.away_team_code || ''}`;
+            valueB = `${b.home_team_code || ''}-${b.away_team_code || ''}`;
+            break;
+          case 'team':
+            valueA = a.player_team_code || '';
+            valueB = b.player_team_code || '';
+            break;
+          case 'cost':
+            valueA = parseFloat(a.event_unit_cost || 0);
+            valueB = parseFloat(b.event_unit_cost || 0);
+            return direction === 'asc' ? valueA - valueB : valueB - valueA;
+          default:
+            valueA = a.athlete_shortname || '';
+            valueB = b.athlete_shortname || '';
+        }
+        
+        if (typeof valueA === 'string' && typeof valueB === 'string') {
+          return direction === 'asc' 
+            ? valueA.localeCompare(valueB) 
+            : valueB.localeCompare(valueA);
+        }
+        
+        return 0;
+      });
+    }
+
+    function renderPlayers(players) {
+      const chosen = loadChosenPlayers();
+      const chosenIds = chosen.map(x=> x.athlete_id);
+      const available = getAvailableBudget();
+
+      const ul = document.getElementById("playerList");
+      ul.innerHTML = "";
+      
+      players.forEach(p => {
+        const cost = parseFloat(p.event_unit_cost);
+        const li = document.createElement("li");
+        li.className = "player-card";
+        
+        // Create player icon container with position badge
+        const playerIconContainer = document.createElement("div");
+        playerIconContainer.className = "player-icon-container";
+        
+        // Create position indicator (now above the player icon)
+        const positionIndicator = document.createElement("div");
+        positionIndicator.className = `position-indicator position-${p.position}`;
+        positionIndicator.textContent = p.position;
+        playerIconContainer.appendChild(positionIndicator);
+        
+        // Create player icon
+        const playerIcon = document.createElement("div");
+        playerIcon.className = "player-icon";
+        
+        const playerImg = document.createElement("img");
+        // Use player_placeholder.png as default if picture is missing
+        playerImg.src = p.picture ? `pictures/${p.picture}` : 'pictures/player_placeholder.png';
+        playerImg.alt = p.athlete_shortname;
+        playerImg.onerror = function() {
+          this.src = 'pictures/player_placeholder.png';
+        };
+        playerIcon.appendChild(playerImg);
+        playerIconContainer.appendChild(playerIcon);
+        
+        // Create player info container
+        const playerInfo = document.createElement("div");
+        playerInfo.className = "player-info";
+        
+        const playerName = document.createElement("div");
+        playerName.className = "player-name";
+        playerName.textContent = p.athlete_shortname;
+        playerInfo.appendChild(playerName);
+        
+        // Create match info
+        if (p.home_team_code && p.away_team_code) {
+          const matchInfo = document.createElement("div");
+          matchInfo.className = "match-info";
+          
+          // Determine player's team
+          const playerTeamId = parseInt(p.team_id);
+          const homeTeamId = parseInt(p.home_team);
+          const awayTeamId = parseInt(p.away_team);
+          
+          const isHomeTeam = playerTeamId === homeTeamId;
+          const isAwayTeam = playerTeamId === awayTeamId;
+          
+          // Create home team span
+          const homeSpan = document.createElement("span");
+          if (isHomeTeam) {
+            homeSpan.className = "player-team";
+          }
+          homeSpan.textContent = p.home_team_code;
+          
+          // Create dash
+          const dashSpan = document.createElement("span");
+          dashSpan.textContent = "-";
+          
+          // Create away team span
+          const awaySpan = document.createElement("span");
+          if (isAwayTeam) {
+            awaySpan.className = "player-team";
+          }
+          awaySpan.textContent = p.away_team_code;
+          
+          matchInfo.appendChild(homeSpan);
+          matchInfo.appendChild(dashSpan);
+          matchInfo.appendChild(awaySpan);
+          
+          playerInfo.appendChild(matchInfo);
+        }
+        
+        // Create cost element
+        const costElement = document.createElement("div");
+        costElement.className = "player-cost";
+        costElement.textContent = cost.toFixed(1);
+        
+        // Append all elements to the list item
+        li.appendChild(playerIconContainer);
+        li.appendChild(playerInfo);
+        li.appendChild(costElement);
+        
+        // Check if player is disabled
+        let disabled = false;
+        let tTip = "";
+        if (chosenIds.includes(p.athlete_id)) {
+          disabled = true;
+          tTip = "Già selezionato";
+        } else if (cost > available) {
+          disabled = true;
+          tTip = "Supera il costo massimo";
+        }
+
+        if (disabled) {
+          li.classList.add("disabled");
+          li.title = tTip;
+        } else {
+          li.classList.add("clickable");
+          li.addEventListener("click", () => {
+            addPlayer(p);
+          });
+        }
+        
+        ul.appendChild(li);
+      });
+    }
+
+    function addPlayer(player) {
+      const chosen = loadChosenPlayers();
+      chosen.push(player);
+      saveChosenPlayers(chosen);
+      // Torno a riassunto con ?owner=..&opponent=..&contest=..&user=..
+      window.location.href = `/riassunto.html?owner=${ownerId}&opponent=${opponentId}&contest=${contestId}&user=${userId}&event_unit_id=${eventUnitId}`;
+    }
+  </script>
+</body>
+</html>

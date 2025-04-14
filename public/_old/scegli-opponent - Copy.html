@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Scegli Avversario - Fanteex</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <h1>Scegli chi sfidare</h1>
+  <p>Chi vuoi sfidare?</p>
+
+  <select id="opponentSelect">
+    <option value="">Caricamento utenti...</option>
+  </select>
+
+  <button id="confermaBtn">Conferma Avversario</button>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    // 'owner' = l'owner user
+    const ownerId = params.get("owner");
+    // 'user' = userIdCorrente (lo stesso in questo scenario)
+    const currentUser = params.get("user");
+
+    window.addEventListener("DOMContentLoaded", async () => {
+      if (!ownerId) {
+        alert("owner mancante!");
+        window.location.href = "/index.html";
+        return;
+      }
+      try {
+        const resp = await fetch("/users");
+        const allUsers = await resp.json();
+        const oppo = allUsers.filter(u => u.user_id != ownerId);
+        const sel = document.getElementById("opponentSelect");
+        sel.innerHTML = "";
+        oppo.forEach(u => {
+          const opt = document.createElement("option");
+          opt.value = u.user_id;
+          opt.textContent = u.username;
+          sel.appendChild(opt);
+        });
+      } catch(e) {
+        console.error("Errore fetch /users", e);
+      }
+    });
+
+    document.getElementById("confermaBtn").addEventListener("click", async () => {
+      const oppId = document.getElementById("opponentSelect").value;
+      if (!oppId) {
+        alert("Seleziona un avversario!");
+        return;
+      }
+      // POST /contests
+      try {
+        const resp = await fetch("/contests", {
+          method: "POST",
+          headers: { "Content-Type":"application/json" },
+          body: JSON.stringify({ owner: ownerId, opponent: oppId })
+        });
+        if (!resp.ok) {
+          const err = await resp.json();
+          alert("Errore creazione contest: " + err.error);
+          return;
+        }
+        const data = await resp.json(); // contestId
+        // Andiamo a riassunto: owner=ownerId, opponent=oppId, contest=..., user=currentUser
+        window.location.href = `/riassunto.html?owner=${ownerId}&opponent=${oppId}&contest=${data.contestId}&user=${currentUser}`;
+      } catch(e) {
+        console.error("Errore POST /contests", e);
+        alert("Impossibile creare contest");
+      }
+    });
+  </script>
+</body>
+</html>

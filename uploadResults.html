@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Upload Risultati</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <h1>Carica File Risultati</h1>
+  <form action="/uploadResults" method="post" enctype="multipart/form-data">
+    <input type="file" name="resultsFile" accept=".json,.xls,.xlsx" required>
+    <button type="submit">Carica File</button>
+  </form>
+</body>
+</html>

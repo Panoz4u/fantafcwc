@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Aggiungi Giocatore</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,800;1,800&family=Barlow+Condensed:wght@400;700&display=swap" rel="stylesheet">
+   <link rel="stylesheet" href="css/mobile2.css">
+  <link rel="stylesheet" href="css/mobile.css">
+</head>
+<body>
+  <!-- Header -->
+
+  <header class="header">
+    <div class="user-profile">
+      <img src="icons/freccia.png" alt="Back" id="backArrow" style="width: 30px; height: 30px; cursor: pointer; margin-right: 12px;">
+      <div class="user-info">
+        <h1 class="user-name">ADD PLAYERS</h1>
+      </div>
+    </div>
+    
+    <!-- New header right section with player stats -->
+    <div class="header-stats">
+      <div class="stats-row">
+        <div class="label_m_small">Players</div>
+        <div class="label_m_small">Cost</div>
+        <div class="label_m_small">Teex left</div>
+      </div>
+      <div class="stats-values">
+        <div class="square_cont_color scc_orange" id="playersCount">12</div>
+        <div class="square_cont_color scc_cyan" id="totalCost">19.5</div>
+        <div class="square_cont_color scc_fucsia" id="teexLeft">0.5</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Search box -->
+  <div class="search-container">
+    <span class="search-icon">🔍</span>
+    <input type="text" class="search-box" placeholder="Search by: Name, Surname, Team">
+  </div>
+
+  <!-- Sort header -->
+  <div class="sort-header">
+    <div class="sort-item" data-sort="position">Position</div>
+    <div class="sort-item active" data-sort="name">
+      Name
+      <div class="sort-triangle asc"></div>
+    </div>
+    <div class="sort-item" data-sort="match">Match</div>
+    <div class="sort-item" data-sort="team">Team</div>
+    <div class="sort-item" data-sort="cost">Cost</div>
+  </div>
+
+  <div id="msg"></div>
+  <ul id="playerList" class="player-list"></ul>
+
+
+
+  <!-- Footer bar with ADD TO TEAM button -->
+  <footer class="footer-nav" style="justify-content: center;">
+    <button id="addToTeamBtn" class="footer_button fb_unable_orange" disabled>UPDATE TEAM</button>
+  </footer>
+
+  <script>
+    // Add a new array to store temporarily selected players
+    let tempSelectedPlayers = [];
+    
+    function loadChosenPlayers() {
+      let c = localStorage.getItem("chosenPlayers");
+      if(!c) return [];
+      try { return JSON.parse(c); } catch{ return []; }
+    }
+    
+    function saveChosenPlayers(list) {
+      localStorage.setItem("chosenPlayers", JSON.stringify(list));
+    }
+    
+    function getAvailableBudget() {
+      const players = loadChosenPlayers();
+      const totalCost = players.reduce((acc,p)=>acc+parseFloat(p.event_unit_cost||0),0);
+      return Math.max(0, 20-totalCost);
+    }
+
+    function getTotalCost() {
+      const players = loadChosenPlayers();
+      return players.reduce((acc,p)=>acc+parseFloat(p.event_unit_cost||0),0);
+    }
+
+    function updateHeaderStats() {
+      const players = loadChosenPlayers();
+      const playerCount = players.length;
+      const totalCost = getTotalCost();
+      const teexLeft = getAvailableBudget();
+      
+      // Calculate temporary selections - only count additions and removals once
+      const tempAdditions = tempSelectedPlayers.filter(p => !p.isRemoval).length;
+      const tempRemovals = tempSelectedPlayers.filter(p => p.isRemoval).length;
+      
+      // Calculate the net change in player count
+      const tempPlayerCount = tempAdditions - tempRemovals;
+      
+      // Calculate cost changes
+      const tempAdditionsCost = tempSelectedPlayers.filter(p => !p.isRemoval)
+        .reduce((acc,p) => acc + parseFloat(p.event_unit_cost || 0), 0);
+      const tempRemovalsCost = tempSelectedPlayers.filter(p => p.isRemoval)
+        .reduce((acc,p) => acc + parseFloat(p.event_unit_cost || 0), 0);
+      const tempTotalCost = tempAdditionsCost - tempRemovalsCost;
+      
+      // Update the header stats with combined values
+      document.getElementById('playersCount').textContent = playerCount + tempPlayerCount;
+      document.getElementById('totalCost').textContent = (totalCost + tempTotalCost).toFixed(1);
+      document.getElementById('teexLeft').textContent = Math.max(0, teexLeft - tempAdditionsCost + tempRemovalsCost).toFixed(1);
+      
+      // Update Add to Team button state
+      const addToTeamBtn = document.getElementById('addToTeamBtn');
+      if (tempSelectedPlayers.length > 0) {
+        addToTeamBtn.className = "footer_button footer_button_orange";
+        addToTeamBtn.disabled = false;
+      } else {
+        addToTeamBtn.className = "footer_button fb_unable_orange";
+        addToTeamBtn.disabled = true;
+      }
+    }
+
+    // Function to toggle player selection
+    function togglePlayerSelection(player, element) {
+      // Check if player is already in temp selection
+      const index = tempSelectedPlayers.findIndex(p => p.athlete_id === player.athlete_id);
+      
+      if (index === -1) {
+        // Add to temp selection
+        tempSelectedPlayers.push(player);
+        element.style.backgroundColor = "rgba(254, 66, 8, 0.5)"; // Orange background at 50% opacity
+      } else {
+        // Remove from temp selection
+        tempSelectedPlayers.splice(index, 1);
+        element.style.backgroundColor = "rgba(255, 255, 255, 0.05)"; // Reset background
+      }
+      
+      // Update header stats
+      updateHeaderStats();
+      
+      // Re-render all players to update affordability
+      filterAndRenderPlayers();
+    }
+
+    // Function to add all temp selected players to the team
+    function addTempPlayersToTeam() {
+      if (tempSelectedPlayers.length === 0) return;
+      
+      // Get current chosen players
+      const currentPlayers = loadChosenPlayers();
+      
+      // Process removals and additions
+      const playersToAdd = tempSelectedPlayers.filter(p => !p.isRemoval);
+      const playerIdsToRemove = tempSelectedPlayers.filter(p => p.isRemoval).map(p => p.athlete_id);
+      
+      // Filter out removed players and add new ones
+      const newPlayersList = [
+        ...currentPlayers.filter(p => !playerIdsToRemove.includes(p.athlete_id)),
+        ...playersToAdd
+      ];
+      
+      // Save the updated list
+      saveChosenPlayers(newPlayersList);
+      
+      // Clear temp selection
+      tempSelectedPlayers = [];
+      
+      // Navigate back to riassunto.html
+      const url = `/riassunto.html?owner=${ownerId}&opponent=${opponentId}&contest=${contestId}&user=${userId}`;
+      window.location.href = url;
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const ownerId = params.get("owner");
+    const opponentId = params.get("opponent");
+    const contestId = params.get("contest");
+    const userId = params.get("user");
+    const eventId = params.get("event") || 30;
+    const eventUnitId = params.get("event_unit_id") || 32;
+
+    // Sorting state
+    let currentSort = {
+      field: 'name',
+      direction: 'asc'
+    };
+    
+    // Search state
+    let searchTerm = '';
+    let allPlayers = [];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      // Add back button functionality
+      document.getElementById('backArrow').addEventListener('click', () => {
+        // Navigate back to riassunto.html with the same parameters
+        const url = `/riassunto.html?owner=${ownerId}&opponent=${opponentId}&contest=${contestId}&user=${userId}`;
+        window.location.href = url;
+      });
+      
+      // Add event listener for Add to Team button
+      document.getElementById('addToTeamBtn').addEventListener('click', addTempPlayersToTeam);
+      
+      // Update header stats
+      updateHeaderStats();
+      
+      // Add event listener to search box
+      document.querySelector('.search-box').addEventListener('input', (e) => {
+        searchTerm = e.target.value.toLowerCase().trim();
+        
+        // Log per debug
+        console.log("Termine di ricerca:", searchTerm);
+        
+        // Normalizza il termine di ricerca rimuovendo accenti e caratteri speciali
+        searchTerm = searchTerm.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        
+        // Stampa tutti i giocatori con nome "PROVEDEL" o "PROVSTGAARD"
+        console.log("GIOCATORI DISPONIBILI:");
+        allPlayers.forEach(player => {
+          if (player.athlete_shortname && 
+              (player.athlete_shortname.includes("PROVEDEL") || 
+               player.athlete_shortname.includes("PROVSTGAARD"))) {
+            console.log("Nome:", player.athlete_shortname);
+            console.log("Oggetto completo:", player);
+          }
+        });
+        
+        filterAndRenderPlayers();
+      });
+      
+      loadPlayers();
+    });
+
+    // Add event listeners to sort headers
+    document.querySelectorAll('.sort-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const sortField = item.dataset.sort;
+        
+        // Toggle direction if clicking the same field
+        if (currentSort.field === sortField) {
+          currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+        } else {
+          currentSort.field = sortField;
+          currentSort.direction = 'asc';
+        }
+        
+        // Update UI to show active sort
+        document.querySelectorAll('.sort-item').forEach(el => {
+          el.classList.remove('active');
+          el.querySelector('.sort-triangle')?.remove();
+        });
+        
+        item.classList.add('active');
+        
+        const triangle = document.createElement('div');
+        triangle.className = `sort-triangle ${currentSort.direction}`;
+        item.appendChild(triangle);
+        
+        // Re-render players with new sort
+        filterAndRenderPlayers();
+      });
+    });
+
+    async function loadPlayers() {
+      if (!ownerId || !contestId || !userId) {
+        document.getElementById("msg").textContent = "Parametri mancanti!";
+        return;
+      }
+      try {
+        const r = await fetch(`/event-players?event=${eventUnitId}`);
+        if (!r.ok) {
+          document.getElementById("msg").textContent = "Errore caricamento giocatori";
+          return;
+        }
+        allPlayers = await r.json();
+        filterAndRenderPlayers();
+      } catch(e) {
+        console.error("Errore fetch event-players", e);
+        document.getElementById("msg").textContent="Impossibile caricare giocatori";
+      }
+    }
+    
+    function filterAndRenderPlayers() {
+      let filteredPlayers = allPlayers;
+      
+      // Apply search filter if there's a search term
+      if (searchTerm) {
+        console.log("Filtrando per:", searchTerm);
+        
+        // Approccio più semplice e diretto
+        filteredPlayers = allPlayers.filter(player => {
+          // Verifica tutti i campi rilevanti
+          const fields = [
+            player.athlete_shortname,
+            player.home_team_code,
+            player.away_team_code,
+            player.player_team_name,
+            player.player_team_code
+          ];
+          
+          // Converti tutti i campi in stringhe lowercase e cerca il termine
+          return fields.some(field => 
+            field && field.toString().toLowerCase().indexOf(searchTerm) !== -1
+          );
+        });
+        
+        // Log dei risultati filtrati
+        console.log("Giocatori filtrati:", filteredPlayers.map(p => p.athlete_shortname));
+      }
+      
+      // Sort filtered players
+      filteredPlayers = sortPlayers(filteredPlayers, currentSort.field, currentSort.direction);
+      
+      // Render the filtered and sorted players
+      renderPlayers(filteredPlayers);
+    }
+
+    function sortPlayers(players, field, direction) {
+      return [...players].sort((a, b) => {
+        let valueA, valueB;
+        
+        switch(field) {
+          case 'position':
+            valueA = a.position || '';
+            valueB = b.position || '';
+            break;
+          case 'name':
+            valueA = a.athlete_shortname || '';
+            valueB = b.athlete_shortname || '';
+            break;
+          case 'match':
+            valueA = `${a.home_team_code || ''}-${a.away_team_code || ''}`;
+            valueB = `${b.home_team_code || ''}-${b.away_team_code || ''}`;
+            break;
+          case 'team':
+            valueA = a.player_team_code || '';
+            valueB = b.player_team_code || '';
+            break;
+          case 'cost':
+            valueA = parseFloat(a.event_unit_cost || 0);
+            valueB = parseFloat(b.event_unit_cost || 0);
+            return direction === 'asc' ? valueA - valueB : valueB - valueA;
+          default:
+            valueA = a.athlete_shortname || '';
+            valueB = b.athlete_shortname || '';
+        }
+        
+        if (typeof valueA === 'string' && typeof valueB === 'string') {
+          return direction === 'asc' 
+            ? valueA.localeCompare(valueB) 
+            : valueB.localeCompare(valueA);
+        }
+        
+        return 0;
+      });
+    }
+
+    function renderPlayers(players) {
+      const playerList = document.getElementById('playerList');
+      playerList.innerHTML = '';
+      
+      // Debug: log dei giocatori che stiamo per renderizzare
+      console.log("Rendering players:", players.map(p => p.athlete_shortname));
+      
+      // Get already chosen players to mark them as selected
+      const chosenPlayers = loadChosenPlayers();
+      const chosenPlayerIds = chosenPlayers.map(p => p.athlete_id);
+      
+      // Calculate available budget considering both chosen and temp selected players
+      const tempAdditionsCost = tempSelectedPlayers.filter(p => !p.isRemoval)
+        .reduce((acc,p) => acc + parseFloat(p.event_unit_cost || 0), 0);
+      const tempRemovalsCost = tempSelectedPlayers.filter(p => p.isRemoval)
+        .reduce((acc,p) => acc + parseFloat(p.event_unit_cost || 0), 0);
+      
+      // Calculate current available budget
+      const availableBudget = getAvailableBudget() - tempAdditionsCost + tempRemovalsCost;
+      
+      // Aggiungiamo un contatore per tracciare quanti giocatori vengono effettivamente renderizzati
+      let renderedCount = 0;
+      
+      players.forEach(player => {
+        // Log per ogni giocatore che stiamo processando
+        console.log(`Processando giocatore: ${player.athlete_shortname}`);
+        
+        const playerCost = parseFloat(player.event_unit_cost || 0);
+        
+        // Check if player is in temp selection (not marked for removal)
+        const isInTempSelection = tempSelectedPlayers.some(p => 
+          p.athlete_id === player.athlete_id && !p.isRemoval);
+          
+        // Check if player is marked for removal
+        const isMarkedForRemoval = tempSelectedPlayers.some(p => 
+          p.athlete_id === player.athlete_id && p.isRemoval);
+          
+        // Check if player is already chosen and not marked for removal
+        const isAlreadyChosen = chosenPlayerIds.includes(player.athlete_id) && !isMarkedForRemoval;
+        
+        // A player is affordable if their cost is within budget
+        const isAffordable = playerCost <= availableBudget;
+        
+        // Log delle condizioni per questo giocatore
+        console.log(`${player.athlete_shortname}: isAffordable=${isAffordable}, isAlreadyChosen=${isAlreadyChosen}, isInTempSelection=${isInTempSelection}`);
+        
+        // Create player card
+        const card = document.createElement('li');
+        
+        // Make cards clickable if:
+        // 1. They're affordable (for new selections), OR
+        // 2. They're already chosen (to allow deselection)
+        // 3. They're in temp selection (to allow deselection)
+        card.className = `player-card ${(isAffordable || isAlreadyChosen || isInTempSelection) ? 'clickable' : 'disabled'}`;
+        
+        // Set background color for selected players
+        if (isAlreadyChosen || isInTempSelection) {
+          card.style.backgroundColor = "rgba(254, 66, 8, 0.5)"; // Orange background at 50% opacity
+        }
+        
+        // Player icon container
+        const iconContainer = document.createElement('div');
+        iconContainer.className = 'player-icon-container';
+        
+        const playerIcon = document.createElement('div');
+        playerIcon.className = 'player-icon';
+        
+        const img = document.createElement('img');
+        img.src = player.picture ? `pictures/${player.picture}` : 'pictures/player_placeholder.png';
+        img.onerror = function() { this.src = 'pictures/player_placeholder.png'; };
+        playerIcon.appendChild(img);
+        
+        // Position indicator
+        const posIndicator = document.createElement('div');
+        posIndicator.className = `position-indicator position-${player.position}`;
+        posIndicator.textContent = player.position;
+        
+        iconContainer.appendChild(playerIcon);
+        iconContainer.appendChild(posIndicator);
+        
+        // Player info
+        const infoDiv = document.createElement('div');
+        infoDiv.className = 'player-info';
+        
+        const nameDiv = document.createElement('div');
+        nameDiv.className = 'player-name';
+        nameDiv.textContent = player.athlete_shortname || 'Unknown Player';
+        
+        const matchDiv = document.createElement('div');
+        matchDiv.className = 'match-info';
+        
+        // Format match info
+        if (player.home_team_code && player.away_team_code) {
+          const isHomeTeam = parseInt(player.team_id) === parseInt(player.home_team);
+          const homeTeam = isHomeTeam ? `<span class="player-team">${player.home_team_code}</span>` : player.home_team_code;
+          const awayTeam = !isHomeTeam ? `<span class="player-team">${player.away_team_code}</span>` : player.away_team_code;
+          matchDiv.innerHTML = `${homeTeam}-${awayTeam}`;
+        } else {
+          matchDiv.textContent = player.player_team_code || '';
+        }
+        
+        infoDiv.appendChild(nameDiv);
+        infoDiv.appendChild(matchDiv);
+        
+        // Player cost
+        const costDiv = document.createElement('div');
+        costDiv.className = 'player-cost';
+        costDiv.textContent = playerCost.toFixed(1);
+        
+        // Append all elements to card
+        card.appendChild(iconContainer);
+        card.appendChild(infoDiv);
+        card.appendChild(costDiv);
+        
+        // Add click event handler
+        if (isAffordable || isAlreadyChosen || isInTempSelection) {
+          card.addEventListener('click', () => {
+            if (isAlreadyChosen) {
+              // If already chosen, mark for removal
+              const chosenPlayer = chosenPlayers.find(p => p.athlete_id === player.athlete_id);
+              const playerToRemove = {...chosenPlayer, isRemoval: true};
+              tempSelectedPlayers.push(playerToRemove);
+              
+              // Update UI immediately
+              card.style.backgroundColor = "rgba(255, 255, 255, 0.05)"; // Reset background
+              
+              // Update header stats and re-render to update affordability
+              updateHeaderStats();
+              filterAndRenderPlayers();
+            } else if (isInTempSelection) {
+              // If in temp selection, remove from temp selection
+              const index = tempSelectedPlayers.findIndex(p => 
+                p.athlete_id === player.athlete_id && !p.isRemoval);
+              if (index !== -1) {
+                tempSelectedPlayers.splice(index, 1);
+                
+                // Update UI immediately
+                card.style.backgroundColor = "rgba(255, 255, 255, 0.05)"; // Reset background
+              }
+              
+              // Update header stats and re-render to update affordability
+              updateHeaderStats();
+              filterAndRenderPlayers();
+            } else if (isMarkedForRemoval) {
+              // If marked for removal, cancel the removal
+              const index = tempSelectedPlayers.findIndex(p => 
+                p.athlete_id === player.athlete_id && p.isRemoval);
+              if (index !== -1) {
+                tempSelectedPlayers.splice(index, 1);
+                
+                // Update UI immediately
+                card.style.backgroundColor = "rgba(254, 66, 8, 0.5)"; // Restore orange background
+              }
+              
+              // Update header stats and re-render to update affordability
+              updateHeaderStats();
+              filterAndRenderPlayers();
+            } else if (isAffordable) {
+              // If affordable and not selected, add to temp selection
+              tempSelectedPlayers.push(player);
+              
+              // Update UI immediately
+              card.style.backgroundColor = "rgba(254, 66, 8, 0.5)"; // Orange background
+              
+              // Update header stats and re-render to update affordability
+              updateHeaderStats();
+              filterAndRenderPlayers();
+            }
+          });
+        }
+        
+        playerList.appendChild(card);
+        renderedCount++; // Incrementa il contatore dopo aver aggiunto il giocatore alla lista
+      });
+      
+      console.log(`Totale giocatori renderizzati: ${renderedCount}`);
+    }
+  </script>

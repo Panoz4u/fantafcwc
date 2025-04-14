@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Sfida Amico - Fanteex</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,800;1,800&family=Barlow+Condensed:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/mobile.css">
+  <link rel="stylesheet" href="css/mobile2.css">
+</head>
+<body>
+  <!-- Header con freccia indietro, titolo e teex balance -->
+  
+  <header class="header">
+    <div class="user-profile">
+      <img src="icons/freccia.png" alt="Back" id="backArrow" style="width: 30px; height: 30px; cursor: pointer; margin-right: 12px;">
+      <div class="user-info">
+        <h1 class="user-name">SFIDA AMICO</h1>
+      </div>
+    </div>
+    <div class="teex-balance">
+      <img src="icons/more.png" alt="Add" class="plus-icon">
+      <img src="icons/teex.png" alt="Teex" class="teex-icon">
+      <span id="teexBalance" class="teex_balance">0.0</span>
+    </div>
+
+
+  </header>
+
+
+  
+  
+
+  <!-- Search box -->
+  <div class="search-container sc-select">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="searchInput" class="search-box" placeholder="Search by name">
+  </div>
+  
+  <!-- Lista degli utenti -->
+  <div class="opponent-list" id="opponentList">
+    <!-- Gli utenti verranno inseriti qui dinamicamente -->
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    // 'owner' = l'owner user
+    const ownerId = params.get("owner");
+    // 'user' = userIdCorrente (lo stesso in questo scenario)
+    const currentUser = params.get("user");
+    const eventUnitId = params.get("event_unit_id"); // Nuovo parametro
+    
+    // Funzione per gestire correttamente gli avatar
+    function getAvatarUrl(avatarPath) {
+      if (!avatarPath) {
+        return "avatars/avatar.jpg"; // Avatar di default
+      }
+      
+      // Controlla se è già un URL completo (inizia con http o https)
+      if (avatarPath.startsWith('http://') || avatarPath.startsWith('https://')) {
+        return avatarPath;
+      }
+      
+      // Altrimenti è un nome file, aggiungi il percorso avatars/
+      return `avatars/${avatarPath}`;
+    }
+    
+    window.addEventListener("DOMContentLoaded", async () => {
+      if (!ownerId) {
+        alert("owner mancante!");
+        window.location.href = "/index.html";
+        return;
+      }
+      
+      // Add back button functionality
+      document.getElementById("backArrow").addEventListener("click", () => {
+        window.history.back();
+      });
+      
+      // Carica il saldo Teex dell'utente
+      try {
+        const userResp = await fetch(`/user-landing-info?user=${currentUser}`);
+        const userData = await userResp.json();
+        document.getElementById("teexBalance").textContent = userData.user.teex_balance.toLocaleString();
+      } catch(e) {
+        console.error("Errore nel recupero dei dati utente", e);
+      }
+      
+      // Carica tutti gli utenti
+      try {
+        const resp = await fetch("/users");
+        const allUsers = await resp.json();
+        const opponents = allUsers.filter(u => u.user_id != ownerId);
+        
+        // Ordina gli utenti per username
+        opponents.sort((a, b) => a.username.localeCompare(b.username));
+        
+        renderOpponentList(opponents);
+        
+        // Aggiungi funzionalità di ricerca - versione alternativa
+        document.getElementById("searchInput").addEventListener("input", function() {
+          const searchTerm = this.value.toLowerCase().trim();
+          
+          // Se il campo di ricerca è vuoto, mostra tutti gli utenti
+          if (searchTerm === "") {
+            renderOpponentList(opponents);
+            return;
+          }
+          
+          // Filtra gli utenti il cui nome contiene il termine di ricerca
+          const filteredOpponents = [];
+          for (const user of opponents) {
+            if (user.username.toLowerCase().indexOf(searchTerm) !== -1 || 
+                (user.email && user.email.toLowerCase().indexOf(searchTerm) !== -1)) {
+              filteredOpponents.push(user);
+            }
+          }
+          
+          renderOpponentList(filteredOpponents);
+        });
+      } catch(e) {
+        console.error("Errore fetch /users", e);
+      }
+    });
+    
+    function renderOpponentList(opponents) {
+      const opponentList = document.getElementById("opponentList");
+      opponentList.innerHTML = "";
+      
+      if (opponents.length === 0) {
+        opponentList.innerHTML = "<p style='text-align: center; color: #ccc; margin-top: 20px;'>Nessun utente trovato</p>";
+        return;
+      }
+      
+      opponents.forEach(user => {
+        const opponentItem = document.createElement("div");
+        opponentItem.className = "opponent-item";
+        
+        // Usa la funzione getAvatarUrl per gestire correttamente gli avatar
+        const avatarSrc = getAvatarUrl(user.avatar);
+        
+        opponentItem.innerHTML = `
+          <div class="opponent-info">
+            <img src="${avatarSrc}" alt="${user.username}" class="opponent-avatar">
+            <div>
+              <h3 class="opponent-name">${user.username}</h3>
+              <div class="progress-wrapper">
+                <div class="progress-bar-container">
+                  <div class="progress-bar-fill"></div>
+                </div>
+                <span class="progress-text">35%</span>
+              </div>
+            </div>
+          </div>
+          <button class="play-contest-button" data-id="${user.user_id}">PLAY</button>
+        `;
+        
+        opponentList.appendChild(opponentItem);
+      });
+      
+      // Aggiungi event listener ai pulsanti PLAY
+      document.querySelectorAll(".play-contest-button").forEach(button => {
+        button.addEventListener("click", async () => {
+          const oppId = button.getAttribute("data-id");
+          try {
+            const resp = await fetch("/contests", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                owner: ownerId,
+                opponent: oppId,
+                event_unit_id: eventUnitId
+              })
+            });
+            if (!resp.ok) {
+              const err = await resp.json();
+              alert("Errore creazione contest: " + err.error);
+              return;
+            }
+            const data = await resp.json(); // contestId
+            window.location.href = `/riassunto.html?owner=${ownerId}&opponent=${oppId}&contest=${data.contestId}&user=${currentUser}&event_unit_id=${eventUnitId}`;
+          } catch (e) {
+            console.error("Errore POST /contests", e);
+            alert("Impossibile creare contest");
+          }
+        });
+      });
+    }
+  </script>
+</body>
+</html>
