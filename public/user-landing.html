@@ -130,7 +130,14 @@
         return;
       }
       const resp = await fetch(`/user-landing-info?user=${userId}`);
+      if (!resp.ok) {
+        const errorText = await resp.text();
+        console.error("Errore backend:", resp.status, errorText);
+        alert("Errore nel caricamento utente.");
+        return;
+      }
       const data = await resp.json();
+      console.log("Dati ricevuti:", data);
 
       const userAvatarElem = document.getElementById("userAvatar");
       const avatarSrc = getAvatarSrc(data.user.avatar);

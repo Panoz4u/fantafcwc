@@ -263,22 +263,177 @@
       });
     });
 
+    // Aggiungi questa funzione dopo loadPlayers()
+    // Modifica questa funzione per gestire meglio gli errori
+    async function testEventUnitExistence() {
+      try {
+        console.log("Verifica esistenza event_unit_id:", eventUnitId);
+        // Utilizziamo direttamente l'endpoint event-players per verificare l'esistenza
+        const response = await fetch(`/event-players?event=${eventUnitId}&check_only=true`);
+        
+        if (response.status === 404) {
+          console.error(`L'event_unit_id=${eventUnitId} non esiste nel database!`);
+          return false;
+        }
+        
+        return response.ok;
+      } catch (error) {
+        console.error("Errore verifica event_unit_id:", error);
+        return false;
+      }
+    }
+    
+    // Semplifica questa funzione per non dipendere da API che non esistono
+    async function getAvailableEvents() {
+      try {
+        // Utilizziamo un endpoint esistente o un valore predefinito
+        const defaultEvents = [
+          { id: 30, name: "Serie A - Giornata 1" },
+          { id: 31, name: "Serie A - Giornata 2" }
+        ];
+        
+        return defaultEvents;
+      } catch (error) {
+        console.error('Errore nel recupero degli eventi:', error);
+        return [];
+      }
+    }
+    
+    // Modifica la funzione loadPlayers() per gestire meglio gli errori
     async function loadPlayers() {
       if (!ownerId || !contestId || !userId) {
         document.getElementById("msg").textContent = "Parametri mancanti!";
         return;
       }
+      
       try {
-        const r = await fetch(`/event-players?event=${eventUnitId}`);
-        if (!r.ok) {
-          document.getElementById("msg").textContent = "Errore caricamento giocatori";
+        console.log(`Tentativo di caricamento giocatori per event_unit_id=${eventUnitId}`);
+        document.getElementById("msg").textContent = "Caricamento giocatori in corso...";
+        
+        // Verifica esistenza event_unit_id
+        const eventExists = await testEventUnitExistence();
+        if (!eventExists) {
+          console.error(`L'event_unit_id=${eventUnitId} non esiste nel database!`);
+          
+          // Recupera gli eventi disponibili (hardcoded per ora)
+          const availableEvents = await getAvailableEvents();
+          
+          let eventsHtml = '';
+          if (availableEvents.length > 0) {
+            eventsHtml = `
+              <p>Prova con uno di questi eventi:</p>
+              <select id="availableEventsSelect">
+                ${availableEvents.map(event => `<option value="${event.id}">${event.name || event.id}</option>`).join('')}
+              </select>
+              <button id="selectEvent" class="btn btn-primary" style="background-color: #fe4208; color: white; border: none; padding: 8px 16px; margin-top: 10px; border-radius: 4px; cursor: pointer;">Seleziona evento</button>
+            `;
+          }
+          
+          document.getElementById("msg").innerHTML = `
+            <div style="color: #ff6b6b; padding: 10px; text-align: center;">
+              <p>L'evento con ID ${eventUnitId} non esiste nel database.</p>
+              ${eventsHtml}
+            </div>`;
+          
+          if (availableEvents.length > 0) {
+            document.getElementById('selectEvent').addEventListener('click', () => {
+              const selectedEventId = document.getElementById('availableEventsSelect').value;
+              const url = `/aggiungi-giocatore.html?owner=${ownerId}&opponent=${opponentId}&contest=${contestId}&user=${userId}&event_unit_id=${selectedEventId}`;
+              window.location.href = url;
+            });
+          }
+          
           return;
         }
+        
+        // Continua con il caricamento dei giocatori
+        const r = await fetch(`/event-players?event=${eventUnitId}`);
+        console.log("Risposta ricevuta:", r.status, r.statusText);
+        
+        if (!r.ok) {
+          let errorMessage = "Errore caricamento giocatori";
+          try {
+            const errorData = await r.json();
+            console.error("Dettagli errore:", errorData);
+            
+            // Estrai e mostra informazioni più dettagliate sull'errore
+            if (errorData.error) {
+              console.error("Messaggio errore:", errorData.error);
+              
+              // Analizza il messaggio di errore per identificare la tabella problematica
+              const errorMsg = errorData.error.toLowerCase();
+              let problematicTable = "sconosciuta";
+              
+              if (errorMsg.includes("athlete_eventunit_participation")) {
+                problematicTable = "athlete_eventunit_participation";
+                console.error("PROBLEMA IDENTIFICATO: Tabella athlete_eventunit_participation");
+              } else if (errorMsg.includes("athletes")) {
+                problematicTable = "athletes";
+                console.error("PROBLEMA IDENTIFICATO: Tabella athletes");
+              } else if (errorMsg.includes("teams")) {
+                problematicTable = "teams";
+                console.error("PROBLEMA IDENTIFICATO: Tabella teams");
+              } else if (errorMsg.includes("matches")) {
+                problematicTable = "matches";
+                console.error("PROBLEMA IDENTIFICATO: Tabella matches");
+              }
+              
+              // Aggiungi un messaggio più specifico per aiutare il debug
+              console.log("Verifica le seguenti tabelle nel database:");
+              console.log("1. athlete_eventunit_participation - Controlla se event_unit_id=32 esiste");
+              console.log("2. athletes - Controlla se gli athlete_id sono validi");
+              console.log("3. teams - Controlla se i team_id sono validi");
+              console.log("4. matches - Controlla se ci sono partite associate a event_unit_id=32");
+              
+              // Prova a fare una richiesta di test per verificare se il database è accessibile
+              console.log("Tentativo di verifica connessione database...");
+              fetch('/api/db-check').then(r => r.json()).then(data => {
+                console.log("Stato database:", data);
+              }).catch(err => {
+                console.error("Errore verifica database:", err);
+              });
+            }
+            errorMessage += `: ${errorData.error || r.status}`;
+            
+            // Mostra un messaggio più user-friendly
+            document.getElementById("msg").innerHTML = `
+              <div style="color: #ff6b6b; padding: 10px; text-align: center;">
+                <p>Impossibile caricare i giocatori per questo evento.</p>
+                <p>Prova a selezionare un altro evento o contatta l'amministratore.</p>
+                <p><small>Errore: ${errorData.error || r.status}</small></p>
+                <p><small>Controlla le tabelle: athlete_eventunit_participation, athletes, teams, matches</small></p>
+              </div>`;
+          } catch (jsonError) {
+            const errorText = await r.text();
+            console.error("Testo errore:", errorText);
+            errorMessage += ` (${r.status})`;
+            document.getElementById("msg").innerHTML = `
+              <div style="color: #ff6b6b; padding: 10px; text-align: center;">
+                <p>Impossibile caricare i giocatori per questo evento.</p>
+                <p>Prova a selezionare un altro evento o contatta l'amministratore.</p>
+                <p><small>Errore: ${r.status}</small></p>
+              </div>`;
+          }
+          return;
+        }
+        
         allPlayers = await r.json();
-        filterAndRenderPlayers();
+        console.log(`Caricati ${allPlayers.length} giocatori`);
+        
+        if (allPlayers.length === 0) {
+          document.getElementById("msg").textContent = "Nessun giocatore trovato per questo evento";
+        } else {
+          document.getElementById("msg").textContent = "";
+          filterAndRenderPlayers();
+        }
       } catch(e) {
         console.error("Errore fetch event-players", e);
-        document.getElementById("msg").textContent="Impossibile caricare giocatori";
+        console.error("Stack trace:", e.stack);
+        document.getElementById("msg").innerHTML = `
+          <div style="color: #ff6b6b; padding: 10px; text-align: center;">
+            <p>Impossibile caricare i giocatori: ${e.message}</p>
+            <p>Verifica la connessione o contatta l'amministratore.</p>
+          </div>`;
       }
     }
     

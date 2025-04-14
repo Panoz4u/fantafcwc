@@ -1,20 +1,29 @@
+require('dotenv').config();
 const path = require('path');
 const express = require("express");
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 const pool = require("./db");
 
 app.use(express.json());
 app.use(express.static("public"));
 // Fallback su index.html se nessun'altra route viene trovata
 
-
-
 const uploadResultsRoute = require("./uploadResults"); // Assicurati che il percorso sia corretto
 app.use("/uploadResults", uploadResultsRoute);
 
+// Add error handling for server startup
 app.listen(port, '0.0.0.0', () => {
   console.log(`Server avviato su http://0.0.0.0:${port}`);
+}).on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.log(`Port ${port} is already in use. Trying port ${port + 1}...`);
+    app.listen(port + 1, '0.0.0.0', () => {
+      console.log(`Server avviato su http://0.0.0.0:${port + 1}`);
+    });
+  } else {
+    console.error('Server error:', err);
+  }
 });
 
 /* --------------------------- */
@@ -166,7 +175,10 @@ app.get("/user-landing-info", (req, res) => {
       WHERE c.owner_user_id = ? OR c.opponent_user_id = ?
     `;
     pool.query(sqlC, [userId, userId], (er2, contests) => {
-      if (er2) return res.status(500).json({ error: "DB error contests" });
+      if (er2) {
+        console.error("Errore nella query contests:", er2);
+        return res.status(500).json({ error: "DB error contests" });
+      }
       
       // Per ogni contest, se lo status è 4 e almeno un atleta ha is_ended=1, computiamo il risultato parziale.
       let pending = contests.length;
@@ -191,13 +203,15 @@ app.get("/user-landing-info", (req, res) => {
             LEFT JOIN teams at ON m.away_team = at.team_id
             WHERE ft.contest_id = ? AND ft.user_id = ?
           `;
-          pool.query(sqlTeam, [contest.event_unit_id || 30, contest.contest_id, contest.owner_id], (err2, owRows) => {
+          console.log("Eseguo query team owner per contest:", contest.contest_id, "event_unit:", contest.event_unit_id, "owner_id:", contest.owner_id);
+          const eventUnit = contest.event_unit_id || 0;
+          pool.query(sqlTeam, [eventUnit, contest.contest_id, contest.owner_id], (err2, owRows) => {
             if (err2) {
               console.error("Error in owner team query (user-landing):", err2);
               contest.status_display = contest.status_name;
               checkDone();
             } else {
-              pool.query(sqlTeam, [contest.event_unit_id || 30, contest.contest_id, contest.opponent_id], (err3, oppRows) => {
+              pool.query(sqlTeam, [eventUnit, contest.contest_id, contest.opponent_id], (err3, oppRows) => {
                 if (err3) {
                   console.error("Error in opponent team query (user-landing):", err3);
                   contest.status_display = contest.status_name;
@@ -290,12 +304,17 @@ app.get("/contest-details", (req, res) => {
       LEFT JOIN teams at ON m.away_team = at.team_id
       WHERE ft.contest_id = ? AND ft.user_id = ?
     `;
-    pool.query(sqlTeam, [contestData.event_unit_id || 30, cId, contestData.owner_id], (er2, owRows) => {
+
+    const eventUnit = contestData.event_unit_id || 0;
+    console.log(`OWNER query - contest_id: ${contestData.contest_id}, user: ${contestData.owner_id}, event_unit: ${eventUnit}`);
+    console.log(`OPPONENT query - contest_id: ${contestData.contest_id}, user: ${contestData.opponent_id}, event_unit: ${eventUnit}`);
+    
+    pool.query(sqlTeam, [eventUnit, cId, contestData.owner_id], (er2, owRows) => {
       if (er2) {
         console.error("Error in owner team query:", er2);
         return res.status(500).json({ error: "DB error owner team" });
       }
-      pool.query(sqlTeam, [contestData.event_unit_id || 30, cId, contestData.opponent_id], (er3, oppRows) => {
+      pool.query(sqlTeam, [eventUnit, cId, contestData.opponent_id], (er3, oppRows) => {
         if (er3) {
           console.error("Error in opponent team query:", er3);
           return res.status(500).json({ error: "DB error opponent team" });
@@ -304,8 +323,8 @@ app.get("/contest-details", (req, res) => {
         owRows.forEach(r => { if (r.is_ended == 1) partialEnded = true; });
         oppRows.forEach(r => { if (r.is_ended == 1) partialEnded = true; });
         if (partialEnded) {
-          let sumOwner = owRows.reduce((acc, r) => acc + parseFloat(r.athlete_points || 0), 0);
-          let sumOpponent = oppRows.reduce((acc, r) => acc + parseFloat(r.athlete_points || 0), 0);
+          let sumOwner = owRows.reduce((acc, r) => acc + (parseFloat(r.athlete_points) || 0), 0);
+          let sumOpponent = oppRows.reduce((acc, r) => acc + (parseFloat(r.athlete_points) || 0), 0);
           if (parseInt(currentUser) === parseInt(contestData.owner_id)) {
             contestData.result = `${sumOwner.toFixed(1)}-${sumOpponent.toFixed(1)}`;
           } else {

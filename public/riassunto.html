@@ -74,27 +74,19 @@
         return "";
       }
     }
-    
     function loadChosenPlayers() {
       const c = localStorage.getItem("chosenPlayers");
       if (!c) return [];
       try { return JSON.parse(c); }
       catch { return []; }
     }
-    
-    function saveChosenPlayers(list) {
-      localStorage.setItem("chosenPlayers", JSON.stringify(list));
-    }
-    
     function getTotalCost() {
       const pl = loadChosenPlayers();
       return pl.reduce((acc,p)=> acc+parseFloat(p.event_unit_cost||0),0);
     }
-    
     function getAvailableBudget() {
       return Math.max(0, 20 - getTotalCost());
     }
-    
     async function enrichPlayerData(players) {
       try {
         for (let i = 0; i < players.length; i++) {
@@ -228,11 +220,9 @@
       const costBlock = document.createElement("div");
       costBlock.classList.add("athlete_cost", "ac-long");
       costBlock.textContent = parseFloat(player.event_unit_cost || 0).toFixed(1);
-      
       // BLOCCO RIMOZIONE con icona delete.png
       const removeBtn = document.createElement("div");
       removeBtn.classList.add("remove-player-btn");
-      
       // Crea l'elemento immagine per l'icona di eliminazione
       const deleteIcon = document.createElement("img");
       deleteIcon.src = "icons/delete.png";
@@ -240,32 +230,25 @@
       deleteIcon.style.width = "24px";
       deleteIcon.style.height = "24px";
       deleteIcon.style.cursor = "pointer";
-      
       // Aggiungi l'evento click per rimuovere il giocatore
       deleteIcon.addEventListener("click", () => {
         removePlayer(index);
       });
-      
       // Aggiungi l'icona al pulsante di rimozione
       removeBtn.appendChild(deleteIcon);
-      
       // Aggiungi i blocchi alla riga
       row.appendChild(avatarBlock);
       row.appendChild(infoBlock);
       row.appendChild(costBlock);
       row.appendChild(removeBtn);
-      
       // Add the row to the wrapper
       wrapper.appendChild(row);
-      
       // Add the separator line
       const separator = document.createElement("div");
       separator.classList.add("player-separator");
       wrapper.appendChild(separator);
-      
       return wrapper;
     }
-    
     // Funzione per rimuovere un giocatore
     function removePlayer(index) {
       const players = loadChosenPlayers();
@@ -273,23 +256,19 @@
       saveChosenPlayers(players);
       renderPlayerList();
     }
-
-    // Funzione per ottenere l'URL dell'avatar
+   // Funzione per ottenere l'URL dell'avatar
     function getAvatarUrl(avatarPath) {
       if (!avatarPath) {
         return "avatars/avatar.jpg"; // Avatar di default
       }
-      
       // Controlla se è già un URL completo
       if (avatarPath.startsWith('http://') || avatarPath.startsWith('https://')) {
         return avatarPath;
       }
-      
       // Altrimenti è un nome file, aggiungi il percorso avatars/
       return `avatars/${avatarPath}`;
     }
-
-    // Funzione ausiliaria per ottenere la sorgente corretta dell'avatar (come in contest-details.html)
+   // Funzione ausiliaria per ottenere la sorgente corretta dell'avatar (come in contest-details.html)
     function getAvatarSrc(avatar) {
       if (avatar) {
         if (avatar.startsWith("http")) {
@@ -306,20 +285,16 @@
         return "avatars/avatar.jpg";
       }
     }
-
-    // Renderizza l'header del contest usando lo stesso layout di contest-details.html
+   // Renderizza l'header del contest usando lo stesso layout di contest-details.html
     function renderContestHeader(contestData) {
       const container = document.getElementById("contestHeaderContainer");
       container.innerHTML = "";
-      
       // Determina se il current user è owner
       const params = new URLSearchParams(window.location.search);
       const currentUserId = params.get("user");
       const iAmOwner = (parseInt(currentUserId) === parseInt(contestData.owner_id));
-      
       // Calcola il costo totale della squadra attuale
       const totalTeamCost = getTotalCost();
-      
       let myName, myAvatar, myCost, oppName, oppAvatar, oppCost;
       if (iAmOwner) {
         myName = contestData.owner_name;
@@ -336,12 +311,10 @@
         oppAvatar = contestData.owner_avatar;
         oppCost = contestData.owner_cost || "-";
       }
-      
-      // Crea la card del contest
+     // Crea la card del contest
       const contestCard = document.createElement("div");
       contestCard.classList.add("contest-cell");
-      
-      // Determina il layout in base allo stato del contest
+     // Determina il layout in base allo stato del contest
       if (contestData.status == 0 && iAmOwner) {
         // Layout per contest in stato "created" dove sono il proprietario
         contestCard.innerHTML = `
@@ -414,7 +387,6 @@
         // Layout per contest in stato "in progress"
         let leftScore = 0;
         let rightScore = 0;
-        
         // Use the result field directly from contestData
         if (contestData.result) {
           const parts = contestData.result.split('-');
@@ -423,13 +395,10 @@
             rightScore = parseFloat(parts[1]) || 0;
           }
         }
-        
         const leftScoreStr = leftScore.toFixed(1);
         const rightScoreStr = rightScore.toFixed(1);
-        
         const [leftScoreInt, leftScoreDec = "0"] = leftScoreStr.split('.');
         const [rightScoreInt, rightScoreDec = "0"] = rightScoreStr.split('.');
-        
         contestCard.innerHTML = `
           <div class="contest-container cc-header">
             <div class="contest-bar">
@@ -467,14 +436,11 @@
             rightWon = rightScore > leftScore;
           }
         }
-        
-        const leftScoreStr = leftScore.toFixed(1);
+       const leftScoreStr = leftScore.toFixed(1);
         const rightScoreStr = rightScore.toFixed(1);
-        
-        const [leftScoreInt, leftScoreDec = "0"] = leftScoreStr.split('.');
+       const [leftScoreInt, leftScoreDec = "0"] = leftScoreStr.split('.');
         const [rightScoreInt, rightScoreDec = "0"] = rightScoreStr.split('.');
-        
-        contestCard.innerHTML = `
+       contestCard.innerHTML = `
           <div class="contest-container cc-header">
             <div class="contest-bar">
               <img src="${getAvatarSrc(myAvatar)}" alt="${myName}" class="player-avatar-contest left-avatar ${leftWon ? 'winner-avatar' : ''}">
@@ -513,16 +479,14 @@
           </div>
         `;
       }
-      
-      container.appendChild(contestCard);
+     container.appendChild(contestCard);
     }
-
     async function loadUserInfo(userId, opponentId, ownerId, contestId) {
       try {
         // First, determine who is the current user and who is the opponent
         let currentUserId = userId;
         let actualOpponentId;
-        
+       
         // If current user is the opponent in the URL, then the owner is the actual opponent
         if (userId == opponentId) {
           actualOpponentId = ownerId;
@@ -530,45 +494,141 @@
           actualOpponentId = opponentId;
         }
         
-        // Get contest details to get team costs
-        const contestResp = await fetch(`/contest-details?contest=${contestId}&user=${userId}`);
-        const contestData = await contestResp.json();
-        
-        // Render contest header
-        renderContestHeader(contestData.contest);
-        
-        // Get all users
-        const r = await fetch("/users");
-        const allUsers = await r.json();
-        
-        // Find the current user
+        // Sostituisco il messaggio di caricamento con uno spinner più discreto
+        const container = document.getElementById("contestHeaderContainer");
+        container.innerHTML = `
+          <div class="contest-container cc-header">
+            <div class="contest-bar" style="justify-content: center; min-height: 40px;">
+              <div style="width: 20px; height: 20px; border: 2px solid #3498db; border-radius: 50%; border-top-color: transparent; animation: spin 1s linear infinite;"></div>
+            </div>
+          </div>
+          <style>
+            @keyframes spin {
+              to { transform: rotate(360deg); }
+            }
+          </style>
+        `;
+         // Get all users first to ensure we have user data even if contest details fail
+        const usersResp = await fetch("/users");
+        if (!usersResp.ok) {
+          console.error("Errore nel recupero degli utenti:", usersResp.status, usersResp.statusText);
+          container.innerHTML = `
+            <div class="contest-container cc-header">
+              <div class="contest-bar">
+                <div class="result_bold">Errore nel caricamento dei dati utente</div>
+              </div>
+            </div>
+          `;
+          return;
+        }
+        const allUsers = await usersResp.json();
+        // Find the current user and opponent
         const currentUser = allUsers.find(x => x.user_id == currentUserId);
+        const opponent = allUsers.find(x => x.user_id == actualOpponentId);
         if (currentUser) {
           // Update the Teex balance in the header
           document.getElementById("teexBalance").textContent = currentUser.teex_balance.toLocaleString();
-          
-          // Set current user's team cost
-          const isOwner = currentUserId == ownerId;
-          
           // Calcola il costo totale della squadra attuale
           const totalTeamCost = getTotalCost();
-          
           // Aggiorna i Teex rimasti (20 - costo totale)
           const teexLeft = getAvailableBudget();
           document.getElementById("teexLeft").innerHTML = `<span class="teex-left-text-cyan">${teexLeft.toFixed(1)}</span> <span class="teex-left-text-white">Teex left</span>`;
-          
-          // These elements might not exist in this page, so wrap them in try/catch
-          try {
-            document.getElementById("currentUserName").textContent = currentUser.username;
-            document.getElementById("currentUserAvatar").src = getAvatarUrl(currentUser.avatar);
-            document.getElementById("currentUserScore").textContent = totalTeamCost.toFixed(1);
-          } catch (e) {
-            console.log("Some elements not found, this is expected");
-          }
         }
-        
+        // Get contest details to get team costs
+        const contestResp = await fetch(`/contest-details?contest=${contestId}&user=${userId}`);
+        // Aggiungi log per verificare la risposta
+        console.log("Risposta contest-details:", contestResp.status, contestResp.statusText);
+        if (!contestResp.ok) {
+          console.error("Errore nel recupero dei dettagli del contest:", contestResp.status, contestResp.statusText);
+         // Crea un header di fallback con le informazioni utente che abbiamo
+          if (currentUser && opponent) {
+            const iAmOwner = (parseInt(currentUserId) === parseInt(ownerId));
+            const myName = currentUser.username || "User";
+            const myAvatar = getAvatarUrl(currentUser.avatar);
+            const oppName = opponent.username || "Opponent";
+            const oppAvatar = getAvatarUrl(opponent.avatar);
+            const myCost = getTotalCost().toFixed(1);
+            container.innerHTML = `
+              <div class="contest-container cc-header">
+                <div class="contest-bar">
+                  <img src="${myAvatar}" alt="${myName}" class="player-avatar-contest left-avatar">
+                  <div class="triletter_contest left-name">${myName.substring(0, 3)}</div>
+                  <div class="result_bold">VS</div>
+                  <div class="triletter_contest right-name">${oppName.substring(0, 3)}</div>
+                  <img src="${oppAvatar}" alt="${oppName}" class="player-avatar-contest right-avatar">
+                  <div class="teex_spent left-teex" id="currentUserScore">${myCost}</div>
+                  <div class="teex_spent right-teex">-</div>
+                </div>
+                <div class="status-badge-base status-badge">CREATED</div>
+              </div>
+            `;
+          } else {
+            container.innerHTML = `
+              <div class="contest-container cc-header">
+                <div class="contest-bar">
+                  <div class="result_bold">Errore nel caricamento dei dati del contest</div>
+                </div>
+              </div>
+            `;
+          }
+         return;
+        }
+        const contestData = await contestResp.json();
+        console.log("Dati contest ricevuti:", contestData);
+        // Verifica che contestData.contest esista prima di usarlo
+        if (!contestData || !contestData.contest) {
+          console.error("Dati del contest mancanti o in formato non valido");
+          // Usa lo stesso fallback di sopra
+          if (currentUser && opponent) {
+            const iAmOwner = (parseInt(currentUserId) === parseInt(ownerId));
+            const myName = currentUser.username || "User";
+            const myAvatar = getAvatarUrl(currentUser.avatar);
+            const oppName = opponent.username || "Opponent";
+            const oppAvatar = getAvatarUrl(opponent.avatar);
+            const myCost = getTotalCost().toFixed(1);
+           container.innerHTML = `
+              <div class="contest-container cc-header">
+                <div class="contest-bar">
+                  <img src="${myAvatar}" alt="${myName}" class="player-avatar-contest left-avatar">
+                  <div class="triletter_contest left-name">${myName.substring(0, 3)}</div>
+                  <div class="result_bold">VS</div>
+                  <div class="triletter_contest right-name">${oppName.substring(0, 3)}</div>
+                  <img src="${oppAvatar}" alt="${oppName}" class="player-avatar-contest right-avatar">
+                  <div class="teex_spent left-teex" id="currentUserScore">${myCost}</div>
+                  <div class="teex_spent right-teex">-</div>
+                </div>
+                <div class="status-badge-base status-badge">CREATED</div>
+              </div>
+            `;
+          } else {
+            container.innerHTML = `
+              <div class="contest-container cc-header">
+                <div class="contest-bar">
+                  <div class="result_bold">Dati del contest non validi</div>
+                </div>
+              </div>
+            `;
+          }
+         return;
+        }
+        // Render contest header
+        renderContestHeader(contestData.contest);
+        // Set current user's team cost
+        const isOwner = currentUserId == ownerId;
+        // Calcola il costo totale della squadra attuale
+        const totalTeamCost = getTotalCost();
+        // Aggiorna i Teex rimasti (20 - costo totale)
+        const teexLeft = getAvailableBudget();
+        document.getElementById("teexLeft").innerHTML = `<span class="teex-left-text-cyan">${teexLeft.toFixed(1)}</span> <span class="teex-left-text-white">Teex left</span>`;
+        // These elements might not exist in this page, so wrap them in try/catch
+        try {
+          document.getElementById("currentUserName").textContent = currentUser.username;
+          document.getElementById("currentUserAvatar").src = getAvatarUrl(currentUser.avatar);
+          document.getElementById("currentUserScore").textContent = totalTeamCost.toFixed(1);
+        } catch (e) {
+          console.log("Some elements not found, this is expected");
+        }
         // Find the actual opponent
-        const opponent = allUsers.find(x => x.user_id == actualOpponentId);
         if (opponent) {
           try {
             document.getElementById("opponentName").textContent = opponent.username;
@@ -584,66 +644,62 @@
         }
       } catch(e) {
         console.error("Errore loadUserInfo", e);
+        // Gestione errori generici
+        const container = document.getElementById("contestHeaderContainer");
+        container.innerHTML = `
+          <div class="contest-container cc-header">
+            <div class="contest-bar">
+              <div class="result_bold">Errore imprevisto: ${e.message}</div>
+            </div>
+          </div>
+        `;
       }
     }
-
     // Add these functions before the DOMContentLoaded event
     let selectedMultiplier = 1;
     let baseTeamCost = 0;
-    
     // Single showMultiplyOverlay function
     function showMultiplyOverlay() {
       const overlay = document.getElementById('multiplyOverlay');
       const circles = document.querySelectorAll('.multiply-circle');
       baseTeamCost = getTotalCost();
-      
       // Check if we have a locked multiply value (for invited users)
       const lockedMultiply = window.lockedMultiply || localStorage.getItem("lockedMultiply");
       const isMultiplyLocked = lockedMultiply !== null;
-      
-      const titleElement = document.querySelector('.multiply-container .title_centre');
-      
+     const titleElement = document.querySelector('.multiply-container .title_centre');
       if (isMultiplyLocked) {
         // For invited users: force the multiply value and disable selection
         selectedMultiplier = parseFloat(lockedMultiply);
-        
         // Clean display without debug info
         if (titleElement) {
           titleElement.innerHTML = 'MULTIPLY IS FIXED<br>X';
         }
-        
         // Update circle styles - select the correct one and disable all
         circles.forEach(circle => {
           // Convert both values to numbers for comparison
           const circleValue = parseFloat(circle.dataset.multiply);
           const lockedValue = parseFloat(selectedMultiplier);
-          
-          if (circleValue === lockedValue) {
+         if (circleValue === lockedValue) {
             circle.className = 'multiply-circle mc-selected';
           } else {
             circle.className = 'multiply-circle mc-off';
           }
-          
           // Disable clicking on circles
           circle.style.pointerEvents = 'none';
-          
           // Add a visual indication that they're disabled
           if (circleValue !== lockedValue) {
             circle.style.opacity = '0.5';
           }
         });
-        
         // Update the cost with the correct multiplier
         document.getElementById('multipliedCost').textContent = (baseTeamCost * selectedMultiplier).toFixed(1);
       } else {
         // Normal behavior for non-invited users
         selectedMultiplier = 1;
-        
         if (titleElement) {
           titleElement.innerHTML = 'MULTIPLY YOUR WIN<br>X';
         }
-        
-        circles.forEach(circle => {
+       circles.forEach(circle => {
           circle.className = 'multiply-circle mc-off';
           circle.style.pointerEvents = '';
           circle.style.opacity = '';
@@ -651,21 +707,16 @@
             circle.className = 'multiply-circle mc-selected';
           }
         });
-        
         // Update initial multiplied cost
         document.getElementById('multipliedCost').textContent = baseTeamCost.toFixed(1);
       }
-      
       // Always update the multiplied cost at the end
       document.getElementById('multipliedCost').textContent = (baseTeamCost * selectedMultiplier).toFixed(1);
-      
-      overlay.style.display = 'flex';
+     overlay.style.display = 'flex';
     }
-    
     function hideMultiplyOverlay() {
       document.getElementById('multiplyOverlay').style.display = 'none';
     }
-    
     // Update the confirmSquad function
     async function confirmSquad() {
       const players = loadChosenPlayers();
@@ -673,48 +724,37 @@
         alert("Devi scegliere almeno un giocatore!");
         return;
       }
-      
       showMultiplyOverlay();
     }
-    
     // Add this function to check if user is invited and set multiply accordingly
     async function setupMultiplyForInvitedUser() {
       try {
         const params = new URLSearchParams(window.location.search);
         const contestId = params.get("contest");
         const userId = params.get("user");
-        
         if (!contestId || !userId) return;
-        
         // Fetch contest details
         const response = await fetch(`/contest-details?contest=${contestId}&user=${userId}`);
         if (!response.ok) return;
-        
         const data = await response.json();
         const contest = data.contest;
-        
-        // Check if user is opponent and contest status is 1 (invited)
+         // Check if user is opponent and contest status is 1 (invited)
         const isOpponent = parseInt(userId) === parseInt(contest.opponent_id);
-        
         if (isOpponent && contest.status === 1) {
           // User is invited - disable multiply selection and set to contest value
           // Make sure we're getting the correct multiply value
           let multiplyValue = 1;
-          
           if (contest.multiply) {
             // Try to parse the multiply value, ensuring it's a number
             multiplyValue = parseFloat(contest.multiply);
             if (isNaN(multiplyValue)) multiplyValue = 1;
           }
-          
-          // Add debug output to see what we're getting
+           // Add debug output to see what we're getting
           console.log("Contest multiply value:", contest.multiply, "Type:", typeof contest.multiply);
           console.log("Parsed multiply value:", multiplyValue, "Type:", typeof multiplyValue);
-          
           // Store the multiply value for later use when the overlay opens
           window.lockedMultiply = multiplyValue;
           localStorage.setItem("lockedMultiply", multiplyValue.toString());
-          
           console.log("User is invited - multiply locked to:", multiplyValue);
         } else {
           // Clear any previously stored locked multiply value
@@ -725,9 +765,7 @@
         console.error("Error setting up multiply for invited user:", error);
       }
     }
-    
-    // REMOVE THE DUPLICATE showMultiplyOverlay FUNCTION HERE
-    
+   // REMOVE THE DUPLICATE showMultiplyOverlay FUNCTION HERE
     document.addEventListener("DOMContentLoaded", async function() {
       const params = new URLSearchParams(window.location.search);
       const ownerId = params.get("owner");  // DB info
@@ -735,31 +773,24 @@
       const contestId = params.get("contest");
       // UTENTE CORRENTE
       const userIdAttivo = params.get("user"); 
-      
       const messaggioEl = document.getElementById("messaggio");
       if (messaggioEl) {
         messaggioEl.textContent = `Contest ID: ${contestId} | userAttivo=${userIdAttivo}`;
       }
-
-      // Add back button event listener
+     // Add back button event listener
       document.getElementById("backArrow").addEventListener("click", () => {
         history.back();
       });
-
-      // Carica le informazioni degli utenti
+    // Carica le informazioni degli utenti
       await loadUserInfo(userIdAttivo, opponentId, ownerId, contestId);
-      
-      // Carica e visualizza i giocatori scelti (ora è async)
+     // Carica e visualizza i giocatori scelti (ora è async)
       await renderPlayerList();
-
       // Recupera il current event unit in modo sicuro
       const eventUnitId = await fetchCurrentEventUnit();
       window.event_unit_id = eventUnitId;
-      
       // Setup multiply for invited users
       await setupMultiplyForInvitedUser();
-      
-      // Funzione per navigare alla pagina di aggiunta giocatore
+      // Funzione per navigare alla pagina di aggiungi giocatore
       function navigateToAddPlayer() {
         let url = `/aggiungi-giocatore.html?owner=${ownerId}&opponent=${opponentId}&contest=${contestId}&user=${userIdAttivo}`;
         if (window.event_unit_id) {
@@ -767,7 +798,6 @@
         }
         window.location.href = url;
       }
-      
       // Funzione per resettare la squadra
       function resetTeam() {
         if (confirm("Sei sicuro di voler cancellare tutti i giocatori selezionati?")) {
@@ -775,7 +805,6 @@
           renderPlayerList();
         }
       }
-      
       // Funzione per confermare la squadra
       async function confirmSquad() {
         const players = loadChosenPlayers();
@@ -784,8 +813,7 @@
           return;
         }
         const multipliedCost = baseTeamCost * selectedMultiplier;
-        
-        const bodyObj = {
+         const bodyObj = {
           contestId,
           userId: userIdAttivo,
           players,
