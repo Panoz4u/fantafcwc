@@ -40,4 +40,22 @@ app.post('/api/register-user', async (req, res) => {
   }
 });
 
-// ... resto del codice ...
+// Server startup code with port 3000 and fallback mechanism
+const PORT = process.env.PORT || 3000;
+const MAX_PORT_ATTEMPTS = 10;
+
+function startServer(port, attempt = 1) {
+  app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+  }).on('error', (err) => {
+    if (err.code === 'EADDRINUSE' && attempt < MAX_PORT_ATTEMPTS) {
+      const nextPort = port + 1;
+      console.log(`Port ${port} is already in use. Trying port ${nextPort}...`);
+      startServer(nextPort, attempt + 1);
+    } else {
+      console.error('Failed to start server:', err.message);
+    }
+  });
+}
+
+startServer(PORT);

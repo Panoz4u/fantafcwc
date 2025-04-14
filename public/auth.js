@@ -1,6 +1,5 @@
 // ====================================================
 // CONFIGURAZIONE DI GOOGLE IDENTITY PLATFORM (Firebase)
-// Inserisci qui i dati di configurazione ottenuti dalla tua console Firebase/GIP
 const firebaseConfig = {
   apiKey: "AIzaSyBiYZJBkI_cvzp2eLrerYAhAdH_PWPRyEI",
   authDomain: "crafty-vista-455914-s6.firebaseapp.com",
@@ -81,7 +80,7 @@ if (googleRegisterBtn) {
             username: username,
             email: user.email,
             teex_balance: 500,
-            avatar: user.photoURL,  // Qui inviamo direttamente l'URL dell'avatar
+            avatar: user.photoURL,
             google_id: user.uid
           })
         })
@@ -104,21 +103,18 @@ if (googleRegisterBtn) {
 }
 
 
-
 // ====================================================
 // LOGIN CON EMAIL/PASSWORD
 const loginForm = document.getElementById("loginForm");
 if (loginForm) {
   loginForm.addEventListener("submit", function(e) {
     e.preventDefault();
-    console.log("Submit login form");
     const email = document.getElementById("loginEmail").value;
     const password = document.getElementById("loginPassword").value;
     
     auth.signInWithEmailAndPassword(email, password)
       .then(function(userCredential) {
         const user = userCredential.user;
-        console.log("Login avvenuto con successo:", user);
         // Recupera il record utente dal DB usando l'email
         fetch(`/user-by-email?email=${encodeURIComponent(user.email)}`)
           .then(function(response) {
@@ -138,8 +134,6 @@ if (loginForm) {
         alert(error.message);
       });
   });
-} else {
-  console.log("loginForm non trovato");
 }
 
 
@@ -149,19 +143,13 @@ const googleLoginBtn = document.getElementById("googleLogin");
 if (googleLoginBtn) {
   googleLoginBtn.addEventListener("click", function(e) {
     e.preventDefault();
-    console.log("Pulsante Google login cliccato");
-    
-    // Chiudi eventuali popup aperti in precedenza
-    auth.signOut().catch(e => console.log('Nessuna sessione attiva'));
     
     const googleProvider = new firebase.auth.GoogleAuthProvider();
-    // Opzionale: richiedi l'accesso all'email dell'utente
     googleProvider.addScope('email');
     
     auth.signInWithPopup(googleProvider)
       .then(function(result) {
         const user = result.user;
-        console.log("Login con Google avvenuto con successo:", user);
         
         // Controlla se l'utente esiste già nel database
         fetch(`/user-by-email?email=${encodeURIComponent(user.email)}`)
@@ -169,8 +157,15 @@ if (googleLoginBtn) {
             if (response.ok) {
               return response.json();
             } else {
+              throw new Error('Errore nella verifica utente');
+            }
+          })
+          .then(function(dbUser) {
+            if (dbUser && dbUser.user_id) {
+              // L'utente esiste già, reindirizza alla pagina utente
+              window.location.href = `user-landing.html?user=${dbUser.user_id}`;
+            } else {
               // Se l'utente non esiste, lo registriamo
-              console.log('Utente non trovato, procedo con la registrazione...');
               const username = user.displayName ? user.displayName : user.email;
               
               return fetch("/users", {
@@ -186,34 +181,71 @@ if (googleLoginBtn) {
               })
               .then(function(registerResponse) {
                 return registerResponse.json();
+              })
+              .then(function(data) {
+                window.location.href = `user-landing.html?user=${data.userId}`;
               });
             }
           })
-          .then(function(dbUser) {
-            // Reindirizza alla pagina utente
-            const userId = dbUser.user_id || dbUser.userId;
-            window.location.href = `user-landing.html?user=${userId}`;
-          })
           .catch(function(err) {
             console.error("Errore nel recupero/registrazione dell'utente:", err);
-            alert("Errore nel recupero o registrazione dell'utente");
+            const errorContainer = document.getElementById('errorContainer');
+            const errorText = document.getElementById('errorText');
+            if (errorContainer && errorText) {
+              errorText.textContent = "Errore nel recupero o registrazione dell'utente";
+              errorContainer.style.display = 'block';
+            } else {
+              alert("Errore nel recupero o registrazione dell'utente");
+            }
           });
       })
       .catch(function(error) {
         console.error("Errore durante il login con Google:", error);
-        alert("Errore durante il login con Google: " + error.message);
+        const errorContainer = document.getElementById('errorContainer');
+        const errorText = document.getElementById('errorText');
+        if (errorContainer && errorText) {
+          errorText.textContent = "Errore durante il login con Google: " + error.message;
+          errorContainer.style.display = 'block';
+        } else {
+          alert("Errore durante il login con Google: " + error.message);
+        }
       });
   });
-} else {
-  console.log("googleLoginBtn non trovato");
 }
 
-
-// Gestisci il risultato del redirect quando l'utente torna dalla pagina di autenticazione Google
-auth.getRedirectResult().then(function(result) {
-  if (result.user) {
-    console.log("Redirect result:", result.user.email);
+// Modifica il controllo dell'autenticazione per non reindirizzare automaticamente
+firebase.auth().onAuthStateChanged(function(user) {
+  if (user) {
+    console.log("Utente autenticato:", user.email);
+    // Non reindirizzare automaticamente dalla pagina index
+    // Lasciamo che l'utente scelga esplicitamente di effettuare il login
+    
+    // Solo per le pagine che richiedono autenticazione (non index)
+    const isIndexPage = window.location.pathname === '/index.html' || 
+                        window.location.pathname === '/' || 
+                        window.location.pathname.endsWith('/index.html');
+    
+    if (!isIndexPage) {
+      // Per le altre pagine, verifica che l'utente esista nel database
+      fetch(`/user-by-email?email=${encodeURIComponent(user.email)}`)
+        .then(function(response) {
+          if (response.ok) {
+            return response.json();
+          } else {
+            throw new Error('Errore nella verifica utente');
+          }
+        })
+        .then(function(dbUser) {
+          if (dbUser && dbUser.user_id) {
+            // Non fare nulla, l'utente è già nella pagina corretta
+          } else {
+            // Se l'utente non esiste nel DB, reindirizza alla pagina index
+            window.location.href = 'index.html';
+          }
+        })
+        .catch(function(err) {
+          console.error("Errore nel controllo dell'utente:", err);
+        });
+    }
   }
-}).catch(function(error) {
-  console.error("Errore nel redirect:", error);
 });
