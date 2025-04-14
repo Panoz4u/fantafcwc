@@ -7,9 +7,7 @@ const pool = require("./db");
 app.use(express.json());
 app.use(express.static("public"));
 // Fallback su index.html se nessun'altra route viene trovata
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
+
 
 
 const uploadResultsRoute = require("./uploadResults"); // Assicurati che il percorso sia corretto
