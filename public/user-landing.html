@@ -8,7 +8,121 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,800;1,800&family=Barlow+Condensed:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/mobile.css">
   <link rel="stylesheet" href="css/mobile2.css">
- 
+  
+  <style>
+    /* Fixed header styles */
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+    
+    .sticky-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background-color: #0a0a23;
+      width: 100%;
+    }
+    
+    .scrollable-content {
+      flex: 1;
+      overflow-y: auto;
+      padding-bottom: 96px; /* Space for the footer */
+    }
+    
+    .footer-nav {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      z-index: 100;
+    }
+    
+    /* Ensure the FAB stays above the scrollable content */
+    #playButton {
+      z-index: 101;
+    }
+    
+    /* Welcome message styles */
+    .welcome-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 20px;
+      text-align: center;
+      margin-top: 60px;
+    }
+    
+    .welcome-text {
+      font-family: 'Montserrat', sans-serif;
+      color: white;
+      margin-bottom: 40px;
+    }
+    
+    .welcome-to {
+      font-weight: 400;
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    
+    .fanteex-title {
+      font-weight: 800;
+      font-size: 48px;
+      margin-bottom: 10px;
+      color: white;
+    }
+    
+    .start-game {
+      font-weight: 400;
+      font-size: 24px;
+    }
+    
+    .animated-arrows {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 20px;
+    }
+    
+    .arrow {
+      width: 40px;
+      height: 40px;
+      margin: 5px 0;
+      filter: brightness(1);
+    }
+    
+    .arrow1 {
+      animation: pulse 1.5s infinite;
+      animation-delay: 0s;
+    }
+    
+    .arrow2 {
+      animation: pulse 1.5s infinite;
+      animation-delay: 0.5s;
+    }
+    
+    .arrow3 {
+      animation: pulse 1.5s infinite;
+      animation-delay: 1s;
+    }
+    
+    @keyframes pulse {
+      0% {
+        filter: brightness(1);
+      }
+      50% {
+        filter: brightness(1.5);
+      }
+      100% {
+        filter: brightness(1);
+      }
+    }
+  </style>
 </head>
 <body>
   <!-- Aggiungo il div sticky-header -->
@@ -68,8 +182,10 @@
   </div>
 
   <!-- Contenuto scrollabile -->
-  <div id="activeContainer" class="contests-container"></div>
-  <div id="completedContainer" class="contests-container" style="display: none;"></div>
+  <div class="scrollable-content">
+    <div id="activeContainer" class="contests-container"></div>
+    <div id="completedContainer" class="contests-container" style="display: none;"></div>
+  </div>
 
 
 <!-- Blur background for FAB -->
@@ -158,6 +274,25 @@
 
     function renderContestList(list, container) {
       container.innerHTML = "";
+      
+      if (!list.length) {
+        // Replace "Nessuna sfida" with a welcome message and animated arrows
+        container.innerHTML = `
+          <div class="welcome-container">
+            <div class="welcome-text">
+              <div class="welcome-to">WELCOME TO</div>
+              <div class="fanteex-title">FANTEEX</div>
+              <div class="start-game">START YOUR FIRST GAME</div>
+            </div>
+            <div class="animated-arrows">
+              <img src="icons/arrow-down.png" alt="Arrow" class="arrow arrow1">
+              <img src="icons/arrow-down.png" alt="Arrow" class="arrow arrow2">
+              <img src="icons/arrow-down.png" alt="Arrow" class="arrow arrow3">
+            </div>
+          </div>
+        `;
+        return;
+      }
       
       list.forEach(contest => {
         // Correggiamo la determinazione di iAmOwner confrontando correttamente gli ID
