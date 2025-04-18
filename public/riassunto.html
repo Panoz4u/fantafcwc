@@ -106,6 +106,7 @@
       }
     }
     // Modifica la funzione renderPlayerList per aggiornare anche il punteggio dell'utente corrente
+    // Funzione per renderizzare la lista dei giocatori
     async function renderPlayerList() {
       let players = loadChosenPlayers();
       // Arricchisci i dati dei giocatori
@@ -150,7 +151,21 @@
       const playersList = document.getElementById("playersList");
       if (playersList) {
         playersList.innerHTML = "";
-        
+        if (!players.length) {
+          // Se non ci sono giocatori, mostra il messaggio di benvenuto con le frecce animate
+          playersList.innerHTML = `
+            <div class="welcome-container">
+              <div class="welcome-text">
+                <div class="welcome-to">START ADDING</div>
+                <div class="fanteex-title">PLAYERS</div>
+                <div class="start-game">TO YOUR TEAM</div>
+              </div>
+              <div class="animated-arrows">
+                <img src="icons/arrow-down.png" alt="Arrow" class="arrow arrow1"><img src="icons/arrow-down.png" alt="Arrow" class="arrow arrow2"><img src="icons/arrow-down.png" alt="Arrow" class="arrow arrow3">
+              </div>
+            </div>`;
+          return;
+        }
         players.forEach((player, index) => {
           playersList.appendChild(createPlayerRow(player, index));
         });
@@ -255,6 +270,11 @@
       players.splice(index, 1);
       saveChosenPlayers(players);
       renderPlayerList();
+    }
+
+    // Funzione ausiliaria per salvare i giocatori scelti
+    function saveChosenPlayers(players) {
+      localStorage.setItem("chosenPlayers", JSON.stringify(players));
     }
    // Funzione per ottenere l'URL dell'avatar
     function getAvatarUrl(avatarPath) {
@@ -493,8 +513,7 @@
         } else {
           actualOpponentId = opponentId;
         }
-        
-        // Sostituisco il messaggio di caricamento con uno spinner più discreto
+                // Sostituisco il messaggio di caricamento con uno spinner più discreto
         const container = document.getElementById("contestHeaderContainer");
         container.innerHTML = `
           <div class="contest-container cc-header">
@@ -845,14 +864,12 @@
       if (addPlayerFooterBtnEl) {
         addPlayerFooterBtnEl.addEventListener("click", navigateToAddPlayer);
       }
-      
-      // Aggiungi listener al nuovo pulsante FAB per aggiungere giocatore
+            // Aggiungi listener al nuovo pulsante FAB per aggiungere giocatore
       const addPlayerBtnEl = document.getElementById("addPlayerBtn");
       if (addPlayerBtnEl) {
         addPlayerBtnEl.addEventListener("click", navigateToAddPlayer);
       }
-      
-      // Aggiungi listener al pulsante RESET TEAM
+            // Aggiungi listener al pulsante RESET TEAM
       const resetTeamBtnEl = document.getElementById("resetTeamBtn");
       if (resetTeamBtnEl) {
         resetTeamBtnEl.addEventListener("click", resetTeam);
@@ -878,8 +895,7 @@
             // If locked, don't allow changing the multiply value
             return;
           }
-          
-          // Update circle styles
+                    // Update circle styles
           document.querySelectorAll('.multiply-circle').forEach(c => {
             c.className = 'multiply-circle mc-off';
           });
@@ -895,17 +911,14 @@
      document.getElementById('confirmMultiply').addEventListener('click', async () => {
         const players = loadChosenPlayers();
         const multipliedCost = baseTeamCost * selectedMultiplier;
-        
-        // Check if user has enough Teex balance
+                // Check if user has enough Teex balance
         const teexBalanceEl = document.getElementById("teexBalance");
         const teexBalance = parseFloat(teexBalanceEl.textContent);
-        
-        if (teexBalance < multipliedCost) {
+                if (teexBalance < multipliedCost) {
           alert(`Not enough teex—you're running low with only ${teexBalance.toFixed(1)} available!`);
           return;
         }
-        
-        const bodyObj = {
+                const bodyObj = {
           contestId,
           userId: userIdAttivo,
           players,
@@ -918,14 +931,12 @@
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(bodyObj)
           });
-          
-          if(!resp.ok) {
+                    if(!resp.ok) {
             const err = await resp.json();
             alert("Errore conferma squadra: " + err.error);
             return;
           }
-          
-          // Ok
+                   // Ok
           window.location.href = `/user-landing.html?user=${userIdAttivo}`;
         } catch(e) {
           alert("Errore di rete");

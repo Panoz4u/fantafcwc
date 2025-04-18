@@ -610,4 +610,81 @@
   text-decoration: underline;
 }
 
+    /* Welcome message styles */
+    .welcome-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 20px;
+      text-align: center;
+      margin-top: 10px;
+    }
     
+    .welcome-text {
+      font-family: 'Montserrat', sans-serif;
+      color: white;
+      margin-bottom: 40px;
+    }
+    
+    .welcome-to {
+      font-weight: 400;
+      font-size: 24px;
+      margin-bottom: 0px;
+    }
+    
+    .fanteex-title {
+      font-weight: 800;
+      font-size: 48px;
+      margin-bottom: 0px;
+      color: white;
+    }
+    
+    .start-game {
+      font-weight: 400;
+      font-size: 24px;
+    }
+    
+    .animated-arrows {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: -30px;
+    }
+    
+    .arrow {
+      width: 40px;
+      height: 40px;
+      margin: 0px 0;
+      filter: brightness(1);
+    }
+    
+    .arrow1 {
+      animation: pulse-color 2s infinite;
+      animation-delay: 0s; /* First to animate (top arrow) */
+    }
+    
+    .arrow2 {
+      animation: pulse-color 2s infinite;
+      animation-delay: 0.5s; /* Second to animate (middle arrow) */
+      margin-top: -25px;
+    }
+    
+    .arrow3 {
+      animation: pulse-color 2s infinite;
+      animation-delay: 1s; /* Last to animate (bottom arrow) */
+      margin-top: -25px;
+    }
+    
+    @keyframes pulse-color {
+      0% {
+        filter: brightness(1) drop-shadow(0 0 0px rgba(255, 165, 0, 0));
+      }
+      50% {
+        filter: brightness(2) drop-shadow(0 0 10px rgba(255, 165, 0, 0.7));
+      }
+      100% {
+        filter: brightness(1) drop-shadow(0 0 0px rgba(255, 165, 0, 0));
+      }
+    }   

@@ -3,6 +3,7 @@ const path = require('path');
 const express = require("express");
 const app = express();
 const port = process.env.PORT || 3000;
+
 const pool = require("./db");
 
 app.use(express.json());
@@ -11,20 +12,6 @@ app.use(express.static("public"));
 
 const uploadResultsRoute = require("./uploadResults"); // Assicurati che il percorso sia corretto
 app.use("/uploadResults", uploadResultsRoute);
-
-// Add error handling for server startup
-app.listen(port, '0.0.0.0', () => {
-  console.log(`Server avviato su http://0.0.0.0:${port}`);
-}).on('error', (err) => {
-  if (err.code === 'EADDRINUSE') {
-    console.log(`Port ${port} is already in use. Trying port ${port + 1}...`);
-    app.listen(port + 1, '0.0.0.0', () => {
-      console.log(`Server avviato su http://0.0.0.0:${port + 1}`);
-    });
-  } else {
-    console.error('Server error:', err);
-  }
-});
 
 /* --------------------------- */
 /* 1) GET /users */
@@ -136,7 +123,7 @@ app.get("/event-players", (req, res) => {
     LEFT JOIN matches m ON aep.event_unit_id = m.event_unit_id AND (m.home_team = a.team_id OR m.away_team = a.team_id)
     LEFT JOIN teams ht ON m.home_team = ht.team_id
     LEFT JOIN teams at ON m.away_team = at.team_id
-    WHERE aep.event_unit_id = ?
+    WHERE aep.event_unit_id = ? AND aep.status = 1
   `;
   pool.query(sql, [eId], (er, rows) => {
     if (er) {
@@ -589,7 +576,7 @@ app.get("/user-by-email", (req, res) => {
 // GET /current-event-unit
 app.get("/current-event-unit", (req, res) => {
   // Qui selezioniamo l'unità evento corrente: status = 3
-  const sql = "SELECT event_unit_id FROM event_units WHERE status = 3 LIMIT 1";
+  const sql = "SELECT event_unit_id FROM event_units WHERE status = 4 LIMIT 1";
   pool.query(sql, (err, rows) => {
     if (err) {
       console.error("Error in GET /current-event-unit:", err);
@@ -631,4 +618,20 @@ app.get("/athlete-details", (req, res) => {
     }
     res.json(rows[0]);
   });  
+});
+// Aggiungi questa riga dopo la dichiarazione di uploadResultsRoute
+const uploadLineupsRoute = require("./uploadLineups");
+// Aggiungi questa riga dopo app.use("/uploadResults", uploadResultsRoute);
+app.use("/uploadLineups", uploadLineupsRoute);
+
+// Add a single app.listen call at the end of the file
+app.listen(port, '0.0.0.0', () => {
+  console.log(`Server avviato su http://0.0.0.0:${port}`);
+}).on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.log(`La porta ${port} è già in uso. Assicurati che nessun altro processo stia utilizzando questa porta.`);
+    process.exit(1); // Termina il processo invece di provare la porta successiva
+  } else {
+    console.error('Server error:', err);
+  }
 });
