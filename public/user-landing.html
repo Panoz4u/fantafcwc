@@ -45,8 +45,7 @@
     #playButton {
       z-index: 101;
     }
-    
- 
+
   </style>
 </head>
 <body>
@@ -200,7 +199,10 @@
     function renderContestList(list, container) {
       container.innerHTML = "";
       
-      if (!list.length) {
+      // Filter out contests with status 0 (created)
+      const filteredList = list.filter(contest => contest.status !== 0);
+      
+      if (!filteredList.length) {
         // Replace "Nessuna sfida" with a welcome message and animated arrows
         container.innerHTML = `
           <div class="welcome-container">
@@ -219,7 +221,7 @@
         return;
       }
       
-      list.forEach(contest => {
+      filteredList.forEach(contest => {
         // Correggiamo la determinazione di iAmOwner confrontando correttamente gli ID
         const iAmOwner = parseInt(contest.owner_id) === parseInt(userId);
         console.log(`Contest ${contest.contest_id}: owner_id=${contest.owner_id}, userId=${userId}, iAmOwner=${iAmOwner}`);

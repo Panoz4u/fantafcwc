@@ -54,7 +54,7 @@
     right: 0;
     bottom: 0;
     overflow-y: auto;
-    padding: 0 16px;
+    padding: 0 0px;
     padding-bottom: 180px; /* Spazio extra sotto l'ultimo elemento per evitare che il footer lo nasconda */
   }
   
@@ -488,7 +488,6 @@
   
   .cc-header {
     margin-bottom: 50px; /* Or whatever value works better for the header */
-    background-image: url('../images/GradientBG.png');
   }
   
   .contest-bar {
