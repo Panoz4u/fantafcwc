@@ -68,21 +68,37 @@ if (googleRegisterBtn) {
     e.preventDefault();
     
     auth.signInWithPopup(googleProvider)
-    .catch(function(error) {
-      if (error.code === 'auth/popup-closed-by-user' || error.code === 'auth/popup-blocked') {
-        // popup bloccata o chiusa → fallback a redirect
-        auth.signInWithRedirect(googleProvider);
-      } else {
-        const errorContainer = document.getElementById('errorContainer');
-        const errorText = document.getElementById('errorText');
-        if (errorContainer && errorText) {
-          errorText.textContent = "Errore durante il login con Google: " + error.message;
-          errorContainer.style.display = 'block';
-        } else {
-          alert("Errore durante il login con Google: " + error.message);
-        }
-      }
-    });
+      .then(function(result) {
+        const user = result.user;
+        // Per Google, usiamo user.displayName (se presente) altrimenti user.email per il campo username.
+        const username = user.displayName ? user.displayName : user.email;
+        
+        fetch("/users", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            username: username,
+            email: user.email,
+            teex_balance: 500,
+            avatar: user.photoURL,
+            google_id: user.uid
+          })
+        })
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(data) {
+          window.location.href = `user-landing.html?user=${data.userId}`;
+        })
+        .catch(function(err) {
+          console.error("Errore durante la registrazione con Google sul DB:", err);
+          alert("Errore nella registrazione sul database");
+        });
+      })
+      .catch(function(error) {
+        console.error("Errore di registrazione con Google:", error);
+        alert(error.message);
+      });
   });
 }
 
@@ -233,20 +249,3 @@ firebase.auth().onAuthStateChanged(function(user) {
     }
   }
 });
-
-// Gestione del risultato di Google redirect
-auth.getRedirectResult()
-  .then(function(result) {
-    if (result.user) {
-      const user = result.user;
-      // qui ripeti la tua logica di fetch(/user-by-email…) e redirect a user-landing
-    }
-  })
-  .catch(function(error) {
-    const errorContainer = document.getElementById('errorContainer');
-    const errorText = document.getElementById('errorText');
-    if (errorContainer && errorText) {
-      errorText.textContent = "Errore dopo redirect Google: " + error.message;
-      errorContainer.style.display = 'block';
-    }
-  });
