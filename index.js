@@ -110,9 +110,27 @@ app.post("/contests", (req, res) => {
 /* 3) GET /event-players?event=30 */
 app.get("/event-players", (req, res) => {
   const eId = req.query.event || 30;
+  const checkOnly = req.query.check_only === 'true';
+  
+  // If check_only is true, just verify if the event exists
+  if (checkOnly) {
+    const checkSql = "SELECT event_unit_id FROM event_units WHERE event_unit_id = ? LIMIT 1";
+    pool.query(checkSql, [eId], (err, rows) => {
+      if (err) {
+        console.error("DB error checking event unit:", err);
+        return res.status(500).json({ error: "DB error checking event unit" });
+      }
+      if (rows.length === 0) {
+        return res.status(404).json({ error: "Event unit not found" });
+      }
+      return res.json({ exists: true });
+    });
+    return;
+  }
+  
   const sql = `
     SELECT aep.athlete_id, aep.event_unit_cost, a.athlete_name, a.position, a.athlete_shortname, a.team_id, a.picture,
-           m.home_team, m.away_team,
+           m.home_team, m.away_team, m.status AS match_status,
            ht.team_3letter AS home_team_code, at.team_3letter AS away_team_code,
            ht.team_name AS home_team_name, at.team_name AS away_team_name,
            t.team_3letter AS player_team_code, t.team_name AS player_team_name,
@@ -124,6 +142,7 @@ app.get("/event-players", (req, res) => {
     LEFT JOIN teams ht ON m.home_team = ht.team_id
     LEFT JOIN teams at ON m.away_team = at.team_id
     WHERE aep.event_unit_id = ? AND aep.status = 1
+    AND (m.status IS NULL OR m.status < 4)
   `;
   pool.query(sql, [eId], (er, rows) => {
     if (er) {
@@ -633,5 +652,140 @@ app.listen(port, '0.0.0.0', () => {
     process.exit(1); // Termina il processo invece di provare la porta successiva
   } else {
     console.error('Server error:', err);
+  }
+});
+
+
+// Endpoint per gestire l'upload dei match
+app.post('/api/matches/upload', async (req, res) => {
+  const { matches } = req.body;
+  
+  if (!matches || !Array.isArray(matches)) {
+    return res.status(400).json({ message: 'Formato dati non valido.' });
+  }
+  
+  const result = {
+    created: 0,
+    updated: 0,
+    errors: []
+  };
+  
+  try {
+    for (const match of matches) {
+      try {
+        if (match.match_id) {
+          // Aggiorna un match esistente
+          const updateFields = {};
+          const allowedFields = [
+            'event_unit_id', 'home_team', 'away_team', 
+            'home_score', 'away_score', 'status', 'match_date', 
+            'updated_at'
+          ];
+          
+          allowedFields.forEach(field => {
+            if (match[field] !== undefined) {
+              updateFields[field] = match[field];
+            }
+          });
+          
+          if (Object.keys(updateFields).length > 0) {
+            const updateQuery = `
+              UPDATE matches 
+              SET ${Object.keys(updateFields).map(field => `${field} = ?`).join(', ')}
+              WHERE match_id = ?
+            `;
+            
+            const updateValues = [...Object.values(updateFields), match.match_id];
+            
+            await new Promise((resolve, reject) => {
+              pool.query(updateQuery, updateValues, function(err, queryResult) {
+                if (err) {
+                  reject(err);
+                } else {
+                  if (queryResult.affectedRows > 0) {
+                    result.updated++;
+                    resolve();
+                  } else {
+                    // Il match_id non esiste, quindi lo creiamo come nuovo
+                    createNewMatch(match)
+                      .then(() => {
+                        result.created++;
+                        resolve();
+                      })
+                      .catch(reject);
+                  }
+                }
+              });
+            });
+          }
+        } else {
+          // Crea un nuovo match
+          await createNewMatch(match);
+          result.created++;
+        }
+      } catch (matchError) {
+        console.error("Error processing match:", matchError);
+        result.errors.push(`Errore per il match ${match.match_id || 'nuovo'}: ${matchError.message}`);
+      }
+    }
+    
+    res.json(result);
+  } catch (error) {
+    console.error('Errore durante l\'elaborazione dell\'upload:', error);
+    res.status(500).json({ message: 'Errore durante l\'elaborazione dell\'upload.', errors: [error.message] });
+  }
+});
+
+// Funzione per creare un nuovo match
+async function createNewMatch(match) {
+  const fields = Object.keys(match).filter(key => match[key] !== undefined);
+  const placeholders = fields.map(() => '?').join(', ');
+  const values = fields.map(field => match[field]);
+  
+  const insertQuery = `
+    INSERT INTO matches (${fields.join(', ')})
+    VALUES (${placeholders})
+  `;
+  
+  return new Promise((resolve, reject) => {
+    pool.query(insertQuery, values, function(err, queryResult) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(queryResult.insertId);
+      }
+    });
+  });
+}
+
+// Add this endpoint after your existing /api/matches/upload endpoint
+
+// Endpoint per aggiornare i match passati
+app.post('/api/matches/update-past', async (req, res) => {
+  try {
+    // Query per trovare e aggiornare i match con date passate e status < 4
+    const updateQuery = `
+      UPDATE matches 
+      SET status = 4, updated_at = NOW() 
+      WHERE match_date < NOW() AND status < 4
+    `;
+    
+    pool.query(updateQuery, (err, result) => {
+      if (err) {
+        console.error("Errore nell'aggiornamento dei match passati:", err);
+        return res.status(500).json({ error: "DB error updating past matches" });
+      }
+      
+      res.json({ 
+        message: "Past matches updated successfully", 
+        updatedCount: result.affectedRows 
+      });
+    });
+  } catch (error) {
+    console.error('Errore durante l\'aggiornamento dei match passati:', error);
+    res.status(500).json({ 
+      message: 'Errore durante l\'aggiornamento dei match passati.', 
+      error: error.message 
+    });
   }
 });

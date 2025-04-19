@@ -59,3 +59,107 @@ function startServer(port, attempt = 1) {
 }
 
 startServer(PORT);
+
+// Aggiungi questo endpoint per gestire l'upload dei match
+
+app.post('/api/matches/upload', async (req, res) => {
+  const { matches } = req.body;
+  
+  if (!matches || !Array.isArray(matches)) {
+    return res.status(400).json({ message: 'Formato dati non valido.' });
+  }
+  
+  const result = {
+    created: 0,
+    updated: 0,
+    errors: []
+  };
+  
+  try {
+    for (const match of matches) {
+      try {
+        if (match.match_id) {
+          // Aggiorna un match esistente
+          // Prepara i campi da aggiornare
+          const updateFields = {};
+          const allowedFields = [
+            'event_unit_id', 'home_team', 'away_team', 
+            'home_score', 'away_score', 'status', 'match_date', 
+            'updated_at'
+          ];
+          
+          allowedFields.forEach(field => {
+            if (match[field] !== undefined) {
+              updateFields[field] = match[field];
+            }
+          });
+          
+          // Verifica se ci sono campi da aggiornare
+          if (Object.keys(updateFields).length > 0) {
+            const updateQuery = `
+              UPDATE matches 
+              SET ${Object.keys(updateFields).map(field => `${field} = ?`).join(', ')}
+              WHERE match_id = ?
+            `;
+            
+            const updateValues = [...Object.values(updateFields), match.match_id];
+            
+            await new Promise((resolve, reject) => {
+              db.run(updateQuery, updateValues, function(err) {
+                if (err) {
+                  reject(err);
+                } else {
+                  if (this.changes > 0) {
+                    result.updated++;
+                  } else {
+                    // Il match_id non esiste, quindi lo creiamo come nuovo
+                    createNewMatch(match)
+                      .then(() => {
+                        result.created++;
+                        resolve();
+                      })
+                      .catch(reject);
+                  }
+                  resolve();
+                }
+              });
+            });
+          }
+        } else {
+          // Crea un nuovo match
+          await createNewMatch(match);
+          result.created++;
+        }
+      } catch (matchError) {
+        result.errors.push(`Errore per il match ${match.match_id || 'nuovo'}: ${matchError.message}`);
+      }
+    }
+    
+    res.json(result);
+  } catch (error) {
+    console.error('Errore durante l\'elaborazione dell\'upload:', error);
+    res.status(500).json({ message: 'Errore durante l\'elaborazione dell\'upload.', errors: [error.message] });
+  }
+  
+  // Funzione interna per creare un nuovo match
+  async function createNewMatch(match) {
+    const fields = Object.keys(match).filter(key => match[key] !== undefined);
+    const placeholders = fields.map(() => '?').join(', ');
+    const values = fields.map(field => match[field]);
+    
+    const insertQuery = `
+      INSERT INTO matches (${fields.join(', ')})
+      VALUES (${placeholders})
+    `;
+    
+    return new Promise((resolve, reject) => {
+      db.run(insertQuery, values, function(err) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(this.lastID);
+        }
+      });
+    });
+  }
+});
