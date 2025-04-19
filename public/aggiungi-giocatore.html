@@ -440,12 +440,17 @@
     function filterAndRenderPlayers() {
       let filteredPlayers = allPlayers;
       
+      // Filter out players whose matches are in status 4 or 5 (completed)
+      filteredPlayers = filteredPlayers.filter(player => {
+        return !player.match_status || player.match_status < 4;
+      });
+      
       // Apply search filter if there's a search term
       if (searchTerm) {
         console.log("Filtrando per:", searchTerm);
         
         // Approccio più semplice e diretto
-        filteredPlayers = allPlayers.filter(player => {
+        filteredPlayers = filteredPlayers.filter(player => {
           // Verifica tutti i campi rilevanti
           const fields = [
             player.athlete_shortname,
@@ -536,6 +541,12 @@
       let renderedCount = 0;
       
       players.forEach(player => {
+        // Skip players whose matches are in status 4 or 5 (completed)
+        if (player.match_status && player.match_status >= 4) {
+          console.log(`Skipping player ${player.athlete_shortname} - match status: ${player.match_status}`);
+          return;
+        }
+        
         // Log per ogni giocatore che stiamo processando
         console.log(`Processando giocatore: ${player.athlete_shortname}`);
         
