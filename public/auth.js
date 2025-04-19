@@ -147,25 +147,38 @@ if (googleLoginBtn) {
     const googleProvider = new firebase.auth.GoogleAuthProvider();
     googleProvider.addScope('email');
     
+    // Forza la selezione dell'account ogni volta
+    googleProvider.setCustomParameters({
+      prompt: 'select_account'
+    });
+    
     auth.signInWithPopup(googleProvider)
       .then(function(result) {
         const user = result.user;
+        console.log("Google login successful for:", user.email);
         
         // Controlla se l'utente esiste già nel database
         fetch(`/user-by-email?email=${encodeURIComponent(user.email)}`)
           .then(function(response) {
+            console.log("User verification response status:", response.status);
             if (response.ok) {
               return response.json();
+            } else if (response.status === 404) {
+              // Utente non trovato, restituisci null per crearne uno nuovo
+              console.log("User not found in database, will create new user");
+              return null;
             } else {
-              throw new Error('Errore nella verifica utente');
+              throw new Error('Errore nella verifica utente: ' + response.status);
             }
           })
           .then(function(dbUser) {
             if (dbUser && dbUser.user_id) {
+              console.log("User exists, redirecting to landing page:", dbUser.user_id);
               // L'utente esiste già, reindirizza alla pagina utente
               window.location.href = `user-landing.html?user=${dbUser.user_id}`;
             } else {
               // Se l'utente non esiste, lo registriamo
+              console.log("Creating new user from Google login:", user.email);
               const username = user.displayName ? user.displayName : user.email;
               
               return fetch("/users", {
@@ -180,9 +193,14 @@ if (googleLoginBtn) {
                 })
               })
               .then(function(registerResponse) {
+                console.log("Registration response status:", registerResponse.status);
+                if (!registerResponse.ok) {
+                  throw new Error('Errore nella registrazione utente: ' + registerResponse.status);
+                }
                 return registerResponse.json();
               })
               .then(function(data) {
+                console.log("User created successfully:", data.userId);
                 window.location.href = `user-landing.html?user=${data.userId}`;
               });
             }
@@ -192,10 +210,10 @@ if (googleLoginBtn) {
             const errorContainer = document.getElementById('errorContainer');
             const errorText = document.getElementById('errorText');
             if (errorContainer && errorText) {
-              errorText.textContent = "Errore nel recupero o registrazione dell'utente";
+              errorText.textContent = "Errore nel recupero o registrazione dell'utente: " + err.message;
               errorContainer.style.display = 'block';
             } else {
-              alert("Errore nel recupero o registrazione dell'utente");
+              alert("Errore nel recupero o registrazione dell'utente: " + err.message);
             }
           });
       })
