@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fanteex - Admin Backend</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,800;1,800&family=Barlow+Condensed:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #260E3D;
+      background-image: url('public/images/GradientBG.png');
+      background-size: cover;
+      background-position: center top;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      color: #fff;
+      position: relative;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding: 20px;
+      background-color: rgba(10, 0, 52, 0.7);
+      border-radius: 10px;
+    }
+    
+    h1 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 36px;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    
+    h2 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 24px;
+      font-weight: 400;
+      opacity: 0.8;
+    }
+    
+    .admin-links {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+    
+    .admin-card {
+      background-color: rgba(10, 0, 52, 0.7);
+      border-radius: 10px;
+      padding: 20px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .admin-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    .admin-card h3 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 15px;
+      color: #5DFDCB;
+    }
+    
+    .admin-card p {
+      margin-bottom: 20px;
+      line-height: 1.5;
+      opacity: 0.9;
+    }
+    
+    .btn {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      text-transform: uppercase;
+      border-radius: 50px;
+      padding: 12px 24px;
+      border: none;
+      cursor: pointer;
+      text-align: center;
+      display: inline-block;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary {
+      background-color: #FE4208;
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background-color: #ff5a28;
+      box-shadow: 0 5px 15px rgba(254, 66, 8, 0.4);
+    }
+    
+    .btn-secondary {
+      background-color: #5DFDCB;
+      color: #0A0034;
+    }
+    
+    .btn-secondary:hover {
+      background-color: #7dffd5;
+      box-shadow: 0 5px 15px rgba(93, 253, 203, 0.4);
+    }
+    
+    .btn-dark {
+      background-color: #0B0C2A;
+      color: white;
+      border: 2px solid #5DFDCB;
+    }
+    
+    .btn-dark:hover {
+      background-color: #161856;
+      box-shadow: 0 5px 15px rgba(11, 12, 42, 0.4);
+    }
+    
+    footer {
+      text-align: center;
+      padding: 20px;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: rgba(10, 0, 52, 0.7);
+    }
+    
+    @media (min-width: 768px) {
+      .admin-links {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Fanteex Admin Backend</h1>
+      <h2>Gestione dati e configurazioni</h2>
+    </header>
+    
+    <div class="admin-links">
+      <div class="admin-card">
+        <h3>Upload Match Data</h3>
+        <p>Carica i dati delle partite dal file Excel. Aggiorna le informazioni sulle partite e i relativi eventi.</p>
+        <a href="uploadmatch.html" class="btn btn-primary">Accedi</a>
+      </div>
+      
+      <div class="admin-card">
+        <h3>Upload Lineup Atleti</h3>
+        <p>Gestisci le lineup degli atleti caricando file Excel o JSON con i dati aggiornati delle formazioni.</p>
+        <a href="uploadLineups.html" class="btn btn-secondary">Accedi</a>
+      </div>
+      
+      <div class="admin-card">
+        <h3>Upload Risultati</h3>
+        <p>Carica i risultati delle partite e aggiorna i punteggi dei contest e delle fantasy teams.</p>
+        <a href="uploadResults.html" class="btn btn-dark">Accedi</a>
+      </div>
+    </div>
+  </div>
+  
+  <footer>
+    <p>&copy; 2023 Fanteex - Admin Panel</p>
+  </footer>
+</body>
+</html>

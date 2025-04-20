@@ -706,8 +706,12 @@
       background-color: #5DFDCB;
     }
 
+    .status-badge-win {
+      background-color:forestgreen;
+      color: #ffffff;
+    }
     .status-badge-loss {
-      background-color: #ED33B9;
+      background-color:crimson;
       color: #ffffff;
     }
 
