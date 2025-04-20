@@ -82,159 +82,360 @@ async function processResults(data) {
   });
 
   // Attendi che tutti gli update siano completati
-  await Promise.all(promises);
-
-  // Dopo aver processato tutti i dati, chiama la funzione per settare i contest live
-  setLiveContests(() => {
+  const results = await Promise.all(promises);
+  
+  // Estrai gli event_unit_id unici dai dati processati
+  const eventUnitIds = [...new Set(data.map(item => item.event_unit_id))];
+  console.log("Event unit IDs processati:", eventUnitIds);
+  
+  // Per ogni event_unit_id, aggiorna i contest
+  for (const eventUnitId of eventUnitIds) {
+    // Dopo aver processato tutti i dati, chiama la funzione per settare i contest live
+    await setLiveContests(eventUnitId);
     // Quando setLiveContests è terminata, chiama closeContests
-    closeContests();
-  });
+    await closeContests(eventUnitId);
+  }
 }
 
 // Funzione per aggiornare i contest live (status 2 -> 4)
-function setLiveContests(callback) {
-  const updateQuery = `
-      UPDATE contests 
-      SET status = 4, updated_at = NOW()
-      WHERE status = 2
-        AND contest_id IN (
-          SELECT contest_id FROM (
-            SELECT DISTINCT ft.contest_id
-            FROM fantasy_team_entities fte
-            JOIN fantasy_teams ft ON fte.fantasy_team_id = ft.fantasy_team_id
-            JOIN athlete_eventunit_participation aep ON fte.athlete_id = aep.athlete_id
-            WHERE aep.event_unit_id = 30 AND aep.is_ended = 1
-          ) AS subquery
-        )
-  `;
-  
-  pool.query(updateQuery, (err, result) => {
-    if (err) {
-      console.error("Errore nell'aggiornamento dei contest live:", err);
-    } else {
-      console.log(`Live contests aggiornati. Righe interessate: ${result.affectedRows}`);
-    }
-    if(callback) callback();
+function setLiveContests(eventUnitId) {
+  return new Promise((resolve) => {
+    console.log(`Verificando contest live per event_unit_id: ${eventUnitId}`);
+    
+    // Verifichiamo prima tutti i contest associati a questo event_unit_id
+    const allContestsQuery = `
+      SELECT DISTINCT c.contest_id, c.status, c.owner_user_id, c.opponent_user_id
+      FROM contests c
+      JOIN fantasy_teams ft ON c.contest_id = ft.contest_id
+      JOIN fantasy_team_entities fte ON ft.fantasy_team_id = fte.fantasy_team_id
+      JOIN athlete_eventunit_participation aep ON fte.athlete_id = aep.athlete_id
+      WHERE aep.event_unit_id = ?
+    `;
+    
+    pool.query(allContestsQuery, [eventUnitId], (allErr, allResults) => {
+      if (allErr) {
+        console.error(`Errore nella verifica di tutti i contest per event_unit_id ${eventUnitId}:`, allErr);
+      } else {
+        console.log(`Tutti i contest associati a event_unit_id ${eventUnitId}:`, allResults);
+      }
+      
+      // Ora verifichiamo quali contest hanno atleti con is_ended = 1
+      const checkQuery = `
+        SELECT DISTINCT ft.contest_id, c.status, 
+               COUNT(DISTINCT CASE WHEN aep.is_ended = 1 THEN aep.athlete_id END) AS ended_athletes,
+               COUNT(DISTINCT aep.athlete_id) AS total_athletes
+        FROM fantasy_team_entities fte
+        JOIN fantasy_teams ft ON fte.fantasy_team_id = ft.fantasy_team_id
+        JOIN athlete_eventunit_participation aep ON fte.athlete_id = aep.athlete_id
+        JOIN contests c ON ft.contest_id = c.contest_id
+        WHERE aep.event_unit_id = ?
+        GROUP BY ft.contest_id, c.status
+      `;
+      
+      pool.query(checkQuery, [eventUnitId], (checkErr, checkResults) => {
+        if (checkErr) {
+          console.error(`Errore nella verifica dei contest live per event_unit_id ${eventUnitId}:`, checkErr);
+          resolve();
+          return;
+        }
+        
+        console.log(`Dettaglio atleti per contest (event_unit_id ${eventUnitId}):`, checkResults);
+        
+        // Ora procediamo con l'aggiornamento dei contest che hanno almeno un atleta con is_ended = 1
+        // e sono in stato 2 (scheduled)
+        const updateQuery = `
+          UPDATE contests 
+          SET status = 4, updated_at = NOW()
+          WHERE status = 2
+            AND contest_id IN (
+              SELECT DISTINCT ft.contest_id
+              FROM fantasy_team_entities fte
+              JOIN fantasy_teams ft ON fte.fantasy_team_id = ft.fantasy_team_id
+              JOIN athlete_eventunit_participation aep ON fte.athlete_id = aep.athlete_id
+              WHERE aep.event_unit_id = ? AND aep.is_ended = 1
+            )
+        `;
+        
+        pool.query(updateQuery, [eventUnitId], (err, result) => {
+          if (err) {
+            console.error(`Errore nell'aggiornamento dei contest live per event_unit_id ${eventUnitId}:`, err);
+          } else {
+            console.log(`Live contests aggiornati per event_unit_id ${eventUnitId}. Righe interessate: ${result.affectedRows}`);
+          }
+          resolve();
+        });
+      });
+    });
   });
 }
 
 // Funzione per chiudere i contest (SET CLOSE_CONTEST)
-// Questa funzione seleziona i contest in status 2 o 4 che hanno TUTTI i giocatori conclusi (is_ended = 1)
-// e per ognuno calcola il totale dei punti, aggiorna i fantasy team e infine setta lo status del contest a 5
-function closeContests() {
-  // Seleziona contest in status 2 o 4 che possono essere chiusi
-  const selectQuery = `
-    SELECT c.contest_id, c.owner_user_id, c.opponent_user_id, c.stake
-    FROM contests c
-    WHERE c.status IN (2,4)
-      AND c.contest_id IN (
-        SELECT contest_id FROM (
-          SELECT ft.contest_id, ft.user_id
-          FROM fantasy_teams ft
-          JOIN fantasy_team_entities fte ON ft.fantasy_team_id = fte.fantasy_team_id
-          JOIN athlete_eventunit_participation aep ON fte.athlete_id = aep.athlete_id
-          WHERE aep.event_unit_id = 30
-          GROUP BY ft.contest_id, ft.user_id
-          HAVING MIN(aep.is_ended) = 1
-        ) AS subq
-        GROUP BY contest_id
-        HAVING COUNT(*) = 2
-      )
-  `;
-  pool.query(selectQuery, (err, contests) => {
-    if (err) {
-      console.error("Errore nella selezione dei contest da chiudere:", err);
-      return;
-    }
-    if (contests.length === 0) {
-      console.log("Nessun contest da chiudere.");
-      return;
-    }
-
-    contests.forEach(contest => {
-      // Per ciascun contest, calcola il totale dei punti per ogni fantasy team
-      const pointsQuery = `
-        SELECT ft.user_id,
-               SUM(COALESCE(aep.athlete_unit_points, 0)) AS total_points
-        FROM fantasy_teams ft
-        JOIN fantasy_team_entities fte ON ft.fantasy_team_id = fte.fantasy_team_id
-        JOIN athlete_eventunit_participation aep ON fte.athlete_id = aep.athlete_id
-        WHERE ft.contest_id = ? AND aep.event_unit_id = 30
-        GROUP BY ft.user_id
-      `;
-      pool.query(pointsQuery, [contest.contest_id], (err, results) => {
-        if (err) {
-          console.error("Errore nel calcolo dei punti per contest:", contest.contest_id, err);
+function closeContests(eventUnitId) {
+  return new Promise((resolve) => {
+    console.log(`Verificando contest da chiudere per event_unit_id: ${eventUnitId}`);
+    
+    // Verifichiamo lo stato di tutti gli atleti per ogni utente in ogni contest
+    const debugQuery = `
+      SELECT 
+        ft.contest_id, 
+        c.status,
+        ft.user_id, 
+        COUNT(DISTINCT fte.athlete_id) AS total_athletes,
+        SUM(CASE WHEN aep.is_ended = 1 THEN 1 ELSE 0 END) AS ended_athletes,
+        GROUP_CONCAT(DISTINCT CONCAT(fte.athlete_id, ':', aep.is_ended)) AS athlete_details
+      FROM fantasy_teams ft
+      JOIN fantasy_team_entities fte ON ft.fantasy_team_id = fte.fantasy_team_id
+      JOIN athlete_eventunit_participation aep ON fte.athlete_id = aep.athlete_id
+      JOIN contests c ON ft.contest_id = c.contest_id
+      WHERE aep.event_unit_id = ? AND c.status IN (2,4)
+      GROUP BY ft.contest_id, c.status, ft.user_id
+      ORDER BY ft.contest_id, ft.user_id
+    `;
+    
+    pool.query(debugQuery, [eventUnitId], (debugErr, debugResults) => {
+      if (debugErr) {
+        console.error(`Errore nel debug dei contest per event_unit_id ${eventUnitId}:`, debugErr);
+        resolve();
+        return;
+      } else {
+        console.log(`Debug dettagliato dei contest per event_unit_id ${eventUnitId}:`, debugResults);
+        
+        // Analizziamo i risultati per vedere quali contest dovrebbero essere chiusi
+        const contestsToClose = [];
+        const contestUsers = {};
+        
+        debugResults.forEach(row => {
+          if (!contestUsers[row.contest_id]) {
+            contestUsers[row.contest_id] = [];
+          }
+          
+          // Explicitly convert to numbers using Number() instead of parseInt
+          const total = Number(row.total_athletes);
+          const ended = Number(row.ended_athletes);
+          
+          contestUsers[row.contest_id].push({
+            user_id: row.user_id,
+            total: total,
+            ended: ended
+          });
+        });
+        
+        console.log("Analisi contest per chiusura:", contestUsers);
+        
+        // Add more detailed logging to debug the comparison
+        for (const [contestId, users] of Object.entries(contestUsers)) {
+          console.log(`Verifica contest ${contestId}:`, users);
+          console.log(`Contest ${contestId} - Tipo di dati:`, 
+            users.map(u => `user ${u.user_id}: total (${typeof u.total}: ${u.total}), ended (${typeof u.ended}: ${u.ended})`));
+          
+          // Verifichiamo se tutti gli utenti hanno atleti e se tutti gli atleti sono ended
+          let shouldClose = true;
+          
+          // Verifichiamo che ci siano esattamente 2 utenti
+          if (users.length !== 2) {
+            console.log(`Contest ${contestId} - Non ha 2 utenti, ne ha ${users.length}`);
+            shouldClose = false;
+          } else {
+            // Verifichiamo che ogni utente abbia atleti e che tutti siano ended
+            for (const user of users) {
+              if (user.total <= 0) {
+                console.log(`Contest ${contestId} - User ${user.user_id} non ha atleti (total: ${user.total})`);
+                shouldClose = false;
+                break;
+              }
+              if (user.total !== user.ended) {
+                console.log(`Contest ${contestId} - User ${user.user_id} non ha tutti gli atleti ended (total: ${user.total}, ended: ${user.ended})`);
+                shouldClose = false;
+                break;
+              }
+            }
+          }
+          
+          if (shouldClose) {
+            console.log(`Contest ${contestId} - Dovrebbe essere chiuso!`);
+            contestsToClose.push(parseInt(contestId));
+          } else {
+            console.log(`Contest ${contestId} - Non dovrebbe essere chiuso.`);
+          }
+        }
+        
+        console.log(`Contest che dovrebbero essere chiusi: ${contestsToClose.join(', ')}`);
+        
+        // Se non ci sono contest da chiudere, terminiamo
+        if (contestsToClose.length === 0) {
+          console.log(`Nessun contest da chiudere per event_unit_id ${eventUnitId}.`);
+          resolve();
           return;
         }
-        // Supponiamo che ci siano 2 righe, una per l'owner e una per l'opponent
-        let ownerPoints = 0, opponentPoints = 0;
-        results.forEach(r => {
-          if (r.user_id == contest.owner_user_id) {
-            ownerPoints = parseFloat(r.total_points);
-          } else if (r.user_id == contest.opponent_user_id) {
-            opponentPoints = parseFloat(r.total_points);
-          }
+        
+        // Altrimenti, procediamo con la chiusura dei contest
+        let completedContests = 0;
+        
+        contestsToClose.forEach(contestId => {
+          // Seleziona le informazioni del contest
+          const selectContestQuery = `
+            SELECT c.contest_id, c.owner_user_id, c.opponent_user_id, c.stake
+            FROM contests c
+            WHERE c.contest_id = ?
+          `;
+          
+          pool.query(selectContestQuery, [contestId], (err, contests) => {
+            if (err || contests.length === 0) {
+              console.error(`Errore nella selezione del contest ${contestId}:`, err);
+              if (++completedContests === contestsToClose.length) resolve();
+              return;
+            }
+            
+            const contest = contests[0];
+            console.log(`Chiusura contest ${contestId} con stake ${contest.stake}`);
+            
+            // Per ciascun contest, calcola il totale dei punti per ogni fantasy team
+            const pointsQuery = `
+              SELECT ft.user_id, ft.fantasy_team_id,
+                     SUM(COALESCE(aep.athlete_unit_points, 0)) AS total_points
+              FROM fantasy_teams ft
+              JOIN fantasy_team_entities fte ON ft.fantasy_team_id = fte.fantasy_team_id
+              JOIN athlete_eventunit_participation aep ON fte.athlete_id = aep.athlete_id
+              WHERE ft.contest_id = ? AND aep.event_unit_id = ?
+              GROUP BY ft.user_id, ft.fantasy_team_id
+            `;
+            
+            pool.query(pointsQuery, [contestId, eventUnitId], (err, results) => {
+              if (err) {
+                console.error(`Errore nel calcolo dei punti per contest ${contestId}:`, err);
+                if (++completedContests === contestsToClose.length) resolve();
+                return;
+              }
+              
+              console.log(`Risultati punti per contest ${contestId}:`, results);
+              
+              // Supponiamo che ci siano 2 righe, una per l'owner e una per l'opponent
+              let ownerPoints = 0, opponentPoints = 0;
+              let ownerTeamId = null, opponentTeamId = null;
+              
+              results.forEach(r => {
+                if (r.user_id == contest.owner_user_id) {
+                  ownerPoints = parseFloat(r.total_points);
+                  ownerTeamId = r.fantasy_team_id;
+                  console.log(`OWNER query - contest_id: ${contestId}, user: ${r.user_id}, event_unit: ${eventUnitId}, points: ${ownerPoints}`);
+                } else if (r.user_id == contest.opponent_user_id) {
+                  opponentPoints = parseFloat(r.total_points);
+                  opponentTeamId = r.fantasy_team_id;
+                  console.log(`OPPONENT query - contest_id: ${contestId}, user: ${r.user_id}, event_unit: ${eventUnitId}, points: ${opponentPoints}`);
+                }
+              });
+
+              // Determina il risultato
+              let ownerResult, opponentResult;
+              if (ownerPoints > opponentPoints) {
+                ownerResult = 1; // vittoria
+                opponentResult = -1; // sconfitta - CORRETTO DA 2 A -1
+              } else if (ownerPoints < opponentPoints) {
+                ownerResult = -1; // sconfitta - CORRETTO DA 2 A -1
+                opponentResult = 1;
+              } else {
+                ownerResult = opponentResult = 0; // pareggio - CORRETTO DA 3 A 0
+              }
+
+              // Calcola l'importo dei Teex vinti
+              const stake = parseFloat(contest.stake);
+              
+              // Ottieni il total_cost per owner e opponent
+              const getCostQuery = `
+                SELECT fantasy_team_id, total_cost 
+                FROM fantasy_teams 
+                WHERE fantasy_team_id IN (?, ?)
+              `;
+              
+              pool.query(getCostQuery, [ownerTeamId, opponentTeamId], (costErr, costResults) => {
+                if (costErr) {
+                  console.error(`Errore nel recupero dei costi per i team ${ownerTeamId}, ${opponentTeamId}:`, costErr);
+                  return;
+                }
+                
+                let ownerCost = 0, opponentCost = 0;
+                
+                costResults.forEach(r => {
+                  if (r.fantasy_team_id == ownerTeamId) {
+                    ownerCost = parseFloat(r.total_cost);
+                  } else if (r.fantasy_team_id == opponentTeamId) {
+                    opponentCost = parseFloat(r.total_cost);
+                  }
+                });
+                
+                // Ottieni il multiply del contest
+                const getMultiplyQuery = `
+                  SELECT multiply FROM contests WHERE contest_id = ?
+                `;
+                
+                pool.query(getMultiplyQuery, [contestId], (multiplyErr, multiplyResults) => {
+                  if (multiplyErr) {
+                    console.error(`Errore nel recupero del multiply per il contest ${contestId}:`, multiplyErr);
+                    return;
+                  }
+                  
+                  const multiply = parseFloat(multiplyResults[0]?.multiply || 1); // Default a 1 se non trovato
+                  console.log(`Contest ${contestId} - multiply: ${multiply}`);
+                  
+                  // Calcola i teex vinti in base alle nuove regole con multiply
+                  const ownerTeexWon = (ownerResult === 1) ? (stake - (ownerCost * multiply)) : 
+                                   (ownerResult === 0 ? (stake/2) - (ownerCost * multiply) : -(ownerCost * multiply));
+                  
+                  const opponentTeexWon = (opponentResult === 1) ? (stake - (opponentCost * multiply)) : 
+                                          (opponentResult === 0 ? (stake/2) - (opponentCost * multiply) : -(opponentCost * multiply));
+                  
+                  console.log(`Contest ${contestId} - Owner teex won: ${ownerTeexWon}, Opponent teex won: ${opponentTeexWon}`);
+                  
+                  // Aggiorna i fantasy teams
+                  const updateFTQuery = `
+                    UPDATE fantasy_teams 
+                    SET total_points = ?, ft_status = 5, ft_result = ?, ft_teex_won = ?, updated_at = NOW()
+                    WHERE fantasy_team_id = ?
+                  `;
+                  
+                  pool.query(updateFTQuery, [ownerPoints, ownerResult, ownerTeexWon, ownerTeamId], (err1) => {
+                    if (err1) console.error(`Errore aggiornamento fantasy team owner (${ownerTeamId}):`, err1);
+                  });
+                  
+                  pool.query(updateFTQuery, [opponentPoints, opponentResult, opponentTeexWon, opponentTeamId], (err2) => {
+                    if (err2) console.error(`Errore aggiornamento fantasy team opponent (${opponentTeamId}):`, err2);
+                  });
+              
+                  // Aggiorna lo status del contest a 5 (closed)
+                  const updateContestQuery = `
+                    UPDATE contests
+                    SET status = 5, updated_at = NOW()
+                    WHERE contest_id = ?
+                  `;
+              
+                  const updateUserQuery = `
+                    UPDATE users
+                    SET teex_balance = teex_balance + ?
+                    WHERE user_id = ?
+                  `;
+              
+                  // Aggiunge i teex vinti al current user (per l'owner)
+                  pool.query(updateUserQuery, [ownerTeexWon, contest.owner_user_id], (err) => {
+                    if(err) console.error(`Errore aggiornamento teex balance owner (${contest.owner_user_id}):`, err);
+                  });
+              
+                  // E aggiunge per l'avversario
+                  pool.query(updateUserQuery, [opponentTeexWon, contest.opponent_user_id], (err) => {
+                    if(err) console.error(`Errore aggiornamento teex balance opponent (${contest.opponent_user_id}):`, err);
+                  });
+              
+                  pool.query(updateContestQuery, [contestId], (err3) => {
+                    if (err3) console.error(`Errore nell'aggiornamento del contest ${contestId} a closed:`, err3);
+                    else console.log(`Contest chiuso con successo, contest_id: ${contestId}`);
+                    
+                    if (++completedContests === contestsToClose.length) resolve();
+                  });
+                });
+              });
+            });
+          });
         });
-
-        // Determina il risultato
-        let ownerResult, opponentResult;
-        if (ownerPoints > opponentPoints) {
-          ownerResult = 1; // vittoria
-          opponentResult = 2; // sconfitta
-        } else if (ownerPoints < opponentPoints) {
-          ownerResult = 2;
-          opponentResult = 1;
-        } else {
-          ownerResult = opponentResult = 3; // pareggio
-        }
-
-        // Calcola l'importo dei Teex vinti
-        const stake = parseFloat(contest.stake);
-        const ownerTeexWon = (ownerResult === 1) ? stake : (ownerResult === 3 ? stake / 2 : 0);
-        const opponentTeexWon = (opponentResult === 1) ? stake : (opponentResult === 3 ? stake / 2 : 0);
-
-        // Aggiorna i fantasy teams (campi total_points, ft_status, ft_result, ft_teex_won)
-        const updateFTQuery = `
-        UPDATE fantasy_teams 
-        SET total_points = ?, ft_status = 5, ft_result = ?, ft_teex_won = ?, updated_at = NOW()
-        WHERE contest_id = ? AND user_id = ?
-      `;
-        pool.query(updateFTQuery, [ownerPoints, ownerResult, ownerTeexWon, contest.contest_id, contest.owner_user_id], (err1) => {
-          if (err1) console.error("Errore aggiornamento fantasy team owner:", err1);
-        });
-        pool.query(updateFTQuery, [opponentPoints, opponentResult, opponentTeexWon, contest.contest_id, contest.opponent_user_id], (err2) => {
-          if (err2) console.error("Errore aggiornamento fantasy team opponent:", err2);
-        });
-
-        // Aggiorna lo status del contest a 5 (closed)
-        const updateContestQuery = `
-          UPDATE contests
-          SET status = 5, updated_at = NOW()
-          WHERE contest_id = ?
-        `;
-
-        const updateUserQuery = `
-        UPDATE users
-        SET teex_balance = teex_balance + ?
-        WHERE user_id = ?
-        `;
-        // Aggiunge i teex vinti al current user (per l’owner)
-        pool.query(updateUserQuery, [ownerTeexWon, contest.owner_user_id], (err) => {
-        if(err) console.error("Errore aggiornamento teex balance owner:", err);
-        });
-        // E aggiunge per l’avversario
-        pool.query(updateUserQuery, [opponentTeexWon, contest.opponent_user_id], (err) => {
-        if(err) console.error("Errore aggiornamento teex balance opponent:", err);
-        });
-
-
-
-        pool.query(updateContestQuery, [contest.contest_id], (err3) => {
-          if (err3) console.error("Errore nell'aggiornamento del contest a closed:", err3);
-          else console.log("Contest chiuso con successo, contest_id:", contest.contest_id);
-        });
-      });
+      }
     });
   });
 }

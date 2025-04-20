@@ -688,3 +688,30 @@
         filter: brightness(1) drop-shadow(0 0 0px rgba(255, 165, 0, 0));
       }
     }   
+
+        /* Status Badge Variants */
+    .status-badge {
+      background-color: #FE4208;
+    }
+
+    .status-badge-invited {
+      background-color: #F9E900;
+    }
+
+    .status-badge-ready {
+      background-color: #5DFDCB;
+    }
+
+    .status-badge-live {
+      background-color: #5DFDCB;
+    }
+
+    .status-badge-loss {
+      background-color: #ED33B9;
+      color: #ffffff;
+    }
+
+    .status-badge-draw {
+      background-color: #FE4208;
+      color: #ffffff;
+    }

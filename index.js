@@ -168,9 +168,11 @@ app.get("/user-landing-info", (req, res) => {
     const sqlC = `
       SELECT c.contest_id, c.status, cs.status_name, c.stake,
              c.owner_user_id AS owner_id, ow.username AS owner_name, ow.avatar AS owner_avatar,
-             ft_o.total_cost AS owner_cost,
+             ft_o.total_cost AS owner_cost, ft_o.fantasy_team_id AS owner_team_id, 
+             ft_o.total_points AS owner_points, ft_o.ft_result AS owner_result, ft_o.ft_teex_won AS owner_teex_won,
              c.opponent_user_id AS opponent_id, op.username AS opponent_name, op.avatar AS opponent_avatar,
-             ft_p.total_cost AS opponent_cost,
+             ft_p.total_cost AS opponent_cost, ft_p.fantasy_team_id AS opponent_team_id,
+             ft_p.total_points AS opponent_points, ft_p.ft_result AS opponent_result, ft_p.ft_teex_won AS opponent_teex_won,
              c.event_unit_id, c.multiply
       FROM contests c
       JOIN contests_status cs ON c.status = cs.status_id
@@ -192,7 +194,36 @@ app.get("/user-landing-info", (req, res) => {
         return res.json({ user: userData, active: [], completed: [] });
       }
       contests.forEach((contest, idx) => {
-        if (contest.status == 4) {
+        // Aggiungiamo i dati dei fantasy teams per i contest completati (status 5)
+        if (contest.status == 5) {
+          // Prepara i dati dei fantasy teams per il frontend
+          contest.fantasy_teams = [];
+          
+          // Aggiungi il team dell'owner
+          if (contest.owner_team_id) {
+            contest.fantasy_teams.push({
+              user_id: contest.owner_id,
+              fantasy_team_id: contest.owner_team_id,
+              total_points: contest.owner_points,
+              ft_result: contest.owner_result,
+              ft_teex_won: contest.owner_teex_won
+            });
+          }
+          
+          // Aggiungi il team dell'opponent
+          if (contest.opponent_team_id) {
+            contest.fantasy_teams.push({
+              user_id: contest.opponent_id,
+              fantasy_team_id: contest.opponent_team_id,
+              total_points: contest.opponent_points,
+              ft_result: contest.opponent_result,
+              ft_teex_won: contest.opponent_teex_won
+            });
+          }
+          
+          checkDone();
+        }
+        else if (contest.status == 4) {
           // Eseguiamo la query per calcolare il risultato parziale
           const sqlTeam = `
             SELECT fte.*, a.athlete_shortname, a.picture, a.position, a.team_id, aep.is_ended,
@@ -275,9 +306,11 @@ app.get("/contest-details", (req, res) => {
   const sql = `
     SELECT c.contest_id, c.status, cs.status_name, c.stake,
            c.owner_user_id AS owner_id, ow.username AS owner_name, ow.avatar AS owner_avatar,
-           ft_o.total_cost AS owner_cost,
+           ft_o.total_cost AS owner_cost, ft_o.fantasy_team_id AS owner_team_id, 
+           ft_o.total_points AS owner_points, ft_o.ft_result AS owner_result, ft_o.ft_teex_won AS owner_teex_won,
            c.opponent_user_id AS opponent_id, op.username AS opponent_name, op.avatar AS opponent_avatar,
-           ft_p.total_cost AS opponent_cost,
+           ft_p.total_cost AS opponent_cost, ft_p.fantasy_team_id AS opponent_team_id,
+           ft_p.total_points AS opponent_points, ft_p.ft_result AS opponent_result, ft_p.ft_teex_won AS opponent_teex_won,
            c.event_unit_id, c.multiply
     FROM contests c
     JOIN contests_status cs ON c.status = cs.status_id
@@ -291,6 +324,33 @@ app.get("/contest-details", (req, res) => {
     if (er) return res.status(500).json({ error: "DB error /contest-details" });
     if (!rows.length) return res.status(404).json({ error: "Contest non trovato" });
     const contestData = rows[0];
+
+    // Prepara i dati dei fantasy teams per i contest completati (status 5)
+    if (contestData.status == 5) {
+      contestData.fantasy_teams = [];
+      
+      // Aggiungi il team dell'owner
+      if (contestData.owner_team_id) {
+        contestData.fantasy_teams.push({
+          user_id: contestData.owner_id,
+          fantasy_team_id: contestData.owner_team_id,
+          total_points: contestData.owner_points,
+          ft_result: contestData.owner_result,
+          ft_teex_won: contestData.owner_teex_won
+        });
+      }
+      
+      // Aggiungi il team dell'opponent
+      if (contestData.opponent_team_id) {
+        contestData.fantasy_teams.push({
+          user_id: contestData.opponent_id,
+          fantasy_team_id: contestData.opponent_team_id,
+          total_points: contestData.opponent_points,
+          ft_result: contestData.opponent_result,
+          ft_teex_won: contestData.opponent_teex_won
+        });
+      }
+    }
 
     const sqlTeam = `
       SELECT fte.*, a.athlete_shortname, a.picture, a.position, a.team_id, aep.is_ended,

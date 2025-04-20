@@ -122,6 +122,37 @@
         }
         const data = await resp.json();
         console.log("Contest data:", data);
+        console.log("Contest status:", data.contest.status);
+        console.log("Fantasy teams:", data.contest.fantasy_teams);
+        
+        // RIMUOVI QUESTO BLOCCO - Non sovrascrivere i dati dei fantasy teams
+        /*
+        if (data.contest.status == 5) {
+          data.contest.fantasy_teams = [];
+          
+          // Aggiungi il team dell'owner se disponibile
+          if (data.ownerTeam && data.ownerTeam.length > 0) {
+            const ownerTeamData = {
+              user_id: data.contest.owner_id,
+              total_points: data.ownerTeamPoints || 0,
+              ft_result: data.ownerTeamResult || 0,
+              ft_teex_won: data.ownerTeamTeexWon || 0
+            };
+            data.contest.fantasy_teams.push(ownerTeamData);
+          }
+          
+          // Aggiungi il team dell'opponent se disponibile
+          if (data.opponentTeam && data.opponentTeam.length > 0) {
+            const opponentTeamData = {
+              user_id: data.contest.opponent_id,
+              total_points: data.opponentTeamPoints || 0,
+              ft_result: data.opponentTeamResult || 0,
+              ft_teex_won: data.opponentTeamTeexWon || 0
+            };
+            data.contest.fantasy_teams.push(opponentTeamData);
+          }
+        }
+        */
         
         // Popola i nomi nel blocco sotto il contest header
         const iAmOwner = (parseInt(currentUserId) === parseInt(data.contest.owner_id));
@@ -264,6 +295,73 @@
               <div class="teex_spent right-teex">${oppCost}</div>
             </div>
             <div class="status-badge-base status-badge-live">${contestData.stake || ''}</div>
+            ${contestData.multiply && parseInt(contestData.multiply) > 1 ? `<div class="multiply-contest-mini">${Math.floor(contestData.multiply)}</div>` : ''}
+          </div>
+        `;
+      } else if (contestData.status == 5) {
+        // Layout per contest in stato "completed"
+        // Ottieni i punteggi dai total_points dei fantasy_teams
+        let myPoints = 0;
+        let oppPoints = 0;
+        let myResult = 0;
+        let myTeexWon = 0;
+        
+        // Estrai i dati dai fantasy_teams
+        if (contestData.fantasy_teams && contestData.fantasy_teams.length > 0) {
+          contestData.fantasy_teams.forEach(team => {
+            if ((iAmOwner && team.user_id == contestData.owner_id) || 
+                (!iAmOwner && team.user_id == contestData.opponent_id)) {
+              myPoints = parseFloat(team.total_points || 0);
+              myResult = parseInt(team.ft_result || 0);
+              myTeexWon = parseFloat(team.ft_teex_won || 0);
+            } else {
+              oppPoints = parseFloat(team.total_points || 0);
+            }
+          });
+        }
+        
+        const myPointsStr = myPoints.toFixed(1);
+        const oppPointsStr = oppPoints.toFixed(1);
+        
+        const [myPointsInt, myPointsDec = "0"] = myPointsStr.split('.');
+        const [oppPointsInt, oppPointsDec = "0"] = oppPointsStr.split('.');
+        
+        // Determina lo stile del badge in base al risultato
+        let badgeClass = "status-badge-live";
+        let badgeText = "";
+        
+        if (myResult === 1) {
+          // Vittoria
+          badgeClass = "status-badge-base status-badge-live"; // Sfondo verde
+          badgeText = `+${myTeexWon.toFixed(1)}`;
+        } else if (myResult === -1) {
+          // Sconfitta
+          badgeClass = "status-badge-base status-badge-loss"; // Sfondo fucsia
+          badgeText = `${myTeexWon.toFixed(1)}`; // Il valore è già negativo
+        } else {
+          // Pareggio
+          badgeClass = "status-badge-base status-badge-draw"; // Sfondo arancione
+          badgeText = myTeexWon >= 0 ? `+${myTeexWon.toFixed(1)}` : `${myTeexWon.toFixed(1)}`;
+        }
+        
+        contestCard.innerHTML = `
+          <div class="contest-container cc-header">
+            <div class="contest-bar">
+              <img src="${getAvatarSrc(myAvatar)}" alt="${myName}" class="player-avatar-contest left-avatar">
+              <div class="triletter_contest left-name">${myName.substring(0, 3)}</div>
+              <div style="position: absolute; top: calc(50% - 14px); left: 50%; transform: translate(-50%, -50%); display: flex; align-items: baseline;">
+                <span class="result_bold" style="position: static; transform: none; color: #fff">${myPointsInt}</span>
+                <span class="win_index_perc" style="color: #fff">.${myPointsDec}</span>
+                <span style="margin: 0 5px; color: white; font-size: 20px;"> </span>
+                <span class="result_bold" style="position: static; transform: none; color: #fff">${oppPointsInt}</span>
+                <span class="win_index_perc" style="color: #fff">.${oppPointsDec}</span>
+              </div>
+              <div class="triletter_contest right-name">${oppName.substring(0, 3)}</div>
+              <img src="${getAvatarSrc(oppAvatar)}" alt="${oppName}" class="player-avatar-contest right-avatar">
+              <div class="teex_spent left-teex">${myCost}</div>
+              <div class="teex_spent right-teex">${oppCost}</div>
+            </div>
+            <div class="${badgeClass}">${badgeText}</div>
             ${contestData.multiply && parseInt(contestData.multiply) > 1 ? `<div class="multiply-contest-mini">${Math.floor(contestData.multiply)}</div>` : ''}
           </div>
         `;

@@ -381,6 +381,74 @@
               ${contest.multiply && contest.multiply > 1 ? `<div class="multiply-contest-mini">${Math.floor(contest.multiply)}</div>` : ''}
             </div>
           `;
+        } else if (contest.status == 5) {
+          // Special layout for status 5 (completed) contests
+          console.log("Contest status 5:", contest);
+          
+          // Ottieni i punteggi dai total_points dei fantasy_teams
+          let myPoints = 0;
+          let oppPoints = 0;
+          let myResult = 0;
+          let myTeexWon = 0;
+          
+          // Estrai i dati dai fantasy_teams
+          if (contest.fantasy_teams && contest.fantasy_teams.length > 0) {
+            contest.fantasy_teams.forEach(team => {
+              if (team.user_id == userId) {
+                myPoints = parseFloat(team.total_points || 0);
+                myResult = parseInt(team.ft_result || 0);
+                myTeexWon = parseFloat(team.ft_teex_won || 0);
+              } else {
+                oppPoints = parseFloat(team.total_points || 0);
+              }
+            });
+          }
+          
+          const myPointsStr = myPoints.toFixed(1);
+          const oppPointsStr = oppPoints.toFixed(1);
+          
+          const [myPointsInt, myPointsDec = "0"] = myPointsStr.split('.');
+          const [oppPointsInt, oppPointsDec = "0"] = oppPointsStr.split('.');
+          
+          // Determina lo stile del badge in base al risultato
+          let badgeClass = "status-badge-live";
+          let badgeText = "";
+          
+          if (myResult === 1) {
+            // Vittoria
+            badgeClass = "status-badge-base status-badge-live"; // Sfondo verde
+            badgeText = `+${myTeexWon.toFixed(1)}`;
+          } else if (myResult === -1) {
+            // Sconfitta
+            badgeClass = "status-badge-base status-badge-loss"; // Sfondo fucsia
+            badgeText = `${myTeexWon.toFixed(1)}`; // Il valore è già negativo
+          } else {
+            // Pareggio
+            badgeClass = "status-badge-base status-badge-draw"; // Sfondo arancione
+            badgeText = myTeexWon >= 0 ? `+${myTeexWon.toFixed(1)}` : `${myTeexWon.toFixed(1)}`;
+          }
+          
+          contestCard.innerHTML = `
+            <div class="contest-container cc-list">
+              <div class="contest-bar">
+                <img src="${getAvatarSrc(myAvatar)}" alt="${myName}" class="player-avatar-contest left-avatar">
+                <div class="triletter_contest left-name">${myName.substring(0, 3)}</div>
+                <div style="position: absolute; top: calc(50% - 14px); left: 50%; transform: translate(-50%, -50%); display: flex; align-items: baseline;">
+                  <span class="result_bold" style="position: static; transform: none; color: #fff">${myPointsInt}</span>
+                  <span class="win_index_perc" style="color: #fff">.${myPointsDec}</span>
+                  <span style="margin: 0 5px; color: white; font-size: 20px;"> </span>
+                  <span class="result_bold" style="position: static; transform: none; color: #fff">${oppPointsInt}</span>
+                  <span class="win_index_perc" style="color: #fff">.${oppPointsDec}</span>
+                </div>
+                <div class="triletter_contest right-name">${oppName.substring(0, 3)}</div>
+                <img src="${getAvatarSrc(oppAvatar)}" alt="${oppName}" class="player-avatar-contest right-avatar">
+                <div class="teex_spent left-teex">${myCost}</div>
+                <div class="teex_spent right-teex">${oppCost}</div>
+              </div>
+              <div class="${badgeClass}">${badgeText}</div>
+              ${contest.multiply && parseInt(contest.multiply) > 1 ? `<div class="multiply-contest-mini">${Math.floor(contest.multiply)}</div>` : ''}
+            </div>
+          `;
         } else {
           // Original layout for other contest types
           const vsContainer = document.createElement("div");
