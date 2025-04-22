@@ -1,10 +1,12 @@
 // ====================================================
 // CONFIGURAZIONE DI GOOGLE IDENTITY PLATFORM (Firebase)
 const firebaseConfig = {
-  apiKey: "AIzaSyBiYZJBkI_cvzp2eLrerYAhAdH_PWPRyEI",
-  authDomain: "crafty-vista-455914-s6.firebaseapp.com",
-  projectId: "crafty-vista-455914-s6",
-  // eventuali altri campi se richiesti (messagingSenderId, appId, ecc.)
+  apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  // Aggiungi altri campi se necessario
+  // messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+  // appId: process.env.FIREBASE_APP_ID,
 };
 
 // Inizializza Firebase (se non è già inizializzato)

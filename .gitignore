@@ -5,8 +5,12 @@ node_modules/
 npm-debug.log
 yarn-error.log
 
-# File di ambiente (se ne usi uno)
+# File di ambiente (importante!)
 .env
 
+# File di build
 Dockerfile
 .dockerignore
+
+# Directory di upload
+uploads/
