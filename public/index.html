@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fanteex - Home</title>
+  <title>Fantaconclave - Home</title>
   <!-- Importa le librerie Firebase in modalità compat -->
   <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-auth-compat.js"></script>
@@ -35,10 +35,13 @@
       max-width: 320px; /* Stessa larghezza massima del container dei bottoni */
     }
     
-    .logo img {
-      max-width: 100%;
-      height: auto;
-      max-height: 80px; /* Limita l'altezza del logo */
+    .logo-text {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 48px;
+      color: #FFFF00; /* Colore giallo */
+      letter-spacing: 1px;
+      text-transform: uppercase;
     }
     
     .login-container {
@@ -78,7 +81,7 @@
 </head>
 <body>
   <div class="logo">
-    <img src="images/Fanteex.png" alt="Fanteex Logo">
+    <div class="logo-text">FANTACONCLAVE</div>
   </div>
   
   <!-- Add error message container -->

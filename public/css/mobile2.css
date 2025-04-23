@@ -132,12 +132,12 @@
 }
 
 .player-icon img {
-  width: 150%;
-  height: 150%;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   object-position: center;
-  margin-top: -7%;
-  margin-left: -23%;
+  margin-top: -0%;
+  margin-left: -0%;
 }
 
 .position-indicator {

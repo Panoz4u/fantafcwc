@@ -1,12 +1,10 @@
 // ====================================================
 // CONFIGURAZIONE DI GOOGLE IDENTITY PLATFORM (Firebase)
 const firebaseConfig = {
-  apiKey: process.env.FIREBASE_API_KEY,
-  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.FIREBASE_PROJECT_ID,
-  // Aggiungi altri campi se necessario
-  // messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
-  // appId: process.env.FIREBASE_APP_ID,
+  apiKey: "AIzaSyCx5SFVJ7FiheNBn4iucIBjVB1lYuKZRDU",
+  authDomain: "fantaconclave-52877.firebaseapp.com",
+  projectId: "fantaconclave-52877",
+  // eventuali altri campi se richiesti (messagingSenderId, appId, ecc.)
 };
 
 // Inizializza Firebase (se non è già inizializzato)
