@@ -109,7 +109,7 @@
       <img src="icons/terms.png" alt="Terms and Conditions" class="menu_icon">
       <span class="menu_item">Terms&Cond</span>
     </div>
-    <div class="footer-item">
+    <div id="signOutBtn" class="footer-item">
       <img src="icons/sign-out.png" alt="SignOut" class="menu_icon">
       <span class="menu_item">Sign Out</span>
     </div>
@@ -561,6 +561,49 @@
           console.error("Errore nel recupero del current event unit:", error);
           alert("Impossibile recuperare l'unità evento corrente");
         }
+      });
+    });
+  </script>
+  <!-- Includi il file auth.js per accedere alla funzione logout() -->
+  <script src="auth.js"></script>
+  
+  <script>
+    // ... existing code ...
+    
+    // Aggiungi l'event listener per il pulsante di logout
+    document.addEventListener('DOMContentLoaded', function() {
+      // Carica i dati dell'utente
+      loadUserLanding();
+      
+      // Aggiungi l'event listener per il pulsante di logout
+      document.getElementById('signOutBtn').addEventListener('click', function() {
+        console.log("Logout richiesto");
+        // Reindirizza alla pagina index.html
+        window.location.href = 'index.html';
+      });
+      
+      // Aggiungi gli event listener per i tab
+      document.getElementById('tabActive').addEventListener('click', function() {
+        document.getElementById('activeContainer').style.display = 'block';
+        document.getElementById('completedContainer').style.display = 'none';
+        document.getElementById('tabActive').querySelector('span').className = 'tab_on';
+        document.getElementById('tabCompleted').querySelector('span').className = 'tab_off';
+      });
+      
+      document.getElementById('tabCompleted').addEventListener('click', function() {
+        document.getElementById('activeContainer').style.display = 'none';
+        document.getElementById('completedContainer').style.display = 'block';
+        document.getElementById('tabActive').querySelector('span').className = 'tab_off';
+        document.getElementById('tabCompleted').querySelector('span').className = 'tab_on';
+      });
+      
+      // Aggiungi l'event listener per il pulsante "NEW GAME"
+      document.getElementById('playButton').addEventListener('click', function() {
+        // Aggiungi event listener per il pulsante NEW GAME
+        document.getElementById("playButton").addEventListener("click", function() {
+          // Reindirizza a scegli-opponent.html con l'ID utente
+          window.location.href = `scegli-opponent.html?owner=${userId}&user=${userId}`;
+        });
       });
     });
   </script>

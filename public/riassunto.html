@@ -32,6 +32,7 @@
   <div id="userNameDiv" style="display: none;"></div>
   <div id="teamCostDiv" style="display: none;"></div>
   <div id="budgetInfo" style="display: none;"></div>
+  <div id="errorMessage" style="display: none; color: red; text-align: center; margin: 10px 0; font-weight: bold;"></div>
   <section class="teams-section">
     <div class="team-container one-team" style="width: 100%;">
       <div class="team-list" id="playersList"></div>
@@ -186,14 +187,10 @@
       // BLOCCO INFO: Nome e match info
       const infoBlock = document.createElement("div");
       infoBlock.classList.add("player-info");
-      
       const nameSpan = document.createElement("div");
       nameSpan.classList.add("athlete_shortname");
       nameSpan.textContent = player.athlete_shortname;
-      
       const matchSpan = document.createElement("div");
-      matchSpan.classList.add("match_3letter");
-      
       if (player.home_team_code && player.away_team_code) {
         // Determina se il giocatore è della squadra di casa o trasferta
         const playerTeamId = parseInt(player.team_id);
@@ -259,8 +256,7 @@
       saveChosenPlayers(players);
       renderPlayerList();
     }
-
-    // Funzione ausiliaria per salvare i giocatori scelti
+   // Funzione ausiliaria per salvare i giocatori scelti
     function saveChosenPlayers(players) {
       localStorage.setItem("chosenPlayers", JSON.stringify(players));
     }
@@ -494,8 +490,7 @@
         // First, determine who is the current user and who is the opponent
         let currentUserId = userId;
         let actualOpponentId;
-       
-        // If current user is the opponent in the URL, then the owner is the actual opponent
+         // If current user is the opponent in the URL, then the owner is the actual opponent
         if (userId == opponentId) {
           actualOpponentId = ownerId;
         } else {
@@ -773,7 +768,9 @@
       }
     }
    // REMOVE THE DUPLICATE showMultiplyOverlay FUNCTION HERE
-    document.addEventListener("DOMContentLoaded", async function() {
+   
+   
+   document.addEventListener("DOMContentLoaded", async function() {
       const params = new URLSearchParams(window.location.search);
       const ownerId = params.get("owner");  // DB info
       const opponentId = params.get("opponent"); // DB info
@@ -833,14 +830,12 @@
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(bodyObj)
           });
-          
-          if(!resp.ok) {
+           if(!resp.ok) {
             const err = await resp.json();
             alert("Errore conferma squadra: " + err.error);
             return;
           }
-          
-          // Ok
+           // Ok
           window.location.href = `/user-landing.html?user=${userIdAttivo}`;
         } catch(e) {
           alert("Errore di rete");
@@ -906,7 +901,7 @@
           alert(`Not enough teex—you're running low with only ${teexBalance.toFixed(1)} available!`);
           return;
         }
-                const bodyObj = {
+         const bodyObj = {
           contestId,
           userId: userIdAttivo,
           players,
@@ -924,14 +919,40 @@
             alert("Errore conferma squadra: " + err.error);
             return;
           }
-                   // Ok
-          window.location.href = `/user-landing.html?user=${userIdAttivo}`;
+           window.location.href = `/user-landing.html?user=${userIdAttivo}`;
         } catch(e) {
           alert("Errore di rete");
           console.error(e);
         }
       });
     });
+   
+    // Funzione per verificare lo stato del contest
+    async function checkContestStatus(contestId) {
+      try {
+        const response = await fetch(`/contest-details?contest=${contestId}`);
+        if (!response.ok) throw new Error("Errore nel recupero dei dettagli della sfida");
+        const data = await response.json();
+        return data.contest.status;
+      } catch (error) {
+        console.error("Errore nel controllo dello stato della sfida:", error);
+        return null;
+      }
+    }
+    
+    // Funzione per mostrare un messaggio di errore
+    function showErrorMessage(message) {
+      const errorDiv = document.getElementById("errorMessage");
+      if (errorDiv) {
+        errorDiv.textContent = message;
+        errorDiv.style.display = "block";
+        
+        // Nascondi il messaggio dopo 3 secondi
+        setTimeout(() => {
+          errorDiv.style.display = "none";
+        }, 3000);
+      }
+    }
   </script>
 </body>
 </html>
@@ -955,3 +976,7 @@
     </footer>
   </div>
 </div>
+
+ 
+</body>
+</html>
