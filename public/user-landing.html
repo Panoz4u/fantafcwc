@@ -24,7 +24,7 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      background-color: #0a0a23;
+      background-color: #595a4a;
       width: 100%;
     }
     
@@ -55,45 +55,17 @@
       <div class="user-profile">
         <img id="userAvatar" class="avatar" src="avatars/default.png" alt="User Avatar">
         <div class="user-name-progress">
-          <h1 id="userName" class="user-name">PANOZ FOOTBALL CLUB</h1>
-          <div class="progress-bar-container">
-            <div class="progress-bar" style="width: 35%;"></div>
-          </div>
+          <h1 id="userName" class="user-name un-landing">PANOZ FOOTBALL CLUB</h1>
+
         </div>
       </div>
       <div class="teex-balance">
-        <img src="icons/more.png" alt="Add" class="plus-icon">
-         <img src="icons/teex.png" alt="Teex" class="teex-icon">
+         <img src="icons/ppc.png" alt="Teex" class="teex-icon">
         <span id="teexBalance" class="teex_balance">415.0</span>
       </div>
     </header>
 
-    <div class="power-up-section">
-      <div class="power-up-label">POWER UP</div>
-      <div class="power-up-items">
-        <div class="power-up-item">
-          <img src="icons/more.png" alt="Add" class="power-up-plus">
-          <img src="icons/gem_yellow.png" alt="Yellow Gem" class="power-up-icon">
-          <div class="power-up-value-container">
-            <span class="power-up-value">2354</span>
-          </div>
-        </div>
-        <div class="power-up-item">
-          <img src="icons/more.png" alt="Add" class="power-up-plus">
-          <img src="icons/gem_pink.png" alt="Pink Gem" class="power-up-icon">
-          <div class="power-up-value-container">
-            <span class="power-up-value">2354</span>
-          </div>
-        </div>
-        <div class="power-up-item">
-          <img src="icons/more.png" alt="Add" class="power-up-plus">
-          <img src="icons/coin_green.png" alt="Green Coin" class="power-up-icon">
-          <div class="power-up-value-container">
-            <span class="power-up-value">2354</span>
-          </div>
-        </div>
-      </div>
-    </div>
+
 
     <div class="tab-container">
       <div id="tabActive" class="tab">
@@ -126,26 +98,27 @@
 
   <footer class="footer-nav">
     <div class="footer-item">
-      <img src="icons/ranking.png" alt="Leaderboard" class="menu_icon">
-      <span class="menu_item">LEADERBOARD</span>
+      <img src="icons/instructions.png" alt="Rules" class="menu_icon">
+      <span class="menu_item">Rules</span>
     </div>
     <div class="footer-item">
-      <img src="icons/quality.png" alt="Badges" class="menu_icon">
-      <span class="menu_item">BADGES</span>
+      <img src="icons/insurance.png" alt="Privacy" class="menu_icon">
+      <span class="menu_item">Privacy</span>
     </div>
     <div class="footer-item">
-      <img src="icons/stats.png" alt="Statistics" class="menu_icon">
-      <span class="menu_item">STATISTICS</span>
+      <img src="icons/terms.png" alt="Terms and Conditions" class="menu_icon">
+      <span class="menu_item">Terms&Cond</span>
     </div>
     <div class="footer-item">
-      <img src="icons/friends.png" alt="Friends" class="menu_icon">
-      <span class="menu_item">FRIENDS</span>
+      <img src="icons/sign-out.png" alt="SignOut" class="menu_icon">
+      <span class="menu_item">Sign Out</span>
     </div>
   </footer>
 
   <script>
-    function getAvatarSrc(avatar) {
-      if (avatar) {
+    function getAvatarSrc(avatar, username, userColor) {
+      console.log("getAvatarSrc chiamata con:", { avatar, username, userColor });
+      if (avatar && avatar.trim() !== "") {
         if (avatar.startsWith("http")) {
           // Per gli URL di Google, assicuriamoci che non ci siano problemi di encoding
           if (avatar.includes("googleusercontent.com")) {
@@ -157,34 +130,76 @@
           return "avatars/" + avatar;
         }
       } else {
-        return "avatars/avatar.jpg";
+        // Se non c'è avatar, generiamo un data URL con un cerchio colorato e le iniziali
+        return generateColoredInitialsAvatar(username, userColor);
       }
     }
 
-    const params = new URLSearchParams(window.location.search);
-    const userId = params.get("user");
+    // Funzione per generare un avatar colorato con le iniziali
+    function generateColoredInitialsAvatar(username, color) {
+      console.log("Generazione avatar con:", { username, color });
+      
+      // Usa un colore predefinito se non è specificato
+      const bgColor = color || "ff5500";
+      
+      // Ottieni le prime 3 lettere dello username (o meno se lo username è più corto)
+      const initials = username ? username.substring(0, 3).toUpperCase() : "?";
+      
+      // Crea un canvas temporaneo
+      const canvas = document.createElement("canvas");
+      canvas.width = 200;
+      canvas.height = 200;
+      const ctx = canvas.getContext("2d");
+      
+      // Disegna il cerchio colorato
+      ctx.fillStyle = "#" + bgColor;
+      ctx.beginPath();
+      ctx.arc(100, 100, 100, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Imposta lo stile del testo
+      ctx.fillStyle = "#FFFFFF";
+      ctx.font = "bold 80px 'Barlow Condensed', sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      
+      // Disegna le iniziali
+      ctx.fillText(initials, 100, 100);
+      
+      // Converti il canvas in un data URL
+      return canvas.toDataURL("image/png");
+    }
+
+    // Ottieni l'ID utente dall'URL invece che dal localStorage
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get('user');
 
     async function loadUserLanding() {
+      // Verifica che l'ID utente sia presente nell'URL
       if (!userId) {
-        alert("User mancante!");
+        window.location.href = 'index.html';
         return;
       }
+      
+      // Effettua la richiesta al server senza token di autenticazione
       const resp = await fetch(`/user-landing-info?user=${userId}`);
+      
       if (!resp.ok) {
         const errorText = await resp.text();
         console.error("Errore backend:", resp.status, errorText);
         alert("Errore nel caricamento utente.");
         return;
       }
+      
       const data = await resp.json();
       console.log("Dati ricevuti:", data);
 
       const userAvatarElem = document.getElementById("userAvatar");
-      const avatarSrc = getAvatarSrc(data.user.avatar);
+      const avatarSrc = getAvatarSrc(data.user.avatar, data.user.username, data.user.color);
       userAvatarElem.src = avatarSrc;
       userAvatarElem.onerror = function() {
         console.error("Errore caricamento avatar, uso default");
-        this.src = "avatars/avatar.jpg";
+        this.src = generateColoredInitialsAvatar(data.user.username, data.user.color);
       };
       document.getElementById("userName").textContent = data.user.username.toUpperCase();
       // Format teex balance with 1 decimal place
@@ -208,7 +223,7 @@
           <div class="welcome-container">
             <div class="welcome-text">
               <div class="welcome-to">WELCOME TO</div>
-              <div class="fanteex-title">FANTEEX</div>
+              <div class="fanteex-title">FANTACONCLAVE</div>
               <div class="start-game">START YOUR FIRST GAME</div>
             </div>
             <div class="animated-arrows">
@@ -226,20 +241,24 @@
         const iAmOwner = parseInt(contest.owner_id) === parseInt(userId);
         console.log(`Contest ${contest.contest_id}: owner_id=${contest.owner_id}, userId=${userId}, iAmOwner=${iAmOwner}`);
         
-        let myName, myAvatar, myCost, oppName, oppAvatar, oppCost;
+        let myName, myAvatar, myCost, oppName, oppAvatar, oppCost, myColor, oppColor;
         if (iAmOwner) {
           myName = contest.owner_name;
           myAvatar = contest.owner_avatar;
+          myColor = contest.owner_color;
           myCost = contest.owner_cost || "-";
           oppName = contest.opponent_name;
           oppAvatar = contest.opponent_avatar;
+          oppColor = contest.opponent_color;
           oppCost = contest.opponent_cost || "-";
         } else {
           myName = contest.opponent_name;
           myAvatar = contest.opponent_avatar;
+          myColor = contest.opponent_color;
           myCost = contest.opponent_cost || "-";
           oppName = contest.owner_name;
           oppAvatar = contest.owner_avatar;
+          oppColor = contest.owner_color;
           oppCost = contest.owner_cost || "-";
         }
 
@@ -265,11 +284,11 @@
           contestCard.innerHTML = `
             <div class="contest-container cc-list">
               <div class="contest-bar">
-                <img src="${getAvatarSrc(myAvatar)}" alt="${myName}" class="player-avatar-contest left-avatar">
+                <img src="${getAvatarSrc(myAvatar, myName, myColor)}" alt="${myName}" class="player-avatar-contest left-avatar">
                 <div class="triletter_contest left-name">${myName.substring(0, 6)}</div>
                 <div class="result_bold">VS</div>
                 <div class="triletter_contest right-name">${oppName.substring(0, 6)}</div>
-                <img src="${getAvatarSrc(oppAvatar)}" alt="${oppName}" class="player-avatar-contest right-avatar">
+                <img src="${getAvatarSrc(oppAvatar, oppName, oppColor)}" alt="${oppName}" class="player-avatar-contest right-avatar">
                 <div class="teex_spent left-teex">${myCost}</div>
                 <div class="teex_spent right-teex">-</div>
               </div>
@@ -282,11 +301,11 @@
           contestCard.innerHTML = `
             <div class="contest-container cc-list">
               <div class="contest-bar">
-                <img src="${getAvatarSrc(myAvatar)}" alt="${myName}" class="player-avatar-contest left-avatar">
+                <img src="${getAvatarSrc(myAvatar, myName, myColor)}" alt="${myName}" class="player-avatar-contest left-avatar">
                 <div class="triletter_contest left-name">${myName.substring(0, 3)}</div>
                 <div class="result_bold">VS</div>
                 <div class="triletter_contest right-name">${oppName.substring(0, 3)}</div>
-                <img src="${getAvatarSrc(oppAvatar)}" alt="${oppName}" class="player-avatar-contest right-avatar">
+                <img src="${getAvatarSrc(oppAvatar, oppName, oppColor)}" alt="${oppName}" class="player-avatar-contest right-avatar">
                 <div class="teex_spent left-teex">${myCost}</div>
                 <div class="teex_spent right-teex">-</div>
               </div>
@@ -299,11 +318,11 @@
           contestCard.innerHTML = `
             <div class="contest-container cc-list">
               <div class="contest-bar">
-                <img src="${getAvatarSrc(myAvatar)}" alt="${myName}" class="player-avatar-contest left-avatar">
+                <img src="${getAvatarSrc(myAvatar, myName, myColor)}" alt="${myName}" class="player-avatar-contest left-avatar">
                 <div class="triletter_contest left-name">${myName.substring(0, 3)}</div>
                 <div class="result_bold">VS</div>
                 <div class="triletter_contest right-name">${oppName.substring(0, 3)}</div>
-                <img src="${getAvatarSrc(oppAvatar)}" alt="${oppName}" class="player-avatar-contest right-avatar">
+                <img src="${getAvatarSrc(oppAvatar, oppName, oppColor)}" alt="${oppName}" class="player-avatar-contest right-avatar">
                 <div class="teex_spent left-teex">-</div>
                 <div class="teex_spent right-teex">${oppCost}</div>
               </div>

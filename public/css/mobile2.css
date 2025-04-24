@@ -1,11 +1,11 @@
 /* Search Container Styles */
 .search-container {
   position: fixed;
-  top: 70px;
+  top: 80px;
   left: 0;
   right: 0;
   z-index: 101;
-  background-color: #0A0034;
+  background-color: #2a2b2a;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -17,7 +17,9 @@
 .sc-select {
   top: 50px;
 }
-
+.sc-select-fr {
+  top: 60px;
+}
 .search-box {
   width: calc(100% - 16px);
   max-width: 100%;
@@ -35,7 +37,7 @@
 
 .search-icon {
   position: absolute;
-  left: 25px;
+  left: 35px;
   top: 50%;
   transform: translateY(-50%);
   color: rgba(255, 255, 255, 0.6);
@@ -45,14 +47,14 @@
 /* Sort Header Styles */
 .sort-header {
   position: fixed;
-  top: 140px;
+  top: 160px;
   left: 0;
   right: 0;
   z-index: 100;
   display: flex;
   justify-content: space-between;
   padding: 10px 16px;
-  background-color: #0A0034;
+  background-color: #595a4a;
   height: 40px;
   box-sizing: border-box;
 }
@@ -85,12 +87,12 @@
 }
 
 .sort-triangle.asc {
-  border-bottom: 5px solid #FE4208;
+  border-bottom: 5px solid #d81e5b;
   border-top: none;
 }
 
 .sort-triangle.desc {
-  border-top: 5px solid #FE4208;
+  border-top: 5px solid #d81e5b;
   border-bottom: none;
 }
 
@@ -128,7 +130,7 @@
   height: 50px;
   border-radius: 50%;
   overflow: hidden;
-  background-color: #FE4208;
+  background-color: #d81e5b;
 }
 
 .player-icon img {
@@ -202,7 +204,7 @@
 
 /* Player Cost Styles */
 .player-cost {
-  background-color: #5DFDCB;
+  background-color: #FFF201;
   border-radius: 12px;
   padding: 4px 10px;
   font-family: 'Montserrat', sans-serif;
@@ -211,6 +213,7 @@
   color: #0A0034;
   min-width: 40px;
   text-align: center;
+  margin-left: auto; /* Aggiunto per allineare a destra */
 }
 
 /* User profile alignment fix */
@@ -223,7 +226,7 @@
 .multiply-contest-mini {
   width: 20px;
   height: 20px;
-  background-color: #ED33B9;
+  background-color: #0f7173;
   border-radius: 50%;
   display: flex;
   justify-content: center;
@@ -255,7 +258,7 @@
 /* Player List Styles */
 .player-list {
   list-style: none;
-  padding-top: 110px; /* Add top padding to account for fixed headers */
+  padding-top: 130px; /* Add top padding to account for fixed headers */
   padding-bottom: 170px;
   margin: 0 16px;
   margin-bottom: 80px; /* Space for footer */
@@ -269,7 +272,7 @@
   left: 0;
   right: 0;
   z-index: 101;
-  background-color: #0A0034;
+  background-color: #2a2b2a;
   display: flex;
   align-items: center;
   padding: 8px 16px;
@@ -288,7 +291,7 @@
 
 /* Teams Section - Adjust positioning */
 .teams-section {
-  margin-top: 20px; /* Add space between power-ups and teams */
+  margin-top: 0px; /* Add space between power-ups and teams */
   padding-top: 0; /* Remove the extra padding */
 }
 
@@ -330,6 +333,8 @@
   overflow: hidden;
   margin-right: 12px;
   object-fit: cover;
+  background-color: #ffffff;
+  border: 1px solid #2a2b2a;
 }
 
 .opponent-name {
@@ -361,7 +366,7 @@
 .progress-bar-fill {
   height: 100%;
   width: 35%;
-  background: linear-gradient(to right, #FE4208, #ED33B9);
+  background: linear-gradient(to right, #d81e5b, #ED33B9);
   border-radius: 3px;
 }
 
@@ -374,7 +379,7 @@
 /* Small Button Main Style */
 .small-button-main {
   background-color: #0A0034;
-  border: 2px solid #FE4208;
+  border: 2px solid #d81e5b;
   border-radius: 20px;
   padding: 6px 16px;
   font-family: 'Barlow Condensed', sans-serif;
@@ -391,8 +396,8 @@
 }
 
 .play-contest-button {
-  background-color: #0A0034;
-  border: 2px solid #FE4208;
+  background-color: #2a2b2a;
+  border: 2px solid #d81e5b;
   border-radius: 20px;
   padding: 6px 16px;
   font-family: 'Barlow Condensed', sans-serif;
@@ -416,7 +421,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(10, 0, 52, 0.8);
+  background: rgba(54, 54, 54, 0.8);
   backdrop-filter: blur(4px);
   z-index: 1000;
   display: flex;
@@ -425,7 +430,7 @@
 }
 
 .multiply-container {
-  background: #0A0034;
+  background: #363635;
   border-radius: 24px 24px 0 0;
   padding: 24px;
 }
@@ -461,20 +466,20 @@
 }
 
 .mc-selected {
-  background-color: #ED33B9;
+  background-color: #0f7173;
   color: white;
 }
 
 .mc-off {
-  background-color: rgba(237, 51, 185, 0.2);
-  border: 2px solid #ED33B9;
+  background-color: rgba(75, 75, 75, 0.2);
+  border: 2px solid #0f7173;
   color: white;
 }
 
 .big-cost {
   width: 120px;
   height: 46px;
-  background-color: #5DFDCB;
+  background-color: #FFF201;
   border-radius: 23px;
   display: flex;
   justify-content: center;
@@ -511,7 +516,7 @@
 }
 
 .multiply-confirm {
-  background-color: #FE4208;
+  background-color: #d81e5b;
   color: white;
 }
 
@@ -569,7 +574,7 @@
   font-family: 'Barlow Condensed', sans-serif;
   font-size: 18px;
   text-transform: uppercase;
-  background-color: #5DFDCB;
+  background-color: #FFF201;
   color: #333;
 }
 
@@ -578,8 +583,8 @@
   font-size: 18px;
   background-color: transparent;
   text-transform: uppercase;
-  color: #5DFDCB;
-  border: 2px solid #5DFDCB;
+  color: #FFF201;
+  border: 2px solid #FFF201;
 }
 
 .divider {
@@ -635,10 +640,11 @@
     }
     
     .fanteex-title {
+      font-family: 'Barlow Condensed', sans-serif;
       font-weight: 800;
       font-size: 48px;
       margin-bottom: 0px;
-      color: white;
+      color: #fff201;
     }
     
     .start-game {
@@ -679,31 +685,33 @@
     
     @keyframes pulse-color {
       0% {
-        filter: brightness(1) drop-shadow(0 0 0px rgba(255, 165, 0, 0));
+        filter: drop-shadow(0 0 0px rgba(255, 165, 0, 0));
       }
       50% {
-        filter: brightness(2) drop-shadow(0 0 10px rgba(255, 165, 0, 0.7));
+        filter: drop-shadow(0 0 10px rgba(255, 165, 0, 0.7));
       }
       100% {
-        filter: brightness(1) drop-shadow(0 0 0px rgba(255, 165, 0, 0));
+        filter: drop-shadow(0 0 0px rgba(255, 165, 0, 0));
       }
     }   
 
         /* Status Badge Variants */
     .status-badge {
-      background-color: #FE4208;
+      background-color: #706561;
+      color: #ffffff;
     }
 
     .status-badge-invited {
-      background-color: #F9E900;
+      background-color: #d81e5b;
+      color: #ffffff;
     }
 
     .status-badge-ready {
-      background-color: #5DFDCB;
+      background-color: #FFF201;
     }
 
     .status-badge-live {
-      background-color: #5DFDCB;
+      background-color: #FFF201;
     }
 
     .status-badge-win {
@@ -716,6 +724,6 @@
     }
 
     .status-badge-draw {
-      background-color: #FE4208;
+      background-color: #d81e5b;
       color: #ffffff;
     }

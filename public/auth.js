@@ -15,85 +15,130 @@ if (!firebase.apps.length) {
 }
 const auth = firebase.auth();
 
+// Funzione per generare un colore esadecimale casuale (senza #)
+function generateRandomColor() {
+  // Genera un colore esadecimale casuale a 6 cifre
+  return Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+}
+
+// Funzione per verificare l'unicità del nome utente e generare un nome univoco se necessario
+async function generateUniqueUsername(username) {
+  try {
+    // Verifica se il nome utente esiste già
+    const response = await fetch(`/check-username?username=${encodeURIComponent(username)}`);
+    
+    if (response.status === 200) {
+      // Il nome utente esiste già, aggiungiamo un numero casuale
+      const randomNum = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+      return username + randomNum;
+    } else if (response.status === 404) {
+      // Il nome utente non esiste, possiamo usarlo
+      return username;
+    } else {
+      // In caso di errore, aggiungiamo comunque un numero casuale per sicurezza
+      const randomNum = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+      return username + randomNum;
+    }
+  } catch (error) {
+    console.error("Errore durante la verifica del nome utente:", error);
+    // In caso di errore, aggiungiamo un numero casuale
+    const randomNum = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+    return username + randomNum;
+  }
+}
 
 // ====================================================
 // REGISTRAZIONE CON EMAIL/PASSWORD
 const registerForm = document.getElementById("registerForm");
 if (registerForm) {
-  registerForm.addEventListener("submit", function(e) {
+  registerForm.addEventListener("submit", async function(e) {
     e.preventDefault();
     const username = document.getElementById("regUsername").value;
     const email = document.getElementById("regEmail").value;
     const password = document.getElementById("regPassword").value;
     
-    auth.createUserWithEmailAndPassword(email, password)
-      .then(function(userCredential) {
-        const user = userCredential.user;
-        // Invia la richiesta al backend per salvare il record utente nel DB
-        fetch("/users", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            username: username,
-            email: email,
-            teex_balance: 500
-          })
+    try {
+      // Genera un nome utente univoco
+      const uniquename = await generateUniqueUsername(username);
+      
+      // Genera un colore casuale per l'avatar
+      const userColor = generateRandomColor();
+      
+      // Genera un numero casuale tra 1 e 27 per l'avatar predefinito
+      const avatarNumber = Math.floor(Math.random() * 27) + 1;
+      const avatarFileName = avatarNumber.toString().padStart(2, '0') + '.png';
+      
+      // Crea l'utente in Firebase
+      const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+      const user = userCredential.user;
+      
+      // Invia la richiesta al backend per salvare il record utente nel DB
+      const response = await fetch("/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: username,
+          uniquename: uniquename,
+          email: email,
+          teex_balance: 500,
+          color: userColor,  // Modificato da user_color a color
+          avatar: avatarFileName  // Aggiungiamo l'avatar predefinito
         })
-        .then(function(response) {
-          return response.json();
-        })
-        .then(function(data) {
-          // Dopo la registrazione, reindirizza alla user-landing.html
-          window.location.href = `user-landing.html?user=${data.userId}`;
-        })
-        .catch(function(err) {
-          console.error("Errore durante la registrazione sul DB:", err);
-          alert("Errore nella registrazione sul database");
-        });
-      })
-      .catch(function(error) {
-        console.error("Errore di registrazione:", error);
-        alert(error.message);
       });
+      
+      const data = await response.json();
+      
+      // Dopo la registrazione, reindirizza alla user-landing.html
+      window.location.href = `user-landing.html?user=${data.userId}`;
+    } catch (error) {
+      console.error("Errore durante la registrazione:", error);
+      alert(error.message);
+    }
   });
 }
-
 
 // ====================================================
 // REGISTRAZIONE CON GOOGLE
 const googleRegisterBtn = document.getElementById("googleRegister");
 if (googleRegisterBtn) {
-  const googleProvider = new firebase.auth.GoogleAuthProvider();
   googleRegisterBtn.addEventListener("click", function(e) {
     e.preventDefault();
     
+    const googleProvider = new firebase.auth.GoogleAuthProvider();
+    
     auth.signInWithPopup(googleProvider)
-      .then(function(result) {
+      .then(async function(result) {
         const user = result.user;
         // Per Google, usiamo user.displayName (se presente) altrimenti user.email per il campo username.
         const username = user.displayName ? user.displayName : user.email;
         
-        fetch("/users", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            username: username,
-            email: user.email,
-            teex_balance: 500,
-            avatar: user.photoURL,
-            google_id: user.uid
-          })
-        })
-        .then(function(response) {
-          return response.json();
-        })
-        .then(function(data) {
+        try {
+          // Genera un nome utente univoco
+          const uniquename = await generateUniqueUsername(username);
+          
+          // Genera un colore casuale per l'avatar
+          const userColor = generateRandomColor();
+          
+          const response = await fetch("/users", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              username: username,
+              uniquename: uniquename,
+              email: user.email,
+              teex_balance: 500,
+              avatar: user.photoURL,
+              google_id: user.uid,
+              color: userColor  // Modificato da user_color a color
+            })
+          });
+          
+          const data = await response.json();
           window.location.href = `user-landing.html?user=${data.userId}`;
-        })
-        .catch(function(err) {
+        } catch (err) {
           console.error("Errore durante la registrazione con Google sul DB:", err);
           alert("Errore nella registrazione sul database");
-        });
+        }
       })
       .catch(function(error) {
         console.error("Errore di registrazione con Google:", error);
@@ -101,7 +146,6 @@ if (googleRegisterBtn) {
       });
   });
 }
-
 
 // ====================================================
 // LOGIN CON EMAIL/PASSWORD
@@ -121,7 +165,7 @@ if (loginForm) {
             return response.json();
           })
           .then(function(dbUser) {
-            // Reindirizza a user-landing.html passando l'id ottenuto dal DB
+            // Reindirizza alla pagina user-landing.html con l'ID utente nell'URL
             window.location.href = `user-landing.html?user=${dbUser.user_id}`;
           })
           .catch(function(err) {
@@ -135,7 +179,6 @@ if (loginForm) {
       });
   });
 }
-
 
 // ====================================================
 // LOGIN CON GOOGLE
@@ -153,117 +196,170 @@ if (googleLoginBtn) {
     });
     
     auth.signInWithPopup(googleProvider)
-      .then(function(result) {
+      .then(async function(result) {
         const user = result.user;
-        console.log("Google login successful for:", user.email);
         
-        // Controlla se l'utente esiste già nel database
-        fetch(`/user-by-email?email=${encodeURIComponent(user.email)}`)
-          .then(function(response) {
-            console.log("User verification response status:", response.status);
-            if (response.ok) {
-              return response.json();
-            } else if (response.status === 404) {
-              // Utente non trovato, restituisci null per crearne uno nuovo
-              console.log("User not found in database, will create new user");
-              return null;
-            } else {
-              throw new Error('Errore nella verifica utente: ' + response.status);
-            }
-          })
-          .then(function(dbUser) {
-            if (dbUser && dbUser.user_id) {
-              console.log("User exists, redirecting to landing page:", dbUser.user_id);
-              // L'utente esiste già, reindirizza alla pagina utente
-              window.location.href = `user-landing.html?user=${dbUser.user_id}`;
-            } else {
-              // Se l'utente non esiste, lo registriamo
-              console.log("Creating new user from Google login:", user.email);
-              const username = user.displayName ? user.displayName : user.email;
-              
-              return fetch("/users", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  username: username,
-                  email: user.email,
-                  teex_balance: 500,
-                  avatar: user.photoURL,
-                  google_id: user.uid
-                })
+        try {
+          // Controlla se l'utente esiste già nel database
+          const response = await fetch(`/user-by-email?email=${encodeURIComponent(user.email)}`);
+          
+          if (!response.ok && response.status !== 404) {
+            throw new Error('Errore nella verifica utente: ' + response.status);
+          }
+          
+          let dbUser;
+          
+          if (response.status === 404) {
+            // L'utente non esiste, lo registriamo
+            const username = user.displayName || user.email.split('@')[0];
+            const uniquename = await generateUniqueUsername(username);
+            const userColor = generateRandomColor();
+            
+            const registerResponse = await fetch("/users", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                username: username,
+                uniquename: uniquename,
+                email: user.email,
+                teex_balance: 500,
+                avatar: user.photoURL,
+                google_id: user.uid,
+                color: userColor
               })
-              .then(function(registerResponse) {
-                console.log("Registration response status:", registerResponse.status);
-                if (!registerResponse.ok) {
-                  throw new Error('Errore nella registrazione utente: ' + registerResponse.status);
-                }
-                return registerResponse.json();
-              })
-              .then(function(data) {
-                console.log("User created successfully:", data.userId);
-                window.location.href = `user-landing.html?user=${data.userId}`;
-              });
+            });
+            
+            if (!registerResponse.ok) {
+              throw new Error('Errore nella registrazione utente: ' + registerResponse.status);
             }
-          })
-          .catch(function(err) {
-            console.error("Errore nel recupero/registrazione dell'utente:", err);
-            const errorContainer = document.getElementById('errorContainer');
-            const errorText = document.getElementById('errorText');
-            if (errorContainer && errorText) {
-              errorText.textContent = "Errore nel recupero o registrazione dell'utente: " + err.message;
-              errorContainer.style.display = 'block';
-            } else {
-              alert("Errore nel recupero o registrazione dell'utente: " + err.message);
-            }
-          });
+            
+            dbUser = await registerResponse.json();
+            // Reindirizza alla pagina user-landing.html con l'ID utente nell'URL
+            window.location.href = `user-landing.html?user=${dbUser.userId}`;
+          } else {
+            // L'utente esiste già, otteniamo i suoi dati
+            dbUser = await response.json();
+            // Reindirizza alla pagina user-landing.html con l'ID utente nell'URL
+            window.location.href = `user-landing.html?user=${dbUser.user_id}`;
+          }
+        } catch (error) {
+          console.error("Errore durante il login con Google:", error);
+          alert(error.message);
+        }
       })
       .catch(function(error) {
         console.error("Errore durante il login con Google:", error);
-        const errorContainer = document.getElementById('errorContainer');
-        const errorText = document.getElementById('errorText');
-        if (errorContainer && errorText) {
-          errorText.textContent = "Errore durante il login con Google: " + error.message;
-          errorContainer.style.display = 'block';
-        } else {
-          alert("Errore durante il login con Google: " + error.message);
-        }
+        alert(error.message);
       });
   });
 }
 
-// Modifica il controllo dell'autenticazione per non reindirizzare automaticamente
-firebase.auth().onAuthStateChanged(function(user) {
-  if (user) {
-    console.log("Utente autenticato:", user.email);
-    // Non reindirizzare automaticamente dalla pagina index
-    // Lasciamo che l'utente scelga esplicitamente di effettuare il login
+// Funzione per verificare l'autenticazione dell'utente
+function checkAuth() {
+  const authToken = localStorage.getItem('authToken');
+  const userId = localStorage.getItem('userId');
+  
+  if (!authToken || !userId) {
+    // Utente non autenticato, reindirizza alla pagina di login
+    window.location.href = 'index.html';
+    return false;
+  }
+  
+  // Verifica la validità del token con il server
+  return fetch('/verify-token', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${authToken}`
+    },
+    body: JSON.stringify({ userId: userId })
+  })
+  .then(response => {
+    if (!response.ok) {
+      // Token non valido, cancella localStorage e reindirizza al login
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('userId');
+      localStorage.removeItem('userEmail');
+      window.location.href = 'index.html';
+      return false;
+    }
+    return true;
+  })
+  .catch(error => {
+    console.error("Errore nella verifica del token:", error);
+    return false;
+  });
+}
+
+// Funzione per effettuare il logout
+function logout() {
+  // Rimuovi i dati di autenticazione dal localStorage
+  localStorage.removeItem('authToken');
+  localStorage.removeItem('userId');
+  localStorage.removeItem('userEmail');
+  
+  // Esegui il logout da Firebase
+  auth.signOut().then(function() {
+    // Reindirizza alla pagina iniziale
+    window.location.href = 'index.html';
+  }).catch(function(error) {
+    console.error("Errore durante il logout:", error);
+  });
+}
+
+// Aggiungi un event listener per il pulsante di logout
+document.addEventListener('DOMContentLoaded', function() {
+  const logoutBtn = document.querySelector('.footer-item:last-child');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', logout);
+  }
+});
+
+// Gestione del risultato del redirect
+firebase.auth().getRedirectResult().then(async function(result) {
+  if (result.user) {
+    const user = result.user;
+    console.log("User authenticated via redirect:", user.email);
     
-    // Solo per le pagine che richiedono autenticazione (non index)
-    const isIndexPage = window.location.pathname === '/index.html' || 
-                        window.location.pathname === '/' || 
-                        window.location.pathname.endsWith('/index.html');
-    
-    if (!isIndexPage) {
-      // Per le altre pagine, verifica che l'utente esista nel database
-      fetch(`/user-by-email?email=${encodeURIComponent(user.email)}`)
-        .then(function(response) {
-          if (response.ok) {
-            return response.json();
-          } else {
-            throw new Error('Errore nella verifica utente');
-          }
-        })
-        .then(function(dbUser) {
-          if (dbUser && dbUser.user_id) {
-            // Non fare nulla, l'utente è già nella pagina corretta
-          } else {
-            // Se l'utente non esiste nel DB, reindirizza alla pagina index
-            window.location.href = 'index.html';
-          }
-        })
-        .catch(function(err) {
-          console.error("Errore nel controllo dell'utente:", err);
+    try {
+      // Controlla se l'utente esiste già nel database
+      const response = await fetch(`/user-by-email?email=${encodeURIComponent(user.email)}`);
+      
+      if (response.ok) {
+        const dbUser = await response.json();
+        window.location.href = `user-landing.html?user=${dbUser.user_id}`;
+      } else if (response.status === 404) {
+        // Se l'utente non esiste, lo registriamo
+        const username = user.displayName ? user.displayName : user.email;
+        
+        // Genera un nome utente univoco
+        const uniquename = await generateUniqueUsername(username);
+        
+        // Genera un colore casuale per l'avatar
+        const userColor = generateRandomColor();
+        
+        const registerResponse = await fetch("/users", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            username: username,
+            uniquename: uniquename,
+            email: user.email,
+            teex_balance: 500,
+            avatar: user.photoURL,
+            google_id: user.uid,
+            user_color: userColor
+          })
         });
+        
+        const data = await registerResponse.json();
+        window.location.href = `user-landing.html?user=${data.userId}`;
+      }
+    } catch (error) {
+      console.error("Errore durante il login con redirect:", error);
+      alert("Errore durante il login: " + error.message);
     }
   }
+}).catch(function(error) {
+  console.error("Errore nel redirect result:", error);
 });

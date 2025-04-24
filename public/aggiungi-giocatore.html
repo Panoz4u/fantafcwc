@@ -16,21 +16,21 @@
     <div class="user-profile">
       <img src="icons/freccia.png" alt="Back" id="backArrow" style="width: 30px; height: 30px; cursor: pointer; margin-right: 12px;">
       <div class="user-info">
-        <h1 class="user-name">ADD PLAYERS</h1>
+        <h1 class="user-name">ADD PAPABILI</h1>
       </div>
     </div>
     
     <!-- New header right section with player stats -->
     <div class="header-stats">
       <div class="stats-row">
-        <div class="label_m_small">Players</div>
+        <div class="label_m_small">Papabili</div>
         <div class="label_m_small">Cost</div>
-        <div class="label_m_small">Teex left</div>
+        <div class="label_m_small">PPC left</div>
       </div>
       <div class="stats-values">
-        <div class="square_cont_color scc_orange" id="playersCount">12</div>
+        <div class="square_cont_color scc_petrolio" id="playersCount">12</div>
         <div class="square_cont_color scc_cyan" id="totalCost">19.5</div>
-        <div class="square_cont_color scc_fucsia" id="teexLeft">0.5</div>
+        <div class="square_cont_color scc_porpora" id="teexLeft">0.5</div>
       </div>
     </div>
   </header>
@@ -38,18 +38,18 @@
   <!-- Search box -->
   <div class="search-container">
     <span class="search-icon">🔍</span>
-    <input type="text" class="search-box" placeholder="Search by: Name, Surname, Team">
+    <input type="text" class="search-box" placeholder="Search by: Name, Surname, Country, Conclave">
   </div>
 
   <!-- Sort header -->
   <div class="sort-header">
-    <div class="sort-item" data-sort="position">Position</div>
+    <div class="sort-item" data-sort="position">Age</div>
     <div class="sort-item active" data-sort="name">
       Name
       <div class="sort-triangle asc"></div>
     </div>
-    <div class="sort-item" data-sort="match">Match</div>
-    <div class="sort-item" data-sort="team">Team</div>
+    <div class="sort-item" data-sort="match">Conclave</div>
+    <div class="sort-item" data-sort="team">Country</div>
     <div class="sort-item" data-sort="cost">Cost</div>
   </div>
 
@@ -80,7 +80,7 @@
     function getAvailableBudget() {
       const players = loadChosenPlayers();
       const totalCost = players.reduce((acc,p)=>acc+parseFloat(p.event_unit_cost||0),0);
-      return Math.max(0, 20-totalCost);
+      return Math.max(0, 10-totalCost);
     }
 
     function getTotalCost() {
@@ -126,13 +126,17 @@
 
     // Function to toggle player selection
     function togglePlayerSelection(player, element) {
-      // Check if player is already in temp selection
-      const index = tempSelectedPlayers.findIndex(p => p.athlete_id === player.athlete_id);
+      // Creiamo un ID univoco combinando athlete_id e event_unit_id
+      const uniqueId = `${player.athlete_id}_${player.event_unit_id}`;
+      
+      // Check if player is already in temp selection usando l'ID univoco
+      const index = tempSelectedPlayers.findIndex(p => 
+        `${p.athlete_id}_${p.event_unit_id}` === uniqueId);
       
       if (index === -1) {
         // Add to temp selection
         tempSelectedPlayers.push(player);
-        element.style.backgroundColor = "rgba(254, 66, 8, 0.5)"; // Orange background at 50% opacity
+        element.style.backgroundColor = "#0f7173"; // Cambiato da "rgba(254, 66, 8, 0.5)" a "#0f7173"
       } else {
         // Remove from temp selection
         tempSelectedPlayers.splice(index, 1);
@@ -155,11 +159,12 @@
       
       // Process removals and additions
       const playersToAdd = tempSelectedPlayers.filter(p => !p.isRemoval);
-      const playerIdsToRemove = tempSelectedPlayers.filter(p => p.isRemoval).map(p => p.athlete_id);
+      const playerIdsToRemove = tempSelectedPlayers.filter(p => p.isRemoval)
+        .map(p => `${p.athlete_id}_${p.event_unit_id}`);
       
       // Filter out removed players and add new ones
       const newPlayersList = [
-        ...currentPlayers.filter(p => !playerIdsToRemove.includes(p.athlete_id)),
+        ...currentPlayers.filter(p => !playerIdsToRemove.includes(`${p.athlete_id}_${p.event_unit_id}`)),
         ...playersToAdd
       ];
       
@@ -179,8 +184,10 @@
     const opponentId = params.get("opponent");
     const contestId = params.get("contest");
     const userId = params.get("user");
-    const eventId = params.get("event") || 30;
-    const eventUnitId = params.get("event_unit_id") || 32;
+    // Rimuoviamo il riferimento a event_unit_id
+    // const eventUnitId = params.get("event_unit_id") || 1;
+    // const eventId = params.get("event") || 30;
+    // const eventUnitId = params.get("event_unit_id") || 32;
 
     // Sorting state
     let currentSort = {
@@ -307,178 +314,71 @@
       }
       
       try {
-        console.log(`Tentativo di caricamento giocatori per event_unit_id=${eventUnitId}`);
+        console.log("Caricamento di tutti gli atleti attivi");
         document.getElementById("msg").textContent = "Caricamento giocatori in corso...";
         
-        // Verifica esistenza event_unit_id
-        const eventExists = await testEventUnitExistence();
-        if (!eventExists) {
-          console.error(`L'event_unit_id=${eventUnitId} non esiste nel database!`);
-          
-          // Recupera gli eventi disponibili (hardcoded per ora)
-          const availableEvents = await getAvailableEvents();
-          
-          let eventsHtml = '';
-          if (availableEvents.length > 0) {
-            eventsHtml = `
-              <p>Prova con uno di questi eventi:</p>
-              <select id="availableEventsSelect">
-                ${availableEvents.map(event => `<option value="${event.id}">${event.name || event.id}</option>`).join('')}
-              </select>
-              <button id="selectEvent" class="btn btn-primary" style="background-color: #fe4208; color: white; border: none; padding: 8px 16px; margin-top: 10px; border-radius: 4px; cursor: pointer;">Seleziona evento</button>
-            `;
-          }
-          
-          document.getElementById("msg").innerHTML = `
-            <div style="color: #ff6b6b; padding: 10px; text-align: center;">
-              <p>L'evento con ID ${eventUnitId} non esiste nel database.</p>
-              ${eventsHtml}
-            </div>`;
-          
-          if (availableEvents.length > 0) {
-            document.getElementById('selectEvent').addEventListener('click', () => {
-              const selectedEventId = document.getElementById('availableEventsSelect').value;
-              const url = `/aggiungi-giocatore.html?owner=${ownerId}&opponent=${opponentId}&contest=${contestId}&user=${userId}&event_unit_id=${selectedEventId}`;
-              window.location.href = url;
-            });
-          }
-          
-          return;
+        // Utilizziamo il nuovo endpoint che non richiede event_unit_id
+        const response = await fetch(`/all-active-athletes`);
+        if (!response.ok) {
+          throw new Error("Errore nel caricamento dei giocatori");
         }
         
-        // Continua con il caricamento dei giocatori
-        const r = await fetch(`/event-players?event=${eventUnitId}`);
-        console.log("Risposta ricevuta:", r.status, r.statusText);
+        const data = await response.json();
+        console.log(`Caricati ${data.length} giocatori attivi`);
         
-        if (!r.ok) {
-          let errorMessage = "Errore caricamento giocatori";
-          try {
-            const errorData = await r.json();
-            console.error("Dettagli errore:", errorData);
-            
-            // Estrai e mostra informazioni più dettagliate sull'errore
-            if (errorData.error) {
-              console.error("Messaggio errore:", errorData.error);
-              
-              // Analizza il messaggio di errore per identificare la tabella problematica
-              const errorMsg = errorData.error.toLowerCase();
-              let problematicTable = "sconosciuta";
-              
-              if (errorMsg.includes("athlete_eventunit_participation")) {
-                problematicTable = "athlete_eventunit_participation";
-                console.error("PROBLEMA IDENTIFICATO: Tabella athlete_eventunit_participation");
-              } else if (errorMsg.includes("athletes")) {
-                problematicTable = "athletes";
-                console.error("PROBLEMA IDENTIFICATO: Tabella athletes");
-              } else if (errorMsg.includes("teams")) {
-                problematicTable = "teams";
-                console.error("PROBLEMA IDENTIFICATO: Tabella teams");
-              } else if (errorMsg.includes("matches")) {
-                problematicTable = "matches";
-                console.error("PROBLEMA IDENTIFICATO: Tabella matches");
-              }
-              
-              // Aggiungi un messaggio più specifico per aiutare il debug
-              console.log("Verifica le seguenti tabelle nel database:");
-              console.log("1. athlete_eventunit_participation - Controlla se event_unit_id=32 esiste");
-              console.log("2. athletes - Controlla se gli athlete_id sono validi");
-              console.log("3. teams - Controlla se i team_id sono validi");
-              console.log("4. matches - Controlla se ci sono partite associate a event_unit_id=32");
-              
-              // Prova a fare una richiesta di test per verificare se il database è accessibile
-              console.log("Tentativo di verifica connessione database...");
-              fetch('/api/db-check').then(r => r.json()).then(data => {
-                console.log("Stato database:", data);
-              }).catch(err => {
-                console.error("Errore verifica database:", err);
-              });
-            }
-            errorMessage += `: ${errorData.error || r.status}`;
-            
-            // Mostra un messaggio più user-friendly
-            document.getElementById("msg").innerHTML = `
-              <div style="color: #ff6b6b; padding: 10px; text-align: center;">
-                <p>Impossibile caricare i giocatori per questo evento.</p>
-                <p>Prova a selezionare un altro evento o contatta l'amministratore.</p>
-                <p><small>Errore: ${errorData.error || r.status}</small></p>
-                <p><small>Controlla le tabelle: athlete_eventunit_participation, athletes, teams, matches</small></p>
-              </div>`;
-          } catch (jsonError) {
-            const errorText = await r.text();
-            console.error("Testo errore:", errorText);
-            errorMessage += ` (${r.status})`;
-            document.getElementById("msg").innerHTML = `
-              <div style="color: #ff6b6b; padding: 10px; text-align: center;">
-                <p>Impossibile caricare i giocatori per questo evento.</p>
-                <p>Prova a selezionare un altro evento o contatta l'amministratore.</p>
-                <p><small>Errore: ${r.status}</small></p>
-              </div>`;
-          }
-          return;
-        }
-        
-        allPlayers = await r.json();
-        console.log(`Caricati ${allPlayers.length} giocatori`);
+        allPlayers = data;
         
         if (allPlayers.length === 0) {
-          document.getElementById("msg").textContent = "Nessun giocatore trovato per questo evento";
+          document.getElementById("msg").textContent = "Nessun giocatore attivo trovato";
         } else {
           document.getElementById("msg").textContent = "";
           filterAndRenderPlayers();
         }
-      } catch(e) {
-        console.error("Errore fetch event-players", e);
-        console.error("Stack trace:", e.stack);
+      } catch (error) {
+        console.error("Errore nel caricamento dei giocatori:", error);
         document.getElementById("msg").innerHTML = `
           <div style="color: #ff6b6b; padding: 10px; text-align: center;">
-            <p>Impossibile caricare i giocatori: ${e.message}</p>
+            <p>Impossibile caricare i giocatori: ${error.message}</p>
             <p>Verifica la connessione o contatta l'amministratore.</p>
           </div>`;
       }
     }
     
+    // Rimuoviamo la funzione testEventUnitExistence() poiché non è più necessaria
+    
+    // Modifica la funzione filterAndRenderPlayers() per filtrare in base al termine di ricerca
     function filterAndRenderPlayers() {
-      let filteredPlayers = allPlayers;
-      
-      // Filter out players whose matches are in status 4 or 5 (completed)
-      filteredPlayers = filteredPlayers.filter(player => {
-        return !player.match_status || player.match_status < 4;
-      });
-      
-      // Apply search filter if there's a search term
-      if (searchTerm) {
-        console.log("Filtrando per:", searchTerm);
-        
-        // Approccio più semplice e diretto
-        filteredPlayers = filteredPlayers.filter(player => {
-          // Verifica tutti i campi rilevanti
-          const fields = [
-            player.athlete_shortname,
-            player.home_team_code,
-            player.away_team_code,
-            player.player_team_name,
-            player.player_team_code
-          ];
-          
-          // Converti tutti i campi in stringhe lowercase e cerca il termine
-          return fields.some(field => 
-            field && field.toString().toLowerCase().indexOf(searchTerm) !== -1
-          );
-        });
-        
-        // Log dei risultati filtrati
-        console.log("Giocatori filtrati:", filteredPlayers.map(p => p.athlete_shortname));
+      if (!allPlayers || allPlayers.length === 0) {
+        document.getElementById("msg").textContent = "Nessun giocatore disponibile";
+        return;
       }
       
-      // Sort filtered players
+      // Filtra i giocatori in base al termine di ricerca
+      let filteredPlayers = allPlayers;
+      
+      if (searchTerm) {
+        filteredPlayers = allPlayers.filter(player => {
+          // Normalizza i campi di testo per la ricerca
+          const name = (player.athlete_shortname || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+          const country = (player.country_name || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+          const team = (player.player_team_code || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+          
+          return name.includes(searchTerm) || 
+                 country.includes(searchTerm) || 
+                 team.includes(searchTerm);
+        });
+      }
+      
+      // Ordina i giocatori e assegna il risultato a filteredPlayers
       filteredPlayers = sortPlayers(filteredPlayers, currentSort.field, currentSort.direction);
       
-      // Render the filtered and sorted players
+      // Renderizza i giocatori
       renderPlayers(filteredPlayers);
     }
 
     function sortPlayers(players, field, direction) {
-      return [...players].sort((a, b) => {
+      // Crea una copia dell'array per non modificare l'originale
+      return players.slice().sort((a, b) => {
         let valueA, valueB;
         
         switch(field) {
@@ -491,9 +391,11 @@
             valueB = b.athlete_shortname || '';
             break;
           case 'match':
-            valueA = `${a.home_team_code || ''}-${a.away_team_code || ''}`;
-            valueB = `${b.home_team_code || ''}-${b.away_team_code || ''}`;
-            break;
+            // Modifica per ordinare per event_unit_id invece che per match
+            valueA = a.event_unit_id || 0;
+            valueB = b.event_unit_id || 0;
+            // Converti in numeri per un ordinamento numerico corretto
+            return direction === 'asc' ? valueA - valueB : valueB - valueA;
           case 'team':
             valueA = a.player_team_code || '';
             valueB = b.player_team_code || '';
@@ -526,7 +428,9 @@
       
       // Get already chosen players to mark them as selected
       const chosenPlayers = loadChosenPlayers();
-      const chosenPlayerIds = chosenPlayers.map(p => p.athlete_id);
+      
+      // Modifica qui: invece di confrontare solo l'athlete_id, confrontiamo la combinazione di athlete_id e event_unit_id
+      const chosenPlayerUniqueIds = chosenPlayers.map(p => `${p.athlete_id}_${p.event_unit_id}`);
       
       // Calculate available budget considering both chosen and temp selected players
       const tempAdditionsCost = tempSelectedPlayers.filter(p => !p.isRemoval)
@@ -552,16 +456,19 @@
         
         const playerCost = parseFloat(player.event_unit_cost || 0);
         
+        // Creiamo un ID univoco combinando athlete_id e event_unit_id
+        const uniqueId = `${player.athlete_id}_${player.event_unit_id}`;
+        
         // Check if player is in temp selection (not marked for removal)
         const isInTempSelection = tempSelectedPlayers.some(p => 
-          p.athlete_id === player.athlete_id && !p.isRemoval);
+          `${p.athlete_id}_${p.event_unit_id}` === uniqueId && !p.isRemoval);
           
         // Check if player is marked for removal
         const isMarkedForRemoval = tempSelectedPlayers.some(p => 
-          p.athlete_id === player.athlete_id && p.isRemoval);
+          `${p.athlete_id}_${p.event_unit_id}` === uniqueId && p.isRemoval);
           
-        // Check if player is already chosen and not marked for removal
-        const isAlreadyChosen = chosenPlayerIds.includes(player.athlete_id) && !isMarkedForRemoval;
+        // Modifica qui: verifichiamo se il giocatore è già scelto usando l'ID univoco
+        const isAlreadyChosen = chosenPlayerUniqueIds.includes(uniqueId) && !isMarkedForRemoval;
         
         // A player is affordable if their cost is within budget
         const isAffordable = playerCost <= availableBudget;
@@ -580,7 +487,7 @@
         
         // Set background color for selected players
         if (isAlreadyChosen || isInTempSelection) {
-          card.style.backgroundColor = "rgba(254, 66, 8, 0.5)"; // Orange background at 50% opacity
+          card.style.backgroundColor = "#0f7173"; // Cambiato da "rgba(254, 66, 8, 0.5)" a "#0f7173"
         }
         
         // Player icon container
@@ -604,100 +511,61 @@
         iconContainer.appendChild(posIndicator);
         
         // Player info
-        const infoDiv = document.createElement('div');
-        infoDiv.className = 'player-info';
+        const infoContainer = document.createElement('div');
+        infoContainer.className = 'player-info-container';
         
-        const nameDiv = document.createElement('div');
-        nameDiv.className = 'player-name';
-        nameDiv.textContent = player.athlete_shortname || 'Unknown Player';
+        // Player name
+        const nameElement = document.createElement('div');
+        nameElement.className = 'player-name';
+        nameElement.textContent = player.athlete_shortname || 'Unknown';
         
-        const matchDiv = document.createElement('div');
-        matchDiv.className = 'match-info';
+        // Match info
+        const matchElement = document.createElement('div');
+        matchElement.className = 'player-match';
         
-        // Format match info
-        if (player.home_team_code && player.away_team_code) {
-          const isHomeTeam = parseInt(player.team_id) === parseInt(player.home_team);
-          const homeTeam = isHomeTeam ? `<span class="player-team">${player.home_team_code}</span>` : player.home_team_code;
-          const awayTeam = !isHomeTeam ? `<span class="player-team">${player.away_team_code}</span>` : player.away_team_code;
-          matchDiv.innerHTML = `${homeTeam}-${awayTeam}`;
-        } else {
-          matchDiv.textContent = player.player_team_code || '';
-        }
+        // Format: COUNTRY | CONCLAVE event_unit_id
+        matchElement.innerHTML = `<span style="font-family: 'Montserrat', sans-serif; font-weight: 800;">${player.player_team_code || ''}</span> | CONCLAVE <span style="font-family: 'Montserrat', sans-serif; font-weight: 800;">${player.event_unit_id || ''}</span>`;
         
-        infoDiv.appendChild(nameDiv);
-        infoDiv.appendChild(matchDiv);
+        infoContainer.appendChild(nameElement);
+        infoContainer.appendChild(matchElement);
         
         // Player cost
-        const costDiv = document.createElement('div');
-        costDiv.className = 'player-cost';
-        costDiv.textContent = playerCost.toFixed(1);
+        const costElement = document.createElement('div');
+        costElement.className = 'player-cost';
+        costElement.textContent = playerCost.toFixed(1);
         
-        // Append all elements to card
+        // Add all elements to card
         card.appendChild(iconContainer);
-        card.appendChild(infoDiv);
-        card.appendChild(costDiv);
+        card.appendChild(infoContainer);
+        card.appendChild(costElement);
         
-        // Add click event handler
+        // Add click event to toggle selection
         if (isAffordable || isAlreadyChosen || isInTempSelection) {
           card.addEventListener('click', () => {
-            if (isAlreadyChosen) {
-              // If already chosen, mark for removal
-              const chosenPlayer = chosenPlayers.find(p => p.athlete_id === player.athlete_id);
-              const playerToRemove = {...chosenPlayer, isRemoval: true};
-              tempSelectedPlayers.push(playerToRemove);
-              
-              // Update UI immediately
-              card.style.backgroundColor = "rgba(255, 255, 255, 0.05)"; // Reset background
-              
-              // Update header stats and re-render to update affordability
-              updateHeaderStats();
-              filterAndRenderPlayers();
-            } else if (isInTempSelection) {
-              // If in temp selection, remove from temp selection
-              const index = tempSelectedPlayers.findIndex(p => 
-                p.athlete_id === player.athlete_id && !p.isRemoval);
-              if (index !== -1) {
-                tempSelectedPlayers.splice(index, 1);
-                
-                // Update UI immediately
-                card.style.backgroundColor = "rgba(255, 255, 255, 0.05)"; // Reset background
-              }
-              
-              // Update header stats and re-render to update affordability
-              updateHeaderStats();
-              filterAndRenderPlayers();
-            } else if (isMarkedForRemoval) {
-              // If marked for removal, cancel the removal
-              const index = tempSelectedPlayers.findIndex(p => 
-                p.athlete_id === player.athlete_id && p.isRemoval);
-              if (index !== -1) {
-                tempSelectedPlayers.splice(index, 1);
-                
-                // Update UI immediately
-                card.style.backgroundColor = "rgba(254, 66, 8, 0.5)"; // Restore orange background
-              }
-              
-              // Update header stats and re-render to update affordability
-              updateHeaderStats();
-              filterAndRenderPlayers();
-            } else if (isAffordable) {
-              // If affordable and not selected, add to temp selection
-              tempSelectedPlayers.push(player);
-              
-              // Update UI immediately
-              card.style.backgroundColor = "rgba(254, 66, 8, 0.5)"; // Orange background
-              
-              // Update header stats and re-render to update affordability
-              updateHeaderStats();
-              filterAndRenderPlayers();
+            // If player is already chosen but not in temp selection, mark for removal
+            if (isAlreadyChosen && !isInTempSelection) {
+              const playerCopy = {...player, isRemoval: true};
+              togglePlayerSelection(playerCopy, card);
+            } else {
+              togglePlayerSelection(player, card);
             }
           });
         }
         
         playerList.appendChild(card);
-        renderedCount++; // Incrementa il contatore dopo aver aggiunto il giocatore alla lista
+        renderedCount++;
       });
       
-      console.log(`Totale giocatori renderizzati: ${renderedCount}`);
+      // Se non ci sono giocatori da mostrare, mostra un messaggio
+      if (renderedCount === 0) {
+        const noPlayersMsg = document.createElement('li');
+        noPlayersMsg.className = 'no-players-message';
+        noPlayersMsg.textContent = 'Nessun giocatore disponibile';
+        playerList.appendChild(noPlayersMsg);
+      }
     }
   </script>
+</body>
+</html>
+
+

@@ -19,8 +19,7 @@
       </div>
     </div>
     <div class="teex-balance">
-      <img src="icons/more.png" alt="Add" class="plus-icon">
-      <img src="icons/teex.png" alt="Teex" class="teex-icon">
+       <img src="icons/ppc.png" alt="Teex" class="teex-icon">
       <span id="teexContainer" class="teex_balance">0.0</span>
     </div>
 
@@ -166,7 +165,9 @@
         
         // Renderizza l'header del contest usando lo stesso layout di user-landing.html
         renderContestHeader(data.contest);
-        
+
+
+
         // Renderizza le liste dei giocatori
         renderTeamLists(data.ownerTeam, data.opponentTeam, data.contest);
       } catch (error) {
@@ -462,34 +463,7 @@
       
       const matchSpan = document.createElement("div");
       matchSpan.classList.add("match_3letter");
-      
-      if (player.home_team_code && player.away_team_code) {
-        // Determina se il giocatore è della squadra di casa o trasferta
-        const playerTeamId = parseInt(player.team_id);
-        const homeTeamId = parseInt(player.home_team);
-        const awayTeamId = parseInt(player.away_team);
-        
-        const isHomeTeam = playerTeamId === homeTeamId;
-        const isAwayTeam = playerTeamId === awayTeamId;
-        
-        // Crea il testo del match con il team del giocatore in grassetto
-        const homeSpan = document.createElement("span");
-        homeSpan.textContent = player.home_team_code;
-        if (isHomeTeam) homeSpan.classList.add("team-bold");
-        
-        const dashSpan = document.createElement("span");
-        dashSpan.textContent = "-";
-        
-        const awaySpan = document.createElement("span");
-        awaySpan.textContent = player.away_team_code;
-        if (isAwayTeam) awaySpan.classList.add("team-bold");
-        
-        matchSpan.appendChild(homeSpan);
-        matchSpan.appendChild(dashSpan);
-        matchSpan.appendChild(awaySpan);
-      } else {
-        matchSpan.textContent = "PARTITA";
-      }
+      matchSpan.innerHTML = `<span style="font-weight: 800;">${player.player_team_code || ''}</span> | CONC: <span style="font-weight: 800;">${player.aep_id || player.event_unit_id || ''}</span>`;
       
       infoBlock.appendChild(nameSpan);
       infoBlock.appendChild(matchSpan);

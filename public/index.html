@@ -114,5 +114,77 @@
   
   <!-- Includi il file auth.js, che contiene la configurazione Firebase -->
   <script src="auth.js"></script>
+  <script>
+  // Aggiungi funzione di debug
+  function debugLogin() {
+    console.log("=== DEBUG LOGIN ===");
+    console.log("LocalStorage attuale:");
+    console.log("authToken:", localStorage.getItem('authToken'));
+    console.log("userId:", localStorage.getItem('userId'));
+    console.log("userEmail:", localStorage.getItem('userEmail'));
+  }
+
+  // Modifica la funzione di login per aggiungere debug
+  async function handleEmailLogin(event) {
+    event.preventDefault();
+    console.log("Tentativo di login con email");
+    
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    
+    if (!email || !password) {
+      alert("Inserisci email e password");
+      return;
+    }
+    
+    try {
+      console.log("Invio richiesta login al server:", { email });
+      
+      const response = await fetch('/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      });
+      
+      console.log("Risposta server status:", response.status);
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Errore login:", response.status, errorText);
+        alert("Errore durante il login: " + errorText);
+        return;
+      }
+      
+      const data = await response.json();
+      console.log("Dati ricevuti dal server:", data);
+      
+      // Salva i dati nel localStorage
+      localStorage.setItem('authToken', data.token);
+      localStorage.setItem('userId', data.user.user_id);
+      localStorage.setItem('userEmail', data.user.email);
+      
+      console.log("Dati salvati in localStorage:");
+      debugLogin();
+      
+      // Reindirizza alla pagina user-landing.html
+      console.log("Reindirizzamento a user-landing.html");
+      window.location.href = 'user-landing.html';
+    } catch (error) {
+      console.error("Errore durante il login:", error);
+      alert("Errore durante il login: " + error.message);
+    }
+  }
+
+  // Chiama debugLogin all'avvio della pagina
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log("Pagina index.html caricata");
+    debugLogin();
+    
+    // Aggiungi gli event listener
+    document.getElementById('emailLoginForm').addEventListener('submit', handleEmailLogin);
+  });
+</script>
 </body>
 </html>

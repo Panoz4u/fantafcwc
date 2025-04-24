@@ -3,22 +3,14 @@ const path = require('path');
 const express = require("express");
 const app = express();
 const port = process.env.PORT || 3000;
-
 const pool = require("./db");
-
 app.use(express.json());
 app.use(express.static("public"));
 // Fallback su index.html se nessun'altra route viene trovata
-
 const uploadResultsRoute = require("./uploadResults"); // Assicurati che il percorso sia corretto
 app.use("/uploadResults", uploadResultsRoute);
 
-/* --------------------------- */
 /* 1) GET /users */
-/*****************************
- * GET /users
- * Restituisce l'elenco degli utenti attivi
- *****************************/
 app.get("/users", (req, res) => {
   // Se vuoi restituire solo gli utenti attivi, usa la WHERE is_active = 1
   const sql = `
@@ -34,7 +26,6 @@ app.get("/users", (req, res) => {
     FROM users
     WHERE is_active = 1
   `;
-  
   pool.query(sql, (err, rows) => {
     if (err) {
       console.error("Errore DB in GET /users:", err);
@@ -43,15 +34,11 @@ app.get("/users", (req, res) => {
     res.json(rows);
   });
 });
-
-
 /*****************************
  * POST /users
- * Crea un nuovo utente
  *****************************/
 app.post("/users", (req, res) => {
-  const { username, email, teex_balance, avatar, google_id } = req.body;
-  
+  const { username, email, teex_balance, avatar, google_id, uniquename, color } = req.body;
   if (!username || !email) {
     return res.status(400).json({ error: "Dati mancanti: 'username' ed 'email' sono obbligatori" });
   }
@@ -61,38 +48,55 @@ app.post("/users", (req, res) => {
   // Se avatar è presente, lo usiamo direttamente (sarà l'URL di Google)
   const finalAvatar = avatar || "";
   const finalGoogleId = google_id || "";
+  const finalUniquename = uniquename || username;
+  const finalColor = color || "ff5500"; // Colore predefinito se non specificato
   
-  const sql = `
-    INSERT INTO users 
-      (username, email, teex_balance, is_active, updated_at, avatar, google_id)
-    VALUES 
-      (?, ?, ?, ?, NOW(), ?, ?)
-  `;
-  const params = [username, email, balance, isActive, finalAvatar, finalGoogleId];
-  
-  pool.query(sql, params, (err, result) => {
-    if (err) {
-      console.error("Errore INSERT /users:", err);
-      return res.status(500).json({ error: "Errore nell'inserimento utente" });
+  // Prima verifichiamo se l'utente esiste già (per evitare duplicati)
+  const checkSql = "SELECT user_id FROM users WHERE email = ?";
+  pool.query(checkSql, [email], (checkErr, checkResult) => {
+    if (checkErr) {
+      console.error("Errore nella verifica dell'utente:", checkErr);
+      return res.status(500).json({ error: "Errore nella verifica dell'utente" });
     }
-    res.json({
-      message: "Utente creato con successo!",
-      userId: result.insertId
+    
+    if (checkResult.length > 0) {
+      // L'utente esiste già, restituiamo l'ID esistente
+      return res.json({
+        message: "Utente già esistente",
+        userId: checkResult[0].user_id
+      });
+    }
+    
+    // L'utente non esiste, procediamo con l'inserimento
+    const sql = `
+      INSERT INTO users 
+        (username, email, teex_balance, is_active, updated_at, avatar, google_id, uniquename, color)
+      VALUES 
+        (?, ?, ?, ?, NOW(), ?, ?, ?, ?)
+    `;
+    
+    const params = [username, email, balance, isActive, finalAvatar, finalGoogleId, finalUniquename, finalColor];
+    
+    pool.query(sql, params, (err, result) => {
+      if (err) {
+        console.error("Errore INSERT /users:", err);
+        return res.status(500).json({ error: "Errore nell'inserimento utente" });
+      }
+      
+      res.json({
+        message: "Utente creato con successo!",
+        userId: result.insertId
+      });
     });
   });
 });
-
-
-/* --------------------------- */
 /* 2) POST /contests (creare una nuova sfida) */
 app.post("/contests", (req, res) => {
   const { owner, opponent, event_unit_id, multiply } = req.body;  // Added multiply to destructuring
   if (!owner || !opponent) return res.status(400).json({ error: "Owner or Opponent missing" });
-  
-  // Set default multiply value to 1 if not specified
+    // Set default multiply value to 1 if not specified
   const multiplyValue = multiply || 1;
-  
-  // Updated query to insert multiply field
+    // Updated query to insert multiply field
   const sql = `
     INSERT INTO contests (owner_user_id, opponent_user_id, contest_type, stake, status, created_at, event_unit_id, multiply)
     VALUES (?, ?, 'head_to_head', 0, 0, NOW(), ?, ?)
@@ -105,31 +109,13 @@ app.post("/contests", (req, res) => {
     res.json({ message: "Contest creato con successo", contestId: rs.insertId });
   });
 });
-
 /* --------------------------- */
 /* 3) GET /event-players?event=30 */
 app.get("/event-players", (req, res) => {
-  const eId = req.query.event || 30;
-  const checkOnly = req.query.check_only === 'true';
-  
-  // If check_only is true, just verify if the event exists
-  if (checkOnly) {
-    const checkSql = "SELECT event_unit_id FROM event_units WHERE event_unit_id = ? LIMIT 1";
-    pool.query(checkSql, [eId], (err, rows) => {
-      if (err) {
-        console.error("DB error checking event unit:", err);
-        return res.status(500).json({ error: "DB error checking event unit" });
-      }
-      if (rows.length === 0) {
-        return res.status(404).json({ error: "Event unit not found" });
-      }
-      return res.json({ exists: true });
-    });
-    return;
-  }
-  
-  const sql = `
-    SELECT aep.athlete_id, aep.event_unit_cost, a.athlete_name, a.position, a.athlete_shortname, a.team_id, a.picture,
+  const eventUnitId = req.query.event_unit_id;
+  if (!eventUnitId) return res.status(400).json({ error: "Missing event unit ID" });
+    const sql = `
+    SELECT aep.athlete_id, aep.event_unit_cost, aep.event_unit_id, a.athlete_name, a.position, a.athlete_shortname, a.team_id, a.picture,
            m.home_team, m.away_team, m.status AS match_status,
            ht.team_3letter AS home_team_code, at.team_3letter AS away_team_code,
            ht.team_name AS home_team_name, at.team_name AS away_team_name,
@@ -137,12 +123,11 @@ app.get("/event-players", (req, res) => {
            m.match_id
     FROM athlete_eventunit_participation aep
     JOIN athletes a ON aep.athlete_id = a.athlete_id
-    JOIN teams t ON a.team_id = t.team_id
+    LEFT JOIN teams t ON a.team_id = t.team_id
     LEFT JOIN matches m ON aep.event_unit_id = m.event_unit_id AND (m.home_team = a.team_id OR m.away_team = a.team_id)
     LEFT JOIN teams ht ON m.home_team = ht.team_id
     LEFT JOIN teams at ON m.away_team = at.team_id
     WHERE aep.event_unit_id = ? AND aep.status = 1
-    AND (m.status IS NULL OR m.status < 4)
   `;
   pool.query(sql, [eId], (er, rows) => {
     if (er) {
@@ -152,25 +137,47 @@ app.get("/event-players", (req, res) => {
     res.json(rows);
   });
 });
-
+/* Nuovo endpoint per ottenere tutti gli atleti con status = 1 */
+app.get("/all-active-athletes", (req, res) => {
+  const sql = `
+    SELECT aep.athlete_id, aep.event_unit_cost, aep.event_unit_id, a.athlete_name, a.position, a.athlete_shortname, a.team_id, a.picture,
+           m.home_team, m.away_team, m.status AS match_status,
+           ht.team_3letter AS home_team_code, at.team_3letter AS away_team_code,
+           ht.team_name AS home_team_name, at.team_name AS away_team_name,
+           t.team_3letter AS player_team_code, t.team_name AS player_team_name,
+           m.match_id
+    FROM athlete_eventunit_participation aep
+    JOIN athletes a ON aep.athlete_id = a.athlete_id
+    LEFT JOIN teams t ON a.team_id = t.team_id
+    LEFT JOIN matches m ON aep.event_unit_id = m.event_unit_id AND (m.home_team = a.team_id OR m.away_team = a.team_id)
+    LEFT JOIN teams ht ON m.home_team = ht.team_id
+    LEFT JOIN teams at ON m.away_team = at.team_id
+    WHERE aep.status = 1
+  `;
+    pool.query(sql, (er, rows) => {
+    if (er) {
+      console.error("DB error /all-active-athletes", er);
+      return res.status(500).json({ error: "DB error /all-active-athletes" });
+    }
+    res.json(rows);
+  });
+});
 /* --------------------------- */
 /* 4) GET /user-landing-info?user=XX */
-/* Qui aggiungiamo la logica per aggiornare contest.status_display se esiste un risultato parziale */
 app.get("/user-landing-info", (req, res) => {
   const userId = req.query.user;
   if (!userId) return res.status(400).json({ error: "Missing user param" });
-  const sqlUser = "SELECT user_id, username, teex_balance, avatar FROM users WHERE user_id = ?";
+  const sqlUser = "SELECT user_id, username, teex_balance, avatar, color FROM users WHERE user_id = ?";
   pool.query(sqlUser, [userId], (err, ur) => {
     if (err) return res.status(500).json({ error: "DB error user" });
     if (!ur.length) return res.status(404).json({ error: "User not found" });
     const userData = ur[0];
-
     const sqlC = `
       SELECT c.contest_id, c.status, cs.status_name, c.stake,
-             c.owner_user_id AS owner_id, ow.username AS owner_name, ow.avatar AS owner_avatar,
+             c.owner_user_id AS owner_id, ow.username AS owner_name, ow.avatar AS owner_avatar, ow.color AS owner_color,
              ft_o.total_cost AS owner_cost, ft_o.fantasy_team_id AS owner_team_id, 
              ft_o.total_points AS owner_points, ft_o.ft_result AS owner_result, ft_o.ft_teex_won AS owner_teex_won,
-             c.opponent_user_id AS opponent_id, op.username AS opponent_name, op.avatar AS opponent_avatar,
+             c.opponent_user_id AS opponent_id, op.username AS opponent_name, op.avatar AS opponent_avatar, op.color AS opponent_color,
              ft_p.total_cost AS opponent_cost, ft_p.fantasy_team_id AS opponent_team_id,
              ft_p.total_points AS opponent_points, ft_p.ft_result AS opponent_result, ft_p.ft_teex_won AS opponent_teex_won,
              c.event_unit_id, c.multiply
@@ -187,7 +194,6 @@ app.get("/user-landing-info", (req, res) => {
         console.error("Errore nella query contests:", er2);
         return res.status(500).json({ error: "DB error contests" });
       }
-      
       // Per ogni contest, se lo status è 4 e almeno un atleta ha is_ended=1, computiamo il risultato parziale.
       let pending = contests.length;
       if (pending === 0) {
@@ -198,8 +204,7 @@ app.get("/user-landing-info", (req, res) => {
         if (contest.status == 5) {
           // Prepara i dati dei fantasy teams per il frontend
           contest.fantasy_teams = [];
-          
-          // Aggiungi il team dell'owner
+           // Aggiungi il team dell'owner
           if (contest.owner_team_id) {
             contest.fantasy_teams.push({
               user_id: contest.owner_id,
@@ -209,8 +214,7 @@ app.get("/user-landing-info", (req, res) => {
               ft_teex_won: contest.owner_teex_won
             });
           }
-          
-          // Aggiungi il team dell'opponent
+           // Aggiungi il team dell'opponent
           if (contest.opponent_team_id) {
             contest.fantasy_teams.push({
               user_id: contest.opponent_id,
@@ -220,19 +224,21 @@ app.get("/user-landing-info", (req, res) => {
               ft_teex_won: contest.opponent_teex_won
             });
           }
-          
           checkDone();
         }
         else if (contest.status == 4) {
           // Eseguiamo la query per calcolare il risultato parziale
           const sqlTeam = `
-            SELECT fte.*, a.athlete_shortname, a.picture, a.position, a.team_id, aep.is_ended,
+            SELECT fte.*, fte.aep_id, a.athlete_shortname, a.picture, a.position, a.team_id, aep.event_unit_id  AS event_unit_id, aep.is_ended,
                    COALESCE(ROUND(aep.athlete_unit_points, 1), 0) AS athlete_points,
                    m.home_team, m.away_team,
-                   ht.team_3letter AS home_team_code, at.team_3letter AS away_team_code
+                   ht.team_3letter AS home_team_code, at.team_3letter AS away_team_code,
+                   ht.team_name AS home_team_name, at.team_name AS away_team_name,
+                   t.team_3letter AS player_team_code, t.team_name AS player_team_name
             FROM fantasy_team_entities fte
             JOIN fantasy_teams ft ON fte.fantasy_team_id = ft.fantasy_team_id
             JOIN athletes a ON fte.athlete_id = a.athlete_id
+            JOIN teams t ON a.team_id = t.team_id
             LEFT JOIN athlete_eventunit_participation aep 
                    ON a.athlete_id = aep.athlete_id AND aep.event_unit_id = ?
             LEFT JOIN matches m ON aep.event_unit_id = m.event_unit_id AND (m.home_team = a.team_id OR m.away_team = a.team_id)
@@ -278,10 +284,6 @@ app.get("/user-landing-info", (req, res) => {
           checkDone();
         }
       });
-      
-
-
-
       function checkDone() {
         pending--;
         if (pending === 0) {
@@ -324,11 +326,9 @@ app.get("/contest-details", (req, res) => {
     if (er) return res.status(500).json({ error: "DB error /contest-details" });
     if (!rows.length) return res.status(404).json({ error: "Contest non trovato" });
     const contestData = rows[0];
-
     // Prepara i dati dei fantasy teams per i contest completati (status 5)
     if (contestData.status == 5) {
       contestData.fantasy_teams = [];
-      
       // Aggiungi il team dell'owner
       if (contestData.owner_team_id) {
         contestData.fantasy_teams.push({
@@ -339,7 +339,6 @@ app.get("/contest-details", (req, res) => {
           ft_teex_won: contestData.owner_teex_won
         });
       }
-      
       // Aggiungi il team dell'opponent
       if (contestData.opponent_team_id) {
         contestData.fantasy_teams.push({
@@ -351,9 +350,8 @@ app.get("/contest-details", (req, res) => {
         });
       }
     }
-
     const sqlTeam = `
-      SELECT fte.*, a.athlete_shortname, a.picture, a.position, a.team_id, aep.is_ended,
+      SELECT fte.*, fte.aep_id, a.athlete_shortname, a.picture, a.position, a.team_id, aep.event_unit_id  AS event_unit_id, aep.is_ended,
              COALESCE(ROUND(aep.athlete_unit_points, 1), 0) AS athlete_points,
              m.home_team, m.away_team,
              ht.team_3letter AS home_team_code, at.team_3letter AS away_team_code,
@@ -370,11 +368,9 @@ app.get("/contest-details", (req, res) => {
       LEFT JOIN teams at ON m.away_team = at.team_id
       WHERE ft.contest_id = ? AND ft.user_id = ?
     `;
-
     const eventUnit = contestData.event_unit_id || 0;
     console.log(`OWNER query - contest_id: ${contestData.contest_id}, user: ${contestData.owner_id}, event_unit: ${eventUnit}`);
     console.log(`OPPONENT query - contest_id: ${contestData.contest_id}, user: ${contestData.opponent_id}, event_unit: ${eventUnit}`);
-    
     pool.query(sqlTeam, [eventUnit, cId, contestData.owner_id], (er2, owRows) => {
       if (er2) {
         console.error("Error in owner team query:", er2);
@@ -407,202 +403,103 @@ app.get("/contest-details", (req, res) => {
     });
   });
 });
-/* 6) POST /confirm-squad */
+/* ----------------------------------------------------------------------
+   6) POST /confirm-squad
+---------------------------------------------------------------------- */
 app.post("/confirm-squad", (req, res) => {
-  // Explicitly extract multiply from request body with default value of 1
-  const { contestId, userId, players, multiply = 1, totalCost } = req.body;
-  
-  console.log("Received multiply value:", multiply); // Add logging to debug
-  
-  if (!contestId || !userId || !players) {
-    return res.status(400).json({ error: "Missing required parameters" });
+  const { contestId, userId, players, multiply, totalCost } = req.body;
+  if (!contestId || !userId || !Array.isArray(players)) {
+    return res.status(400).json({ error: "Dati mancanti o invalidi" });
   }
   
-  // First, check if the user has enough balance
-  pool.query("SELECT teex_balance FROM users WHERE user_id = ?", [userId], (err, userRows) => {
-    if (err) {
-      console.error("Error checking user balance:", err);
-      return res.status(500).json({ error: "Database error" });
+  // Calcola il costo totale dai giocatori
+  let calculatedTotalCost = 0;
+  players.forEach(p => {
+    calculatedTotalCost += parseFloat(p.event_unit_cost || 0);
+  });
+  
+  // Usa il costo totale fornito o quello calcolato
+  const finalTotalCost = totalCost || calculatedTotalCost;
+  const multiplyValue = multiply || 1;
+  
+  const sqlGet = "SELECT status, stake, owner_user_id, event_unit_id FROM contests WHERE contest_id = ?";
+  pool.query(sqlGet, [contestId], (er0, r0) => {
+    if (er0) return res.status(500).json({ error: "DB error read contest" });
+    if (!r0.length) return res.status(404).json({ error: "Contest non trovato" });
+    
+    const row = r0[0];
+    let newStake = parseFloat(row.stake || 0);
+    let newStatus = row.status;
+    
+    if (newStatus == 0 && parseInt(userId) == row.owner_user_id) {
+      newStatus = 1; 
+      newStake += finalTotalCost;
+    } else if (newStatus == 1 && parseInt(userId) != row.owner_user_id) {
+      newStatus = 2; 
+      newStake += finalTotalCost;
     }
     
-    if (!userRows.length) {
-      return res.status(404).json({ error: "User not found" });
-    }
+    const sqlUpd = `
+      UPDATE contests SET stake = ?, status = ?, updated_at = NOW(), multiply = ?
+      WHERE contest_id = ?
+    `;
     
-    const userBalance = userRows[0].teex_balance;
-    
-    // Calculate the base team cost (without multiplication)
-    const baseTeamCost = players.reduce((sum, p) => sum + parseFloat(p.event_unit_cost || 0), 0);
-    
-    // Get contest info to determine if user is owner or opponent
-    pool.query("SELECT owner_user_id, opponent_user_id, status, multiply as contest_multiply, stake FROM contests WHERE contest_id = ?", 
-      [contestId], (err, contestRows) => {
-        if (err) {
-          console.error("Error getting contest:", err);
-          return res.status(500).json({ error: "Database error" });
+    pool.query(sqlUpd, [newStake, newStatus, multiplyValue, contestId], (er1, r1) => {
+      if (er1) return res.status(500).json({ error: "DB error update contest" });
+      
+      const sqlTeam = `
+        INSERT INTO fantasy_teams (contest_id, user_id, total_cost, updated_at)
+        VALUES (?, ?, ?, NOW())
+      `;
+      
+      pool.query(sqlTeam, [contestId, userId, finalTotalCost], (er2, r2) => {
+        if (er2) return res.status(500).json({ error: "DB error create team" });
+        
+        const teamId = r2.insertId;
+        let pending = players.length;
+        
+        if (pending === 0) {
+          finishTeex();
+          return;
         }
         
-        if (!contestRows.length) {
-          return res.status(404).json({ error: "Contest not found" });
-        }
-        
-        const contest = contestRows[0];
-        const isOwner = parseInt(userId) === parseInt(contest.owner_user_id);
-        const isOpponent = parseInt(userId) === parseInt(contest.opponent_user_id);
-        
-        if (!isOwner && !isOpponent) {
-          return res.status(403).json({ error: "User is not part of this contest" });
-        }
-        
-        // IMPORTANT: If user is opponent and contest status is 1 (invited),
-        // we must use the contest's multiply value, not the one from the request
-        let effectiveMultiply = multiply;
-        if (isOpponent && contest.status === 1 && contest.contest_multiply) {
-          effectiveMultiply = contest.contest_multiply;
-          console.log("Opponent in invited contest - using contest multiply:", effectiveMultiply);
-        }
-        
-        // Calculate the multiplied cost (what the user actually pays)
-        const multipliedCost = baseTeamCost * effectiveMultiply;
-        
-        if (multipliedCost > userBalance) {
-          return res.status(400).json({ error: "Insufficient balance" });
-        }
-        
-        // First, find any existing fantasy teams for this user and contest
-        pool.query("SELECT fantasy_team_id FROM fantasy_teams WHERE user_id = ? AND contest_id = ?", 
-          [userId, contestId], (err, teamRows) => {
-            if (err) {
-              console.error("Error checking existing team:", err);
-              return res.status(500).json({ error: "Database error" });
+        players.forEach(player => {
+          const sqlEntity = `
+            INSERT INTO fantasy_team_entities (fantasy_team_id, athlete_id, aep_id, cost)
+            VALUES (?, ?, ?, ?)
+          `;
+          
+          // Usa l'event_unit_id del giocatore o quello del contest come fallback
+          const aepId = player.event_unit_id || row.event_unit_id || null;
+          // Salva anche il costo del giocatore
+          const playerCost = parseFloat(player.event_unit_cost || 0);
+          
+          pool.query(sqlEntity, [teamId, player.athlete_id, aepId, playerCost], (er3, r3) => {
+            if (er3) {
+              console.error("Error inserting player:", er3);
+              // Continuiamo comunque con gli altri giocatori
             }
             
-            // If team exists, delete its entities first
-            if (teamRows.length > 0) {
-              const teamId = teamRows[0].fantasy_team_id;
-              
-              // Delete the entities first to avoid foreign key constraint
-              pool.query("DELETE FROM fantasy_team_entities WHERE fantasy_team_id = ?", 
-                [teamId], (err) => {
-                  if (err) {
-                    console.error("Error deleting team entities:", err);
-                    return res.status(500).json({ error: "Database error" });
-                  }
-                  
-                  // Now delete the team
-                  pool.query("DELETE FROM fantasy_teams WHERE fantasy_team_id = ?", 
-                    [teamId], (err) => {
-                      if (err) {
-                        console.error("Error deleting team:", err);
-                        return res.status(500).json({ error: "Database error" });
-                      }
-                      
-                      // Continue with creating new team
-                      createNewTeam();
-                    });
-                });
-            } else {
-              // No existing team, proceed with creation
-              createNewTeam();
-            }
-            
-            // Function to create a new team and add players
-            function createNewTeam() {
-              // Insert the new team with the base cost (NOT multiplied)
-              pool.query("INSERT INTO fantasy_teams (user_id, contest_id, total_cost) VALUES (?, ?, ?)",
-                [userId, contestId, baseTeamCost], (err, teamResult) => {
-                  if (err) {
-                    console.error("Error creating team:", err);
-                    return res.status(500).json({ error: "Database error" });
-                  }
-                  
-                  const teamId = teamResult.insertId;
-                  
-                  // Insert all players
-                  const playerValues = players.map(p => [teamId, p.athlete_id, p.event_unit_cost || 0]);
-                  
-                  if (playerValues.length > 0) {
-                    const placeholders = playerValues.map(() => "(?, ?, ?)").join(", ");
-                    const flatValues = playerValues.flat();
-                    
-                    pool.query(`INSERT INTO fantasy_team_entities (fantasy_team_id, athlete_id, cost) VALUES ${placeholders}`,
-                      flatValues, (err) => {
-                        if (err) {
-                          console.error("Error adding players:", err);
-                          return res.status(500).json({ error: "Database error" });
-                        }
-                        
-                        // Update contest status and multiply value
-                        let updateFields = {};
-                        
-                        if (isOwner) {
-                          // If owner confirms, set initial stake to baseTeamCost * multiply
-                          updateFields = {
-                            status: contest.status === 1 ? 2 : 1, // If opponent already confirmed, set to 2 (ready)
-                            multiply: effectiveMultiply, // Always update multiply when owner confirms
-                            stake: baseTeamCost * effectiveMultiply // Set initial stake to owner's multiplied cost
-                          };
-                        } else {
-                          // If opponent confirms, add their multiplied cost to existing stake
-                          updateFields = {
-                            status: contest.status === 1 ? 2 : 1 // If owner already confirmed, set to 2 (ready)
-                          };
-                          
-                          // Only update multiply if it's the first confirmation (status 0)
-                          if (contest.status === 0) {
-                            updateFields.multiply = effectiveMultiply;
-                          }
-                          
-                          // If this is the second confirmation (status 1), add opponent's multiplied cost to stake
-                          if (contest.status === 1) {
-                            // Always use the contest's multiply value for consistency when opponent confirms
-                            // Fix: Parse the values as floats and add them properly
-                            const currentStake = parseFloat(contest.stake || 0);
-                            const additionalStake = baseTeamCost * effectiveMultiply;
-                            updateFields.stake = currentStake + additionalStake;
-                            
-                            console.log(`Stake calculation: ${currentStake} + (${baseTeamCost} * ${effectiveMultiply}) = ${updateFields.stake}`);
-                          }
-                        }
-                        
-                        console.log("Updating contest with fields:", updateFields); // Add logging
-                        
-                        const updateSql = "UPDATE contests SET " + 
-                          Object.keys(updateFields).map(k => `${k} = ?`).join(", ") +
-                          " WHERE contest_id = ?";
-                        
-                        const updateParams = [...Object.values(updateFields), contestId];
-                        
-                        pool.query(updateSql, updateParams, (err) => {
-                          if (err) {
-                            console.error("Error updating contest:", err);
-                            return res.status(500).json({ error: "Database error" });
-                          }
-                          
-                          // Deduct the multiplied cost from user's balance
-                          pool.query("UPDATE users SET teex_balance = teex_balance - ? WHERE user_id = ?",
-                            [multipliedCost, userId], (err) => {
-                              if (err) {
-                                console.error("Error updating balance:", err);
-                                return res.status(500).json({ error: "Database error" });
-                              }
-                              
-                              res.json({ 
-                                message: "Squad confirmed successfully",
-                                multiply: effectiveMultiply,
-                                baseTeamCost: baseTeamCost,
-                                multipliedCost: multipliedCost
-                              });
-                            });
-                        });
-                      });
-                  } else {
-                    res.status(400).json({ error: "No players provided" });
-                  }
-                });
+            pending--;
+            if (pending === 0) {
+              finishTeex();
             }
           });
+        });
+        
+        function finishTeex() {
+          const sqlUser = `
+            UPDATE users SET teex_balance = teex_balance - ?
+            WHERE user_id = ?
+          `;
+          
+          pool.query(sqlUser, [finalTotalCost, userId], (er4, r4) => {
+            if (er4) return res.status(500).json({ error: "DB error updating user teex" });
+            res.json({ message: "Squadra confermata con successo" });
+          });
+        }
       });
+    });
   });
 });
 
@@ -632,22 +529,52 @@ app.get("/set-live-contests", (req, res) => {
   });
 });
 
-// GET /user-by-email?email=...
+/* Endpoint per verificare l'unicità del nome utente
+
+Questo endpoint rimane invariato, poiché non fa riferimento al campo `user_color`:
+```javascript
+/* Endpoint per verificare l'unicità del nome utente */
+app.get("/check-username", (req, res) => {
+  const username = req.query.username;
+  if (!username) {
+    return res.status(400).json({ error: "Nome utente mancante" });
+  }
+  
+  const sql = "SELECT user_id FROM users WHERE uniquename = ?";
+  pool.query(sql, [username], (err, rows) => {
+    if (err) {
+      console.error("Errore nella verifica del nome utente:", err);
+      return res.status(500).json({ error: "Errore del database" });
+    }
+    
+    if (rows.length > 0) {
+      // Il nome utente esiste già
+      return res.status(200).json({ exists: true });
+    } else {
+      // Il nome utente non esiste
+      return res.status(404).json({ exists: false });
+    }
+  });
+});
+/* Endpoint per ottenere un utente tramite email */
 app.get("/user-by-email", (req, res) => {
   const email = req.query.email;
   if (!email) {
-    return res.status(400).json({ error: "Email required" });
+    return res.status(400).json({ error: "Email mancante" });
   }
-  const sql = "SELECT user_id, username, email FROM users WHERE email = ?";
+  
+  const sql = "SELECT * FROM users WHERE email = ?";
   pool.query(sql, [email], (err, rows) => {
     if (err) {
-      console.error("Error in GET /user-by-email:", err);
-      return res.status(500).json({ error: "DB error" });
+      console.error("Errore nel recupero dell'utente tramite email:", err);
+      return res.status(500).json({ error: "Errore del database" });
     }
-    if (rows.length === 0) {
-      return res.status(404).json({ error: "User not found" });
+    
+    if (rows.length > 0) {
+      return res.json(rows[0]);
+    } else {
+      return res.status(404).json({ error: "Utente non trovato" });
     }
-    res.json(rows[0]);
   });
 });
 

@@ -7,7 +7,7 @@
   
   body {
     font-family: 'Montserrat', sans-serif;
-    background-color: #260E3D;
+    background-color: #595a4a;
     background-image: url('../images/GradientBG.png');
     background-size: cover;
     background-position: center top;
@@ -49,7 +49,7 @@
   /* Scrollable Content Area */
   .scrollable-content {
     position: absolute;
-    top: 173px; /* Altezza approssimativa di header + power-up + tabs */
+    top: 133px; /* Altezza approssimativa di header + power-up + tabs */
     left: 0;
     right: 0;
     bottom: 0;
@@ -61,7 +61,7 @@
   /* Modify the header styles to make it sticky */
   .header {
     padding: 16px;
-    background-color: #0A0034;
+    background-color: #595a4a;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -82,6 +82,8 @@
     border-radius: 50%;
     object-fit: cover;
     margin-right: 12px;
+    background-color: #ffffff;
+     border: 1px solid #2a2b2a;
   }
   
   .user-info {
@@ -95,11 +97,14 @@
     font-size: 24px;
     font-weight: 400;
     text-transform: uppercase;
-    margin-bottom: 4px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 200px; /* Same as progress bar width */
+  }
+ 
+  .un-landing {
+    margin-bottom: 10px;
   }
   
   .progress-and-percentage {
@@ -118,7 +123,7 @@
   
   .progress-bar {
     height: 100%;
-    background: linear-gradient(to right, #FE4208, #ED33B9);
+    background: linear-gradient(to right, #D81E5B, #ED33B9);
     border-radius: 3px;
   }
   
@@ -146,7 +151,7 @@
   .teex-balance {
     display: flex;
     align-items: center;
-    background-color: #5dFDCB;
+    background-color: #FFF201;
     border-radius: 50px;
     padding: 6px 0;
     height: 24px;
@@ -155,11 +160,12 @@
     font-family: 'Montserrat', sans-serif;
     font-weight: 800;
     font-size: 16px;
-    color: #0A0034;
+    color: #2a2b2a;
     padding-right: 8px;
     padding-left: 2px;
+    box-shadow: 3px 3px 5px rgba(42, 43, 42, 0.5); /* Aggiunta ombra in basso a destra */
   }
-  
+
   .teex-icon {
     width: 40px;
     height: 40px;
@@ -261,7 +267,7 @@
   /* Tab Container Styles */
   .tab-container {
     display: flex;
-    background-color: #0A0034;
+    background-color: #2a2b2a;
   }
   
   .tab {
@@ -287,7 +293,7 @@
     left: 10%;
     width: 80%;
     height: 3px;
-    background-color: #FE4208;
+    background-color: #D81E5B;
   }
   
   .tab_off {
@@ -308,7 +314,7 @@
     justify-content: space-between;
     align-items: center;
     /*background-color: rgba(10, 0, 52, 0.5); /* 50% trasparente */
-    background-color: #260E3D;
+    background-color: #363635;
     padding: 8px 16px;
     z-index: 100;
     height: 80px;
@@ -322,9 +328,10 @@
     bottom: 0;
     left: 0;
     right: 0;
-    height: 160px;
-    background-color: rgba(38, 14, 61, 0.3);
+    height: 140px;
+    background-color: rgba(42, 43, 42, 0.2); /* Modificato da #2a2b2a a rgba */
     backdrop-filter: blur(6px);
+    /* opacity: 0.2; */ /* Rimosso perché ora l'opacità è nel colore */
     -webkit-backdrop-filter: blur(6px);
     z-index: 99;
   }
@@ -342,7 +349,7 @@
     min-width: 40px;
     margin: 0 4px;
     line-height: 1;  /* Added to further reduce height */
-    background-color: #FE4208;
+    background-color: #D81E5B;
     color: #ffffff;
     position: relative;
     z-index: 101;
@@ -357,7 +364,7 @@
     right: -3px;
     bottom: -3px;
     border-radius: 50px;
-    background: linear-gradient(90deg, #FE4208, #ed3389, #FE4208);
+    background: linear-gradient(90deg, #D81E5B, #ac0036, #D81E5B);
     background-size: 300% 100%;
     z-index: -1;
     animation: animatedBorder 9s linear infinite;
@@ -389,37 +396,41 @@
   }
   
   .footer_button_blue {
-    background-color: #0A0034;
+    background-color: #2a2b2a;
     color: #fff;
   }
-  
+ 
+  .footer_button_light {
+    background-color: #706561;
+    color: #fff;
+  }
   .footer_button_cyan {
-    background-color: #FE4208;
-    color: #0A0034;
+    background-color: #D81E5B;
+    color: #2a2b2a;
   }
 
   .footer_button_orange {
-    background-color: #0A0034;
-    border: 2px solid #FE4208;
+    background-color:  #2a2b2a;
+    border: 2px solid #D81E5B;
     color: white;
   }
 
   .footer_button_orange_fill {
-    background-color: #FE4208;
+    background-color: #D81E5B;
         color: white;
   }
 
   .fb_unable_orange {
-    background-color: #0A0034;
+    background-color: #2a2b2a;
     opacity: 0.5 ;
-    border: 2px solid #FE4208;
+    border: 2px solid #D81E5B;
     color: white;
   } 
 
   .fb_unable_blu {
-    background-color: #0A0034;
+    background-color: #2a2b2a;
     opacity: 0.5 ;
-    border: 2px solid #0A0034;
+    border: 2px solid #2a2b2a;
     color: white;
   }  
   .footer-item {
@@ -430,8 +441,8 @@
   }
   
   .menu_icon {
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
     margin-bottom: 4px;
   }
   
@@ -446,7 +457,7 @@
   .menu_item_blu {
     font-family: 'Barlow Condensed', sans-serif;
     font-size: 14px;
-    color: #0A0034;
+    color: #2a2b2a;
     text-align: center;
     font-weight: 700;
     text-transform: uppercase;
@@ -455,7 +466,7 @@
   .play-button {
     width: 80px;
     height: 80px;
-    background-color: #FE4208;
+    background-color: #D81E5B;
     border-radius: 50%;
     display: flex;
     flex-direction: column;
@@ -491,7 +502,7 @@
   }
   
   .contest-bar {
-    background-color: #0A0034;
+    background-color: #2a2b2a;
     height: 48px;
     margin: 0 32px;
     position: relative;
@@ -506,9 +517,10 @@
     position: absolute;
     bottom: -31px;
     object-fit: cover;
-    border: 2px solid #0A0034;
+    border: 2px solid #2a2b2a;
     z-index: 3; /* Increased from 2 to 3 */
     top: -12px;
+    background-color: #ffffff;
   }
   
   .left-avatar {
@@ -550,7 +562,7 @@
   
   /* Base Styles for Status Badges */
   .status-badge-base {
-    color: #0A0034;
+    color: #2a2b2a;
     padding: 4px 4px 0px 4px;
     border-radius: 10px;
     font-family: 'Montserrat', sans-serif;
@@ -566,24 +578,9 @@
     align-items: center;
     justify-content: center;
     min-width: 100px; /* Larghezza minima fissa */
+    text-transform: uppercase;
   }
-  
-  /* Specific Status Badge Variants */
-  .status-badge {
-    background-color: #FE4208;
-  }
-  
-  .status-badge-invited {
-    background-color: #F9E900;
-  }
-  
-  .status-badge-ready {
-    background-color: #5DFDCB;
-  }
-  
-  .status-badge-live {
-    background-color: #5DFDCB;
-  }
+
   
   .teex_spent {
     font-family: 'Montserrat', sans-serif;
@@ -628,7 +625,6 @@
     
     .one-team {
       padding-right: 5px;
-      margin-top: -18px;
     }
 
     .team-list {
@@ -653,7 +649,7 @@
       border-radius: 50%;
       object-fit: cover;
       position: relative;
-      background-color: #FE4208;
+      background-color: #D81E5B;
     }
     
     /* Athlete Avatar - 23% larger but same starting point */
@@ -663,7 +659,7 @@
       border-radius: 50%;
       object-fit: cover;
       position: relative;
-      background-color: #FE4208;
+      background-color: #D81E5B;
       overflow: hidden;
     }
     
@@ -688,7 +684,7 @@
       font-family: 'Barlow Condensed', sans-serif;
       font-weight: 700;
       font-size: 16px;
-      color: #0A0034;
+      color: #2a2b2a;
       padding-bottom: 2px;
       background-color: #FFD600; /* Yellow */
     }
@@ -745,7 +741,7 @@
       font-family: 'Montserrat', sans-serif;
       font-weight: 400;
       font-size: 14px;
-      color: #7E7E7E;
+      color: #ffffff;
     }
     
     .match_3letter .team-bold {
@@ -789,7 +785,7 @@
     
     .athlete_points_integer.not_ended,
     .athlete_points_decimal.not_ended {
-      color: #505050;
+      color: #9c9c9c;
     }
     
     .athlete_points_integer.is_ended,
@@ -799,13 +795,13 @@
     
     /* Cost styles */
     .athlete_cost {
-      background-color: #5dFDCB;
+      background-color: #FFF201;
       border-radius: 12px;
       padding: 0px  2px 18px 2px;
       font-family: 'Montserrat', sans-serif;
       font-weight: 800;
       font-size: 14px;
-      color: #0A0034;
+      color: #2a2b2a;
       margin-top: 4px;
       min-width: 36px;
       text-align: center;
@@ -831,7 +827,7 @@
       margin: 0 auto;
     }
     .contest_usernames {
-      background-color: #0A0034;
+      background-color: #2a2b2a;
       height: 36px;
       display: flex;
       justify-content: space-between;
@@ -868,7 +864,7 @@
     font-family: 'Montserrat', sans-serif;
     font-weight: 800;
     font-size: 16px;
-    color: #5dFDCB;
+    color: #FFF201;
     text-transform: uppercase;
   }
   
@@ -883,7 +879,7 @@
     font-family: 'Montserrat', sans-serif;
     font-weight: 800;
     font-size: 16px;
-    color: #5dFDCB;
+    color: #FFF201;
   }
 
 
@@ -930,17 +926,22 @@
     align-items: center;
   }
   
-  .scc_orange {
-    background-color: #FE4208;
+  .scc_porpora {
+    background-color: #D81E5B;
     color: #ffffff;
   }
   
   .scc_cyan {
-    background-color: #5DFDCB;
-    color: #0A0034;
+    background-color: #FFF201;
+    color: #2a2b2a;
   }
   
   .scc_fucsia {
     background-color: #EB33B8;
+    color: #ffffff;
+  }
+
+  .scc_petrolio {
+    background-color: #0f7173;
     color: #ffffff;
   }

@@ -20,8 +20,7 @@
       </div>
     </div>
     <div class="teex-balance">
-      <img src="icons/more.png" alt="Add" class="plus-icon">
-      <img src="icons/teex.png" alt="Teex" class="teex-icon">
+         <img src="icons/ppc.png" alt="Teex" class="teex-icon">
       <span id="teexBalance" class="teex_balance">0.0</span>
     </div>
 
@@ -33,7 +32,7 @@
   
 
   <!-- Search box -->
-  <div class="search-container sc-select">
+  <div class="search-container sc-select-fr">
     <span class="search-icon">🔍</span>
     <input type="text" id="searchInput" class="search-box" placeholder="Search by name">
   </div>
@@ -136,6 +135,7 @@
       opponents.forEach(user => {
         const opponentItem = document.createElement("div");
         opponentItem.className = "opponent-item";
+        opponentItem.style.cursor = "pointer"; // Aggiungi cursore pointer per indicare che è cliccabile
         
         // Usa la funzione getAvatarUrl per gestire correttamente gli avatar
         const avatarSrc = getAvatarUrl(user.avatar);
@@ -145,45 +145,57 @@
             <img src="${avatarSrc}" alt="${user.username}" class="opponent-avatar">
             <div>
               <h3 class="opponent-name">${user.username}</h3>
-              <div class="progress-wrapper">
-                <div class="progress-bar-container">
-                  <div class="progress-bar-fill"></div>
-                </div>
-                <span class="progress-text">35%</span>
-              </div>
+
             </div>
           </div>
           <button class="play-contest-button" data-id="${user.user_id}">PLAY</button>
         `;
         
+        // Aggiungi l'attributo data-id anche all'elemento opponentItem
+        opponentItem.setAttribute("data-id", user.user_id);
+        
         opponentList.appendChild(opponentItem);
       });
       
+      // Funzione per gestire la creazione del contest
+      async function createContest(oppId) {
+        try {
+          const resp = await fetch("/contests", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              owner: ownerId,
+              opponent: oppId,
+              event_unit_id: eventUnitId
+            })
+          });
+          if (!resp.ok) {
+            const err = await resp.json();
+            alert("Errore creazione contest: " + err.error);
+            return;
+          }
+          const data = await resp.json(); // contestId
+          window.location.href = `/riassunto.html?owner=${ownerId}&opponent=${oppId}&contest=${data.contestId}&user=${currentUser}&event_unit_id=${eventUnitId}`;
+        } catch (e) {
+          console.error("Errore POST /contests", e);
+          alert("Impossibile creare contest");
+        }
+      }
+      
       // Aggiungi event listener ai pulsanti PLAY
       document.querySelectorAll(".play-contest-button").forEach(button => {
-        button.addEventListener("click", async () => {
+        button.addEventListener("click", (event) => {
+          event.stopPropagation(); // Impedisci che l'evento si propaghi all'elemento genitore
           const oppId = button.getAttribute("data-id");
-          try {
-            const resp = await fetch("/contests", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                owner: ownerId,
-                opponent: oppId,
-                event_unit_id: eventUnitId
-              })
-            });
-            if (!resp.ok) {
-              const err = await resp.json();
-              alert("Errore creazione contest: " + err.error);
-              return;
-            }
-            const data = await resp.json(); // contestId
-            window.location.href = `/riassunto.html?owner=${ownerId}&opponent=${oppId}&contest=${data.contestId}&user=${currentUser}&event_unit_id=${eventUnitId}`;
-          } catch (e) {
-            console.error("Errore POST /contests", e);
-            alert("Impossibile creare contest");
-          }
+          createContest(oppId);
+        });
+      });
+      
+      // Aggiungi event listener alle righe degli utenti
+      document.querySelectorAll(".opponent-item").forEach(item => {
+        item.addEventListener("click", () => {
+          const oppId = item.getAttribute("data-id");
+          createContest(oppId);
         });
       });
     }

@@ -29,12 +29,120 @@
         <input type="password" id="loginPassword" class="form-input" required>
       </div>
       
-      <button type="submit" class="footer_button footer_button_orange">Sign in</button>
+      <div class="form-actions">
+        <a href="#" id="forgotPasswordLink" class="forgot-password">Password dimenticata?</a>
+        <button type="submit" class="footer_button footer_button_orange">Sign in</button>
+      </div>
     </form>
+    
+    <!-- Form per il recupero password (inizialmente nascosto) -->
+    <form id="resetPasswordForm" style="display: none;">
+      <div class="form-field">
+        <label class="form-label">Email address</label>
+        <input type="email" id="resetEmail" class="form-input" required>
+      </div>
+      
+      <div class="form-actions">
+        <button type="button" id="backToLoginBtn" class="footer_button footer_button_light">Indietro</button>
+        <button type="submit" class="footer_button footer_button_orange">Invia</button>
+      </div>
+    </form>
+    
+    <!-- Messaggio di conferma (inizialmente nascosto) -->
+    <div id="resetConfirmation" style="display: none;">
+      <p class="reset-message">Email di recupero inviata! Controlla la tua casella di posta.</p>
+      <button type="button" id="backToLoginFromConfirm" class="footer_button footer_button_orange">Torna al login</button>
+    </div>
   </div>
   
   <!-- Includi il file auth.js, che contiene la logica per la login -->
   <script src="auth.js"></script>
+  
+  <!-- Script per la gestione del recupero password -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const loginForm = document.getElementById('loginForm');
+      const resetForm = document.getElementById('resetPasswordForm');
+      const resetConfirmation = document.getElementById('resetConfirmation');
+      const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+      const backToLoginBtn = document.getElementById('backToLoginBtn');
+      const backToLoginFromConfirm = document.getElementById('backToLoginFromConfirm');
+      
+      // Mostra il form di reset password
+      forgotPasswordLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        loginForm.style.display = 'none';
+        resetForm.style.display = 'block';
+        // Copia l'email dal form di login se presente
+        const loginEmail = document.getElementById('loginEmail').value;
+        if (loginEmail) {
+          document.getElementById('resetEmail').value = loginEmail;
+        }
+      });
+      
+      // Torna al login dal form di reset
+      backToLoginBtn.addEventListener('click', function() {
+        resetForm.style.display = 'none';
+        loginForm.style.display = 'block';
+      });
+      
+      // Torna al login dalla conferma
+      backToLoginFromConfirm.addEventListener('click', function() {
+        resetConfirmation.style.display = 'none';
+        loginForm.style.display = 'block';
+      });
+      
+      // Gestione invio email di reset
+      resetForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const email = document.getElementById('resetEmail').value;
+        
+        // Utilizza Firebase per inviare l'email di reset
+        firebase.auth().sendPasswordResetEmail(email)
+          .then(function() {
+            // Email inviata con successo
+            resetForm.style.display = 'none';
+            resetConfirmation.style.display = 'block';
+          })
+          .catch(function(error) {
+            // Errore nell'invio dell'email
+            alert('Errore: ' + error.message);
+          });
+      });
+    });
+    
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+      
+      try {
+        const response = await fetch('/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email, password })
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(data.error || 'Errore durante il login');
+        }
+        
+        // Salva il token nel localStorage
+        localStorage.setItem('authToken', data.token);
+        
+        // Reindirizza alla pagina principale
+        window.location.href = 'user-landing.html';
+      } catch (error) {
+        console.error('Errore:', error);
+        alert(error.message);
+      }
+    });
+  </script>
 </body>
 </html>
 <style>
@@ -53,7 +161,7 @@
     }
     
     .form-container {
-      background-color: #0A0034;
+      background-color: #595a4a;
       border-radius: 15px;
       width: 90%;
       max-width: 450px;
@@ -89,7 +197,7 @@
     }
     
     .close-button:hover {
-      color: #FE4208;
+      color: #d81e5b;
     }
     
     .form-field {
@@ -111,7 +219,7 @@
       padding: 12px;
       background-color: rgba(255, 255, 255, 0.1);
       border: none;
-      border-bottom: 2px solid #5DFDCB;
+      border-bottom: 2px solid #fff201;
       border-radius: 8px 8px 0 0;
       color: white;
       font-family: 'montserrat', sans-serif; /* Cambiato a Montserrat regular */
@@ -122,18 +230,42 @@
     }
     
     .form-input:focus {
-      border-bottom-color: #FE4208;
-    }
-    
-
-    
-    /* Allinea il pulsante a destra */
-    #loginForm {
-      text-align: right;
+      border-bottom-color: #d81e5b;
     }
     
     /* Stile per le righe sotto il form */
     .form-input {
-      border-bottom: 2px solid #5DFDCB;
+      border-bottom: 2px solid #fff201;
+    }
+    
+    /* Nuovi stili per il recupero password */
+    .form-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .forgot-password {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      color: #fff201;
+      text-decoration: none;
+    }
+    
+    .forgot-password:hover {
+      color: #d81e5b;
+      text-decoration: underline;
+    }
+    
+    .reset-message {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 16px;
+      color: white;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    #resetConfirmation {
+      text-align: center;
     }
 </style>

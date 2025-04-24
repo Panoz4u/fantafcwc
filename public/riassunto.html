@@ -18,31 +18,15 @@
       </div>
     </div>
     <div class="teex-balance">
-      <img src="icons/more.png" alt="Add" class="plus-icon">
-      <img src="icons/teex.png" alt="Teex" class="teex-icon">
+         <img src="icons/ppc.png" alt="Teex" class="teex-icon">
       <span id="teexBalance" class="teex_balance">0.0</span>
     </div>
   </header>
   <div class="contest-container cc-header" id="contestHeaderContainer"></div>
-  <div class="power-up-section-contest">
-    <div class="power-up-items">
-      <div class="power-up-item">
-        <img src="icons/gem_yellow.png" alt="Yellow Gem" class="power-up-icon">
-        <div class="power-up-value-container" id="homeAdvantageBtn" style="cursor: pointer;">
-          <span class="power-up-text">Play at home +0.5</span>
-        </div>
-      </div>
-      <div class="power-up-item">
-        <img src="icons/gem_pink.png" alt="Pink Gem" class="power-up-icon">
-        <div class="power-up-value-container" id="topPlayerCouponBtn" style="cursor: pointer;">
-          <span class="power-up-text">Coupon Top Player</span>
-        </div>
-      </div>
-    </div>
   </div>
   <div class="budget-bar">
-    <img src="icons/teex.png" alt="Teex" class="teex-left-icon">
-    <span id="teexLeft"><span class="teex-left-text-cyan">20.0</span> <span class="teex-left-text-white">Teex left</span></span>
+    <img src="icons/ppc.png" alt="Teex" class="teex-left-icon">
+    <span id="teexLeft"><span class="teex-left-text-cyan">10.0</span> <span class="teex-left-text-white">Papa Coins left</span></span>
   </div>
   <div id="messaggio" style="display: none;"></div>
   <div id="userNameDiv" style="display: none;"></div>
@@ -60,7 +44,7 @@
     <span style="color: #ffffff;">ADD PLAYER</span>
   </div>
   <footer class="footer-nav" style="justify-content: flex-end;">
-    <button id="resetTeamBtn" class="footer_button fb_unable_blu" disabled>RESET TEAM</button>
+    <button id="resetTeamBtn" class="footer_button footer_button_light" disabled>RESET TEAM</button>
     <button id="confirmFooterBtn" class="footer_button fb_unable_orange" disabled>PLAY</button>
   </footer>
   <script>
@@ -85,17 +69,18 @@
       return pl.reduce((acc,p)=> acc+parseFloat(p.event_unit_cost||0),0);
     }
     function getAvailableBudget() {
-      return Math.max(0, 20 - getTotalCost());
+      return Math.max(0, 10 - getTotalCost());
     }
     async function enrichPlayerData(players) {
       try {
         for (let i = 0; i < players.length; i++) {
-          if (!players[i].picture) {
+          if (!players[i].picture || !players[i].event_unit_id) {
             const resp = await fetch(`/athlete-details?id=${players[i].athlete_id}`);
             if (resp.ok) {
               const athleteData = await resp.json();
-              players[i].picture = athleteData.picture;
-              players[i].athlete_shortname = athleteData.athlete_shortname;
+              players[i].picture = athleteData.picture || players[i].picture;
+              players[i].athlete_shortname = athleteData.athlete_shortname || players[i].athlete_shortname;
+              players[i].event_unit_id = athleteData.event_unit_id || players[i].event_unit_id;
             }
           }
         }
@@ -127,7 +112,7 @@
       const teexLeft = getAvailableBudget();
       const teexLeftEl = document.getElementById("teexLeft");
       if (teexLeftEl) {
-        teexLeftEl.innerHTML = `<span class="teex-left-text-cyan">${teexLeft.toFixed(1)}</span> <span class="teex-left-text-white">Teex left</span>`;
+        teexLeftEl.innerHTML = `<span class="teex-left-text-cyan">${teexLeft.toFixed(1)}</span> <span class="teex-left-text-white">Papa Coins left</span>`;
       }
       // Aggiorna le classi dei pulsanti CONFIRM e RESET in base alla presenza di giocatori
       const confirmBtn = document.getElementById("confirmFooterBtn");
@@ -157,7 +142,7 @@
             <div class="welcome-container">
               <div class="welcome-text">
                 <div class="welcome-to">START ADDING</div>
-                <div class="fanteex-title">PLAYERS</div>
+                <div class="fanteex-title">PAPABILI</div>
                 <div class="start-game">TO YOUR TEAM</div>
               </div>
               <div class="animated-arrows">
@@ -201,9 +186,11 @@
       // BLOCCO INFO: Nome e match info
       const infoBlock = document.createElement("div");
       infoBlock.classList.add("player-info");
+      
       const nameSpan = document.createElement("div");
       nameSpan.classList.add("athlete_shortname");
       nameSpan.textContent = player.athlete_shortname;
+      
       const matchSpan = document.createElement("div");
       matchSpan.classList.add("match_3letter");
       
@@ -227,7 +214,8 @@
         matchSpan.appendChild(dashSpan);
         matchSpan.appendChild(awaySpan);
       } else {
-        matchSpan.textContent = "PARTITA";
+        // Nuovo formato: Codice paese | CONCLAVE event_unit_id
+        matchSpan.innerHTML = `<span style="font-family: 'Montserrat', sans-serif; font-weight: 800;">${player.player_team_code || ''}</span> | CONC. <span style="font-family: 'Montserrat', sans-serif; font-weight: 800;">${player.event_unit_id || ''}</span>`;
       }
       infoBlock.appendChild(nameSpan);
       infoBlock.appendChild(matchSpan);
@@ -276,7 +264,7 @@
     function saveChosenPlayers(players) {
       localStorage.setItem("chosenPlayers", JSON.stringify(players));
     }
-   // Funzione per ottenere l'URL dell'avatar
+   // Funzione per ottenere l'avatar
     function getAvatarUrl(avatarPath) {
       if (!avatarPath) {
         return "avatars/avatar.jpg"; // Avatar di default
@@ -551,7 +539,7 @@
           const totalTeamCost = getTotalCost();
           // Aggiorna i Teex rimasti (20 - costo totale)
           const teexLeft = getAvailableBudget();
-          document.getElementById("teexLeft").innerHTML = `<span class="teex-left-text-cyan">${teexLeft.toFixed(1)}</span> <span class="teex-left-text-white">Teex left</span>`;
+          document.getElementById("teexLeft").innerHTML = `<span class="teex-left-text-cyan">${teexLeft.toFixed(1)}</span> <span class="teex-left-text-white">Papa Coins left</span>`;
         }
         // Get contest details to get team costs
         const contestResp = await fetch(`/contest-details?contest=${contestId}&user=${userId}`);
@@ -638,7 +626,7 @@
         const totalTeamCost = getTotalCost();
         // Aggiorna i Teex rimasti (20 - costo totale)
         const teexLeft = getAvailableBudget();
-        document.getElementById("teexLeft").innerHTML = `<span class="teex-left-text-cyan">${teexLeft.toFixed(1)}</span> <span class="teex-left-text-white">Teex left</span>`;
+        document.getElementById("teexLeft").innerHTML = `<span class="teex-left-text-cyan">${teexLeft.toFixed(1)}</span> <span class="teex-left-text-white">Papa Coins left</span>`;
         // These elements might not exist in this page, so wrap them in try/catch
         try {
           document.getElementById("currentUserName").textContent = currentUser.username;
@@ -963,7 +951,7 @@
     <!-- Replace the buttons div with a footer -->
     <footer class="footer-nav" style="justify-content: flex-end; margin-top: 48px;">
       <button class="footer_button footer_button_blue" id="cancelMultiply">CANCEL</button>
-      <button class="footer_button footer_button_orange_fill" id="confirmMultiply">CONFIRM</button>
+      <button class="footer_button footer_button_orange" id="confirmMultiply">CONFIRM</button>
     </footer>
   </div>
 </div>
