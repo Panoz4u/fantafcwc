@@ -61,7 +61,7 @@ export function showConfirmOverlay() {
 }
 
 // Funzione per confermare la squadra
-export async function confirmSquad() {
+export async function confirmSquad(multiplier) {
   const players = loadChosenPlayers();
   if (!players.length) {
     alert("Devi scegliere almeno un giocatore!");
@@ -78,36 +78,68 @@ export async function confirmSquad() {
     return;
   }
   
-  // Calcola il costo moltiplicato
+  // Calcola il costo base
   baseTeamCost = getTotalCost();
-  selectedMultiplier = parseFloat(localStorage.getItem('selectedMultiplier') || 1);
-  const multipliedCost = baseTeamCost * selectedMultiplier;
   
-  const bodyObj = {
-    contestId,
-    userId,
-    players,
-    multiply: selectedMultiplier,
-    totalCost: multipliedCost
+  // Usa il moltiplicatore passato come parametro o prendi quello dal localStorage
+  const selectedMultiplier = multiplier || localStorage.getItem('selectedMultiplier') || 1;
+  // const multipliedCost = baseTeamCost * selectedMultiplier; // Non più necessario qui se il server non lo usa
+  
+  console.log("RICEVUTO DA CLIENT:", { contestId, userId, multiplier: selectedMultiplier, totalCost: baseTeamCost }); // Aggiornato log
+  
+  // Prepara i dati da inviare
+  const squadData = {
+    contestId: parseInt(contestId),
+    userId: userId,
+    players: players.map(p => ({
+      athleteId: parseInt(p.athlete_id),
+      eventUnitId: parseInt(p.event_unit_id),
+      event_unit_cost: parseFloat(p.event_unit_cost || 0), // Costo di ogni atleta
+      aep_id: p.aep_id || null // Usa il valore aep_id originale
+    })),
+    multiplier: parseFloat(selectedMultiplier),
+    totalCost: baseTeamCost  // Il server calcolerà il costo finale moltiplicando per il multiplier
   };
   
+  console.log("Dati inviati in confirm-squad:", JSON.stringify(squadData));
+  
   try {
-    const resp = await fetch("/confirm-squad", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(bodyObj)
-    });
+    // Ottieni il token di autenticazione dal localStorage
+    const authToken = localStorage.getItem('authToken');
     
-    if(!resp.ok) {
-      const err = await resp.json();
-      alert("Errore conferma squadra: " + err.error);
+    if (!authToken) {
+      showErrorMessage("Token di autenticazione mancante");
       return;
     }
     
-    // Ok
-    window.location.href = `/user-landing.html?user=${userId}`;
-  } catch(e) {
-    alert("Errore di rete");
-    console.error(e);
+    // Invia la richiesta con il token di autenticazione
+    const response = await fetch('/confirm-squad', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authToken}`  // Aggiungi l'header di autorizzazione
+      },
+      body: JSON.stringify(squadData)
+    });
+    
+    if (response.ok) {
+      // Squadra confermata con successo
+      const result = await response.json();
+      console.log("Squadra confermata con successo:", result);
+      
+      // Pulisci la lista dei giocatori scelti
+      localStorage.removeItem('chosenPlayers');
+      
+      // Reindirizza alla pagina di conferma o alla dashboard
+      window.location.href = `/user-landing.html?user=${userId}`;
+    } else {
+      // Gestisci gli errori
+      const errorData = await response.json().catch(() => ({ error: `Errore HTTP: ${response.status}` }));
+      console.error("Errore nella conferma della squadra:", response.status, errorData);
+      showErrorMessage(`Errore nella conferma della squadra: ${errorData.error || response.statusText}`);
+    }
+  } catch (error) {
+    console.error("Errore nella conferma della squadra:", error);
+    showErrorMessage(`Si è verificato un errore: ${error.message}`);
   }
 }

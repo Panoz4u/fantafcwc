@@ -10,6 +10,7 @@ import { renderContestHeader }       from './headerUtils.js';
 import { checkContestStatus, showErrorMessage }          from './statusUtils.js';
 import { showMultiplyOverlay } from './multiply.js';
 import { renderPlayerList } from './renderPlayerList.js';
+import { confirmSquad } from './confirmSquad.js';  // Modifica qui: importa da confirmSquad.js invece di team_creation.js
 
     // Modifica la funzione loadUserInfo per utilizzare le variabili globali
     async function loadUserInfo(userId, opponentId, ownerId, contestId) {
@@ -357,32 +358,7 @@ function hideMultiplyOverlay() {
   }
 }
 
-// Add this function before the export statement
-function confirmSquad() {
-  const players = loadChosenPlayers();
-  if (!players || players.length === 0) {
-    showErrorMessage("Please select at least one player for your team");
-    return false;
-  }
-  
-  // Calculate total cost
-  const totalCost = getTotalCost();
-  const availableBudget = getAvailableBudget();
-  
-  if (availableBudget < 0) {
-    showErrorMessage("Your team exceeds the budget limit");
-    return false;
-  }
-  
-  // Get contest parameters
-  const params = new URLSearchParams(window.location.search);
-  const contestId = params.get("contest") || window.contestId;
-  const userId = params.get("user") || localStorage.getItem('userId');
-  
-  // Save the team to the server or proceed to the next step
-  console.log("Squad confirmed with", players.length, "players");
-  return true;
-}
+
 
 // Export the function
 // Rimuovi la vecchia funzione confirmSquad che non fa nulla di utile
@@ -438,7 +414,17 @@ document.addEventListener("DOMContentLoaded", function() {
     loadUserInfo(userId, opponentId, ownerId, contestId);
     renderPlayerList();
   } else {
-    showErrorMessage("Parametri URL mancanti");
+    // Rimuovi o commenta questa riga per non mostrare il messaggio di errore
+    // showErrorMessage("Parametri URL mancanti");
+    
+    // Prova a caricare i dati dal localStorage o dalle variabili globali
+    const storedContestId = window.contestId || localStorage.getItem('contestId');
+    const storedUserId = window.userId || localStorage.getItem('userId');
+    
+    if (storedContestId && storedUserId) {
+      loadUserInfo(storedUserId, window.opponentId, window.ownerId, storedContestId);
+      renderPlayerList();
+    }
   }
 });
 // Funzione per resettare la squadra

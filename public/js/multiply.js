@@ -1,6 +1,6 @@
 // Importa la funzione getTotalCost dal modulo teamUtils
 import { getTotalCost } from './teamUtils.js';
-import { confirmSquad } from './team_creation.js';
+import { confirmSquad } from './confirmSquad.js';  // Modifica qui: importa da confirmSquad.js invece di team_creation.js
 
 // Variabile per memorizzare il moltiplicatore selezionato
 let selectedMultiplier = 1;
@@ -101,9 +101,6 @@ function setupMultiplyButtons() {
       if (overlay) {
         overlay.style.display = 'none';
       }
-      
-      // Resetta il moltiplicatore selezionato
-      selectedMultiplier = 1;
     });
   }
   
@@ -116,6 +113,9 @@ function setupMultiplyButtons() {
     
     // Aggiungi nuovo event listener
     document.getElementById('confirmMultiply').addEventListener('click', function() {
+      // Salva il moltiplicatore selezionato nel localStorage
+      localStorage.setItem('selectedMultiplier', selectedMultiplier.toString());
+      
       // Nascondi l'overlay
       const overlay = document.getElementById('multiplyOverlay');
       if (overlay) {

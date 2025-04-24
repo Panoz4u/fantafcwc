@@ -522,151 +522,137 @@ app.get("/contest-details", (req, res) => {
 /* ----------------------------------------------------------------------
    6) POST /confirm-squad - Modificato per usare autenticazione JWT
 ---------------------------------------------------------------------- */
+/* Endpoint per confermare la squadra */
 app.post("/confirm-squad", authenticateToken, (req, res) => {
-  const { contestId, players, multiplier, totalCost } = req.body;
-  const userId = req.user.userId; // Ottieni l'ID utente dal token JWT
+  const { contestId, userId, players, multiplier, totalCost } = req.body;
   
-  if (!contestId || !Array.isArray(players)) {
+  // Verifica che i dati necessari siano presenti
+  if (!contestId || !userId || !Array.isArray(players) || players.length === 0) {
     return res.status(400).json({ error: "Dati mancanti o invalidi" });
   }
   
-  console.log("RICEVUTO DA CLIENT:", { contestId, userId, multiplier, totalCost });
-  console.log("Dati ricevuti in confirm-squad:", JSON.stringify(req.body));
-  console.log("Tipo di req.body:", typeof req.body);
-  console.log("Chiavi in req.body:", Object.keys(req.body));
-  // Calcola il costo totale dai giocatori
-  let calculatedTotalCost = 0;
-  players.forEach(p => {
-    calculatedTotalCost += parseFloat(p.event_unit_cost || 0);
-  });
+  // Verifica che l'utente autenticato corrisponda all'utente della richiesta
+  if (req.user.userId != userId) {
+    return res.status(403).json({ error: "Non sei autorizzato a confermare questa squadra" });
+  }
   
-  console.log("COSTO CALCOLATO:", calculatedTotalCost);
-  
-  // Usa il costo totale fornito o quello calcolato
-  // Modifica: controlla se totalCost è definito (anche se è 0)
-  const finalTotalCost = totalCost !== undefined ? totalCost : calculatedTotalCost;
-  const multiplyValue = multiplier || 1;
-  
-  console.log("VALORI FINALI:", { finalTotalCost, multiplyValue, moltiplicato: finalTotalCost * multiplyValue });
-  
-  const sqlGet = "SELECT status, stake, owner_user_id, event_unit_id FROM contests WHERE contest_id = ?";
-  pool.query(sqlGet, [contestId], (er0, r0) => {
-    if (er0) return res.status(500).json({ error: "DB error read contest" });
-    if (!r0.length) return res.status(404).json({ error: "Contest non trovato" });
-    
-    const row = r0[0];
-    let newStake = parseFloat(row.stake || 0);
-    let newStatus = row.status;
-    
-    console.log("CONTEST TROVATO:", { status: newStatus, stake: newStake });
-    
-    if (newStatus == 0 && parseInt(userId) == row.owner_user_id) {
-      newStatus = 1; 
-      newStake += finalTotalCost;
-    } else if (newStatus == 1 && parseInt(userId) != row.owner_user_id) {
-      newStatus = 2; 
-      newStake += finalTotalCost;
+  // Inizia una transazione per garantire l'integrità dei dati
+  pool.getConnection((err, connection) => {
+    if (err) {
+      console.error("Errore nella connessione al database:", err);
+      return res.status(500).json({ error: "Errore di connessione al database" });
     }
     
-    const sqlUpd = `
-      UPDATE contests SET stake = ?, status = ?, updated_at = NOW(), multiply = ?
-      WHERE contest_id = ?
-    `;
-    
-    pool.query(sqlUpd, [newStake, newStatus, multiplyValue, contestId], (er1, r1) => {
-      if (er1) return res.status(500).json({ error: "DB error update contest" });
+    connection.beginTransaction(err => {
+      if (err) {
+        connection.release();
+        console.error("Errore nell'avvio della transazione:", err);
+        return res.status(500).json({ error: "Errore nell'avvio della transazione" });
+      }
       
-      const sqlTeam = `
-        INSERT INTO fantasy_teams (contest_id, user_id, total_cost, updated_at)
-        VALUES (?, ?, ?, NOW())
-      `;
-      
-      pool.query(sqlTeam, [contestId, userId, finalTotalCost], (er2, r2) => {
-        if (er2) return res.status(500).json({ error: "DB error create team" });
-        
-        const teamId = r2.insertId;
-        let pending = players.length;
-        
-        if (pending === 0) {
-          finishTeex();
-          return;
+      // Ottieni lo stato attuale del contest
+      const sqlGetContest = "SELECT status, stake, owner_user_id, opponent_user_id FROM contests WHERE contest_id = ?";
+      connection.query(sqlGetContest, [contestId], (err, contestResults) => {
+        if (err) {
+          return rollbackTransaction(connection, err, res, "Errore nella lettura del contest");
         }
         
-        players.forEach(player => {
-          const sqlEntity = `
-            INSERT INTO fantasy_team_entities (fantasy_team_id, athlete_id, aep_id, cost)
-            VALUES (?, ?, ?, ?)
-          `;
-          
-          // Usa l'event_unit_id del giocatore o quello del contest come fallback
-          const aepId = player.event_unit_id || row.event_unit_id || null;
-          // Salva anche il costo del giocatore
-          const playerCost = parseFloat(player.event_unit_cost || 0);
-          
-          pool.query(sqlEntity, [teamId, player.athlete_id, aepId, playerCost], (er3, r3) => {
-            if (er3) {
-              console.error("Error inserting player:", er3);
-              // Continuiamo comunque con gli altri giocatori
-            }
-            
-            pending--;
-            if (pending === 0) {
-              finishTeex();
-            }
-          });
-        });
+        if (contestResults.length === 0) {
+          return rollbackTransaction(connection, null, res, "Contest non trovato", 404);
+        }
         
-        function finishTeex() {
-          // Prima aggiorniamo il total_cost nella tabella fantasy_team
-          const sqlTeam = `
-            UPDATE fantasy_teams SET total_cost = ?
-            WHERE contest_id = ? AND user_id = ?
+        const contest = contestResults[0];
+        let newStatus = contest.status;
+        
+        // Aggiorna lo stato del contest in base a chi sta confermando la squadra
+        if (newStatus === 0 && parseInt(userId) === contest.owner_user_id) {
+          newStatus = 1; // Owner ha confermato
+        } else if (newStatus === 1 && parseInt(userId) === contest.opponent_user_id) {
+          newStatus = 2; // Opponent ha confermato
+        } else if (newStatus !== 0 && newStatus !== 1) {
+          return rollbackTransaction(connection, null, res, "Stato del contest non valido per la conferma", 400);
+        }
+        
+        // Aggiorna il saldo Teex dell'utente
+        updateUserBalance(connection, userId, totalCost, multiplier, (err) => {
+          if (err) {
+            return rollbackTransaction(connection, err, res, err.message);
+          }
+          
+          // Aggiorna lo stato del contest
+          const sqlUpdateContest = `
+            UPDATE contests 
+            SET status = ?, updated_at = NOW()
+            WHERE contest_id = ?
           `;
           
-          pool.query(sqlTeam, [finalTotalCost, contestId, userId], (er3, r3) => {
-            if (er3) return res.status(500).json({ error: "DB error updating fantasy team cost" });
+          connection.query(sqlUpdateContest, [newStatus, contestId], (err) => {
+            if (err) {
+              return rollbackTransaction(connection, err, res, "Errore nell'aggiornamento del contest");
+            }
             
-            // Poi aggiorniamo il saldo Teex dell'utente
-            const sqlUser = `
-              UPDATE users SET teex_balance = teex_balance - ?
-              WHERE user_id = ?
+            // Crea il fantasy team
+            const sqlCreateTeam = `
+              INSERT INTO fantasy_teams (contest_id, user_id, total_cost, updated_at)
+              VALUES (?, ?, ?, NOW())
             `;
             
-            pool.query(sqlUser, [finalTotalCost, userId], (er4, r4) => {
-              if (er4) return res.status(500).json({ error: "DB error updating user teex" });
-              res.json({ message: "Squadra confermata con successo" });
+            connection.query(sqlCreateTeam, [contestId, userId, totalCost], (err, teamResult) => {
+              if (err) {
+                return rollbackTransaction(connection, err, res, "Errore nella creazione del fantasy team");
+              }
+              
+              const fantasyTeamId = teamResult.insertId;
+              
+              // Prepara i valori per l'inserimento in batch dei giocatori
+              const playerValues = players.map(p => [
+                fantasyTeamId,
+                p.athleteId,
+                p.aep_id || null,
+                p.event_unit_cost || 0
+              ]);
+              
+              // Inserisci i giocatori nel fantasy team
+              const sqlInsertPlayers = `
+                INSERT INTO fantasy_team_entities 
+                (fantasy_team_id, athlete_id, aep_id, cost)
+                VALUES ?
+              `;
+              
+              connection.query(sqlInsertPlayers, [playerValues], (err) => {
+                if (err) {
+                  return rollbackTransaction(connection, err, res, "Errore nell'inserimento dei giocatori");
+                }
+                
+                // Commit della transazione
+                connection.commit(err => {
+                  if (err) {
+                    return rollbackTransaction(connection, err, res, "Errore nel commit della transazione");
+                  }
+                  
+                  connection.release();
+                  res.json({ 
+                    message: "Squadra confermata con successo",
+                    fantasyTeamId,
+                    newStatus
+                  });
+                });
+              });
             });
           });
-        }
+        });
       });
     });
   });
-});
-
-// Endpoint per impostare i contest "live" (status 4)
-app.get("/set-live-contests", (req, res) => {
-  // La query aggiorna tutti i contest con status 2 che hanno almeno un fantasy_team_entity con is_ended = 1
-  const updateQuery = `
-      UPDATE contests c
-      JOIN (
-          SELECT DISTINCT ft.contest_id
-          FROM fantasy_team_entities fte
-          JOIN fantasy_teams ft ON fte.fantasy_team_id = ft.fantasy_team_id
-          JOIN athlete_eventunit_participation aep ON fte.athlete_id = aep.athlete_id
-          WHERE aep.event_unit_id = 30 AND aep.is_ended = 1
-      ) AS sub ON c.contest_id = sub.contest_id
-      SET c.status = 4, c.updated_at = NOW()
-      WHERE c.status = 2;
-
-  `;
   
-  pool.query(updateQuery, (err, result) => {
-    if (err) {
-      console.error("Errore nell'aggiornamento dei contest live:", err);
-      return res.status(500).json({ error: "DB error updating live contests" });
-    }
-    res.json({ message: "Live contests set successfully", affectedRows: result.affectedRows });
-  });
+  // Funzione di supporto per il rollback della transazione
+  function rollbackTransaction(connection, err, res, message, statusCode = 500) {
+    connection.rollback(() => {
+      connection.release();
+      if (err) console.error("Errore:", err);
+      res.status(statusCode).json({ error: message });
+    });
+  }
 });
 
 /* Endpoint per verificare l'unicità del nome utente
@@ -916,3 +902,41 @@ app.post('/api/matches/update-past', async (req, res) => {
     });
   }
 });
+
+
+// Funzione per aggiornare il saldo Teex dell'utente
+function updateUserBalance(connection, userId, totalCost, multiplier, callback) {
+  // Calcola il costo finale moltiplicato
+  const finalCost = parseFloat(totalCost) * parseFloat(multiplier);
+  
+  // Verifica che finalCost sia un numero valido
+  if (isNaN(finalCost)) {
+    console.error("Errore: finalCost non è un numero valido.", { totalCost, multiplier });
+    return callback(new Error("Costo finale non valido"));
+  }
+  
+  console.log(`Aggiornamento Teex per userId: ${userId}, costo base: ${totalCost}, moltiplicatore: ${multiplier}, costo finale: ${finalCost}`);
+  
+  const sqlUser = `
+    UPDATE users
+    SET teex_balance = teex_balance - ?
+    WHERE user_id = ? AND teex_balance >= ?
+  `;
+  
+  // Esegui l'aggiornamento all'interno della transazione esistente
+  connection.query(sqlUser, [finalCost, userId, finalCost], (err, result) => {
+    if (err) {
+      console.error("Errore DB nell'aggiornamento del saldo Teex:", err);
+      return callback(err); // Passa l'errore alla callback
+    }
+    
+    // Verifica se l'aggiornamento ha avuto effetto (se l'utente aveva abbastanza Teex)
+    if (result.affectedRows === 0) {
+      console.error(`Saldo Teex insufficiente per userId: ${userId} o utente non trovato.`);
+      return callback(new Error("Saldo Teex insufficiente o utente non trovato"));
+    }
+    
+    console.log(`Saldo Teex aggiornato con successo per userId: ${userId}`);
+    callback(null); // Nessun errore
+  });
+}

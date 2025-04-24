@@ -246,16 +246,6 @@ async function initApp() {
       });
     }
     
-    // Configura il pulsante "Reset Team"
-    const resetTeamBtn = document.getElementById("resetTeamBtn");
-    if (resetTeamBtn) {
-      resetTeamBtn.addEventListener("click", () => {
-        if (confirm("Sei sicuro di voler resettare la squadra?")) {
-          saveChosenPlayers([]);
-          location.reload(); // Ricarica la pagina per aggiornare tutto
-        }
-      });
-    }
     
     // Renderizza la lista dei giocatori
     await renderPlayerList();

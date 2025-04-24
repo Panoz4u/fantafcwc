@@ -548,7 +548,12 @@
     document.addEventListener("DOMContentLoaded", function() {
       loadUserLanding();
       
-      // Gestione delle tab
+      // Aggiungi event listener al pulsante NEW GAME
+      document.getElementById("playButton").addEventListener("click", function() {
+        window.location.href = "scegli-opponent.html";
+      });
+      
+      // Aggiungi event listener ai tab
       document.getElementById("tabActive").addEventListener("click", function() {
         document.getElementById("activeContainer").style.display = "block";
         document.getElementById("completedContainer").style.display = "none";
@@ -561,12 +566,6 @@
         document.getElementById("completedContainer").style.display = "block";
         document.getElementById("tabActive").querySelector("span").className = "tab_off";
         document.getElementById("tabCompleted").querySelector("span").className = "tab_on";
-      });
-      
-      // Aggiungi event listener al pulsante NEW GAME
-      document.getElementById("playButton").addEventListener("click", function() {
-        // Reindirizza alla pagina scegli-opponent.html senza parametri in chiaro
-        window.location.href = "/scegli-opponent.html";
       });
       
       // Aggiungi event listener al pulsante Sign Out
@@ -587,11 +586,8 @@
 
 // Aggiungi l'event listener per il pulsante "NEW GAME"
 document.getElementById('playButton').addEventListener('click', function() {
-  // Aggiungi event listener al pulsante NEW GAME
-  document.getElementById("playButton").addEventListener("click", function() {
-    // Reindirizza alla pagina di selezione eventi senza parametri URL
-    window.location.href = "/select-event.html";
-  });
+  // Reindirizza alla pagina scegli-opponent.html senza parametri in chiaro
+  window.location.href = "/scegli-opponent.html";
 });
   </script>
 </body>
