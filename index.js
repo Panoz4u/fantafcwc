@@ -412,15 +412,22 @@ app.post("/confirm-squad", (req, res) => {
     return res.status(400).json({ error: "Dati mancanti o invalidi" });
   }
   
+  console.log("RICEVUTO DA CLIENT:", { contestId, userId, multiply, totalCost });
+  
   // Calcola il costo totale dai giocatori
   let calculatedTotalCost = 0;
   players.forEach(p => {
     calculatedTotalCost += parseFloat(p.event_unit_cost || 0);
   });
   
+  console.log("COSTO CALCOLATO:", calculatedTotalCost);
+  
   // Usa il costo totale fornito o quello calcolato
-  const finalTotalCost = totalCost || calculatedTotalCost;
+  // Modifica: controlla se totalCost è definito (anche se è 0)
+  const finalTotalCost = totalCost !== undefined ? totalCost : calculatedTotalCost;
   const multiplyValue = multiply || 1;
+  
+  console.log("VALORI FINALI:", { finalTotalCost, multiplyValue, moltiplicato: finalTotalCost * multiplyValue });
   
   const sqlGet = "SELECT status, stake, owner_user_id, event_unit_id FROM contests WHERE contest_id = ?";
   pool.query(sqlGet, [contestId], (er0, r0) => {
@@ -430,6 +437,8 @@ app.post("/confirm-squad", (req, res) => {
     const row = r0[0];
     let newStake = parseFloat(row.stake || 0);
     let newStatus = row.status;
+    
+    console.log("CONTEST TROVATO:", { status: newStatus, stake: newStake });
     
     if (newStatus == 0 && parseInt(userId) == row.owner_user_id) {
       newStatus = 1; 
@@ -488,14 +497,25 @@ app.post("/confirm-squad", (req, res) => {
         });
         
         function finishTeex() {
-          const sqlUser = `
-            UPDATE users SET teex_balance = teex_balance - ?
-            WHERE user_id = ?
+          // Prima aggiorniamo il total_cost nella tabella fantasy_team
+          const sqlTeam = `
+            UPDATE fantasy_teams SET total_cost = ?
+            WHERE contest_id = ? AND user_id = ?
           `;
           
-          pool.query(sqlUser, [finalTotalCost, userId], (er4, r4) => {
-            if (er4) return res.status(500).json({ error: "DB error updating user teex" });
-            res.json({ message: "Squadra confermata con successo" });
+          pool.query(sqlTeam, [finalTotalCost, contestId, userId], (er3, r3) => {
+            if (er3) return res.status(500).json({ error: "DB error updating fantasy team cost" });
+            
+            // Poi aggiorniamo il saldo Teex dell'utente
+            const sqlUser = `
+              UPDATE users SET teex_balance = teex_balance - ?
+              WHERE user_id = ?
+            `;
+            
+            pool.query(sqlUser, [finalTotalCost, userId], (er4, r4) => {
+              if (er4) return res.status(500).json({ error: "DB error updating user teex" });
+              res.json({ message: "Squadra confermata con successo" });
+            });
           });
         }
       });
