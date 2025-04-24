@@ -174,16 +174,25 @@
       // Clear temp selection
       tempSelectedPlayers = [];
       
-      // Navigate back to riassunto.html
-      const url = `/riassunto.html?owner=${ownerId}&opponent=${opponentId}&contest=${contestId}&user=${userId}`;
-      window.location.href = url;
+      // Salva i dati nel localStorage invece di passarli tramite URL
+      const contestData = {
+        contestId: contestId || "",
+        opponentId: opponentId || "",
+        ownerId: ownerId || "",
+        userId: userId || "",
+        timestamp: new Date().getTime()
+      };
+      localStorage.setItem('contestData', JSON.stringify(contestData));
+      
+      // Navigate back to riassunto.html senza parametri
+      window.location.href = '/riassunto.html';
     }
 
     const params = new URLSearchParams(window.location.search);
-    const ownerId = params.get("owner");
-    const opponentId = params.get("opponent");
-    const contestId = params.get("contest");
-    const userId = params.get("user");
+    let ownerId = params.get("owner");
+    let opponentId = params.get("opponent");
+    let contestId = params.get("contest");
+    let userId = params.get("user");
     // Rimuoviamo il riferimento a event_unit_id
     // const eventUnitId = params.get("event_unit_id") || 1;
     // const eventId = params.get("event") || 30;
@@ -200,44 +209,78 @@
     let allPlayers = [];
 
     document.addEventListener("DOMContentLoaded", () => {
-      // Add back button functionality
-      document.getElementById('backArrow').addEventListener('click', () => {
-        // Navigate back to riassunto.html with the same parameters
-        const url = `/riassunto.html?owner=${ownerId}&opponent=${opponentId}&contest=${contestId}&user=${userId}`;
-        window.location.href = url;
-      });
-      
-      // Add event listener for Add to Team button
-      document.getElementById('addToTeamBtn').addEventListener('click', addTempPlayersToTeam);
-      
-      // Update header stats
-      updateHeaderStats();
-      
-      // Add event listener to search box
-      document.querySelector('.search-box').addEventListener('input', (e) => {
-        searchTerm = e.target.value.toLowerCase().trim();
+      try {
+        // Prova a recuperare i dati dal localStorage
+        const addPlayerDataStr = localStorage.getItem('addPlayerData');
         
-        // Log per debug
-        console.log("Termine di ricerca:", searchTerm);
-        
-        // Normalizza il termine di ricerca rimuovendo accenti e caratteri speciali
-        searchTerm = searchTerm.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-        
-        // Stampa tutti i giocatori con nome "PROVEDEL" o "PROVSTGAARD"
-        console.log("GIOCATORI DISPONIBILI:");
-        allPlayers.forEach(player => {
-          if (player.athlete_shortname && 
-              (player.athlete_shortname.includes("PROVEDEL") || 
-               player.athlete_shortname.includes("PROVSTGAARD"))) {
-            console.log("Nome:", player.athlete_shortname);
-            console.log("Oggetto completo:", player);
+        if (addPlayerDataStr) {
+          // Se abbiamo dati nel localStorage, usiamo quelli
+          const addPlayerData = JSON.parse(addPlayerDataStr);
+          
+          // Verifica che i dati non siano troppo vecchi
+          const now = new Date().getTime();
+          const dataAge = now - (addPlayerData.timestamp || 0);
+          const maxAge = 5 * 60 * 1000; // 5 minuti
+          
+          if (dataAge <= maxAge) {
+            // Assegna i valori alle variabili
+            ownerId = addPlayerData.owner;
+            opponentId = addPlayerData.opponent;
+            contestId = addPlayerData.contest;
+            userId = addPlayerData.user;
+            
+            // Aggiorna il teexBalance nell'header se disponibile
+            const teexBalance = addPlayerData.teexBalance || "0.0";
+            const teexBalanceEl = document.getElementById("teexBalance");
+            if (teexBalanceEl) {
+              teexBalanceEl.textContent = teexBalance;
+            }
+          } else {
+            console.warn("I dati nel localStorage sono scaduti");
+            // Non rimuoviamo i dati, potrebbero essere utili per debug
           }
+        }
+        
+        // Se non abbiamo dati nel localStorage, proviamo a recuperarli dall'URL
+        if (!ownerId || !contestId || !userId) {
+          const params = new URLSearchParams(window.location.search);
+          ownerId = params.get("owner");
+          opponentId = params.get("opponent");
+          contestId = params.get("contest");
+          userId = params.get("user");
+        }
+        
+        // Add back button functionality
+        document.getElementById('backArrow').addEventListener('click', () => {
+          // Navigate back to riassunto.html senza parametri
+          window.location.href = '/riassunto.html';
         });
         
-        filterAndRenderPlayers();
-      });
-      
-      loadPlayers();
+        // Add event listener for Add to Team button
+        document.getElementById('addToTeamBtn').addEventListener('click', addTempPlayersToTeam);
+        
+        // Update header stats
+        updateHeaderStats();
+        
+        // Add event listener to search box
+        document.querySelector('.search-box').addEventListener('input', (e) => {
+          searchTerm = e.target.value.toLowerCase().trim();
+          
+          // Normalizza il termine di ricerca rimuovendo accenti e caratteri speciali
+          searchTerm = searchTerm.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+          
+          filterAndRenderPlayers();
+        });
+        
+        loadPlayers();
+      } catch (error) {
+        console.error("Errore nell'inizializzazione:", error);
+        document.getElementById("msg").innerHTML = `
+          <div style="color: #ff6b6b; padding: 10px; text-align: center;">
+            <p>Errore nell'inizializzazione: ${error.message}</p>
+            <p>Ricarica la pagina o torna alla home.</p>
+          </div>`;
+      }
     });
 
     // Add event listeners to sort headers
@@ -274,18 +317,11 @@
     // Modifica questa funzione per gestire meglio gli errori
     async function testEventUnitExistence() {
       try {
-        console.log("Verifica esistenza event_unit_id:", eventUnitId);
-        // Utilizziamo direttamente l'endpoint event-players per verificare l'esistenza
-        const response = await fetch(`/event-players?event=${eventUnitId}&check_only=true`);
-        
-        if (response.status === 404) {
-          console.error(`L'event_unit_id=${eventUnitId} non esiste nel database!`);
-          return false;
-        }
-        
-        return response.ok;
+        // Questa funzione non è più necessaria
+        console.log("Funzione testEventUnitExistence non più necessaria");
+        return true;
       } catch (error) {
-        console.error("Errore verifica event_unit_id:", error);
+        console.error("Errore:", error);
         return false;
       }
     }
@@ -308,11 +344,6 @@
     
     // Modifica la funzione loadPlayers() per gestire meglio gli errori
     async function loadPlayers() {
-      if (!ownerId || !contestId || !userId) {
-        document.getElementById("msg").textContent = "Parametri mancanti!";
-        return;
-      }
-      
       try {
         console.log("Caricamento di tutti gli atleti attivi");
         document.getElementById("msg").textContent = "Caricamento giocatori in corso...";

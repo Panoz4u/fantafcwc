@@ -81,69 +81,34 @@ if (registerForm) {
           uniquename: uniquename,
           email: email,
           teex_balance: 500,
-          color: userColor,  // Modificato da user_color a color
-          avatar: avatarFileName  // Aggiungiamo l'avatar predefinito
+          color: userColor,
+          avatar: avatarFileName
         })
       });
       
       const data = await response.json();
       
-      // Dopo la registrazione, reindirizza alla user-landing.html
-      window.location.href = `user-landing.html?user=${data.userId}`;
+      // Salva l'ID utente nel localStorage invece di passarlo nell'URL
+      localStorage.setItem('userId', data.userId);
+      
+      // Ottieni un token di autenticazione dal server (da implementare sul backend)
+      const tokenResponse = await fetch("/generate-token", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: data.userId })
+      });
+      
+      if (tokenResponse.ok) {
+        const tokenData = await tokenResponse.json();
+        localStorage.setItem('authToken', tokenData.token);
+      }
+      
+      // Reindirizza alla pagina prototipo
+      window.location.href = 'secure-prototype.html';
     } catch (error) {
       console.error("Errore durante la registrazione:", error);
       alert(error.message);
     }
-  });
-}
-
-// ====================================================
-// REGISTRAZIONE CON GOOGLE
-const googleRegisterBtn = document.getElementById("googleRegister");
-if (googleRegisterBtn) {
-  googleRegisterBtn.addEventListener("click", function(e) {
-    e.preventDefault();
-    
-    const googleProvider = new firebase.auth.GoogleAuthProvider();
-    
-    auth.signInWithPopup(googleProvider)
-      .then(async function(result) {
-        const user = result.user;
-        // Per Google, usiamo user.displayName (se presente) altrimenti user.email per il campo username.
-        const username = user.displayName ? user.displayName : user.email;
-        
-        try {
-          // Genera un nome utente univoco
-          const uniquename = await generateUniqueUsername(username);
-          
-          // Genera un colore casuale per l'avatar
-          const userColor = generateRandomColor();
-          
-          const response = await fetch("/users", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              username: username,
-              uniquename: uniquename,
-              email: user.email,
-              teex_balance: 500,
-              avatar: user.photoURL,
-              google_id: user.uid,
-              color: userColor  // Modificato da user_color a color
-            })
-          });
-          
-          const data = await response.json();
-          window.location.href = `user-landing.html?user=${data.userId}`;
-        } catch (err) {
-          console.error("Errore durante la registrazione con Google sul DB:", err);
-          alert("Errore nella registrazione sul database");
-        }
-      })
-      .catch(function(error) {
-        console.error("Errore di registrazione con Google:", error);
-        alert(error.message);
-      });
   });
 }
 
@@ -164,9 +129,24 @@ if (loginForm) {
           .then(function(response) {
             return response.json();
           })
-          .then(function(dbUser) {
-            // Reindirizza alla pagina user-landing.html con l'ID utente nell'URL
-            window.location.href = `user-landing.html?user=${dbUser.user_id}`;
+          .then(async function(dbUser) {
+            // Salva l'ID utente nel localStorage
+            localStorage.setItem('userId', dbUser.user_id);
+            
+            // Ottieni un token di autenticazione dal server
+            const tokenResponse = await fetch("/generate-token", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ userId: dbUser.user_id })
+            });
+            
+            if (tokenResponse.ok) {
+              const tokenData = await tokenResponse.json();
+              localStorage.setItem('authToken', tokenData.token);
+            }
+            
+            // Reindirizza alla pagina prototipo
+            window.location.href = 'secure-prototype.html';
           })
           .catch(function(err) {
             console.error("Errore nel recupero dell'utente dal DB:", err);
@@ -234,14 +214,29 @@ if (googleLoginBtn) {
             }
             
             dbUser = await registerResponse.json();
-            // Reindirizza alla pagina user-landing.html con l'ID utente nell'URL
-            window.location.href = `user-landing.html?user=${dbUser.userId}`;
+            // Salva l'ID utente nel localStorage
+            localStorage.setItem('userId', dbUser.userId);
           } else {
             // L'utente esiste già, otteniamo i suoi dati
             dbUser = await response.json();
-            // Reindirizza alla pagina user-landing.html con l'ID utente nell'URL
-            window.location.href = `user-landing.html?user=${dbUser.user_id}`;
+            // Salva l'ID utente nel localStorage
+            localStorage.setItem('userId', dbUser.user_id);
           }
+          
+          // Ottieni un token di autenticazione dal server
+          const tokenResponse = await fetch("/generate-token", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userId: dbUser.user_id || dbUser.userId })
+          });
+          
+          if (tokenResponse.ok) {
+            const tokenData = await tokenResponse.json();
+            localStorage.setItem('authToken', tokenData.token);
+          }
+          
+          // Reindirizza alla pagina prototipo
+          window.location.href = 'secure-prototype.html';
         } catch (error) {
           console.error("Errore durante il login con Google:", error);
           alert(error.message);

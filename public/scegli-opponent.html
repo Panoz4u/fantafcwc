@@ -43,12 +43,12 @@
   </div>
 
   <script>
-    const params = new URLSearchParams(window.location.search);
-    // 'owner' = l'owner user
-    const ownerId = params.get("owner");
-    // 'user' = userIdCorrente (lo stesso in questo scenario)
-    const currentUser = params.get("user");
-    const eventUnitId = params.get("event_unit_id"); // Nuovo parametro
+    // Ottieni l'ID utente dal localStorage invece che dall'URL
+    const currentUser = localStorage.getItem('userId');
+    // L'owner è lo stesso utente corrente
+    const ownerId = currentUser;
+    // Ottieni event_unit_id dall'URL o usa un valore predefinito
+    const eventUnitId = new URLSearchParams(window.location.search).get("event_unit_id") || "1";
     
     // Funzione per gestire correttamente gli avatar
     function getAvatarUrl(avatarPath) {
@@ -66,8 +66,8 @@
     }
     
     window.addEventListener("DOMContentLoaded", async () => {
-      if (!ownerId) {
-        alert("owner mancante!");
+      if (!currentUser) {
+        alert("Utente non autenticato!");
         window.location.href = "/index.html";
         return;
       }
@@ -77,9 +77,19 @@
         window.history.back();
       });
       
-      // Carica il saldo Teex dell'utente
+      // Carica il saldo Teex dell'utente usando il token di autenticazione
       try {
-        const userResp = await fetch(`/user-landing-info?user=${currentUser}`);
+        const authToken = localStorage.getItem('authToken');
+        const userResp = await fetch(`/user-landing-info`, {
+          headers: {
+            'Authorization': `Bearer ${authToken}`
+          }
+        });
+        
+        if (!userResp.ok) {
+          throw new Error(`Errore ${userResp.status}: ${await userResp.text()}`);
+        }
+        
         const userData = await userResp.json();
         document.getElementById("teexBalance").textContent = userData.user.teex_balance.toLocaleString();
       } catch(e) {
@@ -175,7 +185,17 @@
             return;
           }
           const data = await resp.json(); // contestId
-          window.location.href = `/riassunto.html?owner=${ownerId}&opponent=${oppId}&contest=${data.contestId}&user=${currentUser}&event_unit_id=${eventUnitId}`;
+          
+          // Salva i dati nel localStorage invece di passarli nell'URL
+          localStorage.setItem('contestData', JSON.stringify({
+            contestId: data.contestId,
+            event_unit_id: eventUnitId,
+            opponent: oppId,
+            timestamp: new Date().getTime() // Aggiungi un timestamp per sicurezza
+          }));
+          
+          // Reindirizza senza parametri nell'URL
+          window.location.href = `/riassunto.html`;
         } catch (e) {
           console.error("Errore POST /contests", e);
           alert("Impossibile creare contest");

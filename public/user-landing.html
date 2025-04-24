@@ -170,19 +170,23 @@
       return canvas.toDataURL("image/png");
     }
 
-    // Ottieni l'ID utente dall'URL invece che dal localStorage
-    const urlParams = new URLSearchParams(window.location.search);
-    const userId = urlParams.get('user');
+    // Ottieni l'ID utente dal localStorage invece che dall'URL
+    const userId = localStorage.getItem('userId');
+    const authToken = localStorage.getItem('authToken');
 
     async function loadUserLanding() {
-      // Verifica che l'ID utente sia presente nell'URL
-      if (!userId) {
+      // Verifica che l'ID utente sia presente nel localStorage
+      if (!userId || !authToken) {
         window.location.href = 'index.html';
         return;
       }
       
-      // Effettua la richiesta al server senza token di autenticazione
-      const resp = await fetch(`/user-landing-info?user=${userId}`);
+      // Effettua la richiesta al server con il token di autenticazione
+      const resp = await fetch(`/user-landing-info`, {
+        headers: {
+          'Authorization': `Bearer ${authToken}`
+        }
+      });
       
       if (!resp.ok) {
         const errorText = await resp.text();
@@ -540,27 +544,38 @@
       document.getElementById("completedContainer").style.display = "block";
     }
 
-    document.addEventListener("DOMContentLoaded", () => {
+    // Carica i dati dell'utente quando la pagina è pronta
+    document.addEventListener("DOMContentLoaded", function() {
       loadUserLanding();
-      document.getElementById("tabActive").addEventListener("click", showActive);
-      document.getElementById("tabCompleted").addEventListener("click", showCompleted);
       
-      // Play button event listener
-      document.getElementById("playButton").addEventListener("click", async () => {
-        localStorage.removeItem("chosenPlayers");
-        try {
-          // Recupera il current event unit
-          const resp = await fetch("/current-event-unit");
-          if (!resp.ok) {
-            throw new Error("Current event unit non trovata");
-          }
-          const currentUnit = await resp.json();
-          // Passa event_unit_id insieme agli altri parametri
-          window.location.href = `/scegli-opponent.html?owner=${userId}&user=${userId}&event_unit_id=${currentUnit.event_unit_id}`;
-        } catch (error) {
-          console.error("Errore nel recupero del current event unit:", error);
-          alert("Impossibile recuperare l'unità evento corrente");
-        }
+      // Gestione delle tab
+      document.getElementById("tabActive").addEventListener("click", function() {
+        document.getElementById("activeContainer").style.display = "block";
+        document.getElementById("completedContainer").style.display = "none";
+        document.getElementById("tabActive").querySelector("span").className = "tab_on";
+        document.getElementById("tabCompleted").querySelector("span").className = "tab_off";
+      });
+      
+      document.getElementById("tabCompleted").addEventListener("click", function() {
+        document.getElementById("activeContainer").style.display = "none";
+        document.getElementById("completedContainer").style.display = "block";
+        document.getElementById("tabActive").querySelector("span").className = "tab_off";
+        document.getElementById("tabCompleted").querySelector("span").className = "tab_on";
+      });
+      
+      // Aggiungi event listener al pulsante NEW GAME
+      document.getElementById("playButton").addEventListener("click", function() {
+        // Reindirizza alla pagina scegli-opponent.html senza parametri in chiaro
+        window.location.href = "/scegli-opponent.html";
+      });
+      
+      // Aggiungi event listener al pulsante Sign Out
+      document.getElementById("signOutBtn").addEventListener("click", function() {
+        // Rimuovi i dati di autenticazione dal localStorage
+        localStorage.removeItem('userId');
+        localStorage.removeItem('authToken');
+        // Reindirizza alla pagina di login
+        window.location.href = "/index.html";
       });
     });
   </script>
@@ -569,43 +584,15 @@
   
   <script>
     // ... existing code ...
-    
-    // Aggiungi l'event listener per il pulsante di logout
-    document.addEventListener('DOMContentLoaded', function() {
-      // Carica i dati dell'utente
-      loadUserLanding();
-      
-      // Aggiungi l'event listener per il pulsante di logout
-      document.getElementById('signOutBtn').addEventListener('click', function() {
-        console.log("Logout richiesto");
-        // Reindirizza alla pagina index.html
-        window.location.href = 'index.html';
-      });
-      
-      // Aggiungi gli event listener per i tab
-      document.getElementById('tabActive').addEventListener('click', function() {
-        document.getElementById('activeContainer').style.display = 'block';
-        document.getElementById('completedContainer').style.display = 'none';
-        document.getElementById('tabActive').querySelector('span').className = 'tab_on';
-        document.getElementById('tabCompleted').querySelector('span').className = 'tab_off';
-      });
-      
-      document.getElementById('tabCompleted').addEventListener('click', function() {
-        document.getElementById('activeContainer').style.display = 'none';
-        document.getElementById('completedContainer').style.display = 'block';
-        document.getElementById('tabActive').querySelector('span').className = 'tab_off';
-        document.getElementById('tabCompleted').querySelector('span').className = 'tab_on';
-      });
-      
-      // Aggiungi l'event listener per il pulsante "NEW GAME"
-      document.getElementById('playButton').addEventListener('click', function() {
-        // Aggiungi event listener per il pulsante NEW GAME
-        document.getElementById("playButton").addEventListener("click", function() {
-          // Reindirizza a scegli-opponent.html con l'ID utente
-          window.location.href = `scegli-opponent.html?owner=${userId}&user=${userId}`;
-        });
-      });
-    });
+
+// Aggiungi l'event listener per il pulsante "NEW GAME"
+document.getElementById('playButton').addEventListener('click', function() {
+  // Aggiungi event listener al pulsante NEW GAME
+  document.getElementById("playButton").addEventListener("click", function() {
+    // Reindirizza alla pagina di selezione eventi senza parametri URL
+    window.location.href = "/select-event.html";
+  });
+});
   </script>
 </body>
 </html>

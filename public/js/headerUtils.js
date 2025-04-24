@@ -4,35 +4,43 @@ import { getTotalCost } from './teamUtils.js';
 
 export function renderContestHeader(contestData) {
   const container = document.getElementById("contestHeaderContainer");
-  container.innerHTML = "";  // svuota
-
-  const params = new URLSearchParams(window.location.search);
-  const currentUserId = params.get("user");
-  const iAmOwner = +currentUserId === +contestData.owner_id;
-  const totalTeamCost = getTotalCost().toFixed(1);
-
-  // scegli dati A e B in base a chi � owner
-  let myName, myAvatar, myCost, oppName, oppAvatar, oppCost;
-  if (iAmOwner) {
-    myName   = contestData.owner_name;
-    myAvatar = contestData.owner_avatar;
-    myCost   = totalTeamCost;
-    oppName  = contestData.opponent_name;
-    oppAvatar= contestData.opponent_avatar;
-    oppCost  = contestData.opponent_cost != null
-                ? parseFloat(contestData.opponent_cost).toFixed(1)
-                : "-";
-  } else {
-    myName   = contestData.opponent_name;
-    myAvatar = contestData.opponent_avatar;
-    myCost   = totalTeamCost;
-    oppName  = contestData.owner_name;
-    oppAvatar= contestData.owner_avatar;
-    oppCost  = contestData.owner_cost != null
-                ? parseFloat(contestData.owner_cost).toFixed(1)
-                : "-";
+  if (!container) {
+    console.error("Container contestHeaderContainer non trovato");
+    return;
   }
-
+  container.innerHTML = "";
+  
+  // Determina se il current user è owner
+  // Prima prova a ottenere l'ID utente dai parametri URL
+  const params = new URLSearchParams(window.location.search);
+  let currentUserId = params.get("user");
+  
+  // Se non è presente nell'URL, prova a ottenerlo dal localStorage
+  if (!currentUserId) {
+    currentUserId = localStorage.getItem('userId');
+  }
+  
+  // Se ancora non abbiamo un ID utente, usa una logica di fallback
+  if (!currentUserId && window.contestId) {
+    console.log("Usando logica di fallback per determinare l'utente corrente");
+    // Assumiamo che l'utente corrente sia l'owner se non specificato diversamente
+    currentUserId = contestData.owner_id;
+  }
+  
+  const iAmOwner = (parseInt(currentUserId) === parseInt(contestData.owner_id));
+  
+  // Calcola il costo totale della squadra attuale
+  const totalTeamCost = getTotalCost();
+  
+  // Importante: l'utente corrente deve sempre essere a sinistra
+  // Non invertire mai le posizioni
+  const myName = iAmOwner ? contestData.owner_name : contestData.opponent_name;
+  const myAvatar = iAmOwner ? contestData.owner_avatar : contestData.opponent_avatar;
+  const myCost = totalTeamCost.toFixed(1); // Usa il costo calcolato dai giocatori scelti
+  const oppName = iAmOwner ? contestData.opponent_name : contestData.owner_name;
+  const oppAvatar = iAmOwner ? contestData.opponent_avatar : contestData.owner_avatar;
+  const oppCost = iAmOwner ? (contestData.opponent_cost || "-") : (contestData.owner_cost || "-");
+  
   // ricostruisci la card completa
   const statusBadges = {
     0: "CREATED",
@@ -59,4 +67,5 @@ export function renderContestHeader(contestData) {
   `;
 
   container.appendChild(card);
+  console.log("Header del contest renderizzato con successo");
 }

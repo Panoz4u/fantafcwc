@@ -8,6 +8,104 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,800;1,800&family=Barlow+Condensed:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/mobile.css">
   <link rel="stylesheet" href="css/mobile2.css">
+  
+  <!-- Rimuovi il riferimento a auth.js qui -->
+
+<script>
+    // Script per recuperare i dati dal localStorage o dall'URL
+    document.addEventListener("DOMContentLoaded", () => {
+      try {
+        // Verifica se ci sono parametri nell'URL
+        const params = new URLSearchParams(window.location.search);
+        const contestId = params.get("contest");
+        const opponentId = params.get("opponent");
+        const ownerId = params.get("owner");
+        const userId = params.get("user");
+        
+        // Se ci sono parametri nell'URL, salvali nel localStorage e reindirizza alla pagina senza parametri
+        if (contestId || opponentId || ownerId || userId) {
+          // Salva i parametri nel localStorage
+          const contestData = {
+            contestId: contestId || "",  // Usa stringa vuota invece di null
+            opponentId: opponentId || "",
+            ownerId: ownerId || "",
+            userId: userId || "",
+            timestamp: new Date().getTime()
+          };
+          localStorage.setItem('contestData', JSON.stringify(contestData));
+          
+          // Reindirizza alla pagina senza parametri
+          window.history.replaceState({}, document.title, '/riassunto.html');
+          
+          // Imposta i dati come variabili globali solo se non sono null
+          if (contestId) window.contestId = contestId;
+          if (opponentId) window.opponentId = opponentId;
+          if (ownerId) window.ownerId = ownerId;
+          if (userId) window.userId = userId;
+          
+          // Imposta il flag contestDataReady a true
+          window.contestDataReady = true;
+          
+          console.log("Dati contest recuperati con successo dall'URL e salvati nel localStorage:", contestData);
+          return; // Esci dalla funzione
+        }
+        
+        // Recupera i dati dal localStorage
+        const contestDataStr = localStorage.getItem('contestData');
+        
+        // Se abbiamo dati nel localStorage, usiamo quelli
+        if (contestDataStr) {
+          const contestData = JSON.parse(contestDataStr);
+          
+          // Verifica che i dati non siano troppo vecchi (opzionale, per sicurezza)
+          const now = new Date().getTime();
+          const dataAge = now - contestData.timestamp;
+          const maxAge = 5 * 60 * 1000; // 5 minuti in millisecondi
+          
+          if (dataAge > maxAge) {
+            console.error("I dati del contest sono scaduti");
+            localStorage.removeItem('contestData'); // Pulisci i dati scaduti
+            alert("Errore: i dati del contest sono scaduti");
+            window.location.href = '/user-landing.html';
+            return;
+          } else {
+            // Imposta i dati come variabili globali per essere utilizzati dal modulo riassunto.js
+            window.contestId = contestData.contestId;
+            window.eventUnitId = contestData.event_unit_id || contestData.eventUnitId;
+            window.opponentId = contestData.opponentId;
+            window.ownerId = contestData.ownerId;
+            window.userId = contestData.userId;
+            
+            // Imposta il flag contestDataReady a true
+            window.contestDataReady = true;
+            
+            console.log("Dati contest recuperati con successo dal localStorage:", contestData);
+            
+            // Aggiungi questa riga per verificare i valori
+            console.log("Valori impostati - contestId:", window.contestId, "opponentId:", window.opponentId, "ownerId:", window.ownerId, "userId:", window.userId);
+            return; // Esci dalla funzione se abbiamo recuperato i dati dal localStorage
+          }
+        } else {
+          // Se non abbiamo dati né nell'URL né nel localStorage, mostra un errore
+          console.error("Nessun dato contest trovato");
+          alert("Errore: dati del contest non trovati");
+          window.location.href = '/user-landing.html';
+        }
+      } catch (e) {
+        console.error("Errore nel recupero dei dati contest:", e);
+        alert("Errore nel recupero dei dati del contest");
+        window.location.href = '/user-landing.html';
+      }
+    });
+  </script>
+    
+    <!-- Aggiungi gli script di Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    
+    <!-- Carica auth.js DOPO aver caricato Firebase -->
+    <script src="auth.js"></script>
 </head>
 <body>
   <header class="header">
@@ -49,31 +147,28 @@
     <button id="confirmFooterBtn" class="footer_button fb_unable_orange" disabled>PLAY</button>
   </footer>
 
+  <!-- Carica il modulo riassunto.js DOPO aver impostato le variabili globali -->
   <script type="module" src="./js/riassunto.js"></script>
   
-</body>
-</html>
-<!-- Add this right before the closing </body> tag -->
-<div id="multiplyOverlay" class="multiply-overlay" style="display: none;">
-  <div class="multiply-container" style="padding-bottom: 96px;">
-    <div class="title_centre">
-      MULTIPLY YOUR WIN<br>X
+  <!-- Add this right before the closing </body> tag -->
+  <div id="multiplyOverlay" class="multiply-overlay" style="display: none;">
+    <div class="multiply-container" style="padding-bottom: 96px;">
+      <div class="title_centre">
+        MULTIPLY YOUR WIN<br>X
+      </div>
+      <div class="multiply-circles">
+        <div class="multiply-circle mc-off" data-multiply="1">1</div>
+        <div class="multiply-circle mc-off" data-multiply="5">5</div>
+        <div class="multiply-circle mc-off" data-multiply="10">10</div>
+      </div>
+      <div class="title_centre">TOTAL COST</div>
+      <div class="big-cost" id="multipliedCost">0.0</div>
+      <!-- Replace the buttons div with a footer -->
+      <footer class="footer-nav" style="justify-content: flex-end; margin-top: 48px;">
+        <button class="footer_button footer_button_blue" id="cancelMultiply">CANCEL</button>
+        <button class="footer_button footer_button_orange" id="confirmMultiply">CONFIRM</button>
+      </footer>
     </div>
-    <div class="multiply-circles">
-      <div class="multiply-circle mc-off" data-multiply="1">1</div>
-      <div class="multiply-circle mc-off" data-multiply="5">5</div>
-      <div class="multiply-circle mc-off" data-multiply="10">10</div>
-    </div>
-    <div class="title_centre">TOTAL COST</div>
-    <div class="big-cost" id="multipliedCost">0.0</div>
-    <!-- Replace the buttons div with a footer -->
-    <footer class="footer-nav" style="justify-content: flex-end; margin-top: 48px;">
-      <button class="footer_button footer_button_blue" id="cancelMultiply">CANCEL</button>
-      <button class="footer_button footer_button_orange" id="confirmMultiply">CONFIRM</button>
-    </footer>
   </div>
-</div>
-
- 
 </body>
 </html>

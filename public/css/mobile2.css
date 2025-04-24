@@ -465,7 +465,7 @@
   cursor: pointer;
 }
 
-.mc-selected {
+.mc-on {
   background-color: #0f7173;
   color: white;
 }

@@ -4,11 +4,122 @@ const express = require("express");
 const app = express();
 const port = process.env.PORT || 3000;
 const pool = require("./db");
+const jwt = require('jsonwebtoken'); // Aggiungi questa riga
+const bcrypt = require('bcrypt'); // Aggiungi questa riga se vuoi gestire password
 app.use(express.json());
 app.use(express.static("public"));
+
+// Chiave segreta per i JWT (meglio metterla in .env)
+const JWT_SECRET = process.env.JWT_SECRET || 'chiave_segreta_molto_sicura'; // Aggiungi questa riga
+
+// Middleware per verificare il token JWT
+const authenticateToken = (req, res, next) => {
+  // Ottieni il token dall'header Authorization
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+  
+  if (!token) {
+    return res.status(401).json({ error: "Token di autenticazione mancante" });
+  }
+  
+  jwt.verify(token, JWT_SECRET, (err, user) => {
+    if (err) {
+      return res.status(403).json({ error: "Token non valido o scaduto" });
+    }
+    
+    req.user = user;
+    next();
+  });
+};
+
 // Fallback su index.html se nessun'altra route viene trovata
 const uploadResultsRoute = require("./uploadResults"); // Assicurati che il percorso sia corretto
 app.use("/uploadResults", uploadResultsRoute);
+
+/* 1) Nuovo endpoint per generare token JWT */
+app.post("/generate-token", (req, res) => {
+  const { email, userId } = req.body;
+  
+  if (!email && !userId) {
+    return res.status(400).json({ error: "È necessario fornire email o userId" });
+  }
+  
+  let query;
+  let params;
+  
+  if (email) {
+    query = "SELECT user_id, username, email, teex_balance, avatar, color FROM users WHERE email = ? AND is_active = 1";
+    params = [email];
+  } else {
+    query = "SELECT user_id, username, email, teex_balance, avatar, color FROM users WHERE user_id = ? AND is_active = 1";
+    params = [userId];
+  }
+  
+  pool.query(query, params, (err, results) => {
+    if (err) {
+      console.error("Errore nella query utente:", err);
+      return res.status(500).json({ error: "Errore nel database" });
+    }
+    
+    if (results.length === 0) {
+      return res.status(404).json({ error: "Utente non trovato" });
+    }
+    
+    const user = results[0];
+    
+    // Crea il token JWT
+    const token = jwt.sign(
+      { 
+        userId: user.user_id,
+        email: user.email,
+        username: user.username
+      }, 
+      JWT_SECRET, 
+      { expiresIn: '7d' } // Il token scade dopo 7 giorni
+    );
+    
+    res.json({ 
+      token,
+      user: {
+        userId: user.user_id,
+        username: user.username,
+        email: user.email,
+        teexBalance: user.teex_balance,
+        avatar: user.avatar,
+        color: user.color
+      }
+    });
+  });
+});
+
+/* 2) Nuovo endpoint per ottenere informazioni utente dal token */
+app.get("/user-info", authenticateToken, (req, res) => {
+  const userId = req.user.userId;
+  
+  const query = "SELECT user_id, username, email, teex_balance, avatar, color FROM users WHERE user_id = ? AND is_active = 1";
+  
+  pool.query(query, [userId], (err, results) => {
+    if (err) {
+      console.error("Errore nella query utente:", err);
+      return res.status(500).json({ error: "Errore nel database" });
+    }
+    
+    if (results.length === 0) {
+      return res.status(404).json({ error: "Utente non trovato" });
+    }
+    
+    const user = results[0];
+    
+    res.json({
+      userId: user.user_id,
+      username: user.username,
+      email: user.email,
+      teexBalance: user.teex_balance,
+      avatar: user.avatar,
+      color: user.color
+    });
+  });
+});
 
 /* 1) GET /users */
 app.get("/users", (req, res) => {
@@ -163,10 +274,15 @@ app.get("/all-active-athletes", (req, res) => {
   });
 });
 /* --------------------------- */
-/* 4) GET /user-landing-info?user=XX */
-app.get("/user-landing-info", (req, res) => {
-  const userId = req.query.user;
-  if (!userId) return res.status(400).json({ error: "Missing user param" });
+/* 4) GET /user-landing-info - Modificato per usare autenticazione JWT */
+app.get("/user-landing-info", authenticateToken, (req, res) => {
+  const userId = req.user.userId; // Ottieni l'ID utente dal token JWT
+  
+  // Verifica che l'ID utente sia presente
+  if (!userId) {
+    return res.status(400).json({ error: "ID utente mancante nel token" });
+  }
+  
   const sqlUser = "SELECT user_id, username, teex_balance, avatar, color FROM users WHERE user_id = ?";
   pool.query(sqlUser, [userId], (err, ur) => {
     if (err) return res.status(500).json({ error: "DB error user" });
@@ -404,16 +520,20 @@ app.get("/contest-details", (req, res) => {
   });
 });
 /* ----------------------------------------------------------------------
-   6) POST /confirm-squad
+   6) POST /confirm-squad - Modificato per usare autenticazione JWT
 ---------------------------------------------------------------------- */
-app.post("/confirm-squad", (req, res) => {
-  const { contestId, userId, players, multiply, totalCost } = req.body;
-  if (!contestId || !userId || !Array.isArray(players)) {
+app.post("/confirm-squad", authenticateToken, (req, res) => {
+  const { contestId, players, multiplier, totalCost } = req.body;
+  const userId = req.user.userId; // Ottieni l'ID utente dal token JWT
+  
+  if (!contestId || !Array.isArray(players)) {
     return res.status(400).json({ error: "Dati mancanti o invalidi" });
   }
   
-  console.log("RICEVUTO DA CLIENT:", { contestId, userId, multiply, totalCost });
-  
+  console.log("RICEVUTO DA CLIENT:", { contestId, userId, multiplier, totalCost });
+  console.log("Dati ricevuti in confirm-squad:", JSON.stringify(req.body));
+  console.log("Tipo di req.body:", typeof req.body);
+  console.log("Chiavi in req.body:", Object.keys(req.body));
   // Calcola il costo totale dai giocatori
   let calculatedTotalCost = 0;
   players.forEach(p => {
@@ -425,7 +545,7 @@ app.post("/confirm-squad", (req, res) => {
   // Usa il costo totale fornito o quello calcolato
   // Modifica: controlla se totalCost è definito (anche se è 0)
   const finalTotalCost = totalCost !== undefined ? totalCost : calculatedTotalCost;
-  const multiplyValue = multiply || 1;
+  const multiplyValue = multiplier || 1;
   
   console.log("VALORI FINALI:", { finalTotalCost, multiplyValue, moltiplicato: finalTotalCost * multiplyValue });
   

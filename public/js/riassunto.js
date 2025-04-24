@@ -4,6 +4,468 @@ import { loadChosenPlayers, saveChosenPlayers, getTotalCost, getAvailableBudget,
 import { getAvatarUrl, getAvatarSrc } from './avatarUtils.js';
 import { renderContestHeader } from './headerUtils.js';
 import { checkContestStatus, showErrorMessage } from './statusUtils.js';
+import { showMultiplyOverlay } from './multiply.js';
+
+// Funzione per attendere che i dati del contest siano disponibili
+function waitForContestData() {
+  return new Promise((resolve) => {
+    // Se i dati sono già disponibili, risolvi immediatamente
+    if (window.contestDataReady) {
+      resolve({
+        contestId: window.contestId,
+        eventUnitId: window.eventUnitId,
+        opponentId: window.opponentId
+      });
+      return;
+    }
+    
+    // Controlla se i dati sono nel localStorage
+    const contestDataStr = localStorage.getItem('contestData');
+    if (contestDataStr) {
+      try {
+        const contestData = JSON.parse(contestDataStr);
+        // Verifica che i dati non siano troppo vecchi
+        const now = new Date().getTime();
+        const dataAge = now - (contestData.timestamp || 0);
+        const maxAge = 10 * 60 * 1000; // 10 minuti
+        
+        if (dataAge <= maxAge) {
+          // Imposta i dati come variabili globali
+          window.contestId = contestData.contestId;
+          window.eventUnitId = contestData.event_unit_id;
+          window.opponentId = contestData.opponent;
+          window.contestDataReady = true;
+          
+          resolve({
+            contestId: contestData.contestId,
+            eventUnitId: contestData.event_unit_id,
+            opponentId: contestData.opponent
+          });
+          return;
+        }
+      } catch (e) {
+        console.error("Errore nel parsing dei dati contest:", e);
+      }
+    }
+    
+    // Altrimenti, controlla ogni 100ms
+    const checkInterval = setInterval(() => {
+      if (window.contestDataReady) {
+        clearInterval(checkInterval);
+        resolve({
+          contestId: window.contestId,
+          eventUnitId: window.eventUnitId,
+          opponentId: window.opponentId
+        });
+      }
+    }, 100);
+    
+    // Timeout dopo 5 secondi
+    setTimeout(() => {
+      clearInterval(checkInterval);
+      console.error("Timeout nel caricamento dei dati del contest");
+      alert("Errore: timeout nel caricamento dei dati del contest");
+      window.location.href = '/user-landing.html';
+    }, 5000);
+  });
+}
+
+// Inizializza l'applicazione solo quando i dati sono disponibili
+async function initApp() {
+  try {
+    // Aggiungi event listener per il pulsante Back
+    const backArrow = document.getElementById("backArrow");
+    if (backArrow) {
+      backArrow.addEventListener("click", () => {
+        window.history.back();
+      });
+    }
+    
+    const data = await waitForContestData();
+    const contestId = data.contestId;
+    const eventUnitId = data.eventUnitId;
+    const opponentId = data.opponentId;
+    
+    console.log("Dati contest pronti per l'uso:", { contestId, eventUnitId, opponentId });
+    
+    // Verifica che l'ID contest sia presente
+    if (!contestId) {
+      showErrorMessage("ID contest mancante");
+      return;
+    }
+    
+    // Ottieni l'ID utente dal localStorage
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+      console.error("Utente non autenticato");
+      window.location.href = '/index.html';
+      return;
+    }
+    
+    // Aggiorna il saldo Teex nell'header
+    try {
+      const authToken = localStorage.getItem('authToken');
+      if (!authToken) {
+        console.error("Token di autenticazione mancante");
+        // Prova a recuperare il teex balance direttamente dalla tabella users
+        const usersResp = await fetch("/users");
+        if (usersResp.ok) {
+          const allUsers = await usersResp.json();
+          const currentUser = allUsers.find(x => x.user_id == userId);
+          if (currentUser && currentUser.teex_balance !== undefined) {
+            const teexBalanceEl = document.getElementById("teexBalance");
+            if (teexBalanceEl) {
+              // Converti in numero prima di usare toFixed
+              const balance = parseFloat(currentUser.teex_balance);
+              teexBalanceEl.textContent = balance.toFixed(1);
+              console.log("Teex balance aggiornato dalla tabella users:", balance.toFixed(1));
+              localStorage.setItem('userTeexBalance', balance.toFixed(1));
+            }
+          }
+        }
+        return;
+      }
+      
+      const userResp = await fetch(`/user-info`, {
+        headers: {
+          'Authorization': `Bearer ${authToken}`
+        }
+      });
+      
+      if (userResp.ok) {
+        const userData = await userResp.json();
+        const teexBalanceEl = document.getElementById("teexBalance");
+        if (teexBalanceEl && userData.teexBalance !== undefined) {
+          // Converti in numero prima di usare toFixed
+          const balance = parseFloat(userData.teexBalance);
+          teexBalanceEl.textContent = balance.toFixed(1);
+          console.log("Teex balance aggiornato:", balance.toFixed(1));
+          // Salva il teex balance nel localStorage per uso futuro
+          localStorage.setItem('userTeexBalance', balance.toFixed(1));
+        } else if (teexBalanceEl) {
+          // Se non abbiamo ricevuto il teex balance dall'API, prova a recuperarlo dal localStorage
+          const savedTeexBalance = localStorage.getItem('userTeexBalance');
+          if (savedTeexBalance) {
+            teexBalanceEl.textContent = savedTeexBalance;
+            console.log("Teex balance recuperato dal localStorage:", savedTeexBalance);
+          }
+        }
+      } else {
+        throw new Error(`Errore ${userResp.status}: ${await userResp.text()}`);
+      }
+    } catch (error) {
+      console.error("Errore nel recupero delle informazioni utente:", error);
+      // Prova a recuperare il teex balance direttamente dalla tabella users
+      try {
+        const usersResp = await fetch("/users");
+        if (usersResp.ok) {
+          const allUsers = await usersResp.json();
+          const currentUser = allUsers.find(x => x.user_id == userId);
+          if (currentUser && currentUser.teex_balance !== undefined) {
+            const teexBalanceEl = document.getElementById("teexBalance");
+            if (teexBalanceEl) {
+              // Converti in numero prima di usare toFixed
+              const balance = parseFloat(currentUser.teex_balance);
+              teexBalanceEl.textContent = balance.toFixed(1);
+              console.log("Teex balance aggiornato dalla tabella users dopo errore:", balance.toFixed(1));
+              localStorage.setItem('userTeexBalance', balance.toFixed(1));
+            }
+          }
+        }
+      } catch (e) {
+        console.error("Errore nel recupero degli utenti:", e);
+        // Fallback al localStorage
+        const teexBalanceEl = document.getElementById("teexBalance");
+        const savedTeexBalance = localStorage.getItem('userTeexBalance');
+        if (teexBalanceEl && savedTeexBalance) {
+          teexBalanceEl.textContent = savedTeexBalance;
+          console.log("Teex balance recuperato dal localStorage dopo errore:", savedTeexBalance);
+        }
+      }
+    }
+    
+    // Carica i dettagli del contest
+    try {
+      const authToken = localStorage.getItem('authToken');
+      
+      // Verifica che contestId sia valido prima di fare la richiesta
+      if (!contestId) {
+        showErrorMessage("ID del contest mancante. Torna alla pagina precedente e riprova.");
+        return;
+      }
+      
+      const contestResp = await fetch(`/contest-details?contest=${contestId}`, {
+        headers: {
+          'Authorization': `Bearer ${authToken}`
+        }
+      });
+      
+      if (!contestResp.ok) {
+        showErrorMessage(`Errore nel recupero dei dettagli del contest: ${contestResp.status}`);
+        return;
+      }
+      
+      const contestData = await contestResp.json();
+      console.log("Dettagli contest ricevuti:", contestData);
+      
+      if (contestData && contestData.contest) {
+        // Renderizza l'header del contest
+        renderContestHeader(contestData.contest);
+        
+        // Aggiorna il budget disponibile
+        const teexLeft = getAvailableBudget();
+        const teexLeftEl = document.getElementById("teexLeft");
+        if (teexLeftEl) {
+          teexLeftEl.innerHTML = `<span class="teex-left-text-cyan">${teexLeft.toFixed(1)}</span> <span class="teex-left-text-white">Papa Coins left</span>`;
+        }
+      } else {
+        showErrorMessage("Dati del contest non validi");
+      }
+    } catch (error) {
+      console.error("Errore nel recupero dei dettagli del contest:", error);
+      showErrorMessage(`Errore: ${error.message}`);
+    }
+    
+    // Configura il pulsante "Add Player"
+    const addPlayerBtn = document.getElementById("addPlayerBtn");
+    if (addPlayerBtn) {
+      addPlayerBtn.addEventListener("click", () => {
+        // Salva i dati necessari nel localStorage
+        const addPlayerData = {
+          owner: userId,
+          opponent: opponentId,
+          contest: contestId,
+          user: userId,
+          teexBalance: document.getElementById("teexBalance")?.textContent || "0.0",
+          timestamp: new Date().getTime()
+        };
+        localStorage.setItem('addPlayerData', JSON.stringify(addPlayerData));
+        
+        // Naviga alla pagina senza parametri in URL
+        window.location.href = '/aggiungi-giocatore.html';
+      });
+    }
+    
+    // Configura il pulsante "Reset Team"
+    const resetTeamBtn = document.getElementById("resetTeamBtn");
+    if (resetTeamBtn) {
+      resetTeamBtn.addEventListener("click", () => {
+        if (confirm("Sei sicuro di voler resettare la squadra?")) {
+          saveChosenPlayers([]);
+          location.reload(); // Ricarica la pagina per aggiornare tutto
+        }
+      });
+    }
+    
+    // Renderizza la lista dei giocatori
+    await renderPlayerList();
+    
+  } catch (error) {
+    console.error("Errore nell'inizializzazione dell'app:", error);
+    
+    // Mostra un messaggio di errore più specifico
+    let errorMessage = "Errore nel caricamento dei dati.";
+    if (error.message) {
+      if (error.message.includes("401") || error.message.includes("403")) {
+        errorMessage = "Sessione scaduta. Effettua nuovamente il login.";
+      } else if (error.message.includes("404")) {
+        errorMessage = "Risorsa non trovata. Verifica che il contest esista.";
+      } else if (error.message.includes("500")) {
+        errorMessage = "Errore del server. Riprova più tardi.";
+      } else {
+        errorMessage = "Errore: " + error.message;
+      }
+    }
+    
+    document.getElementById("errorMessage").textContent = errorMessage;
+    document.getElementById("errorMessage").style.display = "block";
+  }
+}
+
+// Funzione per renderizzare la lista dei giocatori
+async function renderPlayerList() {
+  try {
+    let players = loadChosenPlayers();
+    players = await enrichPlayerData(players);
+    
+    // Aggiorna la lista dei giocatori
+    const playersList = document.getElementById("playersList");
+    if (!playersList) return;
+    
+    playersList.innerHTML = "";
+    
+    if (!players.length) {
+      // Se non ci sono giocatori, mostra il messaggio di benvenuto
+      playersList.innerHTML = `
+        <div class="welcome-container">
+          <div class="welcome-text">
+            <div class="welcome-to">START ADDING</div>
+            <div class="fanteex-title">PAPABILI</div>
+            <div class="start-game">TO YOUR TEAM</div>
+          </div>
+          <div class="animated-arrows">
+            <img src="icons/arrow-down.png" alt="Arrow" class="arrow arrow1">
+            <img src="icons/arrow-down.png" alt="Arrow" class="arrow arrow2">
+            <img src="icons/arrow-down.png" alt="Arrow" class="arrow arrow3">
+          </div>
+        </div>`;
+      return;
+    }
+    
+    // Aggiorna i pulsanti in base alla presenza di giocatori
+    const confirmBtn = document.getElementById("confirmFooterBtn");
+    const resetBtn = document.getElementById("resetTeamBtn");
+    if (confirmBtn && resetBtn) {
+      confirmBtn.className = "footer_button footer_button_orange";
+      resetBtn.className = "footer_button footer_button_blue";
+      confirmBtn.disabled = false;
+      resetBtn.disabled = false;
+    }
+    
+    // Aggiorna il costo totale e il budget disponibile
+    const totalTeamCost = getTotalCost();
+    const currentUserScoreEl = document.getElementById("currentUserScore");
+    if (currentUserScoreEl) {
+      currentUserScoreEl.textContent = totalTeamCost.toFixed(1);
+    }
+    
+    const teexLeft = getAvailableBudget();
+    const teexLeftEl = document.getElementById("teexLeft");
+    if (teexLeftEl) {
+      teexLeftEl.innerHTML = `<span class="teex-left-text-cyan">${teexLeft.toFixed(1)}</span> <span class="teex-left-text-white">Papa Coins left</span>`;
+    }
+    
+    // Renderizza i giocatori
+    players.forEach((player, index) => {
+      const playerRow = createPlayerRow(player, index);
+      playersList.appendChild(playerRow);
+    });
+  } catch (error) {
+    console.error("Errore nel rendering della lista giocatori:", error);
+  }
+}
+
+// Funzione per creare una riga giocatore
+function createPlayerRow(player, index) {
+  // Crea il wrapper che conterrà sia la riga che il separatore
+  const wrapper = document.createElement("div");
+  
+  // Crea il container per la riga
+  const row = document.createElement("div");
+  row.classList.add("player-row");
+  
+  // BLOCCO AVATAR: Immagine e posizione
+  const avatarBlock = document.createElement("div");
+  avatarBlock.classList.add("avatar-block");
+  avatarBlock.style.position = "relative";
+  
+  const avatarContainer = document.createElement("div");
+  avatarContainer.classList.add("atheleteAvatar");
+  
+  const iconImg = document.createElement("img");
+  iconImg.src = player.picture ? `pictures/${player.picture}` : `pictures/player_placeholder.png`;
+  iconImg.onerror = function() {
+    this.src = 'pictures/player_placeholder.png';
+  };
+  
+  avatarContainer.appendChild(iconImg);
+  
+  const posCircle = document.createElement("div");
+  posCircle.classList.add("position_circle");
+  posCircle.textContent = player.position;
+  
+  avatarBlock.appendChild(avatarContainer);
+  avatarBlock.appendChild(posCircle);
+  
+  // BLOCCO INFO: Nome e match info
+  const infoBlock = document.createElement("div");
+  infoBlock.classList.add("player-info");
+  
+  const nameSpan = document.createElement("div");
+  nameSpan.classList.add("athlete_shortname");
+  nameSpan.textContent = player.athlete_shortname;
+  
+  const matchSpan = document.createElement("div");
+  if (player.home_team_code && player.away_team_code) {
+    // Determina se il giocatore è della squadra di casa o trasferta
+    const playerTeamId = parseInt(player.team_id);
+    const homeTeamId = parseInt(player.home_team);
+    const awayTeamId = parseInt(player.away_team);
+    const isHomeTeam = playerTeamId === homeTeamId;
+    const isAwayTeam = playerTeamId === awayTeamId;
+    
+    // Crea il testo del match con il team del giocatore in grassetto
+    const homeSpan = document.createElement("span");
+    homeSpan.textContent = player.home_team_code;
+    if (isHomeTeam) homeSpan.classList.add("team-bold");
+    
+    const dashSpan = document.createElement("span");
+    dashSpan.textContent = "-";
+    
+    const awaySpan = document.createElement("span");
+    awaySpan.textContent = player.away_team_code;
+    if (isAwayTeam) awaySpan.classList.add("team-bold");
+    
+    matchSpan.appendChild(homeSpan);
+    matchSpan.appendChild(dashSpan);
+    matchSpan.appendChild(awaySpan);
+  } else {
+    // Nuovo formato: Codice paese | CONCLAVE event_unit_id
+    matchSpan.innerHTML = `<span style="font-family: 'Montserrat', sans-serif; font-weight: 800;">${player.player_team_code || ''}</span> | CONC. <span style="font-family: 'Montserrat', sans-serif; font-weight: 800;">${player.event_unit_id || ''}</span>`;
+  }
+  
+  infoBlock.appendChild(nameSpan);
+  infoBlock.appendChild(matchSpan);
+  
+  // BLOCCO COSTO
+  const costBlock = document.createElement("div");
+  costBlock.classList.add("athlete_cost", "ac-long");
+  costBlock.textContent = parseFloat(player.event_unit_cost || 0).toFixed(1);
+  
+  // BLOCCO RIMOZIONE con icona delete.png
+  const removeBtn = document.createElement("div");
+  removeBtn.classList.add("remove-player-btn");
+  
+  const deleteIcon = document.createElement("img");
+  deleteIcon.src = "icons/delete.png";
+  deleteIcon.alt = "Remove";
+  deleteIcon.style.width = "24px";
+  deleteIcon.style.height = "24px";
+  deleteIcon.style.cursor = "pointer";
+  
+  deleteIcon.addEventListener("click", () => {
+    removePlayer(index);
+  });
+  
+  removeBtn.appendChild(deleteIcon);
+  
+  // Aggiungi i blocchi alla riga
+  row.appendChild(avatarBlock);
+  row.appendChild(infoBlock);
+  row.appendChild(costBlock);
+  row.appendChild(removeBtn);
+  
+  // Aggiungi la riga al wrapper
+  wrapper.appendChild(row);
+  
+  // Aggiungi il separatore
+  const separator = document.createElement("div");
+  separator.classList.add("player-separator");
+  wrapper.appendChild(separator);
+  
+  return wrapper;
+}
+
+// Funzione per rimuovere un giocatore
+function removePlayer(index) {
+  const players = loadChosenPlayers();
+  players.splice(index, 1);
+  saveChosenPlayers(players);
+  renderPlayerList();
+}
+
+// Avvia l'applicazione quando il DOM è pronto
+document.addEventListener("DOMContentLoaded", initApp);
 
 // Avvia il core dell'app
 import './team_creation.js';
