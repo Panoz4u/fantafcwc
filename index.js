@@ -209,8 +209,8 @@ app.post("/contests", (req, res) => {
   const multiplyValue = multiply || 1;
     // Updated query to insert multiply field
   const sql = `
-    INSERT INTO contests (owner_user_id, opponent_user_id, contest_type, stake, status, created_at, event_unit_id, multiply)
-    VALUES (?, ?, 'head_to_head', 0, 0, NOW(), ?, ?)
+    INSERT INTO contests (owner_user_id, opponent_user_id, contest_type, stake, status, created_at, updated_at, event_unit_id, multiply)
+    VALUES (?, ?, 'head_to_head', 0, 0, NOW(), NOW(), ?)
   `;
   pool.query(sql, [owner, opponent, event_unit_id, multiplyValue], (er, rs) => {
     if (er) {
@@ -531,6 +531,9 @@ app.post("/confirm-squad", authenticateToken, (req, res) => {
     return res.status(400).json({ error: "Dati mancanti o invalidi" });
   }
   
+    // Calcola il costo totale della squadra
+    let squadCost = parseFloat(totalCost || 0);
+  
   // Verifica che l'utente autenticato corrisponda all'utente della richiesta
   if (req.user.userId != userId) {
     return res.status(403).json({ error: "Non sei autorizzato a confermare questa squadra" });
@@ -549,7 +552,8 @@ app.post("/confirm-squad", authenticateToken, (req, res) => {
         console.error("Errore nell'avvio della transazione:", err);
         return res.status(500).json({ error: "Errore nell'avvio della transazione" });
       }
-      
+  
+
       // Ottieni lo stato attuale del contest
       const sqlGetContest = "SELECT status, stake, owner_user_id, opponent_user_id FROM contests WHERE contest_id = ?";
       connection.query(sqlGetContest, [contestId], (err, contestResults) => {

@@ -81,11 +81,17 @@ export async function confirmSquad(multiplier) {
   // Calcola il costo base
   baseTeamCost = getTotalCost();
   
-  // Usa il moltiplicatore passato come parametro o prendi quello dal localStorage
-  const selectedMultiplier = multiplier || localStorage.getItem('selectedMultiplier') || 1;
-  // const multipliedCost = baseTeamCost * selectedMultiplier; // Non più necessario qui se il server non lo usa
+  // Usa il moltiplicatore passato come parametro o prendi quello dal localStorage o dal valore bloccato
+  const lockedMultiply = window.lockedMultiply || localStorage.getItem("lockedMultiply");
+  const selectedMultiplier = lockedMultiply ? parseFloat(lockedMultiply) : (multiplier || localStorage.getItem('selectedMultiplier') || 1);
   
-  console.log("RICEVUTO DA CLIENT:", { contestId, userId, multiplier: selectedMultiplier, totalCost: baseTeamCost }); // Aggiornato log
+  console.log("RICEVUTO DA CLIENT:", { 
+    contestId, 
+    userId, 
+    multiplier: selectedMultiplier, 
+    totalCost: baseTeamCost,
+    lockedMultiply
+  });
   
   // Prepara i dati da inviare
   const squadData = {
