@@ -11,6 +11,79 @@ app.use(express.static("public"));
 
 
 
+// Funzioni di avatarUtils.js spostate qui
+// Definisci le funzioni per la gestione degli avatar
+const getAvatarUrl = (avatarPath) => {
+  if (!avatarPath) return "avatars/avatar.jpg";
+  if (avatarPath.startsWith("http://") || avatarPath.startsWith("https://")) return avatarPath;
+  return `avatars/${avatarPath}`;
+};
+
+const getAvatarSrc = (avatar, name, color) => {
+  if (!avatar) {
+    // Se non c'è avatar, genera un avatar basato sul nome o usa default
+    if (name) {
+      return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=${color || 'random'}&color=fff`;
+    }
+    return "avatars/default.png";
+  }
+  
+  // Se l'avatar è un URL completo, usalo direttamente
+  if (avatar.startsWith("http")) {
+    // Gestisci il caso specifico di Google
+    return avatar.includes("googleusercontent.com")
+      ? decodeURIComponent(avatar)
+      : avatar;
+  }
+  
+  // Altrimenti, considera l'avatar come un nome file nella cartella avatars
+  return `avatars/${avatar}`;
+};
+
+// Esponi le funzioni come parte dell'oggetto globale
+global.getAvatarUrl = getAvatarUrl;
+global.getAvatarSrc = getAvatarSrc;
+
+// Aggiungi uno script che espone queste funzioni al client
+app.get('/js/avatar-functions.js', (req, res) => {
+  res.setHeader('Content-Type', 'application/javascript');
+  res.send(`
+    // Funzioni per la gestione degli avatar
+    function getAvatarUrl(avatarPath) {
+      if (!avatarPath) return "avatars/avatar.jpg";
+      if (avatarPath.startsWith("http://") || avatarPath.startsWith("https://")) return avatarPath;
+      return \`avatars/\${avatarPath}\`;
+    }
+
+    function getAvatarSrc(avatar, name, color) {
+      if (!avatar) {
+        // Se non c'è avatar, genera un avatar basato sul nome o usa default
+        if (name) {
+          return \`https://ui-avatars.com/api/?name=\${encodeURIComponent(name)}&background=\${color || 'random'}&color=fff\`;
+        }
+        return "avatars/default.png";
+      }
+      
+      // Se l'avatar è un URL completo, usalo direttamente
+      if (avatar.startsWith("http")) {
+        // Gestisci il caso specifico di Google
+        return avatar.includes("googleusercontent.com")
+          ? decodeURIComponent(avatar)
+          : avatar;
+      }
+      
+      // Altrimenti, considera l'avatar come un nome file nella cartella avatars
+      return \`avatars/\${avatar}\`;
+    }
+
+    // Esponi le funzioni globalmente
+    window.getAvatarUrl = getAvatarUrl;
+    window.getAvatarSrc = getAvatarSrc;
+  `);
+});
+
+
+
 // Chiave segreta per i JWT (meglio metterla in .env)
 const JWT_SECRET = process.env.JWT_SECRET || 'chiave_segreta_molto_sicura'; // Aggiungi questa riga
 
@@ -45,7 +118,9 @@ const contestsRoutes = require("./contests"); // Importa il nuovo modulo contest
 // Usa le routes
 app.use("/uploadResults", uploadResultsRoute);
 app.use("/", athletesRoutes);
-app.use("/contests", contestsRoutes); // Monta qui tutte le route definite in contests.js
+app.use("/contests", contestsRoutes);
+app.use("/confirm-squad", contestsRoutes);
+app.use("/contest-details", contestsRoutes);  // Assicurati che questa riga sia presente
 // Rimuovi queste righe duplicate
 // app.use("/confirm-squad", contestsRoutes);
 // app.use("/contest-details", contestsRoutes);

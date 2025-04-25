@@ -282,7 +282,29 @@
         // Create contest card based on the mockup
         const contestCard = document.createElement("div");
         contestCard.classList.add("contest-cell", "clickable");
-
+        
+        // Aggiungi l'ID del contest come attributo data per recuperarlo al click
+        contestCard.dataset.contestId = contest.contest_id;
+        contestCard.dataset.eventUnitId = contest.event_unit_id || '';
+        
+        // Aggiungi event listener per il click solo se non è un contest in stato 1 dove sono owner
+        if (!(contest.status == 1 && iAmOwner)) {
+          contestCard.addEventListener('click', function() {
+            // Salva i parametri nel localStorage
+            console.log("Click su contest:", this.dataset.contestId);
+            localStorage.setItem('contestId', this.dataset.contestId);
+            localStorage.setItem('userId', currentUserId); // Assicurati che currentUserId sia definito
+            if (this.dataset.eventUnitId) {
+              localStorage.setItem('eventUnitId', this.dataset.eventUnitId);
+            } else {
+              localStorage.removeItem('eventUnitId');
+            }
+            
+            // Naviga alla pagina dei dettagli senza parametri in URL
+            window.location.href = 'contest-details.html';
+          });
+        }
+        
         // Handle status 0 contests like status 1 with "CREATED" text
         if (contest.status == 0) {
           contestCard.innerHTML = `
@@ -516,9 +538,16 @@
         contestCard.addEventListener("click", () => {
           if (contest.status == 1 && !iAmOwner) {
             localStorage.removeItem("chosenPlayers");
-            window.location.href = `/riassunto.html?owner=${contest.owner_id}&opponent=${contest.opponent_id}&contest=${contest.contest_id}&user=${userId}`;
+            window.location.href = 'riassunto.html';
           } else {
-            window.location.href = `/contest-details.html?contest=${contest.contest_id}&user=${userId}`;
+            // Salva i parametri nel localStorage
+            localStorage.setItem('contestId', contest.contest_id);
+            localStorage.setItem('userId', userId);
+            localStorage.setItem('ownerId', contest.owner_id);
+            localStorage.setItem('opponentId', contest.opponent_id);
+            
+            // Naviga alla pagina dei dettagli senza parametri in URL
+            window.location.href = 'contest-details.html';
           }
         });
 

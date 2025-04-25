@@ -170,9 +170,13 @@
       // Funzione per gestire la creazione del contest
       async function createContest(oppId) {
         try {
+          const authToken = localStorage.getItem('authToken');
           const resp = await fetch("/contests", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { 
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${authToken}`
+            },
             body: JSON.stringify({
               owner: ownerId,
               opponent: oppId,
@@ -180,11 +184,20 @@
               multiply: 1  // Aggiungo il valore predefinito per multiply
             })
           });
+          
           if (!resp.ok) {
-            const err = await resp.json();
-            alert("Errore creazione contest: " + err.error);
+            let errorMsg = "Errore creazione contest";
+            try {
+              const err = await resp.json();
+              errorMsg += ": " + (err.error || err.message || "");
+            } catch (e) {
+              // Se non è possibile analizzare la risposta come JSON
+              errorMsg += ` (${resp.status})`;
+            }
+            alert(errorMsg);
             return;
           }
+          
           const data = await resp.json(); // contestId
           
           // Salva i dati nel localStorage invece di passarli nell'URL
@@ -202,7 +215,7 @@
           window.location.href = `/riassunto.html`;
         } catch (e) {
           console.error("Errore POST /contests", e);
-          alert("Impossibile creare contest");
+          alert("Impossibile creare contest: " + e.message);
         }
       }
       
