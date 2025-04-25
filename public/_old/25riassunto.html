@@ -21,17 +21,15 @@
         const opponentId = params.get("opponent");
         const ownerId = params.get("owner");
         const userId = params.get("user");
-        const aepId = params.get("aep_id"); // Aggiungi il parametro aep_id
         
         // Se ci sono parametri nell'URL, salvali nel localStorage e reindirizza alla pagina senza parametri
-        if (contestId || opponentId || ownerId || userId || aepId) {
+        if (contestId || opponentId || ownerId || userId) {
           // Salva i parametri nel localStorage
           const contestData = {
             contestId: contestId || "",  // Usa stringa vuota invece di null
             opponentId: opponentId || "",
             ownerId: ownerId || "",
             userId: userId || "",
-            aepId: aepId || "",  // Salva aep_id nel localStorage
             timestamp: new Date().getTime()
           };
           localStorage.setItem('contestData', JSON.stringify(contestData));
@@ -44,10 +42,6 @@
           if (opponentId) window.opponentId = opponentId;
           if (ownerId) window.ownerId = ownerId;
           if (userId) window.userId = userId;
-          if (aepId) window.aepId = aepId; // Imposta aep_id come variabile globale
-          
-          // Log per visualizzare l'aep_id
-          console.log("aep_id ricevuto:", aepId);
           
           // Imposta il flag contestDataReady a true
           window.contestDataReady = true;
@@ -85,10 +79,6 @@
             window.opponentId = contestData.opponentId;
             window.ownerId = contestData.ownerId;
             window.userId = contestData.userId;
-            window.aepId = contestData.aepId; // Imposta aep_id come variabile globale
-            
-            // Log per visualizzare l'aep_id
-            console.log("aep_id recuperato dal localStorage:", contestData.aepId);
             
             // Imposta il flag contestDataReady a true
             window.contestDataReady = true;
@@ -96,7 +86,21 @@
             console.log("Dati contest recuperati con successo dal localStorage:", contestData);
             
             // Aggiungi questa riga per verificare i valori
-            console.log("Valori impostati - contestId:", window.contestId, "opponentId:", window.opponentId, "ownerId:", window.ownerId, "userId:", window.userId, "aepId:", window.aepId);
+            console.log("Valori impostati - contestId:", window.contestId, "opponentId:", window.opponentId, "ownerId:", window.ownerId, "userId:", window.userId);
+            
+            // Aggiungi questo per verificare i dati dei giocatori
+            const chosenPlayers = JSON.parse(localStorage.getItem('chosenPlayers') || '[]');
+            console.log("Giocatori scelti con aep_id:", chosenPlayers);
+            
+            // Aggiungi questo per verificare che i giocatori abbiano l'aep_id
+            chosenPlayers.forEach((player, index) => {
+              console.log(`Giocatore ${index + 1}:`, player);
+              console.log(`  - athlete_id: ${player.athlete_id}`);
+              console.log(`  - aep_id: ${player.aep_id}`);
+              console.log(`  - event_unit_id: ${player.event_unit_id}`);
+              console.log(`  - event_unit_cost: ${player.event_unit_cost}`);
+            });
+            
             return; // Esci dalla funzione se abbiamo recuperato i dati dal localStorage
           }
         } else {
@@ -112,82 +116,6 @@
         window.location.href = '/user-landing.html';
       }
     });
-    
-    // Funzione per salvare l'aep_id quando si conferma la squadra
-    function salvaAepId() {
-      try {
-        console.log("=== INIZIO SALVATAGGIO AEP_ID ===");
-        
-        // Recupera i giocatori scelti
-        const chosenPlayers = JSON.parse(localStorage.getItem('chosenPlayers') || '[]');
-        
-        console.log("Giocatori prima dell'aggiornamento aep_id:", chosenPlayers);
-        
-        // Recupera l'aep_id globale
-        const aepId = window.aepId;
-        console.log("aep_id globale:", aepId);
-        
-        // Recupera i dati dal localStorage
-        const contestDataStr = localStorage.getItem('contestData');
-        console.log("Dati contest dal localStorage:", contestDataStr);
-        
-        if (contestDataStr) {
-          const contestData = JSON.parse(contestDataStr);
-          console.log("Dati contest parsati:", contestData);
-          
-          // Verifica se abbiamo un aep_id nei dati del contest
-          if (contestData.aepId) {
-            console.log("aep_id trovato nei dati contest:", contestData.aepId);
-            
-            // Aggiungi l'aep_id a tutti i giocatori che non lo hanno già
-            const playersConAepId = chosenPlayers.map(player => {
-              if (player.aep_id) {
-                console.log(`Giocatore ${player.athlete_shortname} ha già aep_id: ${player.aep_id}`);
-                return player;
-              }
-              console.log(`Aggiunto aep_id ${contestData.aepId} a giocatore ${player.athlete_shortname}`);
-              return { ...player, aep_id: contestData.aepId };
-            });
-            
-            // Salva i giocatori aggiornati
-            localStorage.setItem('chosenPlayers', JSON.stringify(playersConAepId));
-            
-            console.log("Giocatori aggiornati con aep_id:", playersConAepId);
-            console.log("=== FINE SALVATAGGIO AEP_ID ===");
-            return true;
-          }
-        }
-        
-        // Se non abbiamo trovato un aep_id nei dati del contest, usiamo quello globale
-        if (aepId) {
-          console.log("Utilizzo aep_id globale:", aepId);
-          
-          // Aggiungi l'aep_id a tutti i giocatori che non lo hanno già
-          const playersConAepId = chosenPlayers.map(player => {
-            if (player.aep_id) {
-              console.log(`Giocatore ${player.athlete_shortname} ha già aep_id: ${player.aep_id}`);
-              return player;
-            }
-            console.log(`Aggiunto aep_id globale ${aepId} a giocatore ${player.athlete_shortname}`);
-            return { ...player, aep_id: aepId };
-          });
-          
-          // Salva i giocatori aggiornati
-          localStorage.setItem('chosenPlayers', JSON.stringify(playersConAepId));
-          
-          console.log("Giocatori aggiornati con aep_id globale:", playersConAepId);
-          console.log("=== FINE SALVATAGGIO AEP_ID ===");
-          return true;
-        }
-        
-        console.log("Nessun aep_id disponibile da salvare");
-        console.log("=== FINE SALVATAGGIO AEP_ID ===");
-        return false;
-      } catch (e) {
-        console.error("Errore nel salvataggio dell'aep_id:", e);
-        return false;
-      }
-    }
   </script>
     
     <!-- Aggiungi gli script di Firebase -->
@@ -240,19 +168,6 @@
 
   <!-- Carica il modulo riassunto.js DOPO aver impostato le variabili globali -->
   <script type="module" src="./js/riassunto.js"></script>
-  
-  <!-- Aggiungi questo script per collegare la funzione salvaAepId al pulsante di conferma -->
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const confirmBtn = document.getElementById('confirmFooterBtn');
-      if (confirmBtn) {
-        confirmBtn.addEventListener('click', function() {
-          // Chiama la funzione per salvare l'aep_id prima di confermare la squadra
-          salvaAepId();
-        });
-      }
-    });
-  </script>
   
   <!-- Add this right before the closing </body> tag -->
   <div id="multiplyOverlay" class="multiply-overlay" style="display: none;">

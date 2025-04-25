@@ -283,38 +283,7 @@ async function initApp() {
 async function renderPlayerList() {
   try {
     let players = loadChosenPlayers();
-    
-    // Aggiungi log dettagliati per ogni giocatore
-    console.log("=== DETTAGLI COMPLETI DEI GIOCATORI ===");
-    players.forEach((player, index) => {
-      console.log(`Giocatore ${index + 1}: ${player.athlete_shortname || 'N/A'}`);
-      console.log("Tutti i campi dell'atleta:", player);
-      
-      // Log specifico per aep_id
-      if (player.aep_id) {
-        console.log(`✅ aep_id presente: ${player.aep_id}`);
-      } else {
-        console.log("❌ aep_id MANCANTE!");
-      }
-      
-      // Elenco di tutti i campi disponibili
-      console.log("Elenco di tutti i campi disponibili:");
-      Object.keys(player).forEach(key => {
-        console.log(`  - ${key}: ${player[key]}`);
-      });
-      console.log("-----------------------------------");
-    });
-    
     players = await enrichPlayerData(players);
-    
-    // Log dopo l'arricchimento dei dati
-    console.log("=== DETTAGLI GIOCATORI DOPO ENRICHMENT ===");
-    players.forEach((player, index) => {
-      console.log(`Giocatore ${index + 1} (dopo enrichment): ${player.athlete_shortname || 'N/A'}`);
-      console.log("Tutti i campi dopo enrichment:", player);
-      console.log(`aep_id dopo enrichment: ${player.aep_id || 'NON PRESENTE'}`);
-      console.log("-----------------------------------");
-    });
     
     // Aggiorna la lista dei giocatori
     const playersList = document.getElementById("playersList");
@@ -375,13 +344,6 @@ async function renderPlayerList() {
 
 // Funzione per creare una riga giocatore
 function createPlayerRow(player, index) {
-  // Log dettagliato per ogni giocatore durante la creazione della riga
-  console.log(`Creazione riga per giocatore ${index + 1}: ${player.athlete_shortname || 'N/A'}`);
-  console.log(`  - athlete_id: ${player.athlete_id}`);
-  console.log(`  - aep_id: ${player.aep_id || 'NON PRESENTE'}`);
-  console.log(`  - event_unit_id: ${player.event_unit_id}`);
-  console.log(`  - event_unit_cost: ${player.event_unit_cost}`);
-  
   // Crea il wrapper che conterrà sia la riga che il separatore
   const wrapper = document.createElement("div");
   

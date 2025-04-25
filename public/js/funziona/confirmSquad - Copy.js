@@ -142,9 +142,6 @@ export async function confirmSquad(multiplier) {
   const lockedMultiply = window.lockedMultiply || localStorage.getItem("lockedMultiply");
   const selectedMultiplier = lockedMultiply ? parseFloat(lockedMultiply) : (multiplier || localStorage.getItem('selectedMultiplier') || 1);
   
-  // Ottieni l'aep_id globale se disponibile
-  const globalAepId = params.get("aep_id") || window.aepId;
-  
   console.log("RICEVUTO DA CLIENT:", { 
     contestId, 
     userId, 
@@ -152,30 +149,27 @@ export async function confirmSquad(multiplier) {
     opponentId,
     multiplier: selectedMultiplier, 
     totalCost: baseTeamCost,
-    lockedMultiply,
-    globalAepId
+    lockedMultiply
   });
   
   // Prepara i dati da inviare
   const squadData = {
     contestId: parseInt(contestId),
     userId: userId,
-    owner_id: ownerId,
-    opponent_id: opponentId,
+    owner_id: ownerId, // Cambiato da ownerId a owner_id
+    opponent_id: opponentId, // Cambiato da opponentId a opponent_id
     players: players.map(p => {
-      // Usa l'aep_id del giocatore se disponibile, altrimenti usa l'aep_id globale
-      const playerAepId = p.aep_id || globalAepId || null;
-      console.log("Dati giocatore:", p.athlete_shortname || p.athlete_id, "aep_id:", playerAepId);
-      
+      console.log("Dati giocatore originali:", p);
+      console.log("aep_id del giocatore:", p.aep_id);
       return {
         athleteId: parseInt(p.athlete_id),
         eventUnitId: parseInt(p.event_unit_id),
-        event_unit_cost: parseFloat(p.event_unit_cost || 0),
-        aep_id: playerAepId
+        event_unit_cost: parseFloat(p.event_unit_cost || 0), // Costo di ogni atleta
+        aep_id: p.aep_id || null // Usa il valore aep_id originale
       };
     }),
     multiplier: parseFloat(selectedMultiplier),
-    totalCost: baseTeamCost
+    totalCost: baseTeamCost  // Il server calcolerà il costo finale moltiplicando per il multiplier
   };
   
   console.log("Dati completi inviati in confirm-squad:", JSON.stringify(squadData));

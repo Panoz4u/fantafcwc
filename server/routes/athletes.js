@@ -12,7 +12,8 @@ router.get("/event-players", (req, res) => {
            ht.team_3letter AS home_team_code, at.team_3letter AS away_team_code,
            ht.team_name AS home_team_name, at.team_name AS away_team_name,
            t.team_3letter AS player_team_code, t.team_name AS player_team_name,
-           m.match_id
+           m.match_id,
+           aep.aep_id
     FROM athlete_eventunit_participation aep
     JOIN athletes a ON aep.athlete_id = a.athlete_id
     LEFT JOIN teams t ON a.team_id = t.team_id
@@ -26,6 +27,15 @@ router.get("/event-players", (req, res) => {
       console.error("DB error /event-players", er);
       return res.status(500).json({ error: "DB error /event-players" });
     }
+    
+    // Aggiungi log per visualizzare l'aep_id dei primi 3 atleti
+    if (rows.length > 0) {
+      console.log("Esempio di aep_id nei primi 3 atleti (event-players):");
+      for (let i = 0; i < Math.min(3, rows.length); i++) {
+        console.log(`Atleta ${i+1}: ${rows[i].athlete_shortname}, aep_id: ${rows[i].aep_id}, athlete_id: ${rows[i].athlete_id}`);
+      }
+    }
+    
     res.json(rows);
   });
 });
@@ -33,7 +43,7 @@ router.get("/event-players", (req, res) => {
 /* Endpoint per ottenere tutti gli atleti con status = 1 */
 router.get("/all-active-athletes", (req, res) => {
   const sql = `
-    SELECT aep.athlete_id, aep.event_unit_cost, aep.event_unit_id, a.athlete_name, a.position, a.athlete_shortname, a.team_id, a.picture,
+    SELECT aep.aep_id, aep.athlete_id, aep.event_unit_cost, aep.event_unit_id, a.athlete_name, a.position, a.athlete_shortname, a.team_id, a.picture,
            m.home_team, m.away_team, m.status AS match_status,
            ht.team_3letter AS home_team_code, at.team_3letter AS away_team_code,
            ht.team_name AS home_team_name, at.team_name AS away_team_name,
@@ -52,6 +62,20 @@ router.get("/all-active-athletes", (req, res) => {
       console.error("DB error /all-active-athletes", er);
       return res.status(500).json({ error: "DB error /all-active-athletes" });
     }
+    
+    // Migliora i log per visualizzare l'aep_id degli atleti
+    if (rows.length > 0) {
+      console.log(`Totale atleti attivi trovati: ${rows.length}`);
+      console.log("Esempio di aep_id nei primi 5 atleti:");
+      for (let i = 0; i < Math.min(5, rows.length); i++) {
+        console.log(`Atleta ${i+1}: ${rows[i].athlete_shortname}, aep_id: ${rows[i].aep_id}, athlete_id: ${rows[i].athlete_id}`);
+      }
+      
+      // Verifica quanti atleti hanno aep_id nullo o mancante
+      const senzaAepId = rows.filter(player => !player.aep_id).length;
+      console.log(`Atleti senza aep_id: ${senzaAepId} su ${rows.length} (${((senzaAepId/rows.length)*100).toFixed(2)}%)`);
+    }
+    
     res.json(rows);
   });
 });

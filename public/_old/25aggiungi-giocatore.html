@@ -137,12 +137,12 @@
         // Add to temp selection
         // Assicuriamoci che aep_id sia incluso nell'oggetto player
         if (!player.aep_id) {
-          console.warn(`Atleta ${player.athlete_shortname} (ID: ${player.athlete_id}) non ha aep_id, utilizzo athlete_id come fallback`);
-          player.aep_id = player.athlete_id;
+          // Se aep_id non è disponibile, mostriamo un errore
+          console.log("ATTENZIONE: aep_id non trovato nell'oggetto player!");
+          return; // Evitiamo di aggiungere giocatori senza aep_id
         } else {
-          console.log(`Atleta ${player.athlete_shortname} ha aep_id: ${player.aep_id}`);
+          console.log("Trovato aep_id nell'oggetto player:", player.aep_id);
         }
-        
         console.log("Aggiunto giocatore con aep_id:", player.aep_id);
         tempSelectedPlayers.push(player);
         element.style.backgroundColor = "#0f7173";
@@ -159,47 +159,55 @@
       filterAndRenderPlayers();
     }
 
-    // Function to update the ADD TO TEAM button state
-    function updateAddToTeamButton() {
-      const addToTeamBtn = document.getElementById('addToTeamBtn');
-      if (tempSelectedPlayers.length > 0) {
-        addToTeamBtn.disabled = false;
-        addToTeamBtn.classList.remove('fb_unable_orange');
-        addToTeamBtn.classList.add('fb_orange');
-      } else {
-        addToTeamBtn.disabled = true;
-        addToTeamBtn.classList.add('fb_unable_orange');
-        addToTeamBtn.classList.remove('fb_orange');
-      }
-    }
-    
     // Function to add all temp selected players to the team
     function addTempPlayersToTeam() {
-      const chosenPlayers = loadChosenPlayers();
+      if (tempSelectedPlayers.length === 0) return;
       
-      // Process removals first
-      const removals = tempSelectedPlayers.filter(p => p.isRemoval);
-      const additions = tempSelectedPlayers.filter(p => !p.isRemoval);
+      // Get current chosen players
+      const currentPlayers = loadChosenPlayers();
       
-      // Remove players marked for removal
-      const updatedChosenPlayers = chosenPlayers.filter(chosen => 
-        !removals.some(removal => removal.athlete_id === chosen.athlete_id)
-      );
+      // Process removals and additions
+      const playersToAdd = tempSelectedPlayers.filter(p => !p.isRemoval);
+      const playerIdsToRemove = tempSelectedPlayers.filter(p => p.isRemoval)
+        .map(p => `${p.athlete_id}_${p.event_unit_id}`);
       
-      // Add new selections
-      const finalPlayerList = [...updatedChosenPlayers, ...additions];
+      // Log per debug
+      console.log("Giocatori da aggiungere:", playersToAdd);
+      playersToAdd.forEach((player, index) => {
+        console.log(`Giocatore ${index + 1} da aggiungere:`, player);
+        console.log(`  - athlete_id: ${player.athlete_id}`);
+        console.log(`  - aep_id: ${player.aep_id}`);
+        console.log(`  - event_unit_id: ${player.event_unit_id}`);
+        console.log(`  - event_unit_cost: ${player.event_unit_cost}`);
+      });
       
-      // Save to localStorage
-      saveChosenPlayers(finalPlayerList);
+      // Filter out removed players and add new ones
+      const newPlayersList = [
+        ...currentPlayers.filter(p => !playerIdsToRemove.includes(`${p.athlete_id}_${p.event_unit_id}`)),
+        ...playersToAdd
+      ];
       
-      // Clear temp selections
+      // Log per debug
+      console.log("Nuova lista giocatori:", newPlayersList);
+      
+      // Save the updated list
+      saveChosenPlayers(newPlayersList);
+      
+      // Clear temp selection
       tempSelectedPlayers = [];
       
-      // Update button state
-      updateAddToTeamButton();
+      // Salva i dati nel localStorage invece di passarli tramite URL
+      const contestData = {
+        contestId: contestId || "",
+        opponentId: opponentId || "",
+        ownerId: ownerId || "",
+        userId: userId || "",
+        timestamp: new Date().getTime()
+      };
+      localStorage.setItem('contestData', JSON.stringify(contestData));
       
-      // Redirect back to team summary
-      window.location.href = 'riassunto.html';
+      // Navigate back to riassunto.html senza parametri
+      window.location.href = '/riassunto.html';
     }
 
     const params = new URLSearchParams(window.location.search);
@@ -356,7 +364,6 @@
       }
     }
     
-    // Modifica la funzione loadPlayers() per gestire meglio gli errori
     async function loadPlayers() {
       try {
         console.log("Caricamento di tutti gli atleti attivi");
@@ -375,15 +382,8 @@
         if (data.length > 0) {
           console.log("Struttura del primo giocatore:", JSON.stringify(data[0], null, 2));
           console.log("Proprietà del primo giocatore:", Object.keys(data[0]));
-          
-          // Nuovo log per verificare specificamente il campo aep.id
-          console.log("Verifica campo aep.id:", data[0].id);
-          
-          // Verifica se tutti i giocatori hanno il campo id
-          const giocatoriSenzaId = data.filter(player => player.id === undefined).length;
-          console.log(`Numero di giocatori senza campo id: ${giocatoriSenzaId} su ${data.length} totali`);
         }
-
+        
         allPlayers = data;
         
         if (allPlayers.length === 0) {
@@ -528,7 +528,7 @@
         // A player is affordable if their cost is within budget
         const isAffordable = playerCost <= availableBudget;
         
-        
+         
         // Create player card
         const card = document.createElement('li');
         
