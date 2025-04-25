@@ -5,12 +5,13 @@ import { loadChosenPlayers,
          getTotalCost,
          getAvailableBudget,
          enrichPlayerData }         from './teamUtils.js';
-import { getAvatarUrl, getAvatarSrc } from './avatarUtils.js';
 import { renderContestHeader }       from './headerUtils.js';
 import { checkContestStatus, showErrorMessage }          from './statusUtils.js';
 import { showMultiplyOverlay } from './multiply.js';
 import { renderPlayerList } from './renderPlayerList.js';
 import { confirmSquad } from './confirmSquad.js';  // Modifica qui: importa da confirmSquad.js invece di team_creation.js
+
+const getAvatarSrc = window.getAvatarSrc;
 
     // Modifica la funzione loadUserInfo per utilizzare le variabili globali
     async function loadUserInfo(userId, opponentId, ownerId, contestId) {

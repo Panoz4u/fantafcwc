@@ -1,5 +1,5 @@
 // public/js/headerUtils.js
-import { getAvatarSrc } from './avatarUtils.js';
+const getAvatarSrc = window.getAvatarSrc;
 import { getTotalCost } from './teamUtils.js';
 
 export function renderContestHeader(contestData) {

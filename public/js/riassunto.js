@@ -1,11 +1,12 @@
 // public/js/riassunto.js
 import { fetchCurrentEventUnit } from './fetchCurrentEventUnit.js';
 import { loadChosenPlayers, saveChosenPlayers, getTotalCost, getAvailableBudget, enrichPlayerData } from './teamUtils.js';
-import { getAvatarUrl, getAvatarSrc } from './avatarUtils.js';
 import { renderContestHeader } from './headerUtils.js';
 import { checkContestStatus, showErrorMessage } from './statusUtils.js';
 import { showMultiplyOverlay } from './multiply.js';
 import { setupMultiplyForInvitedUser, showConfirmOverlay } from './confirmSquad.js'; // Aggiungi questa riga
+
+const getAvatarSrc = window.getAvatarSrc;
 
 // Funzione per attendere che i dati del contest siano disponibili
 function waitForContestData() {
