@@ -504,7 +504,7 @@
       
       players.forEach(player => {
         // Skip players whose matches are in status 4 or 5 (completed)
-        if (player.match_status && player.match_status >= 4) {
+        if (player.match_status && player.match_status >= 9) {
           console.log(`Skipping player ${player.athlete_shortname} - match status: ${player.match_status}`);
           return;
         }
