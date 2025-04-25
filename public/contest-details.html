@@ -60,12 +60,12 @@
   </section>
 
   <!-- Footer bar (semi-transparent, no icons) -->
-  <!-- Footer bar with buttons aligned to the right -->
+  <!-- Footer bar with buttons aligned to the right
     <footer class="footer-nav" style="justify-content: flex-end; ">
       <button class="footer_button footer_button_blue">SHARE</button>
       <button class="footer_button footer_button_orange">REMATCH</button>
     </footer>
-
+    -->
   <script>
     // Funzione per ottenere l'URL dell'avatar
     function getAvatarSrc(avatar, username, userColor) {
@@ -603,7 +603,7 @@
       matchSpan.classList.add("match_3letter");
       // ID unico per lo span che conterrà l'event_unit_id
       const eventUnitSpanId = `event-unit-${player.aep_id}`;
-      matchSpan.innerHTML = `<span style="font-weight: 800;">${player.player_team_code || ''}</span> | CONC: <span style="font-weight: 800;" id="${eventUnitSpanId}">...</span>`;
+      matchSpan.innerHTML = `<span style="font-weight: 800;">${player.player_team_code || ''}</span> | CC: <span style="font-weight: 800;" id="${eventUnitSpanId}">...</span>`;
       
       // Se c'è l'aep_id, chiama l'endpoint per ottenere l'event_unit_id
       if (player.aep_id) {

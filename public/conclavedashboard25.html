@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>FANTACONCLAVE - Dashboard Admin</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,800;1,800&family=Barlow+Condensed:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/mobile.css">
+  <link rel="stylesheet" href="css/mobile2.css">
+  
+  <style>
+    .dashboard-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      margin-top: 20px;
+    }
+    
+    .dashboard-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 36px;
+      font-weight: 700;
+      color: #FFF201;
+      text-transform: uppercase;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+    
+    .dashboard-subtitle {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 18px;
+      font-weight: 400;
+      color: white;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+    
+    .admin-card {
+      width: 100%;
+      max-width: 500px;
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    
+    .admin-card:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .admin-card-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    
+    .admin-card-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: #D81E5B;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-right: 15px;
+    }
+    
+    .admin-card-icon i {
+      color: white;
+      font-size: 24px;
+    }
+    
+    .admin-card-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: white;
+      text-transform: uppercase;
+    }
+    
+    .admin-card-description {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 15px;
+    }
+    
+    .admin-card-button {
+      background-color: #2a2b2a;
+      border: 2px solid #D81E5B;
+      border-radius: 20px;
+      padding: 8px 16px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: white;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      display: inline-block;
+    }
+    
+    .admin-card-button:hover {
+      background-color: rgba(216, 30, 91, 0.2);
+    }
+    
+    .footer-info {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.5);
+      margin-top: 40px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="sticky-header">
+    <header class="header">
+      <div class="user-profile">
+        <div class="user-info">
+          <div class="user-name">FANTACONCLAVE ADMIN</div>
+        </div>
+      </div>
+      <div class="teex-balance">
+        <img src="icons/ppc.png" alt="Teex" class="teex-icon">
+        <span>DASHBOARD</span>
+      </div>
+    </header>
+  </div>
+  
+  <div class="dashboard-container">
+    <h1 class="dashboard-title">FANTACONCLAVE</h1>
+    <p class="dashboard-subtitle">Pannello di Amministrazione</p>
+    
+    <div class="admin-card" onclick="window.location.href='quotazioni.html'">
+      <div class="admin-card-header">
+        <div class="admin-card-icon">
+          <i>Q</i>
+        </div>
+        <h2 class="admin-card-title">Upload Quotazioni</h2>
+      </div>
+      <p class="admin-card-description">
+        Carica e gestisci le quotazioni dei giocatori per il FANTACONCLAVE.
+      </p>
+      <div class="admin-card-button">Accedi</div>
+    </div>
+    
+    <div class="admin-card" onclick="window.location.href='risultati.html'">
+      <div class="admin-card-header">
+        <div class="admin-card-icon">
+          <i>R</i>
+        </div>
+        <h2 class="admin-card-title">Upload Risultati</h2>
+      </div>
+      <p class="admin-card-description">
+        Carica e gestisci i risultati delle partite e i punteggi dei giocatori.
+      </p>
+      <div class="admin-card-button">Accedi</div>
+    </div>
+    
+    <div class="admin-card" onclick="window.location.href='extra.htm'">
+      <div class="admin-card-header">
+        <div class="admin-card-icon">
+          <i>E</i>
+        </div>
+        <h2 class="admin-card-title">Upload Extra</h2>
+      </div>
+      <p class="admin-card-description">
+        Gestisci contenuti extra e funzionalità aggiuntive per il FANTACONCLAVE.
+      </p>
+      <div class="admin-card-button">Accedi</div>
+    </div>
+    
+    <p class="footer-info">FANTACONCLAVE Admin Dashboard v2.5 - Server: fcserver.js</p>
+  </div>
+  
+  <script>
+    // Funzione per reindirizzare alle pagine specifiche
+    function navigateTo(page) {
+      window.location.href = page;
+    }
+  </script>
+</body>
+</html>

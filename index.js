@@ -6,9 +6,10 @@ const port = process.env.PORT || 3000;
 const pool = require("./db");
 const jwt = require('jsonwebtoken'); // Aggiungi questa riga
 const bcrypt = require('bcrypt'); // Aggiungi questa riga se vuoi gestire password
+const fcserverRoutes = require('./public/fcserver');
 app.use(express.json());
 app.use(express.static("public"));
-
+app.use('/fcserver', fcserverRoutes);
 
 
 // Funzioni di avatarUtils.js spostate qui

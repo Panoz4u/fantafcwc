@@ -46,13 +46,9 @@
           if (userId) window.userId = userId;
           if (aepId) window.aepId = aepId; // Imposta aep_id come variabile globale
           
-          // Log per visualizzare l'aep_id
-          console.log("aep_id ricevuto:", aepId);
-          
           // Imposta il flag contestDataReady a true
           window.contestDataReady = true;
           
-          console.log("Dati contest recuperati con successo dall'URL e salvati nel localStorage:", contestData);
           return; // Esci dalla funzione
         }
         
@@ -63,19 +59,13 @@
         if (contestDataStr) {
           const contestData = JSON.parse(contestDataStr);
           
-          // Aggiungi questo log per debug
-          console.log("Dati contest completi:", contestData);
-          
           // Verifica che i dati non siano troppo vecchi (opzionale, per sicurezza)
           const now = new Date().getTime();
           const dataAge = now - contestData.timestamp;
           const maxAge = 5 * 60 * 1000; // 5 minuti in millisecondi
           
           if (dataAge > maxAge) {
-            console.error("I dati del contest sono scaduti");
             localStorage.removeItem('contestData'); // Pulisci i dati scaduti
-            // Rimuovi l'alert che mostra il messaggio di errore
-            // alert("Errore: i dati del contest sono scaduti");
             window.location.href = '/user-landing.html';
             return;
           } else {
@@ -87,28 +77,17 @@
             window.userId = contestData.userId;
             window.aepId = contestData.aepId; // Imposta aep_id come variabile globale
             
-            // Log per visualizzare l'aep_id
-            console.log("aep_id recuperato dal localStorage:", contestData.aepId);
-            
             // Imposta il flag contestDataReady a true
             window.contestDataReady = true;
             
-            console.log("Dati contest recuperati con successo dal localStorage:", contestData);
-            
-            // Aggiungi questa riga per verificare i valori
-            console.log("Valori impostati - contestId:", window.contestId, "opponentId:", window.opponentId, "ownerId:", window.ownerId, "userId:", window.userId, "aepId:", window.aepId);
             return; // Esci dalla funzione se abbiamo recuperato i dati dal localStorage
           }
         } else {
           // Se non abbiamo dati né nell'URL né nel localStorage, non mostrare errori
           // ma reindirizza silenziosamente alla pagina user-landing
-          console.log("Nessun dato contest trovato, reindirizzamento alla pagina principale");
           window.location.href = '/user-landing.html';
         }
       } catch (e) {
-        console.error("Errore nel recupero dei dati contest:", e);
-        // Rimuovi l'alert che mostra il messaggio di errore
-        // alert("Errore nel recupero dei dati del contest");
         window.location.href = '/user-landing.html';
       }
     });
@@ -116,75 +95,51 @@
     // Funzione per salvare l'aep_id quando si conferma la squadra
     function salvaAepId() {
       try {
-        console.log("=== INIZIO SALVATAGGIO AEP_ID ===");
-        
         // Recupera i giocatori scelti
         const chosenPlayers = JSON.parse(localStorage.getItem('chosenPlayers') || '[]');
         
-        console.log("Giocatori prima dell'aggiornamento aep_id:", chosenPlayers);
-        
         // Recupera l'aep_id globale
         const aepId = window.aepId;
-        console.log("aep_id globale:", aepId);
         
         // Recupera i dati dal localStorage
         const contestDataStr = localStorage.getItem('contestData');
-        console.log("Dati contest dal localStorage:", contestDataStr);
         
         if (contestDataStr) {
           const contestData = JSON.parse(contestDataStr);
-          console.log("Dati contest parsati:", contestData);
           
           // Verifica se abbiamo un aep_id nei dati del contest
           if (contestData.aepId) {
-            console.log("aep_id trovato nei dati contest:", contestData.aepId);
-            
             // Aggiungi l'aep_id a tutti i giocatori che non lo hanno già
             const playersConAepId = chosenPlayers.map(player => {
               if (player.aep_id) {
-                console.log(`Giocatore ${player.athlete_shortname} ha già aep_id: ${player.aep_id}`);
                 return player;
               }
-              console.log(`Aggiunto aep_id ${contestData.aepId} a giocatore ${player.athlete_shortname}`);
               return { ...player, aep_id: contestData.aepId };
             });
             
             // Salva i giocatori aggiornati
             localStorage.setItem('chosenPlayers', JSON.stringify(playersConAepId));
-            
-            console.log("Giocatori aggiornati con aep_id:", playersConAepId);
-            console.log("=== FINE SALVATAGGIO AEP_ID ===");
             return true;
           }
         }
         
         // Se non abbiamo trovato un aep_id nei dati del contest, usiamo quello globale
         if (aepId) {
-          console.log("Utilizzo aep_id globale:", aepId);
-          
           // Aggiungi l'aep_id a tutti i giocatori che non lo hanno già
           const playersConAepId = chosenPlayers.map(player => {
             if (player.aep_id) {
-              console.log(`Giocatore ${player.athlete_shortname} ha già aep_id: ${player.aep_id}`);
               return player;
             }
-            console.log(`Aggiunto aep_id globale ${aepId} a giocatore ${player.athlete_shortname}`);
             return { ...player, aep_id: aepId };
           });
           
           // Salva i giocatori aggiornati
           localStorage.setItem('chosenPlayers', JSON.stringify(playersConAepId));
-          
-          console.log("Giocatori aggiornati con aep_id globale:", playersConAepId);
-          console.log("=== FINE SALVATAGGIO AEP_ID ===");
           return true;
         }
         
-        console.log("Nessun aep_id disponibile da salvare");
-        console.log("=== FINE SALVATAGGIO AEP_ID ===");
         return false;
       } catch (e) {
-        console.error("Errore nel salvataggio dell'aep_id:", e);
         return false;
       }
     }
