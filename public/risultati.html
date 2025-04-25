@@ -260,7 +260,7 @@
         </div>
       </div>
       <div class="teex-balance">
-        <img src="images/teex-icon.png" alt="Teex" class="teex-icon">
+        <img src="icons/ppc.png" alt="Teex" class="teex-icon">
         <span>ADMIN</span>
       </div>
     </header>
@@ -268,33 +268,14 @@
   
   <div class="upload-container">
     <h1 class="upload-title">Upload Risultati</h1>
-    <p class="upload-subtitle">Carica i risultati delle partite e i punteggi dei giocatori</p>
+    <p class="upload-subtitle">Carica i risultati degli atleti per il FANTACONCLAVE</p>
     
-    <div class="tab-container">
-      <div class="tab active" id="tabMatch" onclick="switchTab('match')">Partite</div>
-      <div class="tab" id="tabPlayer" onclick="switchTab('player')">Giocatori</div>
-    </div>
-    
-    <form class="upload-form" id="matchForm">
+    <form class="upload-form" id="risultatiForm">
       <div class="form-group">
-        <label class="form-label">Seleziona Stagione</label>
-        <select class="form-input" id="seasonSelect" required>
-          <option value="">Seleziona...</option>
-          <option value="2023-2024">Stagione 2023-2024</option>
-          <option value="2024-2025">Stagione 2024-2025</option>
-        </select>
-      </div>
-      
-      <div class="form-group">
-        <label class="form-label">Giornata</label>
-        <input type="number" class="form-input" id="matchday" min="1" max="38" required>
-      </div>
-      
-      <div class="form-group">
-        <label class="form-label">File Risultati (CSV)</label>
+        <label class="form-label">File Excel Risultati</label>
         <div class="file-input-container">
           <div class="file-input-button">Seleziona File</div>
-          <input type="file" class="file-input" id="resultsFile" accept=".csv" required>
+          <input type="file" class="file-input" id="risultatiFile" accept=".xlsx, .xls" required>
         </div>
         <span class="file-name" id="fileName">Nessun file selezionato</span>
       </div>
@@ -302,9 +283,256 @@
       <button type="submit" class="submit-button">Carica Risultati</button>
     </form>
     
-    <form class="upload-form" id="playerForm" style="display: none;">
-      <div class="form-group">
-        <label class="form-label">Seleziona Stagione</label>
-        <select class="form-input" id="playerSeasonSelect" required>
-          <option value="">Seleziona...</option>
-          <option value="2023-2024">
+    <div class="results-container" id="previewContainer" style="display: none;">
+      <h2 class="results-title">Anteprima Dati</h2>
+      <table class="results-table" id="previewTable">
+        <thead>
+          <tr>
+            <th>Athlete ID</th>
+            <th>Event Unit ID</th>
+            <th>Is Ended</th>
+            <th>Status</th>
+            <th>Athlete Unit Points</th>
+          </tr>
+        </thead>
+        <tbody id="previewBody">
+          <!-- I dati verranno inseriti qui dinamicamente -->
+        </tbody>
+      </table>
+      
+      <div class="button-group" style="margin-top: 20px; display: flex; gap: 10px; justify-content: center;">
+        <button id="confirmUpload" class="submit-button">Conferma Upload</button>
+        <button id="cancelUpload" class="back-button">Annulla</button>
+      </div>
+    </div>
+    
+    <div id="statusMessage" class="status-message" style="display: none;"></div>
+    
+    <div class="results-container" id="logContainer" style="display: none;">
+      <h2 class="results-title">Log Dettagliati</h2>
+      <div class="tab-container">
+        <div class="tab active" data-tab="contestsLog">Sfide</div>
+        <div class="tab" data-tab="entitiesLog">Entità</div>
+        <div class="tab" data-tab="errorsLog">Errori</div>
+      </div>
+      <div id="contestsLog" class="log-content active">
+        <pre id="contestsLogContent" class="log-text"></pre>
+      </div>
+      <div id="entitiesLog" class="log-content" style="display: none;">
+        <pre id="entitiesLogContent" class="log-text"></pre>
+      </div>
+      <div id="errorsLog" class="log-content" style="display: none;">
+        <pre id="errorsLogContent" class="log-text"></pre>
+      </div>
+    </div>
+    
+    <a href="conclavedashboard25.html" class="back-button">Torna alla Dashboard</a>
+  </div>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.getElementById('risultatiForm');
+      const fileInput = document.getElementById('risultatiFile');
+      const fileName = document.getElementById('fileName');
+      const previewContainer = document.getElementById('previewContainer');
+      const previewBody = document.getElementById('previewBody');
+      const confirmBtn = document.getElementById('confirmUpload');
+      const cancelBtn = document.getElementById('cancelUpload');
+      const statusMessage = document.getElementById('statusMessage');
+      // Assicurati che punti al nuovo logContainer (l'ID è lo stesso)
+      const logContainer = document.getElementById('logContainer'); 
+      const downloadLogBtn = document.getElementById('downloadLogBtn'); // <-- NUOVO RIFERIMENTO
+      let lastLogs = []; // <-- NUOVA VARIABILE per memorizzare i log
+
+      // Aggiorna il nome del file quando viene selezionato
+      fileInput.addEventListener('change', function(e) {
+        if (this.files && this.files[0]) {
+          fileName.textContent = this.files[0].name;
+        } else {
+          fileName.textContent = 'Nessun file selezionato';
+        }
+      });
+      
+      // Gestisci l'invio del form
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        if (!fileInput.files || !fileInput.files[0]) {
+          showStatus('Seleziona un file Excel prima di procedere.', 'error');
+          return;
+        }
+        
+        const file = fileInput.files[0];
+        readExcelFile(file);
+      });
+      
+      // Leggi il file Excel
+      function readExcelFile(file) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+          try {
+            const data = e.target.result;
+            const workbook = XLSX.read(data, { type: 'array' });
+            const firstSheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[firstSheetName];
+            
+            // Converti in JSON
+            excelData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+            
+            if (excelData.length < 2) {
+              showStatus('Il file Excel non contiene dati sufficienti.', 'error');
+              return;
+            }
+            
+            // Mostra l'anteprima
+            showPreview(excelData);
+          } catch (error) {
+            console.error('Errore nella lettura del file Excel:', error);
+            showStatus('Errore nella lettura del file Excel: ' + error.message, 'error');
+          }
+        };
+        
+        reader.onerror = function() {
+          showStatus('Errore nella lettura del file.', 'error');
+        };
+        
+        reader.readAsArrayBuffer(file);
+      }
+      
+      // Mostra l'anteprima dei dati
+      function showPreview(data) {
+        // Svuota la tabella di anteprima
+        previewBody.innerHTML = '';
+        
+        // Prendi le prime 5 righe di dati (o meno se ce ne sono meno)
+        const rowsToShow = Math.min(data.length - 1, 5);
+        
+        for (let i = 1; i <= rowsToShow; i++) {
+          const row = data[i];
+          const tr = document.createElement('tr');
+          
+          // Aggiungi le celle per le colonne principali
+          for (let j = 0; j < 5; j++) {
+            const td = document.createElement('td');
+            td.textContent = row[j] !== undefined ? row[j] : '';
+            tr.appendChild(td);
+          }
+          
+          previewBody.appendChild(tr);
+        }
+        
+        // Mostra il container dell'anteprima
+        previewContainer.style.display = 'block';
+        form.style.display = 'none';
+      }
+      
+      // Gestisci il pulsante di conferma
+      confirmBtn.addEventListener('click', function() {
+        if (!excelData || excelData.length < 2) {
+          showStatus('Nessun dato da caricare.', 'error');
+          return;
+        }
+        
+        uploadData(excelData);
+      });
+      
+      // Gestisci il pulsante di annullamento
+      cancelBtn.addEventListener('click', function() {
+        previewContainer.style.display = 'none';
+        form.style.display = 'block';
+        excelData = null;
+      });
+      
+      // Carica i dati al server
+      function uploadData(data) {
+        // Prepara i dati per l'invio
+        const headers = data[0];
+        const rows = data.slice(1);
+        
+        const risultati = rows.map(row => {
+          const item = {};
+          headers.forEach((header, index) => {
+            // Normalizza l'intestazione
+            const normalizedHeader = String(header).toLowerCase().trim().replace(/\s+/g, '_');
+            if (row[index] !== undefined) {
+              item[normalizedHeader] = row[index];
+            }
+          });
+          return item;
+        });
+        
+        // Mostra messaggio di caricamento nel NUOVO logContainer
+        logContainer.innerHTML = `<h3 style="color: #FFF201; font-family: 'Barlow Condensed', sans-serif; margin-top: 0; text-transform: uppercase;">--- LOG DI DEBUG DETTAGLIATO ---</h3><p>Caricamento e elaborazione in corso...</p>`;
+        logContainer.style.display = "block"; // Assicurati sia visibile
+        statusMessage.style.display = 'none'; 
+        previewContainer.style.display = 'none'; 
+
+        // Invia i dati al server
+        fetch('/fcserver/api/risultati/upload', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ risultati })
+        })
+        .then(response => response.json())
+        .then(result => {
+          // Visualizza i log dettagliati dal backend nel NUOVO logContainer
+          if (result.logs && Array.isArray(result.logs)) {
+            const formattedLogs = result.logs.map(log => {
+                // ... (formattazione log esistente) ...
+                if (log.startsWith('[ERROR]')) return `<span style="color: #FF4500; font-weight: bold;">${log}</span>`; // Rosso/Arancio
+                if (log.startsWith('[WARN]')) return `<span style="color: #FFA500;">${log}</span>`; // Arancione
+                if (log.startsWith('[INFO]')) return `<span style="color: #1E90FF;">${log}</span>`; // Blu chiaro
+                if (log.startsWith('[DB]')) return `<span style="color: #32CD32;">${log}</span>`; // Verde chiaro
+                if (log.startsWith('[DEBUG] ===')) return `<hr style="border-top: 1px dashed #ccc; margin: 5px 0;">${log}`;
+                return `<span style="color: #FFF201;">${log}</span>`; // Giallo per default/debug
+            }).join("<br>");
+            // Sovrascrivi il contenuto con i log ricevuti
+            logContainer.innerHTML = `<h3 style="color: #FFF201; font-family: 'Barlow Condensed', sans-serif; margin-top: 0; text-transform: uppercase;">--- LOG DI DEBUG DETTAGLIATO ---</h3>${formattedLogs}`;
+          } else {
+            logContainer.innerHTML = `<h3 style="color: #FFF201; font-family: 'Barlow Condensed', sans-serif; margin-top: 0; text-transform: uppercase;">--- LOG DI DEBUG DETTAGLIATO ---</h3><p style="color: orange;">Nessun log dettagliato ricevuto dal server.</p>`;
+          }
+
+          // Mostra messaggio di stato generale
+          if (result.success) {
+            showStatus(`Upload completato con successo! ${result.updated || 0} record aggiornati, ${result.created || 0} record creati, ${result.contests_updated || 0} sfide aggiornate.`, 'success');
+            previewContainer.style.display = 'none';
+            form.style.display = 'block';
+            fileInput.value = '';
+            fileName.textContent = 'Nessun file selezionato';
+          } else {
+            showStatus('Errore durante l\'upload: ' + (result.error || 'Errore sconosciuto'), 'error');
+          }
+        })
+        .catch(error => {
+          console.error('Errore durante l\'upload:', error);
+          logContainer.innerHTML = "<h3>LOG DI DEBUG:</h3><br>Errore durante la comunicazione con il server: " + error.message;
+          showStatus('Errore durante l\'upload: ' + error.message, 'error');
+        });
+      }
+      
+      // Mostra un messaggio di stato
+      function showStatus(message, type) {
+        statusMessage.textContent = message;
+        statusMessage.className = 'status-message';
+        statusMessage.classList.add('status-' + type);
+        statusMessage.style.display = 'block';
+        
+        // Nascondi il messaggio dopo 5 secondi
+        setTimeout(() => {
+          statusMessage.style.display = 'none';
+        }, 5000);
+      }
+    });
+  </script>
+</body>
+</html>
+
+<div id="detailedReport" style="display:none; margin-top:30px; background:#222; color:#fff; padding:20px; border-radius:10px;">
+  <h2>Report Dettagliato Chiusura Contest</h2>
+  <div id="reportContent"></div>
+</div>
+

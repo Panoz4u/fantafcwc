@@ -1,0 +1,47 @@
+risultati.html isprirandosi al layout di quotazioni.html deve uploadare un file excel come questo: 
+
+athlete_id event_unit_id is_ended status athlete_unit_points created_at updated_at
+
+1 1 1 0 0 4/25/25 22:11 4/25/25 22:11
+
+in cui va ad aggiornare i dati nella tabella aep controllando l'accoppiata athlete_id e event_unit_id
+
+1. se non c'è la crea
+
+2. se c'è ne aggiorna i campi.
+
+3. l'end pooint scrivilo in fcserver.js e punta a quello.
+
+4. dopo aver importato l'excel deve fare delle verifiche sul DB che ora ti spiego
+
+5. se ci sono sfide in status 2 in cui dopo l'import  c'è  almeno un fantasy_team con almeno una fantasy_team_entities (joined a aep tramite l'aep_id) che abbia quell'aep_id che ha "is_ended" = 1 , allora performa le seguenti azioni:
+
+a. cambia lo status del contest da 2 a 4
+
+b. inserisci in tabella fantasy_teams l'ft_status = 4
+
+c. inserisci nella tabella fantasy_teams i total_points a quelli della somma dei punti fatti dai componenti presenti nella tabella fantasy_team_entities che hanno quel fantasy_team_id (i punti li ottieni con la join tra aep_id di athete_eventunit_participation e aep_id di fantasy_team_entities, prendendo gi athlete_unit_points
+
+6. se ci sono sfide in status 2 o 4 in cui dopo l'import  centrambi i fantasy_team hanno tutte le  fantasy_team_entities (joined a aep tramite l'aep_id) che abbiano quell'aep_id che ha "is_ended" = 1 , allora performa le seguenti azioni:
+
+a. cambia lo status del contest da 2 (o 4) a --> 5
+
+b. inserisci in tabella fantasy_teams l'ft_status = 5
+
+c. inserisci nella tabella fantasy_teams i total_points = a quelli della somma dei punti fatti dai componenti presenti nella tabella fantasy_team_entities che hanno quel fantasy_team_id
+
+d. in ft_result metti
+--> 1 se i total_points di questo fantasy_team sono > di quello del suo opponent 
+--> 2 se i total_points di questo fantasy_team sono < di quello del suo opponent 
+--> 0 se i total_points di questo fantasy_team sono =a quello del suo opponent 
+
+e. in ft_teex_won metti 
+--> (stake del contest )- (total_cost del fantasy_team * multiply del contest ) se ft_result=1
+--> - (total_cost del fantasy_team * multiply del contest ) se ft_result=2
+--> (stake del contest /2) - (total_cost del fantasy_team * multiply del contest ) se ft_result=0
+
+f. trasferisci lo stake della sfida sommandolo al teex_balance dello user che ha fatto più "total_points", se entrambi gli user hanno fatto lo stesso punteggio allora trasferisci stake/2 ad entrambi 
+
+
+
+

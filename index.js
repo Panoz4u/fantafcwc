@@ -120,8 +120,8 @@ const contestsRoutes = require("./contests"); // Importa il nuovo modulo contest
 app.use("/uploadResults", uploadResultsRoute);
 app.use("/", athletesRoutes);
 app.use("/contests", contestsRoutes);
-app.use("/confirm-squad", contestsRoutes);
-app.use("/contest-details", contestsRoutes);  // Assicurati che questa riga sia presente
+//app.use("/confirm-squad", contestsRoutes);
+//app.use("/contest-details", contestsRoutes);  // Assicurati che questa riga sia presente
 // Rimuovi queste righe duplicate
 // app.use("/confirm-squad", contestsRoutes);
 // app.use("/contest-details", contestsRoutes);
@@ -133,12 +133,12 @@ app.use("/contest-details", contestsRoutes);  // Assicurati che questa riga sia 
 // or move it into contests.js under the path /user-landing-info
 app.get("/user-landing-info", authenticateToken, (req, res) => {
   const userId = req.user.userId;
-  
+
   // Verifica che l'ID utente sia presente
   if (!userId) {
     return res.status(400).json({ error: "ID utente mancante nel token" });
   }
-  
+
   const sqlUser = "SELECT user_id, username, teex_balance, avatar, color FROM users WHERE user_id = ?";
   pool.query(sqlUser, [userId], (err, ur) => {
     if (err) return res.status(500).json({ error: "DB error user" });
@@ -166,14 +166,19 @@ app.get("/user-landing-info", authenticateToken, (req, res) => {
         console.error("Errore nella query contests:", er2);
         return res.status(500).json({ error: "DB error contests" });
       }
-      
+
       const active = [];
       const completed = [];
       contests.forEach(r => {
+        // Qui la logica per calcolare status_display se necessario,
+        // o assicurarsi che venga fatto come prima.
+        // Il codice fornito in precedenza per contests.js aveva già questa logica,
+        // quindi potrebbe essere necessario copiarla qui se non c'è già.
+        // Assumendo che la logica per active/completed sia sufficiente per ora:
         if(r.status === 5) completed.push(r);
         else active.push(r);
       });
-      
+
       res.json({ user: userData, active, completed });
     });
   });

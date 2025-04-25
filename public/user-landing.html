@@ -221,6 +221,30 @@
       // Filter out contests with status 0 (created)
       const filteredList = list.filter(contest => contest.status !== 0);
       
+      // Aggiungo il console log per le sfide in status 5
+      const status5Contests = filteredList.filter(contest => contest.status == 5);
+      console.log(`Numero di sfide in status 5: ${status5Contests.length}`);
+      
+      // Log dei dettagli per ogni sfida in status 5
+      status5Contests.forEach(contest => {
+        // Estrai i dati dai fantasy_teams
+        if (contest.fantasy_teams && contest.fantasy_teams.length > 0) {
+          contest.fantasy_teams.forEach(team => {
+            const myPoints = parseFloat(team.total_points || 0);
+            const myResult = team.result || 0;
+            const myTeexWon = parseFloat(team.teex_won || 0);
+            
+            console.log({
+              contestId: contest.contest_id,
+              userId: team.user_id,
+              myPoints: myPoints,
+              myResult: myResult,
+              myTeexWon: myTeexWon
+            });
+          });
+        }
+      });
+      
       if (!filteredList.length) {
         // Replace "Nessuna sfida" with a welcome message and animated arrows
         container.innerHTML = `
@@ -461,36 +485,44 @@
             contest.fantasy_teams.forEach(team => {
               if (team.user_id == userId) {
                 myPoints = parseFloat(team.total_points || 0);
-                myResult = parseInt(team.ft_result || 0);
+                myResult = parseFloat(team.ft_result || 0);
                 myTeexWon = parseFloat(team.ft_teex_won || 0);
               } else {
                 oppPoints = parseFloat(team.total_points || 0);
               }
             });
+          } else {
+            // Fallback se fantasy_teams non è disponibile
+            if (iAmOwner) {
+              myPoints = parseFloat(contest.owner_points || 0);
+              myResult = parseFloat(contest.owner_result || 0);
+              myTeexWon = parseFloat(contest.owner_teex_won || 0);
+              oppPoints = parseFloat(contest.opponent_points || 0);
+            } else {
+              myPoints = parseFloat(contest.opponent_points || 0);
+              myResult = parseFloat(contest.opponent_result || 0);
+              myTeexWon = parseFloat(contest.opponent_teex_won || 0);
+              oppPoints = parseFloat(contest.owner_points || 0);
+            }
           }
           
+          // Formatta i punteggi per la visualizzazione
           const myPointsStr = myPoints.toFixed(1);
           const oppPointsStr = oppPoints.toFixed(1);
           
           const [myPointsInt, myPointsDec = "0"] = myPointsStr.split('.');
           const [oppPointsInt, oppPointsDec = "0"] = oppPointsStr.split('.');
           
-          // Determina lo stile del badge in base al risultato
-          let badgeClass = "status-badge-live";
-          let badgeText = "";
+          // Determina la classe del badge in base al valore di ft_teex_won
+          let badgeClass = "status-badge-draw";
+          let badgeText = "DRAW";
           
-          if (myResult === 1) {
-            // Vittoria
-            badgeClass = "status-badge-base status-badge-win"; // Sfondo verde
+          if (myTeexWon > 0) {
+            badgeClass = "status-badge-win";
             badgeText = `+${myTeexWon.toFixed(1)}`;
-          } else if (myResult === -1) {
-            // Sconfitta
-            badgeClass = "status-badge-base status-badge-loss"; // Sfondo fucsia
-            badgeText = `${myTeexWon.toFixed(1)}`; // Il valore è già negativo
-          } else {
-            // Pareggio
-            badgeClass = "status-badge-base status-badge-draw"; // Sfondo arancione
-            badgeText = myTeexWon >= 0 ? `+${myTeexWon.toFixed(1)}` : `${myTeexWon.toFixed(1)}`;
+          } else if (myTeexWon < 0) {
+            badgeClass = "status-badge-loss";
+            badgeText = "LOSE";
           }
           
           contestCard.innerHTML = `
@@ -510,7 +542,7 @@
                 <div class="teex_spent left-teex">${myCost}</div>
                 <div class="teex_spent right-teex">${oppCost}</div>
               </div>
-              <div class="${badgeClass}">${badgeText}</div>
+              <div class="status-badge-base ${badgeClass}">${badgeText}</div>
               ${contest.multiply && parseInt(contest.multiply) > 1 ? `<div class="multiply-contest-mini">${Math.floor(contest.multiply)}</div>` : ''}
             </div>
           `;

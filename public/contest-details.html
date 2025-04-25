@@ -327,20 +327,24 @@
       // Determina se il current user è owner
       const iAmOwner = (parseInt(currentUserId) === parseInt(contestData.owner_id));
       
-      let myName, myAvatar, myCost, oppName, oppAvatar, oppCost;
+      let myName, myAvatar, myCost, oppName, oppAvatar, oppCost, myColor, oppColor;
       if (iAmOwner) {
         myName = contestData.owner_name;
         myAvatar = contestData.owner_avatar;
+        myColor = contestData.owner_color || "ff5500"; // Valore predefinito se non esiste
         myCost = contestData.owner_cost || "-";
         oppName = contestData.opponent_name;
         oppAvatar = contestData.opponent_avatar;
+        oppColor = contestData.opponent_color || "ff5500"; // Valore predefinito se non esiste
         oppCost = contestData.opponent_cost || "-";
       } else {
         myName = contestData.opponent_name;
         myAvatar = contestData.opponent_avatar;
+        myColor = contestData.opponent_color || "ff5500"; // Valore predefinito se non esiste
         myCost = contestData.opponent_cost || "-";
         oppName = contestData.owner_name;
         oppAvatar = contestData.owner_avatar;
+        oppColor = contestData.owner_color || "ff5500"; // Valore predefinito se non esiste
         oppCost = contestData.owner_cost || "-";
       }
       
@@ -385,14 +389,43 @@
         `;
       } else if (contestData.status == 2) {
         // Layout per contest in stato "ready"
+        
+        // Ottieni i punteggi dai total_points dei fantasy_teams (anche se potrebbero essere 0)
+        let leftScore = 0;
+        let rightScore = 0;
+        
+        // Estrai i dati dai fantasy_teams se disponibili
+        if (contestData.fantasy_teams && contestData.fantasy_teams.length > 0) {
+          contestData.fantasy_teams.forEach(team => {
+            if ((iAmOwner && team.user_id == contestData.owner_id) || 
+                (!iAmOwner && team.user_id == contestData.opponent_id)) {
+              leftScore = parseFloat(team.total_points || 0);
+            } else {
+              rightScore = parseFloat(team.total_points || 0);
+            }
+          });
+        }
+        
+        const leftScoreStr = leftScore.toFixed(1);
+        const rightScoreStr = rightScore.toFixed(1);
+        
+        const [leftScoreInt, leftScoreDec = "0"] = leftScoreStr.split('.');
+        const [rightScoreInt, rightScoreDec = "0"] = rightScoreStr.split('.');
+        
         contestCard.innerHTML = `
           <div class="contest-container cc-header">
             <div class="contest-bar">
-              <img src="${getAvatarSrc(myAvatar)}" alt="${myName}" class="player-avatar-contest left-avatar">
+              <img src="${getAvatarSrc(myAvatar, myName, myColor)}" alt="${myName}" class="player-avatar-contest left-avatar">
               <div class="triletter_contest left-name">${myName.substring(0, 3)}</div>
-              <div class="result_bold">VS</div>
+              <div style="position: absolute; top: calc(50% - 14px); left: 50%; transform: translate(-50%, -50%); display: flex; align-items: baseline;">
+                <span class="result_bold" style="position: static; transform: none; color: #fff">${leftScoreInt}</span>
+                <span class="win_index_perc" style="color: #fff">.${leftScoreDec}</span>
+                <span style="margin: 0 5px; color: white; font-size: 20px;"> </span>
+                <span class="result_bold" style="position: static; transform: none; color: #fff">${rightScoreInt}</span>
+                <span class="win_index_perc" style="color: #fff">.${rightScoreDec}</span>
+              </div>
               <div class="triletter_contest right-name">${oppName.substring(0, 3)}</div>
-              <img src="${getAvatarSrc(oppAvatar)}" alt="${oppName}" class="player-avatar-contest right-avatar">
+              <img src="${getAvatarSrc(oppAvatar, oppName, oppColor)}" alt="${oppName}" class="player-avatar-contest right-avatar">
               <div class="teex_spent left-teex">${myCost}</div>
               <div class="teex_spent right-teex">${oppCost}</div>
             </div>
@@ -449,11 +482,11 @@
         let oppPoints = 0;
         let myResult = 0;
         let myTeexWon = 0;
-        
+
         // Estrai i dati dai fantasy_teams
         if (contestData.fantasy_teams && contestData.fantasy_teams.length > 0) {
           contestData.fantasy_teams.forEach(team => {
-            if ((iAmOwner && team.user_id == contestData.owner_id) || 
+            if ((iAmOwner && team.user_id == contestData.owner_id) ||
                 (!iAmOwner && team.user_id == contestData.opponent_id)) {
               myPoints = parseFloat(team.total_points || 0);
               myResult = parseInt(team.ft_result || 0);
@@ -463,66 +496,49 @@
             }
           });
         }
-        
+
         const myPointsStr = myPoints.toFixed(1);
         const oppPointsStr = oppPoints.toFixed(1);
-        
+
         const [myPointsInt, myPointsDec = "0"] = myPointsStr.split('.');
         const [oppPointsInt, oppPointsDec = "0"] = oppPointsStr.split('.');
-        
-        // Determina lo stile del badge in base al risultato
-        let badgeClass = "status-badge-live";
-        let badgeText = "";
-        
-        if (myResult === 1) {
-          // Vittoria
-          badgeClass = "status-badge-base status-badge-win"; // Sfondo verde
-          badgeText = `+${myTeexWon.toFixed(1)}`;
-        } else if (myResult === -1) {
-          // Sconfitta
-          badgeClass = "status-badge-base status-badge-loss"; // Sfondo fucsia
-          badgeText = `${myTeexWon.toFixed(1)}`; // Il valore è già negativo
-        } else {
-          // Pareggio
-          badgeClass = "status-badge-base status-badge-draw"; // Sfondo arancione
-          badgeText = myTeexWon >= 0 ? `+${myTeexWon.toFixed(1)}` : `${myTeexWon.toFixed(1)}`;
+
+        // Determina lo stile del badge in base al valore di ft_teex_won
+        let badgeClass = "status-badge-draw";
+        if (myTeexWon > 0) {
+          badgeClass = "status-badge-win";
+        } else if (myTeexWon < 0) {
+          badgeClass = "status-badge-loss";
         }
-        
-        // Esempio di modifica per una chiamata a getAvatarSrc
+
+        // Formatta il valore di ft_teex_won per la visualizzazione
+        const teexWonDisplay = myTeexWon > 0 ? "+" + myTeexWon.toFixed(1) : myTeexWon.toFixed(1);
+
+        // **MODIFICA QUI**: Usa la stessa struttura HTML di status 4 per visualizzare i punteggi
         contestCard.innerHTML = `
           <div class="contest-container cc-header">
             <div class="contest-bar">
               <img src="${getAvatarSrc(myAvatar, myName, myColor)}" alt="${myName}" class="player-avatar-contest left-avatar">
               <div class="triletter_contest left-name">${myName.substring(0, 3)}</div>
-              <div class="result_bold">VS</div>
+              <div style="position: absolute; top: calc(50% - 14px); left: 50%; transform: translate(-50%, -50%); display: flex; align-items: baseline;">
+                <span class="result_bold" style="position: static; transform: none; color: #fff">${myPointsInt}</span>
+                <span class="win_index_perc" style="color: #fff">.${myPointsDec}</span>
+                <span style="margin: 0 5px; color: white; font-size: 20px;"> </span>
+                <span class="result_bold" style="position: static; transform: none; color: #fff">${oppPointsInt}</span>
+                <span class="win_index_perc" style="color: #fff">.${oppPointsDec}</span>
+              </div>
               <div class="triletter_contest right-name">${oppName.substring(0, 3)}</div>
               <img src="${getAvatarSrc(oppAvatar, oppName, oppColor)}" alt="${oppName}" class="player-avatar-contest right-avatar">
               <div class="teex_spent left-teex">${myCost}</div>
               <div class="teex_spent right-teex">${oppCost}</div>
             </div>
-            <div class="status-badge-base status-badge-ready">${contestData.stake || ''}</div>
-            ${contestData.multiply && parseInt(contestData.multiply) > 1 ? `<div class="multiply-contest-mini">${Math.floor(contestData.multiply)}</div>` : ''}
-          </div>
-        `;
-      } else {
-        // Layout di default per altri stati
-        contestCard.innerHTML = `
-          <div class="contest-container cc-header">
-            <div class="contest-bar">
-              <img src="${getAvatarSrc(myAvatar)}" alt="${myName}" class="player-avatar-contest left-avatar">
-              <div class="triletter_contest left-name">${myName.substring(0, 3)}</div>
-              <div class="result_bold">VS</div>
-              <div class="triletter_contest right-name">${oppName.substring(0, 3)}</div>
-              <img src="${getAvatarSrc(oppAvatar)}" alt="${oppName}" class="player-avatar-contest right-avatar">
-              <div class="teex_spent left-teex">${myCost}</div>
-              <div class="teex_spent right-teex">${oppCost}</div>
-            </div>
-            <div class="status-badge-base status-badge">${contestData.status_display || 'READY'}</div>
+            <div class="status-badge-base ${badgeClass}">${teexWonDisplay}</div>
             ${contestData.multiply && parseInt(contestData.multiply) > 1 ? `<div class="multiply-contest-mini">${Math.floor(contestData.multiply)}</div>` : ''}
           </div>
         `;
       }
-      
+
+      // Aggiungi la card al container
       container.appendChild(contestCard);
     }
 

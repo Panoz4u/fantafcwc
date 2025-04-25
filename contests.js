@@ -35,10 +35,10 @@ router.post("/", (req, res) => {
   });
 });
 
-/* GET /user-landing-info - Modificato per usare autenticazione JWT */
-router.get("/user-landing-info", authenticateToken, (req, res) => {
+/* GET /landing-data - Modificato per usare autenticazione JWT (precedentemente /user-landing-info) */
+router.get("/landing-data", authenticateToken, (req, res) => {
   const userId = req.user.userId; // Ottieni l'ID utente dal token JWT
-  
+
   // Verifica che l'ID utente sia presente
   if (!userId) {
     return res.status(400).json({ error: "ID utente mancante nel token" });
