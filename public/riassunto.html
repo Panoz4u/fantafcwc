@@ -57,6 +57,9 @@
         if (contestDataStr) {
           const contestData = JSON.parse(contestDataStr);
           
+          // Aggiungi questo log per debug
+          console.log("Dati contest completi:", contestData);
+          
           // Verifica che i dati non siano troppo vecchi (opzionale, per sicurezza)
           const now = new Date().getTime();
           const dataAge = now - contestData.timestamp;

@@ -9,6 +9,8 @@ const bcrypt = require('bcrypt'); // Aggiungi questa riga se vuoi gestire passwo
 app.use(express.json());
 app.use(express.static("public"));
 
+
+
 // Chiave segreta per i JWT (meglio metterla in .env)
 const JWT_SECRET = process.env.JWT_SECRET || 'chiave_segreta_molto_sicura'; // Aggiungi questa riga
 
@@ -35,6 +37,71 @@ const authenticateToken = (req, res, next) => {
 // Fallback su index.html se nessun'altra route viene trovata
 const uploadResultsRoute = require("./uploadResults"); // Assicurati che il percorso sia corretto
 app.use("/uploadResults", uploadResultsRoute);
+
+
+const athletesRoutes = require("./server/routes/athletes");
+const contestsRoutes = require("./contests"); // Importa il nuovo modulo contests
+
+// Usa le routes
+app.use("/uploadResults", uploadResultsRoute);
+app.use("/", athletesRoutes);
+app.use("/contests", contestsRoutes); // Monta qui tutte le route definite in contests.js
+// Rimuovi queste righe duplicate
+// app.use("/confirm-squad", contestsRoutes);
+// app.use("/contest-details", contestsRoutes);
+
+// Remove this line if it still exists (it was commented out already)
+// app.use("/user-landing-info", authenticateToken, contestsRoutes);
+
+// Keep the direct route handler for /user-landing-info if needed,
+// or move it into contests.js under the path /user-landing-info
+app.get("/user-landing-info", authenticateToken, (req, res) => {
+  const userId = req.user.userId;
+  
+  // Verifica che l'ID utente sia presente
+  if (!userId) {
+    return res.status(400).json({ error: "ID utente mancante nel token" });
+  }
+  
+  const sqlUser = "SELECT user_id, username, teex_balance, avatar, color FROM users WHERE user_id = ?";
+  pool.query(sqlUser, [userId], (err, ur) => {
+    if (err) return res.status(500).json({ error: "DB error user" });
+    if (!ur.length) return res.status(404).json({ error: "User not found" });
+    const userData = ur[0];
+    const sqlC = `
+      SELECT c.contest_id, c.status, cs.status_name, c.stake,
+             c.owner_user_id AS owner_id, ow.username AS owner_name, ow.avatar AS owner_avatar, ow.color AS owner_color,
+             ft_o.total_cost AS owner_cost, ft_o.fantasy_team_id AS owner_team_id, 
+             ft_o.total_points AS owner_points, ft_o.ft_result AS owner_result, ft_o.ft_teex_won AS owner_teex_won,
+             c.opponent_user_id AS opponent_id, op.username AS opponent_name, op.avatar AS opponent_avatar, op.color AS opponent_color,
+             ft_p.total_cost AS opponent_cost, ft_p.fantasy_team_id AS opponent_team_id,
+             ft_p.total_points AS opponent_points, ft_p.ft_result AS opponent_result, ft_p.ft_teex_won AS opponent_teex_won,
+             c.event_unit_id, c.multiply
+      FROM contests c
+      JOIN contests_status cs ON c.status = cs.status_id
+      JOIN users ow ON c.owner_user_id = ow.user_id
+      JOIN users op ON c.opponent_user_id = op.user_id
+      LEFT JOIN fantasy_teams ft_o ON (ft_o.contest_id = c.contest_id AND ft_o.user_id = c.owner_user_id)
+      LEFT JOIN fantasy_teams ft_p ON (ft_p.contest_id = c.contest_id AND ft_p.user_id = c.opponent_user_id)
+      WHERE c.owner_user_id = ? OR c.opponent_user_id = ?
+    `;
+    pool.query(sqlC, [userId, userId], (er2, contests) => {
+      if (er2) {
+        console.error("Errore nella query contests:", er2);
+        return res.status(500).json({ error: "DB error contests" });
+      }
+      
+      const active = [];
+      const completed = [];
+      contests.forEach(r => {
+        if(r.status === 5) completed.push(r);
+        else active.push(r);
+      });
+      
+      res.json({ user: userData, active, completed });
+    });
+  });
+});
 
 /* 1) Nuovo endpoint per generare token JWT */
 app.post("/generate-token", (req, res) => {
@@ -201,463 +268,9 @@ app.post("/users", (req, res) => {
     });
   });
 });
-/* 2) POST /contests (creare una nuova sfida) */
-app.post("/contests", (req, res) => {
-  const { owner, opponent, event_unit_id, multiply } = req.body;  // Added multiply to destructuring
-  if (!owner || !opponent) return res.status(400).json({ error: "Owner or Opponent missing" });
-    // Set default multiply value to 1 if not specified
-  const multiplyValue = multiply || 1;
-    // Updated query to insert multiply field
-  const sql = `
-    INSERT INTO contests (owner_user_id, opponent_user_id, contest_type, stake, status, created_at, updated_at, event_unit_id, multiply)
-    VALUES (?, ?, 'head_to_head', 0, 0, NOW(), NOW(), ?)
-  `;
-  pool.query(sql, [owner, opponent, event_unit_id, multiplyValue], (er, rs) => {
-    if (er) {
-      console.error("Error creating contest", er);
-      return res.status(500).json({ error: "DB error creating contest" });
-    }
-    res.json({ message: "Contest creato con successo", contestId: rs.insertId });
-  });
-});
-/* --------------------------- */
-/* 3) GET /event-players?event=30 */
-app.get("/event-players", (req, res) => {
-  const eventUnitId = req.query.event_unit_id;
-  if (!eventUnitId) return res.status(400).json({ error: "Missing event unit ID" });
-    const sql = `
-    SELECT aep.athlete_id, aep.event_unit_cost, aep.event_unit_id, a.athlete_name, a.position, a.athlete_shortname, a.team_id, a.picture,
-           m.home_team, m.away_team, m.status AS match_status,
-           ht.team_3letter AS home_team_code, at.team_3letter AS away_team_code,
-           ht.team_name AS home_team_name, at.team_name AS away_team_name,
-           t.team_3letter AS player_team_code, t.team_name AS player_team_name,
-           m.match_id
-    FROM athlete_eventunit_participation aep
-    JOIN athletes a ON aep.athlete_id = a.athlete_id
-    LEFT JOIN teams t ON a.team_id = t.team_id
-    LEFT JOIN matches m ON aep.event_unit_id = m.event_unit_id AND (m.home_team = a.team_id OR m.away_team = a.team_id)
-    LEFT JOIN teams ht ON m.home_team = ht.team_id
-    LEFT JOIN teams at ON m.away_team = at.team_id
-    WHERE aep.event_unit_id = ? AND aep.status = 1
-  `;
-  pool.query(sql, [eId], (er, rows) => {
-    if (er) {
-      console.error("DB error /event-players", er);
-      return res.status(500).json({ error: "DB error /event-players" });
-    }
-    res.json(rows);
-  });
-});
-/* Nuovo endpoint per ottenere tutti gli atleti con status = 1 */
-app.get("/all-active-athletes", (req, res) => {
-  const sql = `
-    SELECT aep.athlete_id, aep.event_unit_cost, aep.event_unit_id, a.athlete_name, a.position, a.athlete_shortname, a.team_id, a.picture,
-           m.home_team, m.away_team, m.status AS match_status,
-           ht.team_3letter AS home_team_code, at.team_3letter AS away_team_code,
-           ht.team_name AS home_team_name, at.team_name AS away_team_name,
-           t.team_3letter AS player_team_code, t.team_name AS player_team_name,
-           m.match_id
-    FROM athlete_eventunit_participation aep
-    JOIN athletes a ON aep.athlete_id = a.athlete_id
-    LEFT JOIN teams t ON a.team_id = t.team_id
-    LEFT JOIN matches m ON aep.event_unit_id = m.event_unit_id AND (m.home_team = a.team_id OR m.away_team = a.team_id)
-    LEFT JOIN teams ht ON m.home_team = ht.team_id
-    LEFT JOIN teams at ON m.away_team = at.team_id
-    WHERE aep.status = 1
-  `;
-    pool.query(sql, (er, rows) => {
-    if (er) {
-      console.error("DB error /all-active-athletes", er);
-      return res.status(500).json({ error: "DB error /all-active-athletes" });
-    }
-    res.json(rows);
-  });
-});
-/* --------------------------- */
-/* 4) GET /user-landing-info - Modificato per usare autenticazione JWT */
-app.get("/user-landing-info", authenticateToken, (req, res) => {
-  const userId = req.user.userId; // Ottieni l'ID utente dal token JWT
-  
-  // Verifica che l'ID utente sia presente
-  if (!userId) {
-    return res.status(400).json({ error: "ID utente mancante nel token" });
-  }
-  
-  const sqlUser = "SELECT user_id, username, teex_balance, avatar, color FROM users WHERE user_id = ?";
-  pool.query(sqlUser, [userId], (err, ur) => {
-    if (err) return res.status(500).json({ error: "DB error user" });
-    if (!ur.length) return res.status(404).json({ error: "User not found" });
-    const userData = ur[0];
-    const sqlC = `
-      SELECT c.contest_id, c.status, cs.status_name, c.stake,
-             c.owner_user_id AS owner_id, ow.username AS owner_name, ow.avatar AS owner_avatar, ow.color AS owner_color,
-             ft_o.total_cost AS owner_cost, ft_o.fantasy_team_id AS owner_team_id, 
-             ft_o.total_points AS owner_points, ft_o.ft_result AS owner_result, ft_o.ft_teex_won AS owner_teex_won,
-             c.opponent_user_id AS opponent_id, op.username AS opponent_name, op.avatar AS opponent_avatar, op.color AS opponent_color,
-             ft_p.total_cost AS opponent_cost, ft_p.fantasy_team_id AS opponent_team_id,
-             ft_p.total_points AS opponent_points, ft_p.ft_result AS opponent_result, ft_p.ft_teex_won AS opponent_teex_won,
-             c.event_unit_id, c.multiply
-      FROM contests c
-      JOIN contests_status cs ON c.status = cs.status_id
-      JOIN users ow ON c.owner_user_id = ow.user_id
-      JOIN users op ON c.opponent_user_id = op.user_id
-      LEFT JOIN fantasy_teams ft_o ON (ft_o.contest_id = c.contest_id AND ft_o.user_id = c.owner_user_id)
-      LEFT JOIN fantasy_teams ft_p ON (ft_p.contest_id = c.contest_id AND ft_p.user_id = c.opponent_user_id)
-      WHERE c.owner_user_id = ? OR c.opponent_user_id = ?
-    `;
-    pool.query(sqlC, [userId, userId], (er2, contests) => {
-      if (er2) {
-        console.error("Errore nella query contests:", er2);
-        return res.status(500).json({ error: "DB error contests" });
-      }
-      // Per ogni contest, se lo status è 4 e almeno un atleta ha is_ended=1, computiamo il risultato parziale.
-      let pending = contests.length;
-      if (pending === 0) {
-        return res.json({ user: userData, active: [], completed: [] });
-      }
-      contests.forEach((contest, idx) => {
-        // Aggiungiamo i dati dei fantasy teams per i contest completati (status 5)
-        if (contest.status == 5) {
-          // Prepara i dati dei fantasy teams per il frontend
-          contest.fantasy_teams = [];
-           // Aggiungi il team dell'owner
-          if (contest.owner_team_id) {
-            contest.fantasy_teams.push({
-              user_id: contest.owner_id,
-              fantasy_team_id: contest.owner_team_id,
-              total_points: contest.owner_points,
-              ft_result: contest.owner_result,
-              ft_teex_won: contest.owner_teex_won
-            });
-          }
-           // Aggiungi il team dell'opponent
-          if (contest.opponent_team_id) {
-            contest.fantasy_teams.push({
-              user_id: contest.opponent_id,
-              fantasy_team_id: contest.opponent_team_id,
-              total_points: contest.opponent_points,
-              ft_result: contest.opponent_result,
-              ft_teex_won: contest.opponent_teex_won
-            });
-          }
-          checkDone();
-        }
-        else if (contest.status == 4) {
-          // Eseguiamo la query per calcolare il risultato parziale
-          const sqlTeam = `
-            SELECT fte.*, fte.aep_id, a.athlete_shortname, a.picture, a.position, a.team_id, aep.event_unit_id  AS event_unit_id, aep.is_ended,
-                   COALESCE(ROUND(aep.athlete_unit_points, 1), 0) AS athlete_points,
-                   m.home_team, m.away_team,
-                   ht.team_3letter AS home_team_code, at.team_3letter AS away_team_code,
-                   ht.team_name AS home_team_name, at.team_name AS away_team_name,
-                   t.team_3letter AS player_team_code, t.team_name AS player_team_name
-            FROM fantasy_team_entities fte
-            JOIN fantasy_teams ft ON fte.fantasy_team_id = ft.fantasy_team_id
-            JOIN athletes a ON fte.athlete_id = a.athlete_id
-            JOIN teams t ON a.team_id = t.team_id
-            LEFT JOIN athlete_eventunit_participation aep 
-                   ON a.athlete_id = aep.athlete_id AND aep.event_unit_id = ?
-            LEFT JOIN matches m ON aep.event_unit_id = m.event_unit_id AND (m.home_team = a.team_id OR m.away_team = a.team_id)
-            LEFT JOIN teams ht ON m.home_team = ht.team_id
-            LEFT JOIN teams at ON m.away_team = at.team_id
-            WHERE ft.contest_id = ? AND ft.user_id = ?
-          `;
-          console.log("Eseguo query team owner per contest:", contest.contest_id, "event_unit:", contest.event_unit_id, "owner_id:", contest.owner_id);
-          const eventUnit = contest.event_unit_id || 0;
-          pool.query(sqlTeam, [eventUnit, contest.contest_id, contest.owner_id], (err2, owRows) => {
-            if (err2) {
-              console.error("Error in owner team query (user-landing):", err2);
-              contest.status_display = contest.status_name;
-              checkDone();
-            } else {
-              pool.query(sqlTeam, [eventUnit, contest.contest_id, contest.opponent_id], (err3, oppRows) => {
-                if (err3) {
-                  console.error("Error in opponent team query (user-landing):", err3);
-                  contest.status_display = contest.status_name;
-                } else {
-                  let partialEnded = false;
-                  owRows.forEach(r => { if(r.is_ended == 1) partialEnded = true; });
-                  oppRows.forEach(r => { if(r.is_ended == 1) partialEnded = true; });
-                  if (partialEnded) {
-                    let sumOwner = owRows.reduce((acc, r) => acc + parseFloat(r.athlete_points || 0), 0);
-                    let sumOpponent = oppRows.reduce((acc, r) => acc + parseFloat(r.athlete_points || 0), 0);
-                    // In user-landing, il current user è quello passato in query
-                    if (parseInt(userId) === parseInt(contest.owner_id)) {
-                      contest.status_display = `${sumOwner.toFixed(1)}-${sumOpponent.toFixed(1)}`;
-                    } else {
-                      contest.status_display = `${sumOpponent.toFixed(1)}-${sumOwner.toFixed(1)}`;
-                    }
-                  } else {
-                    contest.status_display = contest.status_name;
-                  }
-                }
-                checkDone();
-              });
-            }
-          });
-        } else {
-          contest.status_display = contest.status_name;
-          checkDone();
-        }
-      });
-      function checkDone() {
-        pending--;
-        if (pending === 0) {
-          const active = [];
-          const completed = [];
-          contests.forEach(r => {
-            if(r.status === 5) completed.push(r);
-            else active.push(r);
-          });
-          res.json({ user: userData, active, completed });
-        }
-      }
-    });
-  });
-});
-/* --------------------------- */
-/* 5) GET /contest-details?contest=XX */
-app.get("/contest-details", (req, res) => {
-  const cId = req.query.contest;
-  const currentUser = req.query.user;
-  if (!cId) return res.status(400).json({ error: "Missing contest param" });
-  const sql = `
-    SELECT c.contest_id, c.status, cs.status_name, c.stake,
-           c.owner_user_id AS owner_id, ow.username AS owner_name, ow.avatar AS owner_avatar,
-           ft_o.total_cost AS owner_cost, ft_o.fantasy_team_id AS owner_team_id, 
-           ft_o.total_points AS owner_points, ft_o.ft_result AS owner_result, ft_o.ft_teex_won AS owner_teex_won,
-           c.opponent_user_id AS opponent_id, op.username AS opponent_name, op.avatar AS opponent_avatar,
-           ft_p.total_cost AS opponent_cost, ft_p.fantasy_team_id AS opponent_team_id,
-           ft_p.total_points AS opponent_points, ft_p.ft_result AS opponent_result, ft_p.ft_teex_won AS opponent_teex_won,
-           c.event_unit_id, c.multiply
-    FROM contests c
-    JOIN contests_status cs ON c.status = cs.status_id
-    JOIN users ow ON c.owner_user_id = ow.user_id
-    JOIN users op ON c.opponent_user_id = op.user_id
-    LEFT JOIN fantasy_teams ft_o ON (ft_o.contest_id = c.contest_id AND ft_o.user_id = c.owner_user_id)
-    LEFT JOIN fantasy_teams ft_p ON (ft_p.contest_id = c.contest_id AND ft_p.user_id = c.opponent_user_id)
-    WHERE c.contest_id = ?
-  `;
-  pool.query(sql, [cId], (er, rows) => {
-    if (er) return res.status(500).json({ error: "DB error /contest-details" });
-    if (!rows.length) return res.status(404).json({ error: "Contest non trovato" });
-    const contestData = rows[0];
-    // Prepara i dati dei fantasy teams per i contest completati (status 5)
-    if (contestData.status == 5) {
-      contestData.fantasy_teams = [];
-      // Aggiungi il team dell'owner
-      if (contestData.owner_team_id) {
-        contestData.fantasy_teams.push({
-          user_id: contestData.owner_id,
-          fantasy_team_id: contestData.owner_team_id,
-          total_points: contestData.owner_points,
-          ft_result: contestData.owner_result,
-          ft_teex_won: contestData.owner_teex_won
-        });
-      }
-      // Aggiungi il team dell'opponent
-      if (contestData.opponent_team_id) {
-        contestData.fantasy_teams.push({
-          user_id: contestData.opponent_id,
-          fantasy_team_id: contestData.opponent_team_id,
-          total_points: contestData.opponent_points,
-          ft_result: contestData.opponent_result,
-          ft_teex_won: contestData.opponent_teex_won
-        });
-      }
-    }
-    const sqlTeam = `
-      SELECT fte.*, fte.aep_id, a.athlete_shortname, a.picture, a.position, a.team_id, aep.event_unit_id  AS event_unit_id, aep.is_ended,
-             COALESCE(ROUND(aep.athlete_unit_points, 1), 0) AS athlete_points,
-             m.home_team, m.away_team,
-             ht.team_3letter AS home_team_code, at.team_3letter AS away_team_code,
-             ht.team_name AS home_team_name, at.team_name AS away_team_name,
-             t.team_3letter AS player_team_code, t.team_name AS player_team_name
-      FROM fantasy_team_entities fte
-      JOIN fantasy_teams ft ON fte.fantasy_team_id = ft.fantasy_team_id
-      JOIN athletes a ON fte.athlete_id = a.athlete_id
-      JOIN teams t ON a.team_id = t.team_id
-      LEFT JOIN athlete_eventunit_participation aep 
-             ON a.athlete_id = aep.athlete_id AND aep.event_unit_id = ?
-      LEFT JOIN matches m ON aep.event_unit_id = m.event_unit_id AND (m.home_team = a.team_id OR m.away_team = a.team_id)
-      LEFT JOIN teams ht ON m.home_team = ht.team_id
-      LEFT JOIN teams at ON m.away_team = at.team_id
-      WHERE ft.contest_id = ? AND ft.user_id = ?
-    `;
-    const eventUnit = contestData.event_unit_id || 0;
-    console.log(`OWNER query - contest_id: ${contestData.contest_id}, user: ${contestData.owner_id}, event_unit: ${eventUnit}`);
-    console.log(`OPPONENT query - contest_id: ${contestData.contest_id}, user: ${contestData.opponent_id}, event_unit: ${eventUnit}`);
-    pool.query(sqlTeam, [eventUnit, cId, contestData.owner_id], (er2, owRows) => {
-      if (er2) {
-        console.error("Error in owner team query:", er2);
-        return res.status(500).json({ error: "DB error owner team" });
-      }
-      pool.query(sqlTeam, [eventUnit, cId, contestData.opponent_id], (er3, oppRows) => {
-        if (er3) {
-          console.error("Error in opponent team query:", er3);
-          return res.status(500).json({ error: "DB error opponent team" });
-        }
-        let partialEnded = false;
-        owRows.forEach(r => { if (r.is_ended == 1) partialEnded = true; });
-        oppRows.forEach(r => { if (r.is_ended == 1) partialEnded = true; });
-        if (partialEnded) {
-          let sumOwner = owRows.reduce((acc, r) => acc + (parseFloat(r.athlete_points) || 0), 0);
-          let sumOpponent = oppRows.reduce((acc, r) => acc + (parseFloat(r.athlete_points) || 0), 0);
-          if (parseInt(currentUser) === parseInt(contestData.owner_id)) {
-            contestData.result = `${sumOwner.toFixed(1)}-${sumOpponent.toFixed(1)}`;
-          } else {
-            contestData.result = `${sumOpponent.toFixed(1)}-${sumOwner.toFixed(1)}`;
-          }
-        }
-        contestData.status_display = partialEnded ? contestData.result : contestData.status_name;
-        res.json({
-          contest: contestData,
-          ownerTeam: owRows,
-          opponentTeam: oppRows
-        });
-      });
-    });
-  });
-});
-/* ----------------------------------------------------------------------
-   6) POST /confirm-squad - Modificato per usare autenticazione JWT
----------------------------------------------------------------------- */
-/* Endpoint per confermare la squadra */
-app.post("/confirm-squad", authenticateToken, (req, res) => {
-  const { contestId, userId, players, multiplier, totalCost } = req.body;
-  
-  // Verifica che i dati necessari siano presenti
-  if (!contestId || !userId || !Array.isArray(players) || players.length === 0) {
-    return res.status(400).json({ error: "Dati mancanti o invalidi" });
-  }
-  
-    // Calcola il costo totale della squadra
-    let squadCost = parseFloat(totalCost || 0);
-  
-  // Verifica che l'utente autenticato corrisponda all'utente della richiesta
-  if (req.user.userId != userId) {
-    return res.status(403).json({ error: "Non sei autorizzato a confermare questa squadra" });
-  }
-  
-  // Inizia una transazione per garantire l'integrità dei dati
-  pool.getConnection((err, connection) => {
-    if (err) {
-      console.error("Errore nella connessione al database:", err);
-      return res.status(500).json({ error: "Errore di connessione al database" });
-    }
-    
-    connection.beginTransaction(err => {
-      if (err) {
-        connection.release();
-        console.error("Errore nell'avvio della transazione:", err);
-        return res.status(500).json({ error: "Errore nell'avvio della transazione" });
-      }
-  
 
-      // Ottieni lo stato attuale del contest
-      const sqlGetContest = "SELECT status, stake, owner_user_id, opponent_user_id FROM contests WHERE contest_id = ?";
-      connection.query(sqlGetContest, [contestId], (err, contestResults) => {
-        if (err) {
-          return rollbackTransaction(connection, err, res, "Errore nella lettura del contest");
-        }
-        
-        if (contestResults.length === 0) {
-          return rollbackTransaction(connection, null, res, "Contest non trovato", 404);
-        }
-        
-        const contest = contestResults[0];
-        let newStatus = contest.status;
-        
-        // Aggiorna lo stato del contest in base a chi sta confermando la squadra
-        if (newStatus === 0 && parseInt(userId) === contest.owner_user_id) {
-          newStatus = 1; // Owner ha confermato
-        } else if (newStatus === 1 && parseInt(userId) === contest.opponent_user_id) {
-          newStatus = 2; // Opponent ha confermato
-        } else if (newStatus !== 0 && newStatus !== 1) {
-          return rollbackTransaction(connection, null, res, "Stato del contest non valido per la conferma", 400);
-        }
-        
-        // Aggiorna il saldo Teex dell'utente
-        updateUserBalance(connection, userId, totalCost, multiplier, (err) => {
-          if (err) {
-            return rollbackTransaction(connection, err, res, err.message);
-          }
-          
-          // Aggiorna lo stato del contest
-          const sqlUpdateContest = `
-            UPDATE contests 
-            SET status = ?, updated_at = NOW()
-            WHERE contest_id = ?
-          `;
-          
-          connection.query(sqlUpdateContest, [newStatus, contestId], (err) => {
-            if (err) {
-              return rollbackTransaction(connection, err, res, "Errore nell'aggiornamento del contest");
-            }
-            
-            // Crea il fantasy team
-            const sqlCreateTeam = `
-              INSERT INTO fantasy_teams (contest_id, user_id, total_cost, updated_at)
-              VALUES (?, ?, ?, NOW())
-            `;
-            
-            connection.query(sqlCreateTeam, [contestId, userId, totalCost], (err, teamResult) => {
-              if (err) {
-                return rollbackTransaction(connection, err, res, "Errore nella creazione del fantasy team");
-              }
-              
-              const fantasyTeamId = teamResult.insertId;
-              
-              // Prepara i valori per l'inserimento in batch dei giocatori
-              const playerValues = players.map(p => [
-                fantasyTeamId,
-                p.athleteId,
-                p.aep_id || null,
-                p.event_unit_cost || 0
-              ]);
-              
-              // Inserisci i giocatori nel fantasy team
-              const sqlInsertPlayers = `
-                INSERT INTO fantasy_team_entities 
-                (fantasy_team_id, athlete_id, aep_id, cost)
-                VALUES ?
-              `;
-              
-              connection.query(sqlInsertPlayers, [playerValues], (err) => {
-                if (err) {
-                  return rollbackTransaction(connection, err, res, "Errore nell'inserimento dei giocatori");
-                }
-                
-                // Commit della transazione
-                connection.commit(err => {
-                  if (err) {
-                    return rollbackTransaction(connection, err, res, "Errore nel commit della transazione");
-                  }
-                  
-                  connection.release();
-                  res.json({ 
-                    message: "Squadra confermata con successo",
-                    fantasyTeamId,
-                    newStatus
-                  });
-                });
-              });
-            });
-          });
-        });
-      });
-    });
-  });
-  
-  // Funzione di supporto per il rollback della transazione
-  function rollbackTransaction(connection, err, res, message, statusCode = 500) {
-    connection.rollback(() => {
-      connection.release();
-      if (err) console.error("Errore:", err);
-      res.status(statusCode).json({ error: message });
-    });
-  }
-});
+
+
 
 /* Endpoint per verificare l'unicità del nome utente
 

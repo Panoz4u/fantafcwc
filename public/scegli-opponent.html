@@ -176,7 +176,8 @@
             body: JSON.stringify({
               owner: ownerId,
               opponent: oppId,
-              event_unit_id: eventUnitId
+              event_unit_id: eventUnitId,
+              multiply: 1  // Aggiungo il valore predefinito per multiply
             })
           });
           if (!resp.ok) {
@@ -190,11 +191,14 @@
           localStorage.setItem('contestData', JSON.stringify({
             contestId: data.contestId,
             event_unit_id: eventUnitId,
-            opponent: oppId,
-            timestamp: new Date().getTime() // Aggiungi un timestamp per sicurezza
+            eventUnitId: eventUnitId, // Aggiungi anche questo campo per compatibilità
+            opponentId: oppId,
+            ownerId: ownerId,
+            userId: currentUser,
+            timestamp: new Date().getTime()
           }));
           
-          // Reindirizza senza parametri nell'URL
+          // Reindirizza alla pagina riassunto
           window.location.href = `/riassunto.html`;
         } catch (e) {
           console.error("Errore POST /contests", e);

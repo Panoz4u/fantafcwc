@@ -128,10 +128,10 @@ import { confirmSquad } from './confirmSquad.js';  // Modifica qui: importa da c
               </div>
             `;
           } else {
+            // Manteniamo la struttura del container ma senza contenuto visibile
             container.innerHTML = `
               <div class="contest-container cc-header">
-                <div class="contest-bar">
-                  <div class="result_bold">Errore nel caricamento dei dati del contest</div>
+                <div class="contest-bar" style="min-height: 40px;">
                 </div>
               </div>
             `;
@@ -142,8 +142,8 @@ import { confirmSquad } from './confirmSquad.js';  // Modifica qui: importa da c
         const contestData = await contestResp.json();
         console.log("Dati contest ricevuti:", contestData);
         
-        // Verifica che contestData.contest esista prima di usarlo
-        if (!contestData || !contestData.contest) {
+        // Verifica che contestData esista e sia un oggetto valido
+        if (!contestData || typeof contestData !== 'object') {
           console.error("Dati del contest mancanti o in formato non valido");
           // Usa lo stesso fallback di sopra
           if (currentUser && opponent) {
@@ -171,7 +171,7 @@ import { confirmSquad } from './confirmSquad.js';  // Modifica qui: importa da c
             container.innerHTML = `
               <div class="contest-container cc-header">
                 <div class="contest-bar">
-                  <div class="result_bold">Dati del contest non validi</div>
+                  <div class="result_bold"></div>
                 </div>
               </div>
             `;
@@ -179,6 +179,37 @@ import { confirmSquad } from './confirmSquad.js';  // Modifica qui: importa da c
           return;
         }
         
+        // Se contestData ha contest_id ma non ha la proprietà contest,
+        //significa che l'API ha restituito direttamente l'oggetto contest
+        if (contestData.contest_id && !contestData.contest) {
+          // Crea un nuovo oggetto con la struttura attesa
+          const formattedData = {
+            contest: contestData
+          };
+          // Usa formattedData invece di contestData
+          renderContestHeader(formattedData.contest);
+        } else if (contestData.contest) {
+          // Se contestData ha già la proprietà contest, usala direttamente
+          renderContestHeader(contestData.contest);
+        } else {
+          console.error("Struttura dati contest non riconosciuta");
+          // Rimuovi il messaggio di errore visibile e usa uno spinner invece
+          container.innerHTML = `
+            <div class="contest-container cc-header">
+              <div class="contest-bar" style="justify-content: center; min-height: 40px;">
+                <div style="width: 20px; height: 20px; border: 2px solid #3498db; border-radius: 50%; border-top-color: transparent; animation: spin 1s linear infinite;"></div>
+              </div>
+            </div>
+            <style>
+              @keyframes spin {
+                to { transform: rotate(360deg); }
+              }
+            </style>
+          `;
+          return;
+        }
+        
+        // Il resto del codice rimane invariato
         // Render contest header
         // Usa renderContestHeader da headerUtils.js
         if (contestData && contestData.contest) {
@@ -414,18 +445,10 @@ document.addEventListener("DOMContentLoaded", function() {
     loadUserInfo(userId, opponentId, ownerId, contestId);
     renderPlayerList();
   } else {
-    // Rimuovi o commenta questa riga per non mostrare il messaggio di errore
-    // showErrorMessage("Parametri URL mancanti");
-    
-    // Prova a caricare i dati dal localStorage o dalle variabili globali
-    const storedContestId = window.contestId || localStorage.getItem('contestId');
-    const storedUserId = window.userId || localStorage.getItem('userId');
-    
-    if (storedContestId && storedUserId) {
-      loadUserInfo(storedUserId, window.opponentId, window.ownerId, storedContestId);
-      renderPlayerList();
-    }
+    // Non fare nulla se contestId o userId non sono disponibili
+    console.log("Parametri contestId o userId mancanti");
   }
+  return;
 });
 // Funzione per resettare la squadra
 function resetTeam() {

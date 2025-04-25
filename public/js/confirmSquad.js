@@ -8,46 +8,63 @@ let baseTeamCost = 0;
 
 // Funzione per verificare se l'utente è invitato e impostare il moltiplicatore di conseguenza
 export async function setupMultiplyForInvitedUser() {
+  console.log("setupMultiplyForInvitedUser: Inizio funzione"); // Log inizio
   try {
     const params = new URLSearchParams(window.location.search);
-    const contestId = params.get("contest");
-    const userId = params.get("user");
-    if (!contestId || !userId) return;
-    
-    // Fetch contest details
-    const response = await fetch(`/contest-details?contest=${contestId}&user=${userId}`);
-    if (!response.ok) return;
+    const contestId = params.get("contest") || window.contestId;
+    const userId = params.get("user") || localStorage.getItem('userId');
+    if (!contestId || !userId) {
+      console.log("setupMultiplyForInvitedUser: contestId o userId mancanti"); // Log parametri mancanti
+      return;
+    }
+
+    // Correggi l'URL qui: verifica se usare /contests/ o no
+    // Correggi l'URL qui per utilizzare il percorso corretto
+    const url = `/contests/contest-details?contest=${contestId}&user=${userId}`;
+    console.log(`setupMultiplyForInvitedUser: Fetching ${url}`); // Log fetch
+    const response = await fetch(url);
+    if (!response.ok) {
+      console.error("setupMultiplyForInvitedUser: Errore fetch contest details:", response.status); // Log errore fetch
+      return;
+    }
     const data = await response.json();
     const contest = data.contest;
-    
+    console.log("setupMultiplyForInvitedUser: Dati contest ricevuti:", contest); // Log dati contest
+
     // Check if user is opponent and contest status is 1 (invited)
     const isOpponent = parseInt(userId) === parseInt(contest.opponent_id);
+    console.log(`setupMultiplyForInvitedUser: userId=${userId}, opponent_id=${contest.opponent_id}, isOpponent=${isOpponent}, status=${contest.status}`); // Log controllo opponent/status
+
     if (isOpponent && contest.status === 1) {
+      console.log("setupMultiplyForInvitedUser: Utente è opponent e status è 1. Blocco moltiplicatore."); // Log blocco attivo
       // User is invited - disable multiply selection and set to contest value
-      // Make sure we're getting the correct multiply value
       let multiplyValue = 1;
-      if (contest.multiply) {
-        // Try to parse the multiply value, ensuring it's a number
+      // Assicurati che contest.multiply esista e sia un numero valido
+      if (contest.multiply && !isNaN(parseFloat(contest.multiply))) {
         multiplyValue = parseFloat(contest.multiply);
-        if (isNaN(multiplyValue)) multiplyValue = 1;
+      } else {
+        console.warn(`setupMultiplyForInvitedUser: Valore multiply non valido o mancante nel contest: ${contest.multiply}. Uso 1.`);
       }
-      
-      // Add debug output to see what we're getting
-      console.log("Contest multiply value:", contest.multiply, "Type:", typeof contest.multiply);
-      console.log("Parsed multiply value:", multiplyValue, "Type:", typeof multiplyValue);
-      
+
+
+      console.log("setupMultiplyForInvitedUser: Valore multiply dal contest:", contest.multiply, "Valore parsato:", multiplyValue); // Log valore multiply
+
       // Store the multiply value for later use when the overlay opens
       window.lockedMultiply = multiplyValue;
       localStorage.setItem("lockedMultiply", multiplyValue.toString());
-      console.log("User is invited - multiply locked to:", multiplyValue);
+      console.log("setupMultiplyForInvitedUser: window.lockedMultiply impostato a:", window.lockedMultiply); // Log valore impostato
+      console.log("setupMultiplyForInvitedUser: localStorage lockedMultiply impostato a:", localStorage.getItem("lockedMultiply")); // Log valore localStorage
     } else {
+      console.log("setupMultiplyForInvitedUser: Condizioni per blocco non soddisfatte. Rimuovo blocco."); // Log blocco non attivo
       // Clear any previously stored locked multiply value
       window.lockedMultiply = null;
       localStorage.removeItem("lockedMultiply");
+      console.log("setupMultiplyForInvitedUser: window.lockedMultiply e localStorage lockedMultiply rimossi."); // Log rimozione blocco
     }
   } catch (error) {
-    console.error("Error setting up multiply for invited user:", error);
+    console.error("setupMultiplyForInvitedUser: Errore:", error); // Log errore generico
   }
+  console.log("setupMultiplyForInvitedUser: Fine funzione"); // Log fine
 }
 
 // Funzione per mostrare l'overlay di moltiplicazione
@@ -72,9 +89,36 @@ export async function confirmSquad(multiplier) {
   const params = new URLSearchParams(window.location.search);
   const contestId = params.get("contest") || window.contestId || localStorage.getItem('contestId');
   const userId = params.get("user") || window.userId || localStorage.getItem('userId');
+  let ownerId = params.get("owner") || window.ownerId || localStorage.getItem('ownerId');
+  let opponentId = params.get("opponent") || window.opponentId || localStorage.getItem('opponentId');
   
   if (!contestId || !userId) {
     showErrorMessage("Parametri mancanti per confermare la squadra");
+    return;
+  }
+  
+  // Prova a recuperare i dati dal localStorage se mancanti
+  if (!ownerId || !opponentId) {
+    console.warn("Owner o Opponent mancanti, tentativo di recupero da localStorage");
+    try {
+      const addPlayerData = JSON.parse(localStorage.getItem('addPlayerData') || '{}');
+      if (addPlayerData.owner) {
+        ownerId = addPlayerData.owner;
+        console.log("Recuperato owner da addPlayerData:", ownerId);
+      }
+      if (addPlayerData.opponent) {
+        opponentId = addPlayerData.opponent;
+        console.log("Recuperato opponent da addPlayerData:", opponentId);
+      }
+    } catch (e) {
+      console.error("Errore nel parsing di addPlayerData:", e);
+    }
+  }
+  
+  // Verifica ancora se mancano i parametri
+  if (!ownerId || !opponentId) {
+    console.error("Owner o Opponent ancora mancanti dopo il tentativo di recupero");
+    showErrorMessage("Impossibile completare l'operazione: dati mancanti (owner/opponent)");
     return;
   }
   
@@ -88,6 +132,8 @@ export async function confirmSquad(multiplier) {
   console.log("RICEVUTO DA CLIENT:", { 
     contestId, 
     userId, 
+    ownerId,
+    opponentId,
     multiplier: selectedMultiplier, 
     totalCost: baseTeamCost,
     lockedMultiply
@@ -97,6 +143,8 @@ export async function confirmSquad(multiplier) {
   const squadData = {
     contestId: parseInt(contestId),
     userId: userId,
+    owner_id: ownerId, // Cambiato da ownerId a owner_id
+    opponent_id: opponentId, // Cambiato da opponentId a opponent_id
     players: players.map(p => ({
       athleteId: parseInt(p.athlete_id),
       eventUnitId: parseInt(p.event_unit_id),
@@ -119,7 +167,7 @@ export async function confirmSquad(multiplier) {
     }
     
     // Invia la richiesta con il token di autenticazione
-    const response = await fetch('/confirm-squad', {
+    const response = await fetch('/contests/confirm-squad', { // Modifica qui l'URL
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

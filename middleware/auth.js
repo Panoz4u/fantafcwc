@@ -1,35 +1,29 @@
 const jwt = require('jsonwebtoken');
 
-// Chiave segreta per firmare i token JWT (dovresti metterla in un file .env)
-const JWT_SECRET = process.env.JWT_SECRET || 'chiave_segreta_temporanea';
+// Chiave segreta per i JWT (meglio metterla in .env)
+const JWT_SECRET = process.env.JWT_SECRET || 'chiave_segreta_molto_sicura';
 
-// Genera un token JWT per l'utente
-const generateToken = (user) => {
-  return jwt.sign(
-    { 
-      userId: user.user_id,
-      email: user.email
-    },
-    JWT_SECRET,
-    { expiresIn: '24h' }
-  );
-};
-
-// Verifica il token JWT
-const verifyToken = (req, res, next) => {
-  const token = req.headers.authorization?.split(' ')[1];
+// Middleware per verificare il token JWT
+const authenticateToken = (req, res, next) => {
+  // Ottieni il token dall'header Authorization
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
   
   if (!token) {
-    return res.status(401).json({ error: 'Accesso negato. Token mancante.' });
+    return res.status(401).json({ error: "Token di autenticazione mancante" });
   }
   
-  try {
-    const verified = jwt.verify(token, JWT_SECRET);
-    req.user = verified;
+  jwt.verify(token, JWT_SECRET, (err, user) => {
+    if (err) {
+      return res.status(403).json({ error: "Token non valido o scaduto" });
+    }
+    
+    req.user = user;
     next();
-  } catch (error) {
-    res.status(401).json({ error: 'Token non valido' });
-  }
+  });
 };
 
-module.exports = { generateToken, verifyToken };
+module.exports = {
+  authenticateToken,
+  JWT_SECRET
+};

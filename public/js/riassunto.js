@@ -5,6 +5,7 @@ import { getAvatarUrl, getAvatarSrc } from './avatarUtils.js';
 import { renderContestHeader } from './headerUtils.js';
 import { checkContestStatus, showErrorMessage } from './statusUtils.js';
 import { showMultiplyOverlay } from './multiply.js';
+import { setupMultiplyForInvitedUser, showConfirmOverlay } from './confirmSquad.js'; // Aggiungi questa riga
 
 // Funzione per attendere che i dati del contest siano disponibili
 function waitForContestData() {
@@ -102,6 +103,9 @@ async function initApp() {
       return;
     }
     
+    // Aggiungi questa riga per configurare il moltiplicatore per l'utente invitato
+    await setupMultiplyForInvitedUser();
+    
     // Aggiorna il saldo Teex nell'header
     try {
       const authToken = localStorage.getItem('authToken');
@@ -187,45 +191,62 @@ async function initApp() {
     // Carica i dettagli del contest
     try {
       const authToken = localStorage.getItem('authToken');
-      
-      // Verifica che contestId sia valido prima di fare la richiesta
-      if (!contestId) {
-        showErrorMessage("ID del contest mancante. Torna alla pagina precedente e riprova.");
+      const contestId = data.contestId; // Usa data.contestId ottenuto da waitForContestData
+      const userId = localStorage.getItem('userId'); // Usa userId da localStorage
+    
+      // Verifica che contestId e userId siano validi prima di fare la richiesta
+      if (!contestId || !userId) {
+        console.error("ID contest o ID utente mancanti per caricare i dettagli del contest");
+        showErrorMessage("Dati mancanti per caricare i dettagli del contest");
         return;
       }
-      
-      const contestResp = await fetch(`/contest-details?contest=${contestId}`, {
+    
+      // Probabilmente la riga che causa l'errore è qui intorno (linea 228)
+      // setupHeader(); // Commenta o rimuovi questa riga
+    
+      const contestResp = await fetch(`/contests/contest-details?contest=${contestId}&user=${userId}`, {
         headers: {
           'Authorization': `Bearer ${authToken}`
         }
       });
-      
+    
       if (!contestResp.ok) {
-        showErrorMessage(`Errore nel recupero dei dettagli del contest: ${contestResp.status}`);
+        console.error(`Errore nel recupero dei dettagli del contest: ${contestResp.status}`);
+        document.getElementById("errorMessage").textContent = `Errore nel recupero dei dettagli del contest: ${contestResp.status}`;
+        document.getElementById("errorMessage").style.display = "block";
         return;
       }
-      
+    
       const contestData = await contestResp.json();
       console.log("Dettagli contest ricevuti:", contestData);
-      
-      if (contestData && contestData.contest) {
-        // Renderizza l'header del contest
-        renderContestHeader(contestData.contest);
-        
-        // Aggiorna il budget disponibile
-        const teexLeft = getAvailableBudget();
-        const teexLeftEl = document.getElementById("teexLeft");
-        if (teexLeftEl) {
-          teexLeftEl.innerHTML = `<span class="teex-left-text-cyan">${teexLeft.toFixed(1)}</span> <span class="teex-left-text-white">Papa Coins left</span>`;
-        }
+    
+      // Renderizza l'header con i dati del contest
+      renderContestHeader(contestData.contest, contestData.ownerTeam, contestData.opponentTeam);
+    
+      // *** CHIAMA setupMultiplyForInvitedUser QUI ***
+      // Dopo aver ottenuto i dettagli del contest, chiama la funzione per verificare se bloccare il moltiplicatore
+      await setupMultiplyForInvitedUser(); // Usa await se la funzione è async
+    
+      // Popola la pagina con i dettagli (se necessario)
+      // ... logica per mostrare i team, ecc. ...
+    
+      // Aggiungi l'event listener al pulsante di conferma DOPO aver chiamato setupMultiplyForInvitedUser
+      const confirmButton = document.getElementById('confirmTeamButton'); // Assicurati che l'ID sia corretto
+      if (confirmButton) {
+         // Rimuovi eventuali listener precedenti per sicurezza
+         const newConfirmButton = confirmButton.cloneNode(true);
+         confirmButton.parentNode.replaceChild(newConfirmButton, confirmButton);
+         // Aggiungi il nuovo listener
+         newConfirmButton.addEventListener('click', showConfirmOverlay); // showConfirmOverlay chiama showMultiplyOverlay
       } else {
-        showErrorMessage("Dati del contest non validi");
+         console.warn("Pulsante di conferma squadra non trovato.");
       }
+    
     } catch (error) {
       console.error("Errore nel recupero dei dettagli del contest:", error);
-      showErrorMessage(`Errore: ${error.message}`);
+      showErrorMessage("Errore nel caricamento dei dettagli della sfida.");
     }
-    
+
     // Configura il pulsante "Add Player"
     const addPlayerBtn = document.getElementById("addPlayerBtn");
     if (addPlayerBtn) {
@@ -252,23 +273,7 @@ async function initApp() {
     
   } catch (error) {
     console.error("Errore nell'inizializzazione dell'app:", error);
-    
-    // Mostra un messaggio di errore più specifico
-    let errorMessage = "Errore nel caricamento dei dati.";
-    if (error.message) {
-      if (error.message.includes("401") || error.message.includes("403")) {
-        errorMessage = "Sessione scaduta. Effettua nuovamente il login.";
-      } else if (error.message.includes("404")) {
-        errorMessage = "Risorsa non trovata. Verifica che il contest esista.";
-      } else if (error.message.includes("500")) {
-        errorMessage = "Errore del server. Riprova più tardi.";
-      } else {
-        errorMessage = "Errore: " + error.message;
-      }
-    }
-    
-    document.getElementById("errorMessage").textContent = errorMessage;
-    document.getElementById("errorMessage").style.display = "block";
+    showErrorMessage("Errore generale nell'inizializzazione");
   }
 }
 
@@ -459,3 +464,6 @@ document.addEventListener("DOMContentLoaded", initApp);
 
 // Avvia il core dell'app
 import './team_creation.js';
+
+// Assicurati che anche altre chiamate a showErrorMessage siano gestite come preferisci
+// (es. commentandole o mostrando l'errore in modo permanente)

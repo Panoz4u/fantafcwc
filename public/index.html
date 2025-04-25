@@ -115,6 +115,27 @@
   <!-- Includi il file auth.js, che contiene la configurazione Firebase -->
   <script src="auth.js"></script>
   <script>
+  // Chiave segreta per i JWT (meglio metterla in .env)
+  const JWT_SECRET = 'chiave_segreta_molto_sicura';
+
+  // Funzione per verificare il token JWT
+  function verifyToken(token) {
+    try {
+      // In un ambiente client, non possiamo verificare il token in modo sicuro
+      // Questa è una simulazione, in produzione la verifica dovrebbe avvenire lato server
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+      
+      return JSON.parse(jsonPayload);
+    } catch (error) {
+      console.error("Errore nella verifica del token:", error);
+      return null;
+    }
+  }
+
   // Aggiungi funzione di debug
   function debugLogin() {
     console.log("=== DEBUG LOGIN ===");
@@ -122,6 +143,13 @@
     console.log("authToken:", localStorage.getItem('authToken'));
     console.log("userId:", localStorage.getItem('userId'));
     console.log("userEmail:", localStorage.getItem('userEmail'));
+    
+    // Verifica il token se presente
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      const decoded = verifyToken(token);
+      console.log("Token decodificato:", decoded);
+    }
   }
 
   // Modifica la funzione di login per aggiungere debug
@@ -177,14 +205,44 @@
     }
   }
 
+  // Funzione per verificare l'autenticazione dell'utente
+  function checkAuthentication() {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      console.log("Utente non autenticato");
+      return false;
+    }
+    
+    const user = verifyToken(token);
+    if (!user) {
+      console.log("Token non valido");
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('userId');
+      localStorage.removeItem('userEmail');
+      return false;
+    }
+    
+    console.log("Utente autenticato:", user);
+    return true;
+  }
+
   // Chiama debugLogin all'avvio della pagina
   document.addEventListener('DOMContentLoaded', function() {
     console.log("Pagina index.html caricata");
     debugLogin();
     
+    // Verifica se l'utente è già autenticato
+    if (checkAuthentication()) {
+      console.log("Utente già autenticato, reindirizzamento a user-landing.html");
+      window.location.href = 'user-landing.html';
+    }
+    
     // Aggiungi gli event listener
-    document.getElementById('emailLoginForm').addEventListener('submit', handleEmailLogin);
+    const loginForm = document.getElementById('emailLoginForm');
+    if (loginForm) {
+      loginForm.addEventListener('submit', handleEmailLogin);
+    }
   });
-</script>
+  </script>
 </body>
 </html>
