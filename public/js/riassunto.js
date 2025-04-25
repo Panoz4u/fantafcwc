@@ -104,9 +104,9 @@ async function initApp() {
       return;
     }
     
-    // Aggiungi questa riga per configurare il moltiplicatore per l'utente invitato
-    await setupMultiplyForInvitedUser();
-    
+    // Rimuovi o commenta questa chiamata iniziale, causa la richiesta non autenticata
+    // await setupMultiplyForInvitedUser();
+
     // Aggiorna il saldo Teex nell'header
     try {
       const authToken = localStorage.getItem('authToken');
@@ -226,6 +226,7 @@ async function initApp() {
     
       // *** CHIAMA setupMultiplyForInvitedUser QUI ***
       // Dopo aver ottenuto i dettagli del contest, chiama la funzione per verificare se bloccare il moltiplicatore
+      // Questa chiamata ora userà la versione autenticata di setupMultiplyForInvitedUser
       await setupMultiplyForInvitedUser(); // Usa await se la funzione è async
     
       // Popola la pagina con i dettagli (se necessario)

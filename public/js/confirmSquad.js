@@ -18,13 +18,26 @@ export async function setupMultiplyForInvitedUser() {
       return;
     }
 
-    // Correggi l'URL qui: verifica se usare /contests/ o no
+    // Ottieni il token di autenticazione
+    const authToken = localStorage.getItem('authToken');
+    if (!authToken) {
+      console.error("setupMultiplyForInvitedUser: Token di autenticazione mancante");
+      // Potresti voler gestire questo caso in modo diverso, es. reindirizzare al login
+      return;
+    }
+
     // Correggi l'URL qui per utilizzare il percorso corretto
     const url = `/contests/contest-details?contest=${contestId}&user=${userId}`;
     console.log(`setupMultiplyForInvitedUser: Fetching ${url}`); // Log fetch
-    const response = await fetch(url);
+    // Aggiungi l'header Authorization alla richiesta fetch
+    const response = await fetch(url, {
+      headers: {
+        'Authorization': `Bearer ${authToken}`
+      }
+    });
     if (!response.ok) {
       console.error("setupMultiplyForInvitedUser: Errore fetch contest details:", response.status); // Log errore fetch
+      // Considera di mostrare un messaggio all'utente qui se necessario
       return;
     }
     const data = await response.json();
