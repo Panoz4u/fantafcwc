@@ -305,8 +305,23 @@
               localStorage.removeItem('eventUnitId');
             }
             
+            // Salva i dati nel formato richiesto da riassunto.html
+            const contestData = {
+              contestId: this.dataset.contestId,
+              opponentId: contest.opponent_id,
+              ownerId: contest.owner_id,
+              userId: userId,
+              timestamp: new Date().getTime()
+            };
+            localStorage.setItem('contestData', JSON.stringify(contestData));
+            
             // Naviga alla pagina dei dettagli senza parametri in URL
-            window.location.href = 'contest-details.html';
+            // Se è un contest con status=1 e non sono owner, vai a riassunto.html
+            if (contest.status == 1 && !iAmOwner) {
+              window.location.href = 'riassunto.html';
+            } else {
+              window.location.href = 'contest-details.html';
+            }
           });
         }
         

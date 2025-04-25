@@ -53,6 +53,13 @@ export function renderContestHeader(contestData) {
 
   const card = document.createElement("div");
   card.classList.add("contest-container", "cc-header");
+  
+  // Determina la classe corretta per il badge di stato
+  let statusBadgeClass = "status-badge";
+  if (contestData.status === 1 && !iAmOwner) {
+    statusBadgeClass = "status-invited";
+  }
+  
   card.innerHTML = `
     <div class="contest-bar">
       <img src="${getAvatarSrc(myAvatar)}" alt="${myName}" class="player-avatar-contest left-avatar">
@@ -63,9 +70,17 @@ export function renderContestHeader(contestData) {
       <div class="teex_spent left-teex" id="currentUserScore">${myCost}</div>
       <div class="teex_spent right-teex">${oppCost}</div>
     </div>
-    <div class="status-badge-base status-badge">${statusText}</div>
+    <div class="status-badge-base ${statusBadgeClass}">${statusText}</div>
+    ${contestData.multiply && parseInt(contestData.multiply) > 1 ? `<div class="multiply-contest-mini">${Math.floor(contestData.multiply)}</div>` : ''}
   `;
 
   container.appendChild(card);
   console.log("Header del contest renderizzato con successo");
 }
+
+// Ho analizzato i file del tuo progetto e ho identificato i problemi che stai riscontrando. Ecco le soluzioni:
+// Problema 1: Classe dello Status "INVITED"
+//
+// Nel file `headerUtils.js`, lo status badge viene sempre creato con la classe "status-badge-base status-badge", ma per lo stato "INVITED" dovrebbe usare "status-badge-base status-invited".
+//
+// Ecco la modifica necessaria:
