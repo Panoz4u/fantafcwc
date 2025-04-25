@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="css/mobile.css">
   <link rel="stylesheet" href="css/mobile2.css">
   <!-- Aggiungi il riferimento al file avatarUtils.js -->
-  <script src="/js/avatar-functions.js"></script>
+  <script src="js/avatarUtils.js"></script>
 </head>
 <body>
   <!-- Header principale -->
@@ -77,25 +77,6 @@
       authToken
     });
 
-    // Funzione per gestire gli avatar
-    function getAvatarSrc(avatar, name, color) {
-      if (!avatar) {
-        // Se non c'è avatar, genera un avatar basato sul nome o usa default
-        if (name) {
-          return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=${color || 'random'}&color=fff`;
-        }
-        return "avatars/default.png";
-      }
-      
-      // Se l'avatar è un URL completo, usalo direttamente
-      if (avatar.startsWith("http")) {
-        return avatar;
-      }
-      
-      // Altrimenti, considera l'avatar come un nome file nella cartella avatars
-      return `avatars/${avatar}`;
-    }
-
     // Carica il Teex balance
     async function loadTeexBalance() {
       try {
@@ -106,13 +87,13 @@
         });
         if (resp.ok) {
           const data = await resp.json();
-          const teexBalanceElement = document.getElementById("teexContainer");
-          if (teexBalanceElement) {
-            teexBalanceElement.textContent = parseFloat(data.user.teex_balance).toFixed(1);
-          }
+          document.getElementById("teexContainer").textContent = parseFloat(data.user.teex_balance).toFixed(1);
+        } else {
+          document.getElementById("teexContainer").textContent = "0.0";
         }
       } catch (error) {
         console.error("Error loading teex balance:", error);
+        document.getElementById("teexContainer").textContent = "0.0";
       }
     }
 
@@ -130,24 +111,21 @@
         return;
       }
       try {
-        // Usa POST e invia i dati nel corpo della richiesta
+        // Modifica la chiamata API per utilizzare POST invece di GET
         const resp = await fetch(`/contest-details`, {
-          method: 'POST', // Metodo POST
+          method: 'POST',
           headers: {
-            'Content-Type': 'application/json', // Indica che invii JSON
-            'Authorization': `Bearer ${authToken}` // Autenticazione
+            'Authorization': `Bearer ${authToken}`,
+            'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ // Dati inviati nel corpo
+          body: JSON.stringify({
             contest_id: contestId,
             user_id: currentUserId,
-            event_unit_id: eventUnitId // Includi anche questo se presente
+            event_unit_id: eventUnitId || undefined
           })
         });
-
         if (!resp.ok) {
-          const errorText = await resp.text();
-          console.error("Errore caricamento dettagli contest:", resp.status, errorText);
-          document.body.innerHTML = `<h1>Error loading contest details! Status: ${resp.status}</h1><p>${errorText}</p>`;
+          document.body.innerHTML = "<h1>Error loading contest details!</h1>";
           return;
         }
         const data = await resp.json();
@@ -193,7 +171,7 @@
           document.getElementById("leftUserName").textContent = data.contest.opponent_name;
           document.getElementById("rightUserName").textContent = data.contest.owner_name;
         }
-
+        
         // Renderizza l'header del contest usando lo stesso layout di user-landing.html
         renderContestHeader(data.contest);
 
@@ -429,24 +407,20 @@
       // Determina se il current user è owner
       const isCurrentUserOwner = (parseInt(currentUserId) === parseInt(contestData.owner_id));
 
-      // Assicurati che ownerTeam e opponentTeam siano array
-      const safeOwnerTeam = Array.isArray(ownerTeam) ? ownerTeam : [];
-      const safeOpponentTeam = Array.isArray(opponentTeam) ? opponentTeam : [];
-
       if (isCurrentUserOwner) {
         // Se current user è owner, usa ownerTeam per la lista di sinistra e opponentTeam per quella di destra
-        safeOwnerTeam.forEach(player => {
+        ownerTeam.forEach(player => {
           leftTeamList.appendChild(createPlayerRow(player, "left"));
         });
-        safeOpponentTeam.forEach(player => {
+        opponentTeam.forEach(player => {
           rightTeamList.appendChild(createPlayerRow(player, "right"));
         });
       } else {
         // Se current user è opponent, inverte le liste
-        safeOpponentTeam.forEach(player => {
+        opponentTeam.forEach(player => {
           leftTeamList.appendChild(createPlayerRow(player, "left"));
         });
-        safeOwnerTeam.forEach(player => {
+        ownerTeam.forEach(player => {
           rightTeamList.appendChild(createPlayerRow(player, "right"));
         });
       }
@@ -555,21 +529,9 @@
       return wrapper;
     }
 
-    // Esegui le funzioni quando il documento è completamente caricato
-    document.addEventListener('DOMContentLoaded', function() {
-      const contestId = localStorage.getItem('contestId');
-      const ownerId = localStorage.getItem('ownerId');
-      const opponentId = localStorage.getItem('opponentId');
-      
-      // Verifica che tutte le informazioni necessarie siano presenti
-      if (!contestId || !ownerId || !opponentId) {
-        document.getElementById('contestHeaderContainer').innerHTML = 
-          '<div class="error-message">Informazioni mancanti per visualizzare i dettagli del contest</div>';
-        return;
-      }
-      
-      // Continua con il caricamento dei dettagli del contest
-      loadContestDetails(contestId, ownerId, opponentId);
+    window.addEventListener("DOMContentLoaded", () => {
+      loadTeexBalance();
+      loadContestDetails();
     });
   </script>
 </body>

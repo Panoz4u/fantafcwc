@@ -3,6 +3,15 @@ const router = express.Router();
 const pool = require('./db');
 const { authenticateToken } = require('./middleware/auth');
 
+// Funzione di supporto per gestire i rollback delle transazioni
+function rollbackTransaction(connection, err, res, message, statusCode = 500) {
+  connection.rollback(() => {
+    connection.release();
+    if (err) console.error(message, err);
+    return res.status(statusCode).json({ error: message });
+  });
+}
+
 /* POST /contests (creare una nuova sfida) */
 router.post("/", (req, res) => {
   const { owner, opponent, event_unit_id, multiply } = req.body;
@@ -575,11 +584,10 @@ router.post("/confirm-squad", authenticateToken, (req, res) => {
 
 module.exports = router;
 
-// Aggiungi questa route per gestire le richieste POST a /contest-details
-router.post("/", (req, res) => {
-  const contestId = req.body.contest_id;
-  const userId = req.body.user_id;
-  const eventUnitId = req.body.event_unit_id;
+// Aggiungi questa route per gestire le richieste a /contest-details
+router.get("/", (req, res) => {
+  const contestId = req.query.contest;
+  const userId = req.query.user;
   
   if (!contestId) {
     return res.status(400).json({ error: "ID contest mancante" });
@@ -608,65 +616,7 @@ router.post("/", (req, res) => {
       return res.status(404).json({ error: "Contest non trovato" });
     }
     
-    // Ottieni i dati del contest
-    const contest = results[0];
-    
-    // Query per ottenere i team dei giocatori
-    const sqlTeams = `
-      SELECT ft.fantasy_team_id, ft.user_id, ft.total_cost, ft.total_points, ft.ft_result, ft.ft_teex_won
-      FROM fantasy_teams ft
-      WHERE ft.contest_id = ?
-    `;
-    
-    pool.query(sqlTeams, [contestId], (err2, teamResults) => {
-      if (err2) {
-        console.error("Errore nella query teams:", err2);
-        return res.status(500).json({ error: "Errore nel database" });
-      }
-      
-      // Aggiungi i team al contest
-      contest.fantasy_teams = teamResults;
-      
-      // Query per ottenere i giocatori del team owner
-      const sqlOwnerPlayers = `
-        SELECT p.*, ftp.points, ftp.position
-        FROM fantasy_team_players ftp
-        JOIN players p ON ftp.player_id = p.player_id
-        JOIN fantasy_teams ft ON ftp.fantasy_team_id = ft.fantasy_team_id
-        WHERE ft.contest_id = ? AND ft.user_id = ?
-        ORDER BY ftp.position
-      `;
-      
-      pool.query(sqlOwnerPlayers, [contestId, contest.owner_id], (err3, ownerPlayers) => {
-        if (err3) {
-          console.error("Errore nella query owner players:", err3);
-          return res.status(500).json({ error: "Errore nel database" });
-        }
-        
-        // Query per ottenere i giocatori del team opponent
-        const sqlOpponentPlayers = `
-          SELECT p.*, ftp.points, ftp.position
-          FROM fantasy_team_players ftp
-          JOIN players p ON ftp.player_id = p.player_id
-          JOIN fantasy_teams ft ON ftp.fantasy_team_id = ft.fantasy_team_id
-          WHERE ft.contest_id = ? AND ft.user_id = ?
-          ORDER BY ftp.position
-        `;
-        
-        pool.query(sqlOpponentPlayers, [contestId, contest.opponent_id], (err4, opponentPlayers) => {
-          if (err4) {
-            console.error("Errore nella query opponent players:", err4);
-            return res.status(500).json({ error: "Errore nel database" });
-          }
-          
-          // Restituisci tutti i dati
-          res.json({
-            contest: contest,
-            ownerTeam: ownerPlayers,
-            opponentTeam: opponentPlayers
-          });
-        });
-      });
-    });
+    // Restituisci i dettagli del contest
+    res.json(results[0]);
   });
 });
