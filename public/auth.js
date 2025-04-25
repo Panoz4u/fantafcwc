@@ -104,7 +104,7 @@ if (registerForm) {
       }
       
       // Reindirizza alla pagina prototipo
-      window.location.href = 'secure-prototype.html';
+      window.location.href = 'user-landing.html';
     } catch (error) {
       console.error("Errore durante la registrazione:", error);
       alert(error.message);
@@ -146,7 +146,7 @@ if (loginForm) {
             }
             
             // Reindirizza alla pagina prototipo
-            window.location.href = 'secure-prototype.html';
+            window.location.href = 'user-landing.html';
           })
           .catch(function(err) {
             console.error("Errore nel recupero dell'utente dal DB:", err);
@@ -236,7 +236,7 @@ if (googleLoginBtn) {
           }
           
           // Reindirizza alla pagina prototipo
-          window.location.href = 'secure-prototype.html';
+          window.location.href = 'user-landing.html';
         } catch (error) {
           console.error("Errore durante il login con Google:", error);
           alert(error.message);

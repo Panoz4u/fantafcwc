@@ -293,7 +293,12 @@
             // Salva i parametri nel localStorage
             console.log("Click su contest:", this.dataset.contestId);
             localStorage.setItem('contestId', this.dataset.contestId);
-            localStorage.setItem('userId', currentUserId); // Assicurati che currentUserId sia definito
+            localStorage.setItem('userId', userId); // Usa userId invece di currentUserId
+            
+            // Salva anche owner_id e opponent_id
+            localStorage.setItem('ownerId', contest.owner_id);
+            localStorage.setItem('opponentId', contest.opponent_id);
+            
             if (this.dataset.eventUnitId) {
               localStorage.setItem('eventUnitId', this.dataset.eventUnitId);
             } else {
