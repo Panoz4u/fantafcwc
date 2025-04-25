@@ -80,4 +80,32 @@ router.get("/all-active-athletes", (req, res) => {
   });
 });
 
+/**
+ * Endpoint: GET /aep-event-unit
+ * Query param: aep_id
+ * Restituisce l'event_unit_id relativo all'aep_id fornito
+ * Esempio: /aep-event-unit?aep_id=1234
+ */
+router.get("/aep-event-unit", (req, res) => {
+  const aepId = req.query.aep_id;
+  if (!aepId) {
+    return res.status(400).json({ error: "Parametro aep_id mancante" });
+  }
+  const sql = `
+    SELECT event_unit_id
+    FROM athlete_eventunit_participation
+    WHERE aep_id = ?
+    LIMIT 1
+  `;
+  pool.query(sql, [aepId], (err, rows) => {
+    if (err) {
+      console.error("DB error /aep-event-unit", err);
+      return res.status(500).json({ error: "Errore database" });
+    }
+    if (rows.length === 0) {
+      return res.status(404).json({ error: "Nessun risultato per questo aep_id" });
+    }
+    res.json({ event_unit_id: rows[0].event_unit_id });
+  });
+});
 module.exports = router;

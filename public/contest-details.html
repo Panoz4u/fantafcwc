@@ -601,8 +601,25 @@
       
       const matchSpan = document.createElement("div");
       matchSpan.classList.add("match_3letter");
-      matchSpan.innerHTML = `<span style="font-weight: 800;">${player.player_team_code || ''}</span> | CONC: <span style="font-weight: 800;">${player.aep_id || player.event_unit_id || ''}</span>`;
+      // ID unico per lo span che conterrà l'event_unit_id
+      const eventUnitSpanId = `event-unit-${player.aep_id}`;
+      matchSpan.innerHTML = `<span style="font-weight: 800;">${player.player_team_code || ''}</span> | CONC: <span style="font-weight: 800;" id="${eventUnitSpanId}">...</span>`;
       
+      // Se c'è l'aep_id, chiama l'endpoint per ottenere l'event_unit_id
+      if (player.aep_id) {
+        fetch(`/aep-event-unit?aep_id=${player.aep_id}`)
+          .then(res => res.json())
+          .then(data => {
+            if (data.event_unit_id) {
+              const span = document.getElementById(eventUnitSpanId);
+              if (span) span.textContent = data.event_unit_id;
+            }
+          })
+          .catch(() => {
+            const span = document.getElementById(eventUnitSpanId);
+            if (span) span.textContent = "-";
+          });
+      }
       infoBlock.appendChild(nameSpan);
       infoBlock.appendChild(matchSpan);
       
