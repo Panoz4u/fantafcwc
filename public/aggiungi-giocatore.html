@@ -135,8 +135,17 @@
       
       if (index === -1) {
         // Add to temp selection
+        // Assicuriamoci che aep_id sia incluso nell'oggetto player
+        if (!player.aep_id) {
+          // Se aep_id non è disponibile, mostriamo un errore
+          console.log("ATTENZIONE: aep_id non trovato nell'oggetto player!");
+          return; // Evitiamo di aggiungere giocatori senza aep_id
+        } else {
+          console.log("Trovato aep_id nell'oggetto player:", player.aep_id);
+        }
+        console.log("Aggiunto giocatore con aep_id:", player.aep_id);
         tempSelectedPlayers.push(player);
-        element.style.backgroundColor = "#0f7173"; // Cambiato da "rgba(254, 66, 8, 0.5)" a "#0f7173"
+        element.style.backgroundColor = "#0f7173";
       } else {
         // Remove from temp selection
         tempSelectedPlayers.splice(index, 1);
@@ -162,11 +171,24 @@
       const playerIdsToRemove = tempSelectedPlayers.filter(p => p.isRemoval)
         .map(p => `${p.athlete_id}_${p.event_unit_id}`);
       
+      // Log per debug
+      console.log("Giocatori da aggiungere:", playersToAdd);
+      playersToAdd.forEach((player, index) => {
+        console.log(`Giocatore ${index + 1} da aggiungere:`, player);
+        console.log(`  - athlete_id: ${player.athlete_id}`);
+        console.log(`  - aep_id: ${player.aep_id}`);
+        console.log(`  - event_unit_id: ${player.event_unit_id}`);
+        console.log(`  - event_unit_cost: ${player.event_unit_cost}`);
+      });
+      
       // Filter out removed players and add new ones
       const newPlayersList = [
         ...currentPlayers.filter(p => !playerIdsToRemove.includes(`${p.athlete_id}_${p.event_unit_id}`)),
         ...playersToAdd
       ];
+      
+      // Log per debug
+      console.log("Nuova lista giocatori:", newPlayersList);
       
       // Save the updated list
       saveChosenPlayers(newPlayersList);
@@ -342,7 +364,6 @@
       }
     }
     
-    // Modifica la funzione loadPlayers() per gestire meglio gli errori
     async function loadPlayers() {
       try {
         console.log("Caricamento di tutti gli atleti attivi");
@@ -356,6 +377,12 @@
         
         const data = await response.json();
         console.log(`Caricati ${data.length} giocatori attivi`);
+        
+        // Aggiungiamo un log per vedere la struttura del primo giocatore
+        if (data.length > 0) {
+          console.log("Struttura del primo giocatore:", JSON.stringify(data[0], null, 2));
+          console.log("Proprietà del primo giocatore:", Object.keys(data[0]));
+        }
         
         allPlayers = data;
         
@@ -482,9 +509,6 @@
           return;
         }
         
-        // Log per ogni giocatore che stiamo processando
-        console.log(`Processando giocatore: ${player.athlete_shortname}`);
-        
         const playerCost = parseFloat(player.event_unit_cost || 0);
         
         // Creiamo un ID univoco combinando athlete_id e event_unit_id
@@ -504,9 +528,7 @@
         // A player is affordable if their cost is within budget
         const isAffordable = playerCost <= availableBudget;
         
-        // Log delle condizioni per questo giocatore
-        console.log(`${player.athlete_shortname}: isAffordable=${isAffordable}, isAlreadyChosen=${isAlreadyChosen}, isInTempSelection=${isInTempSelection}`);
-        
+         
         // Create player card
         const card = document.createElement('li');
         

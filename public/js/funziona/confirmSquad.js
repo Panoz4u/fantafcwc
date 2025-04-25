@@ -158,21 +158,17 @@ export async function confirmSquad(multiplier) {
     userId: userId,
     owner_id: ownerId, // Cambiato da ownerId a owner_id
     opponent_id: opponentId, // Cambiato da opponentId a opponent_id
-    players: players.map(p => {
-      console.log("Dati giocatore originali:", p);
-      console.log("aep_id del giocatore:", p.aep_id);
-      return {
-        athleteId: parseInt(p.athlete_id),
-        eventUnitId: parseInt(p.event_unit_id),
-        event_unit_cost: parseFloat(p.event_unit_cost || 0), // Costo di ogni atleta
-        aep_id: p.aep_id || null // Usa il valore aep_id originale
-      };
-    }),
+    players: players.map(p => ({
+      athleteId: parseInt(p.athlete_id),
+      eventUnitId: parseInt(p.event_unit_id),
+      event_unit_cost: parseFloat(p.event_unit_cost || 0), // Costo di ogni atleta
+      aep_id: p.aep_id || null // Usa il valore aep_id originale
+    })),
     multiplier: parseFloat(selectedMultiplier),
     totalCost: baseTeamCost  // Il server calcolerà il costo finale moltiplicando per il multiplier
   };
   
-  console.log("Dati completi inviati in confirm-squad:", JSON.stringify(squadData));
+  console.log("Dati inviati in confirm-squad:", JSON.stringify(squadData));
   
   try {
     // Ottieni il token di autenticazione dal localStorage
@@ -212,5 +208,82 @@ export async function confirmSquad(multiplier) {
   } catch (error) {
     console.error("Errore nella conferma della squadra:", error);
     showErrorMessage(`Si è verificato un errore: ${error.message}`);
+  }
+  
+  async function confirmSquad() {
+    try {
+      const players = loadChosenPlayers();
+      if (!players.length) {
+        showErrorMessage("Devi scegliere almeno un giocatore!");
+        return;
+      }
+      
+      // Ottieni il valore del moltiplicatore
+      const multiply = selectedMultiplier || 1;
+      
+      // Ottieni i dati necessari
+      const contestId = window.contestId;
+      const userId = localStorage.getItem('userId');
+      const authToken = localStorage.getItem('authToken');
+      
+      if (!contestId || !userId || !authToken) {
+        showErrorMessage("Dati mancanti per confermare la squadra");
+        return;
+      }
+      
+      // Prepara i dati da inviare nel formato corretto
+      const playersData = players.map(player => {
+        // Verifica che i campi necessari siano presenti
+        if (!player.athleteId) {
+          console.error("Errore: athleteId mancante per un giocatore", player);
+          return null;
+        }
+        
+        return {
+          athlete_id: player.athleteId,
+          event_unit_cost: player.event_unit_cost,
+          aep_id: player.aep_id || null
+        };
+      }).filter(p => p !== null); // Rimuovi i giocatori nulli
+      
+      // Verifica che ci siano ancora giocatori dopo il filtraggio
+      if (!playersData.length) {
+        showErrorMessage("Nessun giocatore valido da inviare!");
+        return;
+      }
+      
+      const teamData = {
+        contest_id: parseInt(contestId),
+        user_id: parseInt(userId),
+        multiply: multiply,
+        players: playersData
+      };
+      
+      console.log("Dati squadra inviati:", teamData);
+      
+      // Invia i dati al server
+      const response = await fetch('/contests/confirm-squad', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`
+        },
+        body: JSON.stringify(teamData)
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: `Errore HTTP: ${response.status}` }));
+        console.error("Errore nella conferma della squadra:", response.status, errorData);
+        showErrorMessage(errorData.error || "Errore nella conferma della squadra");
+        return;
+      }
+      
+      // Squadra confermata con successo
+      localStorage.removeItem('chosenPlayers'); // Pulisci i dati della squadra
+      window.location.href = `/user-landing.html?user=${userId}`;
+    } catch (error) {
+      console.error("Errore nella conferma della squadra:", error);
+      showErrorMessage("Errore di rete o del server");
+    }
   }
 }

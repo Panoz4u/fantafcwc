@@ -234,10 +234,10 @@ router.get("/contest-details", authenticateToken, (req, res) => {
     const sqlTeam = `
       SELECT fte.*, fte.aep_id, a.athlete_shortname, a.picture, a.position, a.team_id, aep.event_unit_id  AS event_unit_id, aep.is_ended,
              COALESCE(ROUND(aep.athlete_unit_points, 1), 0) AS athlete_points,
-             m.home_team, m.away_team, 
+             m.home_team, m.away_team,
              ht.team_3letter AS home_team_code, at.team_3letter AS away_team_code,
              ht.team_name AS home_team_name, at.team_name AS away_team_name,
-             t.team_3letter AS player_team_code, t.team_name AS player_team_name,
+             t.team_3letter AS player_team_code, t.team_name AS player_team_name
       FROM fantasy_team_entities fte
       JOIN fantasy_teams ft ON fte.fantasy_team_id = ft.fantasy_team_id
       JOIN athletes a ON fte.athlete_id = a.athlete_id
@@ -395,21 +395,16 @@ router.post("/contest-details", authenticateToken, (req, res) => {
 
 /* POST /confirm-squad - Modificato per usare autenticazione JWT */
 router.post("/confirm-squad", authenticateToken, (req, res) => {
-  const { contestId, userId, players, multiplier, totalCost } = req.body;
+  const { contest_id, user_id, multiply, players } = req.body;
   
-  // Verifica che i dati necessari siano presenti
-  if (!contestId || !userId || !Array.isArray(players) || players.length === 0) {
-    return res.status(400).json({ error: "Dati mancanti o invalidi" });
+  if (!contest_id || !user_id || !players || !players.length) {
+    return res.status(400).json({ error: "Dati mancanti" });
   }
   
-  // Log per debug
-  console.log("Dati ricevuti in confirm-squad:", JSON.stringify(req.body));
-  console.log("Players ricevuti:", JSON.stringify(players));
-  
-  // Ottieni una connessione dal pool per la transazione
+  // Ottieni una connessione dal pool
   pool.getConnection((err, connection) => {
     if (err) {
-      console.error("Errore nella connessione al database:", err);
+      console.error("Errore nella connessione al DB:", err);
       return res.status(500).json({ error: "Errore di connessione al database" });
     }
     
@@ -423,130 +418,79 @@ router.post("/confirm-squad", authenticateToken, (req, res) => {
       
       try {
         // Calcola il costo totale della squadra
-        let baseTeamCost = 0;
-        players.forEach(p => {
-          baseTeamCost += parseFloat(p.event_unit_cost || 0);
+        const totalCost = players.reduce((sum, p) => sum + parseFloat(p.event_unit_cost || 0), 0);
+        
+        // Inserisci il fantasy team
+        const insertTeamSql = `
+          INSERT INTO fantasy_teams (contest_id, user_id, total_cost, updated_at)
+          VALUES (?, ?, ?, NOW())
+        `;
+        
+        const teamResult = await new Promise((resolve, reject) => {
+          connection.query(insertTeamSql, [contest_id, user_id, totalCost], (err, result) => {
+            if (err) reject(err);
+            else resolve(result);
+          });
         });
-        
-        // Usa il moltiplicatore fornito o default a 1
-        const effectiveMultiply = parseFloat(multiplier || 1);
-        const multipliedCost = baseTeamCost * effectiveMultiply;
-        
-        // Verifica che l'utente abbia abbastanza teex
-        const [userRows] = await connection.promise().query(
-          "SELECT teex_balance FROM users WHERE user_id = ?",
-          [userId]
-        );
-        
-        if (userRows.length === 0) {
-          return rollbackTransaction(connection, null, res, "Utente non trovato", 404);
-        }
-        
-        const userBalance = parseFloat(userRows[0].teex_balance);
-        if (userBalance < multipliedCost) {
-          return rollbackTransaction(connection, null, res, "Saldo Teex insufficiente", 400);
-        }
-        
-        // Ottieni informazioni sul contest
-        const [contestRows] = await connection.promise().query(
-          "SELECT status, owner_user_id, opponent_user_id, multiply FROM contests WHERE contest_id = ?",
-          [contestId]
-        );
-        
-        if (contestRows.length === 0) {
-          return rollbackTransaction(connection, null, res, "Contest non trovato", 404);
-        }
-        
-        const contest = contestRows[0];
-        const isOwner = parseInt(userId) === parseInt(contest.owner_user_id);
-        
-        // Inserisci il nuovo team
-        const [teamResult] = await connection.promise().query(
-          "INSERT INTO fantasy_teams (user_id, contest_id, total_cost, updated_at) VALUES (?, ?, ?, NOW())",
-          [userId, contestId, baseTeamCost]
-        );
         
         const teamId = teamResult.insertId;
         
-        // Inserisci tutti i giocatori, incluso aep_id
-        const playerValues = players.map(p => [
-          teamId, 
-          p.athleteId || p.athlete_id, 
-          p.event_unit_cost || 0,
-          p.aep_id || null  // Aggiungi aep_id qui
-        ]);
+        // Inserisci i giocatori del team
+        const insertPlayersSql = `
+          INSERT INTO fantasy_team_entities (fantasy_team_id, athlete_id, cost, aep_id)
+          VALUES (?, ?, ?, ?)
+        `;
         
-        if (playerValues.length > 0) {
-          const placeholders = playerValues.map(() => "(?, ?, ?, ?)").join(", ");
-          const flatValues = playerValues.flat();
-          
-          console.log("Inserimento giocatori con valori:", JSON.stringify(flatValues));
-          
-          await connection.promise().query(
-            `INSERT INTO fantasy_team_entities (fantasy_team_id, athlete_id, cost, aep_id) VALUES ${placeholders}`,
-            flatValues
-          );
-          
-          // Aggiorna lo stato del contest e il valore multiply
-          let updateFields = {};
-          
-          if (isOwner) {
-            updateFields = {
-              status: contest.status === 1 ? 2 : 1,
-              multiply: effectiveMultiply,
-              stake: baseTeamCost * effectiveMultiply
-            };
-          } else {
-            updateFields = {
-              status: contest.status === 1 ? 2 : 1
-            };
-            
-            if (contest.status === 0) {
-              updateFields.multiply = effectiveMultiply;
-            }
-            
-            if (contest.status === 1) {
-              const currentStake = parseFloat(contest.stake || 0);
-              const additionalStake = baseTeamCost * effectiveMultiply;
-              updateFields.stake = currentStake + additionalStake;
-            }
+        for (const player of players) {
+          // Verifica che athlete_id sia presente
+          if (!player.athlete_id) {
+            console.error("Errore: athlete_id mancante per un giocatore", player);
+            continue; // Salta questo giocatore
           }
           
-          console.log("Aggiornamento contest con campi:", JSON.stringify(updateFields));
-          
-          const updateSql = "UPDATE contests SET " + 
-            Object.keys(updateFields).map(k => `${k} = ?`).join(", ") +
-            ", updated_at = NOW() WHERE contest_id = ?";
-          
-          const updateParams = [...Object.values(updateFields), contestId];
-          
-          await connection.promise().query(updateSql, updateParams);
-          
-          // Sottrai il costo moltiplicato dal saldo dell'utente
-          await connection.promise().query(
-            "UPDATE users SET teex_balance = teex_balance - ? WHERE user_id = ?",
-            [multipliedCost, userId]
-          );
-          
-          // Commit della transazione
-          connection.commit((err) => {
-            if (err) {
-              return rollbackTransaction(connection, err, res, "Errore nel commit della transazione");
-            }
-            
-            connection.release();
-            res.json({ 
-              message: "Squadra confermata con successo",
-              multiply: effectiveMultiply,
-              baseTeamCost: baseTeamCost,
-              multipliedCost: multipliedCost
-            });
+          await new Promise((resolve, reject) => {
+            connection.query(
+              insertPlayersSql, 
+              [teamId, player.athlete_id, player.aep_id], // Assicurati di usare aep_id qui
+              (err, result) => {
+                if (err) reject(err);
+                else resolve(result);
+              }
+            );
           });
-        } else {
-          return rollbackTransaction(connection, null, res, "Nessun giocatore fornito", 400);
         }
+        
+        // Aggiorna lo stato del contest
+        const updateContestSql = `
+          UPDATE contests 
+          SET status = CASE 
+            WHEN status = 0 THEN 1 
+            WHEN status = 1 THEN 2 
+            ELSE status 
+          END,
+          multiply = ?,
+          updated_at = NOW()
+          WHERE contest_id = ?
+        `;
+        
+        await new Promise((resolve, reject) => {
+          connection.query(updateContestSql, [multiply || 1, contest_id], (err, result) => {
+            if (err) reject(err);
+            else resolve(result);
+          });
+        });
+        
+        // Commit della transazione
+        connection.commit((err) => {
+          if (err) {
+            return rollbackTransaction(connection, err, res, "Errore nel commit della transazione");
+          }
+          
+          connection.release();
+          res.json({ success: true, message: "Squadra confermata con successo" });
+        });
       } catch (error) {
-        return rollbackTransaction(connection, error, res, "Errore nell'elaborazione della richiesta");
+        return rollbackTransaction(connection, error, res, "Errore nell'inserimento della squadra");
       }
     });
   });

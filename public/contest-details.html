@@ -601,7 +601,7 @@
       
       const matchSpan = document.createElement("div");
       matchSpan.classList.add("match_3letter");
-      matchSpan.innerHTML = `<span style="font-weight: 800;">${player.player_team_code || ''}</span> | CONC: <span style="font-weight: 800;">${player.aep_id || player.event_unit_id || ''}</span>`;
+      matchSpan.innerHTML = `<span style="font-weight: 800;">${player.player_team_code || ''}</span> | CONC: <span style="font-weight: 800;">${player.event_unit_id || player.event_unit_id || ''}</span>`;
       
       infoBlock.appendChild(nameSpan);
       infoBlock.appendChild(matchSpan);

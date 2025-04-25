@@ -87,6 +87,20 @@
             
             // Aggiungi questa riga per verificare i valori
             console.log("Valori impostati - contestId:", window.contestId, "opponentId:", window.opponentId, "ownerId:", window.ownerId, "userId:", window.userId);
+            
+            // Aggiungi questo per verificare i dati dei giocatori
+            const chosenPlayers = JSON.parse(localStorage.getItem('chosenPlayers') || '[]');
+            console.log("Giocatori scelti con aep_id:", chosenPlayers);
+            
+            // Aggiungi questo per verificare che i giocatori abbiano l'aep_id
+            chosenPlayers.forEach((player, index) => {
+              console.log(`Giocatore ${index + 1}:`, player);
+              console.log(`  - athlete_id: ${player.athlete_id}`);
+              console.log(`  - aep_id: ${player.aep_id}`);
+              console.log(`  - event_unit_id: ${player.event_unit_id}`);
+              console.log(`  - event_unit_cost: ${player.event_unit_cost}`);
+            });
+            
             return; // Esci dalla funzione se abbiamo recuperato i dati dal localStorage
           }
         } else {
