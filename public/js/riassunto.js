@@ -233,7 +233,7 @@ async function initApp() {
       // ... logica per mostrare i team, ecc. ...
     
       // Aggiungi l'event listener al pulsante di conferma DOPO aver chiamato setupMultiplyForInvitedUser
-      const confirmButton = document.getElementById('confirmTeamButton'); // Assicurati che l'ID sia corretto
+      const confirmButton = document.getElementById('confirmFooterBtn'); // Corretto da 'confirmTeamButton'
       if (confirmButton) {
          // Rimuovi eventuali listener precedenti per sicurezza
          const newConfirmButton = confirmButton.cloneNode(true);

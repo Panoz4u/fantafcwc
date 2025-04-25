@@ -57,7 +57,7 @@ export function renderContestHeader(contestData) {
   // Determina la classe corretta per il badge di stato
   let statusBadgeClass = "status-badge";
   if (contestData.status === 1 && !iAmOwner) {
-    statusBadgeClass = "status-invited";
+    statusBadgeClass = "status-badge-invited";
   }
   
   card.innerHTML = `
