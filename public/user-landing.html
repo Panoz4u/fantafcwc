@@ -513,16 +513,33 @@
           const [myPointsInt, myPointsDec = "0"] = myPointsStr.split('.');
           const [oppPointsInt, oppPointsDec = "0"] = oppPointsStr.split('.');
           
-          // Determina la classe del badge in base al valore di ft_teex_won
+          // Calcola il valore corretto dei teex vinti in base alle regole
+          const stake = parseFloat(contest.stake || 0);
+          const myCost = parseFloat(iAmOwner ? contest.owner_cost : contest.opponent_cost || 0);
+          const multiply = parseFloat(contest.multiply || 1);
+          
+          // Ricalcola i teex vinti in base alle regole specificate
+          if (myResult === 1) {
+            // Vittoria: stake - (myCost * multiply)
+            myTeexWon = stake - (myCost * multiply);
+          } else if (myResult === -1) {
+            // Sconfitta: -(myCost * multiply)
+            myTeexWon = -(myCost * multiply);
+          } else {
+            // Pareggio: (stake/2) - (myCost * multiply)
+            myTeexWon = (stake/2) - (myCost * multiply);
+          }
+          
+          // Determina la classe del badge in base al valore di myTeexWon
           let badgeClass = "status-badge-draw";
-          let badgeText = "DRAW";
+          let badgeText = `${myTeexWon.toFixed(1)}`;
           
           if (myTeexWon > 0) {
             badgeClass = "status-badge-win";
             badgeText = `+${myTeexWon.toFixed(1)}`;
           } else if (myTeexWon < 0) {
             badgeClass = "status-badge-loss";
-            badgeText = "LOSE";
+            badgeText = `${myTeexWon.toFixed(1)}`;
           }
           
           contestCard.innerHTML = `

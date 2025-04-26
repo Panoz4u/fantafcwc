@@ -377,12 +377,22 @@ function closeContests(eventUnitId) {
                   const multiply = parseFloat(multiplyResults[0]?.multiply || 1); // Default a 1 se non trovato
                   console.log(`Contest ${contestId} - multiply: ${multiply}`);
                   
-                  // Calcola i teex vinti in base alle nuove regole con multiply
-                  const ownerTeexWon = (ownerResult === 1) ? (stake - (ownerCost * multiply)) : 
-                                   (ownerResult === 0 ? (stake/2) - (ownerCost * multiply) : -(ownerCost * multiply));
+                  // Calcola i teex vinti in base alle nuove regole
+                  let ownerTeexWon, opponentTeexWon;
                   
-                  const opponentTeexWon = (opponentResult === 1) ? (stake - (opponentCost * multiply)) : 
-                                          (opponentResult === 0 ? (stake/2) - (opponentCost * multiply) : -(opponentCost * multiply));
+                  if (ownerPoints > opponentPoints) {
+                    // Owner ha vinto, riceve tutto lo stake
+                    ownerTeexWon = stake;
+                    opponentTeexWon = 0;
+                  } else if (ownerPoints < opponentPoints) {
+                    // Opponent ha vinto, riceve tutto lo stake
+                    ownerTeexWon = 0;
+                    opponentTeexWon = stake;
+                  } else {
+                    // Pareggio, entrambi ricevono metà dello stake
+                    ownerTeexWon = stake / 2;
+                    opponentTeexWon = stake / 2;
+                  }
                   
                   console.log(`Contest ${contestId} - Owner teex won: ${ownerTeexWon}, Opponent teex won: ${opponentTeexWon}`);
                   

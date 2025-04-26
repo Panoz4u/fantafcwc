@@ -503,6 +503,23 @@
         const [myPointsInt, myPointsDec = "0"] = myPointsStr.split('.');
         const [oppPointsInt, oppPointsDec = "0"] = oppPointsStr.split('.');
 
+        // Calcola il valore corretto dei teex vinti in base alle regole
+        const stake = parseFloat(contestData.stake || 0);
+        const myCost = parseFloat(iAmOwner ? contestData.owner_cost : contestData.opponent_cost || 0);
+        const multiply = parseFloat(contestData.multiply || 1);
+        
+        // Ricalcola i teex vinti in base alle regole specificate
+        if (myResult === 1) {
+          // Vittoria: stake - (myCost * multiply)
+          myTeexWon = stake - (myCost * multiply);
+        } else if (myResult === -1) {
+          // Sconfitta: -(myCost * multiply)
+          myTeexWon = -(myCost * multiply);
+        } else {
+          // Pareggio: (stake/2) - (myCost * multiply)
+          myTeexWon = (stake/2) - (myCost * multiply);
+        }
+
         // Determina lo stile del badge in base al valore di ft_teex_won
         let badgeClass = "status-badge-draw";
         if (myTeexWon > 0) {
