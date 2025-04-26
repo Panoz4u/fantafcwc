@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fanteex - Chiudi Sfide Scadute</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,800;1,800&family=Barlow+Condensed:wght@400;700&display=swap" rel="stylesheet">
+
+  
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #260E3D;
+      background-image: url('images/GradientBG.png');
+      background-size: cover;
+      background-position: center top;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      color: #fff;
+      position: relative;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding: 20px;
+      background-color: rgba(10, 0, 52, 0.7);
+      border-radius: 10px;
+    }
+    
+    h1 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 36px;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    
+    h2 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 24px;
+      font-weight: 400;
+      opacity: 0.8;
+    }
+    
+    .info {
+      background-color: rgba(10, 0, 52, 0.7);
+      border-left: 6px solid #5DFDCB;
+      padding: 15px;
+      margin-bottom: 30px;
+      border-radius: 0 10px 10px 0;
+    }
+    
+    .info p {
+      margin-bottom: 10px;
+    }
+    
+    .info p:last-child {
+      margin-bottom: 0;
+    }
+    
+    .upload-section {
+      background-color: rgba(10, 0, 52, 0.7);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .section-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 15px;
+      color: #5DFDCB;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      display: block;
+      margin-bottom: 8px;
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+    
+    .btn {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      text-transform: uppercase;
+      border-radius: 50px;
+      padding: 12px 24px;
+      border: none;
+      cursor: pointer;
+      text-align: center;
+      display: inline-block;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary {
+      background-color: #FE4208;
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background-color: #ff5a28;
+      box-shadow: 0 5px 15px rgba(254, 66, 8, 0.4);
+    }
+    
+    .btn-secondary {
+      background-color: #5DFDCB;
+      color: #0A0034;
+      margin-right: 10px;
+    }
+    
+    .btn-secondary:hover {
+      background-color: #7dffd5;
+      box-shadow: 0 5px 15px rgba(93, 253, 203, 0.4);
+    }
+    
+    .btn-dark {
+      background-color: #0B0C2A;
+      color: white;
+      border: 2px solid #5DFDCB;
+    }
+    
+    .btn-dark:hover {
+      background-color: #161856;
+      box-shadow: 0 5px 15px rgba(11, 12, 42, 0.4);
+    }
+    
+    .back-button {
+      display: inline-block;
+      margin-top: 20px;
+    }
+    
+    .status-message {
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
+    }
+    
+    .status-success {
+      background-color: rgba(93, 253, 203, 0.2);
+      color: #5DFDCB;
+    }
+    
+    .status-error {
+      background-color: rgba(254, 66, 8, 0.2);
+      color: #FE4208;
+    }
+    
+    .sfide-list {
+      margin-top: 20px;
+    }
+    
+    .sfida-item {
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .sfida-info {
+      flex: 1;
+    }
+    
+    .sfida-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+    
+    .sfida-details {
+      font-size: 14px;
+      opacity: 0.8;
+    }
+    
+    .sfida-actions {
+      display: flex;
+      gap: 10px;
+    }
+    
+    footer {
+      text-align: center;
+      padding: 20px;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: rgba(10, 0, 52, 0.7);
+    }
+    
+    /* Stili per la tabella */
+    .sfide-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      color: #fff;
+    }
+    
+    .sfide-table th, .sfide-table td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .sfide-table th {
+      background-color: rgba(10, 0, 52, 0.8);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    
+    .sfide-table th:hover {
+      background-color: rgba(93, 253, 203, 0.2);
+    }
+    
+    .sfide-table tr:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+    
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 20px;
+      gap: 15px;
+    }
+    
+    #pageInfo {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 18px;
+    }
+    
+    /* Stili per il modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+    }
+    
+    .modal-content {
+      background-color: #260E3D;
+      margin: 15% auto;
+      padding: 20px;
+      border: 2px solid #5DFDCB;
+      border-radius: 10px;
+      width: 50%;
+      max-width: 500px;
+      position: relative;
+    }
+    
+    .close {
+      color: #5DFDCB;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    
+    .close:hover {
+      color: #FE4208;
+    }
+    
+    .modal-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 20px;
+    }
+    
+    .table-container {
+      overflow-x: auto;
+    }
+    
+    /* Stili per i pulsanti piccoli nella tabella */
+    .btn-small {
+      padding: 6px 12px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Chiudi Sfide Scadute</h1>
+      <h2>Gestione delle sfide che hanno raggiunto la data di scadenza</h2>
+    </header>
+    
+    <div class="info">
+      <p>Da questa pagina puoi visualizzare e chiudere automaticamente le sfide che hanno raggiunto la data di scadenza.</p>
+      <p>Le sfide chiuse verranno elaborate e i risultati saranno aggiornati nel sistema.</p>
+    </div>
+    
+    <div class="upload-section">
+      <h3 class="section-title">Sfide Scadute</h3>
+      
+      <div id="statusMessage" class="status-message"></div>
+      
+      <div class="form-group">
+        <label for="statusFilter" class="form-label">Filtra per stato:</label>
+        <select id="statusFilter" class="form-input">
+          <option value="0" selected>Created (0)</option>
+          <option value="1">Pending (1)</option>
+          <option value="2">Ready (2)</option>
+          <option value="4">Live (4)</option>
+          <option value="5">Completed (5)</option>
+          <option value="all">Tutte</option>
+        </select>
+        
+        <label for="sortBy" class="form-label">Ordina per:</label>
+        <select id="sortBy" class="form-input">
+          <option value="created_at" selected>Data creazione (più vecchie)</option>
+          <option value="contest_id">ID Sfida</option>
+          <option value="owner_id">Owner</option>
+          <option value="opponent_id">Opponent</option>
+          <option value="status">Status</option>
+          <option value="updated_at">Data aggiornamento</option>
+        </select>
+        
+        <button id="refreshButton" class="btn btn-secondary">Aggiorna Lista</button>
+        <button id="deleteSelectedButton" class="btn btn-primary">Cancella Selezionate</button>
+        <button id="deleteExpiredButton" class="btn btn-dark">Cancella Sfide Scadute</button>
+      </div>
+      
+      <div class="table-container">
+        <table class="sfide-table">
+          <thead>
+            <tr>
+              <th><input type="checkbox" id="selectAll"></th>
+              <th>ID Sfida</th>
+              <th>Owner</th>
+              <th>Opponent</th>
+              <th>Status</th>
+              <th>Data Creazione</th>
+              <th>Ultimo Aggiornamento</th>
+              <th>Azioni</th>
+            </tr>
+          </thead>
+          <tbody id="sfideList">
+            <!-- Le sfide verranno caricate qui dinamicamente -->
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="pagination" id="pagination">
+        <!-- Paginazione -->
+        <button id="prevPage" class="btn btn-dark">Precedente</button>
+        <span id="pageInfo">Pagina 1 di 1</span>
+        <button id="nextPage" class="btn btn-dark">Successiva</button>
+      </div>
+    </div>
+    
+    <!-- Modal per conferma cancellazione sfide scadute -->
+    <div id="deleteModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Conferma Cancellazione</h2>
+        <p id="modalMessage">Vuoi veramente cancellare tutte le sfide scadute?</p>
+        <p id="expiredCount"></p>
+        <div class="modal-buttons">
+          <button id="confirmDelete" class="btn btn-primary">Conferma</button>
+          <button id="cancelDelete" class="btn btn-dark">Annulla</button>
+        </div>
+      </div>
+    </div>
+    
+    <a href="FanteexBackend.html" class="btn btn-dark back-button">Torna al Backend</a>
+  </div>
+  
+  <footer>
+    <p>&copy; 2023 Fanteex - Admin Panel</p>
+  </footer>
+  
+  <script src="expiredcontests.js"></script>
+</body>
+</html>
+<!-- Inizializzazione Firebase -->
+<script>
+
+
+const dbsfide = require('./dbsfide');
+
+// Esempio di utilizzo per ottenere tutte le sfide
+dbsfide.getAllContests()
+  .then(contests => {
+    console.log('Sfide recuperate:', contests);
+    // Elabora i dati delle sfide
+  })
+  .catch(err => {
+    console.error('Errore:', err);
+  });
+
+// Esempio di utilizzo per eliminare una sfida
+dbsfide.deleteContest(123)
+  .then(result => {
+    console.log(result.message);
+  })
+  .catch(err => {
+    console.error('Errore:', err);
+  });
+  // Configurazione Firebase
+  const firebaseConfig = {
+    // Inserisci qui la tua configurazione Firebase
+    // apiKey, authDomain, projectId, ecc.
+  };
+  
+  // Inizializza Firebase
+  firebase.initializeApp(firebaseConfig);
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Riferimento alla tabella dove mostreremo le sfide
+    const sfideTable = document.getElementById('sfideTable');
+    const tableBody = document.getElementById('sfideTableBody');
+    
+    // Funzione per caricare le sfide scadute dal database
+    function caricaSfideScadute() {
+      // Mostra un messaggio di caricamento
+      tableBody.innerHTML = '<tr><td colspan="5" class="text-center">Caricamento sfide in corso...</td></tr>';
+      
+      // Utilizzo di Firebase per connettersi al database
+      const db = firebase.firestore();
+      
+      // Ottieni la data corrente
+      const oggi = new Date();
+      
+      // Query per ottenere le sfide scadute dalla tabella contest
+      db.collection("contest")
+        .where("dataScadenza", "<", oggi)
+        .where("stato", "==", "attiva")
+        .get()
+        .then((querySnapshot) => {
+          // Svuota la tabella prima di aggiungere nuove righe
+          tableBody.innerHTML = '';
+          
+          if (querySnapshot.empty) {
+            tableBody.innerHTML = '<tr><td colspan="5" class="text-center">Nessuna sfida scaduta trovata</td></tr>';
+            return;
+          }
+          
+          // Aggiungi ogni sfida alla tabella
+          querySnapshot.forEach((doc) => {
+            const sfida = doc.data();
+            const sfidaId = doc.id;
+            
+            const row = document.createElement('tr');
+            
+            // Formatta la data di scadenza
+            const dataScadenza = sfida.dataScadenza.toDate();
+            const dataFormattata = `${dataScadenza.getDate()}/${dataScadenza.getMonth() + 1}/${dataScadenza.getFullYear()}`;
+            
+            row.innerHTML = `
+              <td>${sfida.nome || 'N/D'}</td>
+              <td>${sfida.creatore || 'N/D'}</td>
+              <td>${sfida.sfidante || 'N/D'}</td>
+              <td>${dataFormattata}</td>
+              <td>
+                <button class="btn btn-primary btn-sm" onclick="chiudiSfida('${sfidaId}')">Chiudi</button>
+              </td>
+            `;
+            
+            tableBody.appendChild(row);
+          });
+        })
+        .catch((error) => {
+          console.error("Errore nel recupero delle sfide:", error);
+          tableBody.innerHTML = `<tr><td colspan="5" class="text-center">Errore nel caricamento delle sfide: ${error.message}</td></tr>`;
+        });
+    }
+    
+    // Funzione per chiudere una sfida
+    window.chiudiSfida = function(sfidaId) {
+      if (confirm("Sei sicuro di voler chiudere questa sfida?")) {
+        const db = firebase.firestore();
+        
+        db.collection("contest").doc(sfidaId).update({
+          stato: "chiusa",
+          dataChiusura: firebase.firestore.FieldValue.serverTimestamp()
+        })
+        .then(() => {
+          alert("Sfida chiusa con successo!");
+          caricaSfideScadute(); // Ricarica la lista
+        })
+        .catch((error) => {
+          console.error("Errore nella chiusura della sfida:", error);
+          alert(`Errore: ${error.message}`);
+        });
+      }
+    }
+    
+    // Carica le sfide quando la pagina è pronta
+    caricaSfideScadute();
+    
+    // Aggiungi un pulsante per ricaricare manualmente
+    const reloadButton = document.getElementById('reloadButton');
+    if (reloadButton) {
+      reloadButton.addEventListener('click', caricaSfideScadute);
+    }
+  });
+</script>
+
+<div class="container">
+  <div class="row mb-3">
+    <div class="col">
+      <button id="reloadButton" class="btn btn-primary">Ricarica Sfide</button>
+    </div>
+  </div>
+  
+  <div class="table-responsive">
+    <table id="sfideTable" class="sfide-table">
+      <thead>
+        <tr>
+          <th>Nome Sfida</th>
+          <th>Creatore</th>
+          <th>Sfidante</th>
+          <th>Data Scadenza</th>
+          <th>Azioni</th>
+        </tr>
+      </thead>
+      <tbody id="sfideTableBody">
+        <!-- Le sfide verranno caricate qui dinamicamente -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Rimuovi questo blocco di codice -->
+<!--
+<script>
+const dbsfide = require('./dbsfide');
+
+// Esempio di utilizzo per ottenere tutte le sfide
+dbsfide.getAllContests()
+  .then(contests => {
+    console.log('Sfide recuperate:', contests);
+    // Elabora i dati delle sfide
+  })
+  .catch(err => {
+    console.error('Errore:', err);
+  });
+
+// Esempio di utilizzo per eliminare una sfida
+dbsfide.deleteContest(123)
+  .then(result => {
+    console.log(result.message);
+  })
+  .catch(err => {
+    console.error('Errore:', err);
+  });
+</script>
+-->
+  // Configurazione Firebase
+  const firebaseConfig = {
+    // Inserisci qui la tua configurazione Firebase
+    // apiKey, authDomain, projectId, ecc.
+  };
+  
+  // Inizializza Firebase
+  firebase.initializeApp(firebaseConfig);
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Riferimento alla tabella dove mostreremo le sfide
+    const sfideTable = document.getElementById('sfideTable');
+    const tableBody = document.getElementById('sfideTableBody');
+    
+    // Funzione per caricare le sfide scadute dal database
+    function caricaSfideScadute() {
+      // Mostra un messaggio di caricamento
+      tableBody.innerHTML = '<tr><td colspan="5" class="text-center">Caricamento sfide in corso...</td></tr>';
+      
+      // Utilizzo di Firebase per connettersi al database
+      const db = firebase.firestore();
+      
+      // Ottieni la data corrente
+      const oggi = new Date();
+      
+      // Query per ottenere le sfide scadute dalla tabella contest
+      db.collection("contest")
+        .where("dataScadenza", "<", oggi)
+        .where("stato", "==", "attiva")
+        .get()
+        .then((querySnapshot) => {
+          // Svuota la tabella prima di aggiungere nuove righe
+          tableBody.innerHTML = '';
+          
+          if (querySnapshot.empty) {
+            tableBody.innerHTML = '<tr><td colspan="5" class="text-center">Nessuna sfida scaduta trovata</td></tr>';
+            return;
+          }
+          
+          // Aggiungi ogni sfida alla tabella
+          querySnapshot.forEach((doc) => {
+            const sfida = doc.data();
+            const sfidaId = doc.id;
+            
+            const row = document.createElement('tr');
+            
+            // Formatta la data di scadenza
+            const dataScadenza = sfida.dataScadenza.toDate();
+            const dataFormattata = `${dataScadenza.getDate()}/${dataScadenza.getMonth() + 1}/${dataScadenza.getFullYear()}`;
+            
+            row.innerHTML = `
+              <td>${sfida.nome || 'N/D'}</td>
+              <td>${sfida.creatore || 'N/D'}</td>
+              <td>${sfida.sfidante || 'N/D'}</td>
+              <td>${dataFormattata}</td>
+              <td>
+                <button class="btn btn-primary btn-sm" onclick="chiudiSfida('${sfidaId}')">Chiudi</button>
+              </td>
+            `;
+            
+            tableBody.appendChild(row);
+          });
+        })
+        .catch((error) => {
+          console.error("Errore nel recupero delle sfide:", error);
+          tableBody.innerHTML = `<tr><td colspan="5" class="text-center">Errore nel caricamento delle sfide: ${error.message}</td></tr>`;
+        });
+    }
+    
+    // Funzione per chiudere una sfida
+    window.chiudiSfida = function(sfidaId) {
+      if (confirm("Sei sicuro di voler chiudere questa sfida?")) {
+        const db = firebase.firestore();
+        
+        db.collection("contest").doc(sfidaId).update({
+          stato: "chiusa",
+          dataChiusura: firebase.firestore.FieldValue.serverTimestamp()
+        })
+        .then(() => {
+          alert("Sfida chiusa con successo!");
+          caricaSfideScadute(); // Ricarica la lista
+        })
+        .catch((error) => {
+          console.error("Errore nella chiusura della sfida:", error);
+          alert(`Errore: ${error.message}`);
+        });
+      }
+    }
+    
+    // Carica le sfide quando la pagina è pronta
+    caricaSfideScadute();
+    
+    // Aggiungi un pulsante per ricaricare manualmente
+    const reloadButton = document.getElementById('reloadButton');
+    if (reloadButton) {
+      reloadButton.addEventListener('click', caricaSfideScadute);
+    }
+  });
+</script>
+
+<div class="container">
+  <div class="row mb-3">
+    <div class="col">
+      <button id="reloadButton" class="btn btn-primary">Ricarica Sfide</button>
+    </div>
+  </div>
+  
+  <div class="table-responsive">
+    <table id="sfideTable" class="sfide-table">
+      <thead>
+        <tr>
+          <th>Nome Sfida</th>
+          <th>Creatore</th>
+          <th>Sfidante</th>
+          <th>Data Scadenza</th>
+          <th>Azioni</th>
+        </tr>
+      </thead>
+      <tbody id="sfideTableBody">
+        <!-- Le sfide verranno caricate qui dinamicamente -->
+      </tbody>
+    </table>
+  </div>
+</div>

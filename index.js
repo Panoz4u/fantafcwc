@@ -4,13 +4,78 @@ const express = require("express");
 const app = express();
 const port = process.env.PORT || 3000;
 const pool = require("./db");
-const jwt = require('jsonwebtoken'); // Aggiungi questa riga
-const bcrypt = require('bcrypt'); // Aggiungi questa riga se vuoi gestire password
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const bodyParser = require('body-parser');
 const fcserverRoutes = require('./public/fcserver');
+
+// Import the dbsfide module
+const dbsfide = require('./dbsfide');
+
+// Configure middleware
 app.use(express.json());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use('/fcserver', fcserverRoutes);
 
+// Create a router for the API endpoints
+const sfideRouter = express.Router();
+
+// Define the API routes for contests
+sfideRouter.get('/contests/list', async (req, res) => {
+  try {
+    const contests = await dbsfide.getAllContests();
+    res.json(contests);
+  } catch (error) {
+    console.error('Errore nel recupero delle sfide:', error);
+    res.status(500).json({ error: 'Errore nel recupero delle sfide' });
+  }
+});
+
+sfideRouter.delete('/contests/:id', async (req, res) => {
+  try {
+    const result = await dbsfide.deleteContest(req.params.id);
+    res.json(result);
+  } catch (error) {
+    console.error('Errore nella cancellazione della sfida:', error);
+    res.status(500).json({ error: 'Errore nella cancellazione della sfida' });
+  }
+});
+
+sfideRouter.post('/contests/bulk-delete', async (req, res) => {
+  try {
+    const result = await dbsfide.deleteMultipleContests(req.body.contestIds);
+    res.json(result);
+  } catch (error) {
+    console.error('Errore nella cancellazione delle sfide:', error);
+    res.status(500).json({ error: 'Errore nella cancellazione delle sfide' });
+  }
+});
+
+sfideRouter.get('/contests/count-expired', async (req, res) => {
+  try {
+    const count = await dbsfide.countExpiredContests();
+    res.json({ count });
+  } catch (error) {
+    console.error('Errore nel conteggio delle sfide scadute:', error);
+    res.status(500).json({ error: 'Errore nel conteggio delle sfide scadute' });
+  }
+});
+
+sfideRouter.post('/contests/delete-expired', async (req, res) => {
+  try {
+    const result = await dbsfide.deleteExpiredContests();
+    res.json(result);
+  } catch (error) {
+    console.error('Errore nella cancellazione delle sfide scadute:', error);
+    res.status(500).json({ error: 'Errore nella cancellazione delle sfide scadute' });
+  }
+});
+
+// Use the router for the API endpoints
+app.use('/api', sfideRouter);
 
 // Funzioni di avatarUtils.js spostate qui
 // Definisci le funzioni per la gestione degli avatar
@@ -83,10 +148,8 @@ app.get('/js/avatar-functions.js', (req, res) => {
   `);
 });
 
-
-
 // Chiave segreta per i JWT (meglio metterla in .env)
-const JWT_SECRET = process.env.JWT_SECRET || 'chiave_segreta_molto_sicura'; // Aggiungi questa riga
+const JWT_SECRET = process.env.JWT_SECRET || 'chiave_segreta_molto_sicura';
 
 // Middleware per verificare il token JWT
 const authenticateToken = (req, res, next) => {
@@ -112,7 +175,6 @@ const authenticateToken = (req, res, next) => {
 const uploadResultsRoute = require("./uploadResults"); // Assicurati che il percorso sia corretto
 app.use("/uploadResults", uploadResultsRoute);
 
-
 const athletesRoutes = require("./server/routes/athletes");
 const contestsRoutes = require("./contests"); // Importa il nuovo modulo contests
 
@@ -120,14 +182,6 @@ const contestsRoutes = require("./contests"); // Importa il nuovo modulo contest
 app.use("/uploadResults", uploadResultsRoute);
 app.use("/", athletesRoutes);
 app.use("/contests", contestsRoutes);
-//app.use("/confirm-squad", contestsRoutes);
-//app.use("/contest-details", contestsRoutes);  // Assicurati che questa riga sia presente
-// Rimuovi queste righe duplicate
-// app.use("/confirm-squad", contestsRoutes);
-// app.use("/contest-details", contestsRoutes);
-
-// Remove this line if it still exists (it was commented out already)
-// app.use("/user-landing-info", authenticateToken, contestsRoutes);
 
 // Keep the direct route handler for /user-landing-info if needed,
 // or move it into contests.js under the path /user-landing-info
@@ -170,11 +224,6 @@ app.get("/user-landing-info", authenticateToken, (req, res) => {
       const active = [];
       const completed = [];
       contests.forEach(r => {
-        // Qui la logica per calcolare status_display se necessario,
-        // o assicurarsi che venga fatto come prima.
-        // Il codice fornito in precedenza per contests.js aveva già questa logica,
-        // quindi potrebbe essere necessario copiarla qui se non c'è già.
-        // Assumendo che la logica per active/completed sia sufficiente per ora:
         if(r.status === 5) completed.push(r);
         else active.push(r);
       });
@@ -293,6 +342,7 @@ app.get("/users", (req, res) => {
     res.json(rows);
   });
 });
+
 /*****************************
  * POST /users
  *****************************/
@@ -350,13 +400,6 @@ app.post("/users", (req, res) => {
   });
 });
 
-
-
-
-/* Endpoint per verificare l'unicità del nome utente
-
-Questo endpoint rimane invariato, poiché non fa riferimento al campo `user_color`:
-```javascript
 /* Endpoint per verificare l'unicità del nome utente */
 app.get("/check-username", (req, res) => {
   const username = req.query.username;
@@ -380,6 +423,7 @@ app.get("/check-username", (req, res) => {
     }
   });
 });
+
 /* Endpoint per ottenere un utente tramite email */
 app.get("/user-by-email", (req, res) => {
   const email = req.query.email;
@@ -401,7 +445,6 @@ app.get("/user-by-email", (req, res) => {
     }
   });
 });
-
 
 // GET /current-event-unit
 app.get("/current-event-unit", (req, res) => {
@@ -449,12 +492,13 @@ app.get("/athlete-details", (req, res) => {
     res.json(rows[0]);
   });  
 });
+
 // Aggiungi questa riga dopo la dichiarazione di uploadResultsRoute
 const uploadLineupsRoute = require("./uploadLineups");
 // Aggiungi questa riga dopo app.use("/uploadResults", uploadResultsRoute);
 app.use("/uploadLineups", uploadLineupsRoute);
 
-// Add a single app.listen call at the end of the file
+// Start the server
 app.listen(port, '0.0.0.0', () => {
   console.log(`Server avviato su http://0.0.0.0:${port}`);
 }).on('error', (err) => {
@@ -465,7 +509,6 @@ app.listen(port, '0.0.0.0', () => {
     console.error('Server error:', err);
   }
 });
-
 
 // Endpoint per gestire l'upload dei match
 app.post('/api/matches/upload', async (req, res) => {
