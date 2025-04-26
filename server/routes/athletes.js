@@ -92,7 +92,7 @@ router.get("/aep-event-unit", (req, res) => {
     return res.status(400).json({ error: "Parametro aep_id mancante" });
   }
   const sql = `
-    SELECT event_unit_id
+    SELECT event_unit_id, athlete_unit_points, status, is_ended
     FROM athlete_eventunit_participation
     WHERE aep_id = ?
     LIMIT 1
@@ -105,7 +105,12 @@ router.get("/aep-event-unit", (req, res) => {
     if (rows.length === 0) {
       return res.status(404).json({ error: "Nessun risultato per questo aep_id" });
     }
-    res.json({ event_unit_id: rows[0].event_unit_id });
+    res.json({ 
+      event_unit_id: rows[0].event_unit_id,
+      athlete_unit_points: rows[0].athlete_unit_points,
+      status: rows[0].status,
+      is_ended: rows[0].is_ended
+    });
   });
 });
 module.exports = router;

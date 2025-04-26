@@ -7,7 +7,8 @@ const pool = require("./db");
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
-const fcserverRoutes = require('./public/fcserver');
+// Comment out or remove this line:
+// const fcserver = require('./public/fcserver');
 
 // Import the dbsfide module
 const dbsfide = require('./dbsfide');
@@ -18,7 +19,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/fcserver', fcserverRoutes);
+
 
 // Create a router for the API endpoints
 const sfideRouter = express.Router();
@@ -176,12 +177,14 @@ const uploadResultsRoute = require("./uploadResults"); // Assicurati che il perc
 app.use("/uploadResults", uploadResultsRoute);
 
 const athletesRoutes = require("./server/routes/athletes");
-const contestsRoutes = require("./contests"); // Importa il nuovo modulo contests
+const contestsRoutes = require("./contests"); 
+const fantasyResultRoutes = require("./fantasyresult"); // Aggiungi questa riga
 
 // Usa le routes
 app.use("/uploadResults", uploadResultsRoute);
 app.use("/", athletesRoutes);
 app.use("/contests", contestsRoutes);
+app.use("/fantasy", fantasyResultRoutes); // Aggiungi questa riga
 
 // Keep the direct route handler for /user-landing-info if needed,
 // or move it into contests.js under the path /user-landing-info

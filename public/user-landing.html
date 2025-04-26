@@ -130,45 +130,12 @@
           return "avatars/" + avatar;
         }
       } else {
-        // Se non c'è avatar, generiamo un data URL con un cerchio colorato e le iniziali
-        return generateColoredInitialsAvatar(username, userColor);
+        // Se non c'è avatar, usa l'immagine silhouette predefinita
+        return "images/silouette.jpg";
       }
     }
 
-    // Funzione per generare un avatar colorato con le iniziali
-    function generateColoredInitialsAvatar(username, color) {
-      console.log("Generazione avatar con:", { username, color });
-      
-      // Usa un colore predefinito se non è specificato
-      const bgColor = color || "ff5500";
-      
-      // Ottieni le prime 3 lettere dello username (o meno se lo username è più corto)
-      const initials = username ? username.substring(0, 3).toUpperCase() : "?";
-      
-      // Crea un canvas temporaneo
-      const canvas = document.createElement("canvas");
-      canvas.width = 200;
-      canvas.height = 200;
-      const ctx = canvas.getContext("2d");
-      
-      // Disegna il cerchio colorato
-      ctx.fillStyle = "#" + bgColor;
-      ctx.beginPath();
-      ctx.arc(100, 100, 100, 0, Math.PI * 2);
-      ctx.fill();
-      
-      // Imposta lo stile del testo
-      ctx.fillStyle = "#FFFFFF";
-      ctx.font = "bold 80px 'Barlow Condensed', sans-serif";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      
-      // Disegna le iniziali
-      ctx.fillText(initials, 100, 100);
-      
-      // Converti il canvas in un data URL
-      return canvas.toDataURL("image/png");
-    }
+    // La funzione generateColoredInitialsAvatar è stata rimossa perché non serve più
 
     // Ottieni l'ID utente dal localStorage invece che dall'URL
     const userId = localStorage.getItem('userId');
@@ -243,6 +210,18 @@
             });
           });
         }
+      });
+      
+      // Chiama calculateContestPoints per ogni contest e visualizza i risultati
+      filteredList.forEach(contest => {
+        fetch(`/fantasy/contest-points?contest_id=${contest.contest_id}`)
+          .then(response => response.json())
+          .then(data => {
+            console.log(`Risultati calculateContestPoints per contest ${contest.contest_id}:`, data);
+          })
+          .catch(error => {
+            console.error(`Errore nel recupero dei punti per il contest ${contest.contest_id}:`, error);
+          });
       });
       
       if (!filteredList.length) {
@@ -328,7 +307,7 @@
             } else {
               localStorage.removeItem('eventUnitId');
             }
-            
+           
             // Salva i dati nel formato richiesto da riassunto.html
             const contestData = {
               contestId: this.dataset.contestId,
@@ -423,53 +402,101 @@
           console.log("Status display:", contest.status_display);
           console.log("iAmOwner:", iAmOwner);
           
-          // Valori predefiniti
-          let myScore = 0;
-          let oppScore = 0;
-          
-          // Estrai i punteggi dal status_display
-          if (contest.status_display && contest.status_display !== "live") {
-            const parts = contest.status_display.split('-');
-            if (parts.length === 2) {
-              // Assegna direttamente il primo valore al current user e il secondo allo sfidante
-              myScore = parseFloat(parts[0]) || 0;
-              oppScore = parseFloat(parts[1]) || 0;
+          // Carica i punteggi aggiornati dal nuovo endpoint
+          fetch(`/fantasy/contest-points?contest_id=${contest.contest_id}`)
+            .then(response => response.json())
+            .then(data => {
+              console.log(`Risultati calculateContestPoints per contest ${contest.contest_id}:`, data);
               
-              console.log("Raw scores from status_display:", myScore, oppScore);
-              console.log("Punteggio utente corrente:", myScore);
-              console.log("Punteggio sfidante:", oppScore);
-            }
-          }
-          
-          const myScoreStr = myScore.toFixed(1);
-          const oppScoreStr = oppScore.toFixed(1);
-          console.log("Score strings:", myScoreStr, oppScoreStr);
-          
-          const [myScoreInt, myScoreDec = "0"] = myScoreStr.split('.');
-          const [oppScoreInt, oppScoreDec = "0"] = oppScoreStr.split('.');
-          console.log("Score parts:", myScoreInt, myScoreDec, oppScoreInt, oppScoreDec);
-          
-          contestCard.innerHTML = `
-            <div class="contest-container cc-list">
-              <div class="contest-bar">
-                <img src="${getAvatarSrc(myAvatar)}" alt="${myName}" class="player-avatar-contest left-avatar">
-                <div class="triletter_contest left-name">${myName.substring(0, 3)}</div>
-                <div style="position: absolute; top: calc(50% - 14px); left: 50%; transform: translate(-50%, -50%); display: flex; align-items: baseline;">
-                  <span class="result_bold" style="position: static; transform: none; color: #fff">${myScoreInt}</span>
-                  <span class="win_index_perc" style="color: #fff">.${myScoreDec}</span>
-                  <span style="margin: 0 5px; color: white; font-size: 20px;"> </span>
-                  <span class="result_bold" style="position: static; transform: none; color: #fff">${oppScoreInt}</span>
-                  <span class="win_index_perc" style="color: #fff">.${oppScoreDec}</span>
+              // Valori predefiniti
+              let myScore = 0;
+              let oppScore = 0;
+              
+              // Assegna i punteggi in base a se l'utente è owner o opponent
+              if (iAmOwner) {
+                myScore = parseFloat(data.owner_points || 0);
+                oppScore = parseFloat(data.opponent_points || 0);
+              } else {
+                myScore = parseFloat(data.opponent_points || 0);
+                oppScore = parseFloat(data.owner_points || 0);
+              }
+              
+              const myScoreStr = myScore.toFixed(1);
+              const oppScoreStr = oppScore.toFixed(1);
+              console.log("Score strings:", myScoreStr, oppScoreStr);
+              
+              const [myScoreInt, myScoreDec = "0"] = myScoreStr.split('.');
+              const [oppScoreInt, oppScoreDec = "0"] = oppScoreStr.split('.');
+              console.log("Score parts:", myScoreInt, myScoreDec, oppScoreInt, oppScoreDec);
+              
+              // Aggiorna il contenuto HTML con i nuovi punteggi
+              contestCard.innerHTML = `
+                <div class="contest-container cc-list">
+                  <div class="contest-bar">
+                    <img src="${getAvatarSrc(myAvatar)}" alt="${myName}" class="player-avatar-contest left-avatar">
+                    <div class="triletter_contest left-name">${myName.substring(0, 3)}</div>
+                    <div style="position: absolute; top: calc(50% - 14px); left: 50%; transform: translate(-50%, -50%); display: flex; align-items: baseline;">
+                      <span class="result_bold" style="position: static; transform: none; color: #fff">${myScoreInt}</span>
+                      <span class="win_index_perc" style="color: #fff">.${myScoreDec}</span>
+                      <span style="margin: 0 5px; color: white; font-size: 20px;"> </span>
+                      <span class="result_bold" style="position: static; transform: none; color: #fff">${oppScoreInt}</span>
+                      <span class="win_index_perc" style="color: #fff">.${oppScoreDec}</span>
+                    </div>
+                    <div class="triletter_contest right-name">${oppName.substring(0, 3)}</div>
+                    <img src="${getAvatarSrc(oppAvatar)}" alt="${oppName}" class="player-avatar-contest right-avatar">
+                    <div class="teex_spent left-teex">${myCost}</div>
+                    <div class="teex_spent right-teex">${oppCost}</div>
+                  </div>
+                  <div class="status-badge-base status-badge-live">${contest.stake || ''}</div>
+                  ${contest.multiply && contest.multiply > 1 ? `<div class="multiply-contest-mini">${Math.floor(contest.multiply)}</div>` : ''}
                 </div>
-                <div class="triletter_contest right-name">${oppName.substring(0, 3)}</div>
-                <img src="${getAvatarSrc(oppAvatar)}" alt="${oppName}" class="player-avatar-contest right-avatar">
-                <div class="teex_spent left-teex">${myCost}</div>
-                <div class="teex_spent right-teex">${oppCost}</div>
-              </div>
-              <div class="status-badge-base status-badge-live">${contest.stake || ''}</div>
-              ${contest.multiply && contest.multiply > 1 ? `<div class="multiply-contest-mini">${Math.floor(contest.multiply)}</div>` : ''}
-            </div>
-          `;
+              `;
+            })
+            .catch(error => {
+              console.error(`Errore nel recupero dei punti per il contest ${contest.contest_id}:`, error);
+              
+              // In caso di errore, usa i valori predefiniti o quelli dal status_display
+              let myScore = 0;
+              let oppScore = 0;
+              
+              // Estrai i punteggi dal status_display come fallback
+              if (contest.status_display && contest.status_display !== "live") {
+                const parts = contest.status_display.split('-');
+                if (parts.length === 2) {
+                  myScore = parseFloat(parts[0]) || 0;
+                  oppScore = parseFloat(parts[1]) || 0;
+                }
+              }
+              
+              const myScoreStr = myScore.toFixed(1);
+              const oppScoreStr = oppScore.toFixed(1);
+              
+              const [myScoreInt, myScoreDec = "0"] = myScoreStr.split('.');
+              const [oppScoreInt, oppScoreDec = "0"] = oppScoreStr.split('.');
+              
+              // Aggiorna il contenuto HTML con i punteggi di fallback
+              contestCard.innerHTML = `
+                <div class="contest-container cc-list">
+                  <div class="contest-bar">
+                    <img src="${getAvatarSrc(myAvatar)}" alt="${myName}" class="player-avatar-contest left-avatar">
+                    <div class="triletter_contest left-name">${myName.substring(0, 3)}</div>
+                    <div style="position: absolute; top: calc(50% - 14px); left: 50%; transform: translate(-50%, -50%); display: flex; align-items: baseline;">
+                      <span class="result_bold" style="position: static; transform: none; color: #fff">${myScoreInt}</span>
+                      <span class="win_index_perc" style="color: #fff">.${myScoreDec}</span>
+                      <span style="margin: 0 5px; color: white; font-size: 20px;"> </span>
+                      <span class="result_bold" style="position: static; transform: none; color: #fff">${oppScoreInt}</span>
+                      <span class="win_index_perc" style="color: #fff">.${oppScoreDec}</span>
+                    </div>
+                    <div class="triletter_contest right-name">${oppName.substring(0, 3)}</div>
+                    <img src="${getAvatarSrc(oppAvatar)}" alt="${oppName}" class="player-avatar-contest right-avatar">
+                    <div class="teex_spent left-teex">${myCost}</div>
+                    <div class="teex_spent right-teex">${oppCost}</div>
+                  </div>
+                  <div class="status-badge-base status-badge-live">${contest.stake || ''}</div>
+                  ${contest.multiply && contest.multiply > 1 ? `<div class="multiply-contest-mini">${Math.floor(contest.multiply)}</div>` : ''}
+                </div>
+              `;
+            });
         } else if (contest.status == 5) {
           // Special layout for status 5 (completed) contests
           console.log("Contest status 5:", contest);
