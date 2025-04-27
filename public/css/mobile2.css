@@ -59,6 +59,20 @@
   box-sizing: border-box;
 }
 
+.sort-header-user {
+  position: fixed;
+  top: 140px;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: flex-start;
+  padding: 10px 16px;
+  background-color: #595a4a;
+  height: 40px;
+  box-sizing: border-box;
+}
+
 
 .sort-item {
   font-family: 'Barlow Condensed', sans-serif;
@@ -69,6 +83,9 @@
   position: relative;
   padding-right: 15px;
 }
+
+
+
 
 .sort-item.active {
   color: #ffffff;
@@ -305,10 +322,12 @@
 /* Opponent List Styles */
 .opponent-list {
   list-style: none;
-  padding-top: 110px; /* Add top padding to account for fixed headers */
+  padding-top: 130px; /* Add top padding to account for fixed headers */
   padding-bottom: 80px;
   margin: 0 16px;
 }
+
+
 
 .opponent-item {
   display: flex;
