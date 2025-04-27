@@ -108,8 +108,7 @@ function setLiveContests(eventUnitId) {
       FROM contests c
       JOIN fantasy_teams ft ON c.contest_id = ft.contest_id
       JOIN fantasy_team_entities fte ON ft.fantasy_team_id = fte.fantasy_team_id
-      JOIN athlete_eventunit_participation aep
-        ON fte.aep_id = aep.aep_id
+      JOIN athlete_eventunit_participation aep ON fte.athlete_id = aep.athlete_id
       WHERE aep.event_unit_id = ?
     `;
     
@@ -127,8 +126,7 @@ function setLiveContests(eventUnitId) {
                COUNT(DISTINCT aep.athlete_id) AS total_athletes
         FROM fantasy_team_entities fte
         JOIN fantasy_teams ft ON fte.fantasy_team_id = ft.fantasy_team_id
-        JOIN athlete_eventunit_participation aep
-        ON fte.aep_id = aep.aep_id
+        JOIN athlete_eventunit_participation aep ON fte.athlete_id = aep.athlete_id
         JOIN contests c ON ft.contest_id = c.contest_id
         WHERE aep.event_unit_id = ?
         GROUP BY ft.contest_id, c.status
@@ -153,10 +151,9 @@ function setLiveContests(eventUnitId) {
               SELECT DISTINCT ft.contest_id
               FROM fantasy_team_entities fte
               JOIN fantasy_teams ft ON fte.fantasy_team_id = ft.fantasy_team_id
-              JOIN athlete_eventunit_participation aep
-              ON fte.aep_id = aep.aep_id
+              JOIN athlete_eventunit_participation aep ON fte.athlete_id = aep.athlete_id
               WHERE aep.event_unit_id = ? AND aep.is_ended = 1
-                      )
+            )
         `;
         
         pool.query(updateQuery, [eventUnitId], (err, result) => {
@@ -188,9 +185,9 @@ function closeContests(eventUnitId) {
         GROUP_CONCAT(DISTINCT CONCAT(fte.athlete_id, ':', aep.is_ended)) AS athlete_details
       FROM fantasy_teams ft
       JOIN fantasy_team_entities fte ON ft.fantasy_team_id = fte.fantasy_team_id
-      JOIN athlete_eventunit_participation aep  ON fte.aep_id = aep.aep_id
+      JOIN athlete_eventunit_participation aep ON fte.athlete_id = aep.athlete_id
       JOIN contests c ON ft.contest_id = c.contest_id
-      WHERE c.status IN (2,4)
+      WHERE aep.event_unit_id = ? AND c.status IN (2,4)
       GROUP BY ft.contest_id, c.status, ft.user_id
       ORDER BY ft.contest_id, ft.user_id
     `;
@@ -298,12 +295,12 @@ function closeContests(eventUnitId) {
                      SUM(COALESCE(aep.athlete_unit_points, 0)) AS total_points
               FROM fantasy_teams ft
               JOIN fantasy_team_entities fte ON ft.fantasy_team_id = fte.fantasy_team_id
-            JOIN athlete_eventunit_participation aep ON fte.aep_id     = aep.aep_id
-              WHERE ft.contest_id = ?
+              JOIN athlete_eventunit_participation aep ON fte.athlete_id = aep.athlete_id
+              WHERE ft.contest_id = ? AND aep.event_unit_id = ?
               GROUP BY ft.user_id, ft.fantasy_team_id
             `;
             
-            pool.query(pointsQuery, [contestId], (err, results) => {
+            pool.query(pointsQuery, [contestId, eventUnitId], (err, results) => {
               if (err) {
                 console.error(`Errore nel calcolo dei punti per contest ${contestId}:`, err);
                 if (++completedContests === contestsToClose.length) resolve();
