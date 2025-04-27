@@ -65,13 +65,15 @@ const getAvatarSrc = window.getAvatarSrc;
         `;
         
         // Get all users first to ensure we have user data even if contest details fail
+        //Errore nel caricamento dei dati utente
         const usersResp = await fetch("/users");
         if (!usersResp.ok) {
           console.error("Errore nel recupero degli utenti:", usersResp.status, usersResp.statusText);
           container.innerHTML = `
             <div class="contest-container cc-header">
               <div class="contest-bar">
-                <div class="result_bold">Errore nel caricamento dei dati utente</div>
+              
+                <div class="result_bold"></div>
               </div>
             </div>
           `;
