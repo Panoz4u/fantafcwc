@@ -129,3 +129,7 @@ Dettagli errore: Error: Field 'updated_at' doesn't have a default value
 ❌ Rollback causa errore: Hai già confermato una squadra per questo contest
 ❌ Rollback causa errore: Hai già confermato una squadra per questo contest
 ❌ Rollback causa errore: Hai già confermato una squadra per questo contest
+Errore nell'elaborazione della richiesta: Error: Contest non trovato
+    at Query.onResult (C:\Users\Administrator\Documents\fantaconclave\fantasyresult.js:54:16)
+    at C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\commands\query.js:87:16
+    at process.processTicksAndRejections (node:internal/process/task_queues:85:11)

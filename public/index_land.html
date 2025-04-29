@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fantaconclave - Prossimamente</title>
+  <!-- Fonts & AOS -->
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+  <style>
+    :root {
+      --vatican-yellow: #FFD700;
+      --vatican-white: #FFFFFF;
+      --vatican-black: #000000;
+      --vatican-gray: #666666;
+      --font-sans: 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
+      --font-condensed: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: var(--font-sans); color: var(--vatican-black); background: var(--vatican-white); line-height: 1.6; }
+    a { text-decoration: none; color: inherit; }
+
+    /* Hero */
+    header.hero {
+      position: relative;
+      height: 100vh;
+      background: url('https://images.unsplash.com/photo-1632769398594-cd2b6ffc7dc0') center/cover no-repeat;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: var(--vatican-white);
+    }
+    header.hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+    }
+    .hero-content { position: relative; z-index: 1; max-width: 800px; padding: 0 20px; }
+    .hero-content h1 {
+      font-family: var(--font-condensed);
+      font-size: 3rem;
+      letter-spacing: 2px;
+      margin-bottom: 1rem;
+      color: var(--vatican-yellow);
+    }
+    .hero-content p { font-size: 1.2rem; margin-bottom: 2rem; }
+
+    /* Countdown */
+    .countdown {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      font-size: 2rem;
+      font-family: var(--font-condensed);
+    }
+    .countdown div {
+      background: var(--vatican-yellow);
+      color: var(--vatican-black);
+      padding: 20px;
+      border-radius: 8px;
+      flex: 1 1 20%;
+      text-align: center;
+      min-width: 100px;
+    }
+
+    /* Sections */
+    section { padding: 80px 20px; }
+    .section-title {
+      font-family: var(--font-condensed);
+      font-size: 2.5rem;
+      margin-bottom: 40px;
+      color: var(--vatican-yellow);
+      text-align: center;
+    }
+    .section-title::after {
+      content: '';
+      display: block;
+      width: 80px;
+      height: 4px;
+      background: var(--vatican-yellow);
+      margin: 20px auto 0;
+    }
+    .section-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .section-content.reverse { flex-direction: row-reverse; }
+    .section-content img {
+      width: 48%;
+      border-radius: 16px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    }
+    .section-content p {
+      width: 48%;
+      font-size: 1.1rem;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 4px solid var(--vatican-yellow);
+      background: var(--vatican-black);
+      color: var(--vatican-gray);
+      text-align: center;
+      padding: 20px;
+      font-size: 0.9rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero-content h1 { font-size: 2rem; }
+      .hero-content p { font-size: 1rem; }
+      .countdown { gap: 10px; font-size: 1.5rem; }
+      .countdown div { padding: 15px; flex: 1 1 45%; min-width: unset; }
+      .section-content img,
+      .section-content p { width: 100%; }
+      .section-content { flex-direction: column; gap: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Hero -->
+  <header class="hero" data-aos="fade-in">
+    <div class="hero-content" data-aos="zoom-in" data-aos-delay="200">
+      <h1>Fantaconclave.it</h1>
+      <p>Ci siamo ! Indovina la fumata bianca e vinci i tuoi Papa Coins!</p>
+      <div class="countdown" id="countdown" data-aos="fade-up" data-aos-delay="400">
+        <div><span id="days">5</span><br>Giorni</div>
+        <div><span id="hours">00</span><br>Ore</div>
+        <div><span id="minutes">00</span><br>Minuti</div>
+        <div><span id="seconds">00</span><br>Secondi</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Come Funziona -->
+  <section id="how-it-works" data-aos="fade-up">
+    <h2 class="section-title">Come Funziona</h2>
+    <div class="section-content">
+      <img src="web/1200x0.webp" alt="Come funziona">
+      <p>Scegli i tuoi cardinali preferiti e indovina in quale conclave avverr&agrave; la fumata bianca. Pi&ugrave; sei preciso e pi&ugrave; punti accumuli!</p>
+    </div>
+  </section>
+
+  <!-- Punteggi e Classifica -->
+  <section id="scores" data-aos="fade-up">
+    <h2 class="section-title">Punteggi e Classifica</h2>
+    <div class="section-content reverse">
+      <img src="web/scheda.jpg" alt="Classifica">
+      <p>Controlla la tua posizione in classifica, confronta i tuoi punteggi con gli altri partecipanti e scala la vetta!</p>
+    </div>
+  </section>
+
+  <!-- Fumata Bianca -->
+  <section id="fumata" data-aos="fade-up">
+    <h2 class="section-title">Fumata Bianca</h2>
+    <div class="section-content">
+      <img src="web/fuma.jpg" alt="Fumata Bianca">
+      <p>Preparati a festeggiare: la fumata bianca segner&agrave; il nuovo Papa e decreter&agrave; i vincitori del Fantaconclave.</p>
+    </div>
+  </section>
+
+  <!-- Regolamento -->
+  <section id="rules" data-aos="fade-up">
+    <h2 class="section-title">Regolamento</h2>
+    <div class="section-content reverse">
+      <img src="web/conc.jpg" alt="Regolamento">
+      <p>Leggi attentamente le regole ufficiali del gioco e assicurati di partecipare correttamente per accumulare punti.</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer data-aos="fade-in">
+    &copy; 2025 Fantaconclave.it - Tutti i diritti riservati
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+  <script>
+    AOS.init({ duration: 800, once: true });
+    const countdownDate = new Date();
+    countdownDate.setDate(countdownDate.getDate() + 5);
+    const daysEl = document.getElementById('days');
+    const hoursEl = document.getElementById('hours');
+    const minutesEl = document.getElementById('minutes');
+    const secondsEl = document.getElementById('seconds');
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const distance = countdownDate - now;
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+      daysEl.textContent = days;
+      hoursEl.textContent = ('0' + hours).slice(-2);
+      minutesEl.textContent = ('0' + minutes).slice(-2);
+      secondsEl.textContent = ('0' + seconds).slice(-2);
+    }
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+  </script>
+</body>
+</html>
