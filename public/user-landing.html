@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>User Landing - Fanteex</title>
@@ -19,33 +22,8 @@
       height: 100vh;
       overflow: hidden;
     }
-    
-    .sticky-header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background-color: #595a4a;
-      width: 100%;
-    }
-    
-    .scrollable-content {
-      flex: 1;
-      overflow-y: auto;
-      padding-bottom: 96px; /* Space for the footer */
-    }
-    
-    .footer-nav {
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-      z-index: 100;
-    }
-    
-    /* Ensure the FAB stays above the scrollable content */
-    #playButton {
-      z-index: 101;
-    }
 
+  
   </style>
 </head>
 <body>
@@ -64,9 +42,6 @@
         <span id="teexBalance" class="teex_balance">415.0</span>
       </div>
     </header>
-
-
-
     <div class="tab-container">
       <div id="tabActive" class="tab">
         <span class="tab_on">ACTIVE</span>
@@ -76,36 +51,50 @@
       </div>
     </div>
   </div>
-
   <!-- Contenuto scrollabile -->
   <div class="scrollable-content">
     <div id="activeContainer" class="contests-container"></div>
     <div id="completedContainer" class="contests-container" style="display: none;"></div>
   </div>
-
-
 <!-- Blur background for FAB -->
 <div class="fab-background"></div>
-
 <!-- FAB button for New Game -->
 <div id="playButton" class="fab_button" style="position: fixed; bottom: 96px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; justify-content: center; z-index: 101; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
   <img src="icons/add.png" alt="New Game" style="width: 24px; height: 24px; margin-right: 8px;">
   <span style="color: #ffffff;">NEW GAME</span>
 </div>
-
-
-
+  <!-- Aggiungiamo le finestre modali e modifichiamo il footer -->
+  <div id="rulesModal" class="modal">
+    <div class="modal-content">
+      <span class="close-button" onclick="closeModal('rulesModal')">X</span>
+      <iframe class="modal-iframe" src="rules.html"></iframe>
+    </div>
+  </div>
+  
+  <div id="privacyModal" class="modal">
+    <div class="modal-content">
+      <span class="close-button" onclick="closeModal('privacyModal')">X</span>
+      <iframe class="modal-iframe" src="privacy.html"></iframe>
+    </div>
+  </div>
+  
+  <div id="termsModal" class="modal">
+    <div class="modal-content">
+      <span class="close-button" onclick="closeModal('termsModal')">X</span>
+      <iframe class="modal-iframe" src="terms.html"></iframe>
+    </div>
+  </div>
 
   <footer class="footer-nav">
-    <div class="footer-item">
+    <div class="footer-item" onclick="openModal('rulesModal')">
       <img src="icons/instructions.png" alt="Rules" class="menu_icon">
       <span class="menu_item">Rules</span>
     </div>
-    <div class="footer-item">
+    <div class="footer-item" onclick="openModal('privacyModal')">
       <img src="icons/insurance.png" alt="Privacy" class="menu_icon">
       <span class="menu_item">Privacy</span>
     </div>
-    <div class="footer-item">
+    <div class="footer-item" onclick="openModal('termsModal')">
       <img src="icons/terms.png" alt="Terms and Conditions" class="menu_icon">
       <span class="menu_item">Terms&Cond</span>
     </div>
@@ -116,6 +105,25 @@
   </footer>
 
   <script>
+    // Funzioni per gestire le finestre modali
+    function openModal(modalId) {
+      document.getElementById(modalId).style.display = "block";
+      document.body.style.overflow = "hidden"; // Impedisce lo scorrimento della pagina sottostante
+    }
+    
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = "none";
+      document.body.style.overflow = "auto"; // Ripristina lo scorrimento della pagina
+    }
+    
+    // Chiudi la finestra modale quando si clicca all'esterno del contenuto
+    window.onclick = function(event) {
+      if (event.target.className === "modal") {
+        event.target.style.display = "none";
+        document.body.style.overflow = "auto";
+      }
+    };
+
     function getAvatarSrc(avatar, username, userColor) {
       console.log("getAvatarSrc chiamata con:", { avatar, username, userColor });
       if (avatar && avatar.trim() !== "") {
@@ -134,35 +142,28 @@
         return "images/silouette.jpg";
       }
     }
-
-    // La funzione generateColoredInitialsAvatar è stata rimossa perché non serve più
-
     // Ottieni l'ID utente dal localStorage invece che dall'URL
     const userId = localStorage.getItem('userId');
     const authToken = localStorage.getItem('authToken');
-
     async function loadUserLanding() {
       // Verifica che l'ID utente sia presente nel localStorage
       if (!userId || !authToken) {
         window.location.href = 'index.html';
         return;
       }
-      
       // Effettua la richiesta al server con il token di autenticazione
       const resp = await fetch(`/user-landing-info`, {
         headers: {
           'Authorization': `Bearer ${authToken}`
         }
       });
-      
       if (!resp.ok) {
         const errorText = await resp.text();
         console.error("Errore backend:", resp.status, errorText);
         alert("Errore nel caricamento utente.");
         return;
       }
-      
-      const data = await resp.json();
+       const data = await resp.json();
       console.log("Dati ricevuti:", data);
 
       const userAvatarElem = document.getElementById("userAvatar");
@@ -181,17 +182,13 @@
       renderContestList(data.active, document.getElementById("activeContainer"));
       renderContestList(data.completed, document.getElementById("completedContainer"));
     }
-
     function renderContestList(list, container) {
       container.innerHTML = "";
-      
       // Filter out contests with status 0 (created)
       const filteredList = list.filter(contest => contest.status !== 0);
-      
       // Aggiungo il console log per le sfide in status 5
       const status5Contests = filteredList.filter(contest => contest.status == 5);
       console.log(`Numero di sfide in status 5: ${status5Contests.length}`);
-      
       // Log dei dettagli per ogni sfida in status 5
       status5Contests.forEach(contest => {
         // Estrai i dati dai fantasy_teams
@@ -211,7 +208,6 @@
           });
         }
       });
-      
       // Chiama calculateContestPoints per ogni contest e visualizza i risultati
       filteredList.forEach(contest => {
         fetch(`/fantasy/contest-points?contest_id=${contest.contest_id}`)
@@ -223,7 +219,6 @@
             console.error(`Errore nel recupero dei punti per il contest ${contest.contest_id}:`, error);
           });
       });
-      
       if (!filteredList.length) {
         // Replace "Nessuna sfida" with a welcome message and animated arrows
         container.innerHTML = `
@@ -242,7 +237,6 @@
         `;
         return;
       }
-      
       filteredList.forEach(contest => {
         // Correggiamo la determinazione di iAmOwner confrontando correttamente gli ID
         const iAmOwner = parseInt(contest.owner_id) === parseInt(userId);
@@ -281,8 +275,7 @@
         } else if (contest.status == 2) {
           statusClass = "pending";
         }
-
-        // Create contest card based on the mockup
+     // Create contest card based on the mockup
         const contestCard = document.createElement("div");
         contestCard.classList.add("contest-cell", "clickable");
         
@@ -307,8 +300,7 @@
             } else {
               localStorage.removeItem('eventUnitId');
             }
-           
-            // Salva i dati nel formato richiesto da riassunto.html
+             // Salva i dati nel formato richiesto da riassunto.html
             const contestData = {
               contestId: this.dataset.contestId,
               opponentId: contest.opponent_id,
@@ -327,7 +319,6 @@
             }
           });
         }
-        
         // Handle status 0 contests like status 1 with "CREATED" text
         if (contest.status == 0) {
           contestCard.innerHTML = `

@@ -7,10 +7,14 @@ const { authenticateToken } = require('./middleware/auth');
 function rollbackTransaction(connection, err, res, message, statusCode = 500) {
   connection.rollback(() => {
     connection.release();
-    if (err) console.error(message, err);
+    console.error('❌ Rollback causa errore:', message);
+    if (err) {
+      console.error('Dettagli errore:', err);
+    }
     return res.status(statusCode).json({ error: message });
   });
 }
+
 
 /* POST /contests (creare una nuova sfida) */
 router.post("/", (req, res) => {
@@ -395,6 +399,10 @@ router.post("/contest-details", authenticateToken, (req, res) => {
 
 /* POST /confirm-squad - Modificato per usare autenticazione JWT */
 router.post("/confirm-squad", authenticateToken, (req, res) => {
+
+console.log('📥 Dati ricevuti dal client:', JSON.stringify(req.body, null, 2));
+console.log('👤 Utente autenticato:', req.user);
+
   const { contestId, userId, players, multiplier, totalCost } = req.body;
   
   // Verifica che i dati necessari siano presenti

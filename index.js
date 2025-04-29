@@ -21,6 +21,7 @@ app.use(express.static("public"));
 app.use(express.static(path.join(__dirname, 'public')));
 
 
+
 // Create a router for the API endpoints
 const sfideRouter = express.Router();
 
@@ -77,6 +78,10 @@ sfideRouter.post('/contests/delete-expired', async (req, res) => {
 
 // Use the router for the API endpoints
 app.use('/api', sfideRouter);
+
+const contestsRouter = require('./contests');
+app.use('/contests', contestsRouter);
+
 
 // Funzioni di avatarUtils.js spostate qui
 // Definisci le funzioni per la gestione degli avatar
@@ -322,9 +327,21 @@ app.get("/user-info", authenticateToken, (req, res) => {
 });
 
 /* 1) GET /users */
-app.get("/users", (req, res) => {
-  // Se vuoi restituire solo gli utenti attivi, usa la WHERE is_active = 1
-  const sql = `
+app.get("/users", authenticateToken, (req, res) => {
+  // Parametri di paginazione e ordinamento
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 40;
+  const offset = (page - 1) * limit;
+  
+  // Parametri di ordinamento
+  const sortField = req.query.sort === 'name' ? 'username' : 'teex_balance';
+  const sortOrder = req.query.order === 'asc' ? 'ASC' : 'DESC';
+  
+  // Parametro di ricerca
+  const searchTerm = req.query.search || '';
+  
+  // Costruisci la query di base
+  let sql = `
     SELECT 
       user_id,
       username,
@@ -333,16 +350,59 @@ app.get("/users", (req, res) => {
       is_active,
       updated_at,
       avatar,
-      google_id
+      google_id,
+      color
     FROM users
     WHERE is_active = 1
   `;
-  pool.query(sql, (err, rows) => {
-    if (err) {
-      console.error("Errore DB in GET /users:", err);
-      return res.status(500).json({ error: "DB error /users" });
+  
+  // Aggiungi condizione di ricerca se presente
+  const params = [];
+  if (searchTerm) {
+    sql += ` AND (username LIKE ? OR email LIKE ?)`;
+    params.push(`%${searchTerm}%`, `%${searchTerm}%`);
+  }
+  
+  // Aggiungi ordinamento
+  sql += ` ORDER BY ${sortField} ${sortOrder}`;
+  
+  // Query per contare il totale degli utenti
+  const countSql = `
+    SELECT COUNT(*) as total
+    FROM users
+    WHERE is_active = 1
+    ${searchTerm ? 'AND (username LIKE ? OR email LIKE ?)' : ''}
+  `;
+  
+  // Esegui la query di conteggio
+  pool.query(countSql, searchTerm ? [`%${searchTerm}%`, `%${searchTerm}%`] : [], (countErr, countResult) => {
+    if (countErr) {
+      console.error("Errore nel conteggio degli utenti:", countErr);
+      return res.status(500).json({ error: "Errore nel conteggio degli utenti" });
     }
-    res.json(rows);
+    
+    const total = countResult[0].total;
+    
+    // Aggiungi paginazione alla query principale
+    sql += ` LIMIT ? OFFSET ?`;
+    params.push(limit, offset);
+    
+    // Esegui la query principale
+    pool.query(sql, params, (err, rows) => {
+      if (err) {
+        console.error("Errore DB in GET /users:", err);
+        return res.status(500).json({ error: "DB error /users" });
+      }
+      
+      // Restituisci i risultati con il totale
+      res.json({
+        users: rows,
+        total: total,
+        page: page,
+        limit: limit,
+        pages: Math.ceil(total / limit)
+      });
+    });
   });
 });
 

@@ -560,6 +560,15 @@
     transform: translate(-50%, -50%);
   }
   
+  .result_bold_2 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 64px;
+    color: #fff;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
   /* Base Styles for Status Badges */
   .status-badge-base {
     color: #2a2b2a;

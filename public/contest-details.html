@@ -420,12 +420,7 @@
             const scoreContainer = contestCard.querySelector('.contest-bar div[style*="display: flex"]');
             if (scoreContainer) {
               scoreContainer.innerHTML = `
-                <span class="result_bold" style="position: static; transform: none; color: #fff">${leftScoreInt}</span>
-                <span class="win_index_perc" style="color: #fff">.${leftScoreDec}</span>
-                <span style="margin: 0 5px; color: white; font-size: 20px;"> </span>
-                <span class="result_bold" style="position: static; transform: none; color: #fff">${rightScoreInt}</span>
-                <span class="win_index_perc" style="color: #fff">.${rightScoreDec}</span>
-              `;
+                <div class="result_bold_2">VS</div>`;
             }
           })
           .catch(error => {

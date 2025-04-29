@@ -59,6 +59,20 @@
   box-sizing: border-box;
 }
 
+.sort-header-user {
+  position: fixed;
+  top: 140px;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: flex-start;
+  padding: 10px 16px;
+  background-color: #595a4a;
+  height: 40px;
+  box-sizing: border-box;
+}
+
 
 .sort-item {
   font-family: 'Barlow Condensed', sans-serif;
@@ -69,6 +83,9 @@
   position: relative;
   padding-right: 15px;
 }
+
+
+
 
 .sort-item.active {
   color: #ffffff;
@@ -305,10 +322,12 @@
 /* Opponent List Styles */
 .opponent-list {
   list-style: none;
-  padding-top: 110px; /* Add top padding to account for fixed headers */
+  padding-top: 130px; /* Add top padding to account for fixed headers */
   padding-bottom: 80px;
   margin: 0 16px;
 }
+
+
 
 .opponent-item {
   display: flex;
@@ -726,4 +745,81 @@
     .status-badge-draw {
       background-color: #ffffff;
       color: #2a2b2a;
+    }
+
+    .sticky-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background-color: #595a4a;
+      width: 100%;
+    }
+    
+    .scrollable-content {
+      flex: 1;
+      overflow-y: auto;
+      padding-bottom: 96px; /* Space for the footer */
+    }
+    
+    .footer-nav {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      z-index: 100;
+    }
+    
+    /* Ensure the FAB stays above the scrollable content */
+    #playButton {
+      z-index: 101;
+    }    /* Fixed header styles */
+
+
+    
+    /* Stili per le finestre modali */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+    }
+    
+    .modal-content {
+      position: relative;
+      background-color: #fff;
+      margin: 10% auto;
+      width: 90%;
+      max-width: 600px;
+      max-height: 80%;
+      overflow-y: auto;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    .close-button {
+      position: sticky;
+      top: 0;
+      right: 0;
+      background-color: #ff5500;
+      color: white;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-weight: bold;
+      float: right;
+      margin: 10px;
+      z-index: 1001;
+    }
+    .modal-iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      min-height: 500px;
     }

@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Sfida Amico - Fanteex</title>
@@ -8,6 +11,46 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,800;1,800&family=Barlow+Condensed:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/mobile.css">
   <link rel="stylesheet" href="css/mobile2.css">
+  <style>
+    /* Stile per il valore PPC */
+    .ppc-value {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      color: #FFD700;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      margin-top: 4px;
+    }
+    
+    .ppc-icon {
+      width: 16px;
+      height: 16px;
+      margin-right: 4px;
+    }
+    
+    /* Stile per il pulsante "Carica altri" */
+    .load-more-button {
+      display: block;
+      width: 80%;
+      margin: 20px auto;
+      padding: 12px;
+      background-color: #595a4a;
+      color: white;
+      border: none;
+      border-radius: 24px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    
+    .load-more-button:hover {
+      background-color: #6c6d5a;
+    }
+  </style>
 </head>
 <body>
   <!-- Header con freccia indietro, titolo e teex balance -->
@@ -23,18 +66,24 @@
          <img src="icons/ppc.png" alt="Teex" class="teex-icon">
       <span id="teexBalance" class="teex_balance">0.0</span>
     </div>
-
-
   </header>
-
-
-  
-  
 
   <!-- Search box -->
   <div class="search-container sc-select-fr">
     <span class="search-icon">🔍</span>
     <input type="text" id="searchInput" class="search-box" placeholder="Search by name">
+  </div>
+  
+  <!-- Barra di ordinamento -->
+  <div class="sort-header-user">
+    <div class="sort-item" data-sort="name">
+      USERNAME
+    </div>
+    <div class="sort-item active" data-sort="teex">
+      <img src="icons/ppc.png" alt="PPC" style="width: 16px; height: 16px; margin-right: 4px; vertical-align: middle;">
+      PAPACOINS
+      <div class="sort-triangle desc"></div>
+    </div>
   </div>
   
   <!-- Lista degli utenti -->
@@ -50,6 +99,21 @@
     // Ottieni event_unit_id dall'URL o usa un valore predefinito
     const eventUnitId = new URLSearchParams(window.location.search).get("event_unit_id") || "1";
     
+    // Variabili per la paginazione
+    const pageSize = 30; // Numero di utenti per pagina
+    let currentPage = 1;
+    let totalUsers = 0;
+    let totalPages = 1; // Aggiungi questa variabile globale
+    let isLoading = false;
+    let searchTimeout = null;
+    
+    // Variabile globale per memorizzare gli avversari e lo stato di ordinamento
+    let opponents = [];
+    let currentSort = {
+      field: 'teex',
+      direction: 'desc'
+    };
+    
     // Funzione per gestire correttamente gli avatar
     function getAvatarUrl(avatarPath) {
       if (!avatarPath) {
@@ -63,6 +127,239 @@
       
       // Altrimenti è un nome file, aggiungi il percorso avatars/
       return `avatars/${avatarPath}`;
+    }
+    
+    // Funzione per caricare gli utenti con paginazione
+    async function loadUsers(page = 1, searchTerm = '', resetList = true) {
+      if (isLoading) return;
+      
+      isLoading = true;
+      
+      try {
+        // Mostra indicatore di caricamento
+        const opponentList = document.getElementById("opponentList");
+        if (resetList) {
+          opponentList.innerHTML = "<p style='text-align: center; color: #ccc; margin-top: 20px;'>Caricamento...</p>";
+        } else if (!document.getElementById('loadingIndicator')) {
+          const loadingIndicator = document.createElement('div');
+          loadingIndicator.id = 'loadingIndicator';
+          loadingIndicator.innerHTML = "<p style='text-align: center; color: #ccc; margin-top: 10px;'>Caricamento...</p>";
+          opponentList.appendChild(loadingIndicator);
+        }
+        
+        // Costruisci l'URL con i parametri di paginazione e ordinamento
+        let url = `/users?page=${page}&limit=${pageSize}`;
+        url += `&sort=${currentSort.field}&order=${currentSort.direction}`;
+        if (searchTerm) {
+          url += `&search=${encodeURIComponent(searchTerm)}`;
+        }
+        
+        const authToken = localStorage.getItem('authToken');
+        const resp = await fetch(url, {
+          headers: {
+            'Authorization': `Bearer ${authToken}`
+          }
+        });
+        
+        if (!resp.ok) {
+          throw new Error(`Errore ${resp.status}: ${await resp.text()}`);
+        }
+        
+        const data = await resp.json();
+        
+        // Aggiorna le variabili globali
+        totalUsers = data.total; // Usa il totale restituito dal backend
+        totalPages = data.pages; // Aggiorna il numero totale di pagine
+        
+        let newOpponents = data.users || [];
+        
+        // Filtra l'utente corrente dai *nuovi* risultati prima di concatenare
+        newOpponents = newOpponents.filter(u => u.user_id != ownerId);
+        
+        // Se è la prima pagina o resetList è true, sostituisci gli avversari, altrimenti aggiungi
+        if (page === 1 || resetList) {
+          opponents = newOpponents;
+        } else {
+          // Evita duplicati se per qualche motivo vengono ricaricati
+          const existingIds = new Set(opponents.map(o => o.user_id));
+          newOpponents.forEach(newUser => {
+            if (!existingIds.has(newUser.user_id)) {
+              opponents.push(newUser);
+            }
+          });
+        }
+        
+        // Aggiorna la pagina corrente *dopo* il caricamento e l'elaborazione
+        currentPage = page;
+        
+        // Renderizza la lista
+        renderOpponentList(opponents, resetList);
+      } catch(e) {
+        console.error("Errore nel caricamento degli utenti", e);
+        const opponentList = document.getElementById("opponentList");
+        if (resetList) {
+          opponentList.innerHTML = "<p style='text-align: center; color: #ff6b6b; margin-top: 20px;'>Errore nel caricamento degli utenti. Riprova.</p>";
+        } else if (document.getElementById('loadingIndicator')) {
+          document.getElementById('loadingIndicator').remove();
+        }
+      } finally {
+        isLoading = false;
+        // Rimuovi l'indicatore di caricamento qui se non è già stato fatto
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        if (loadingIndicator) {
+          loadingIndicator.remove();
+        }
+      }
+    }
+    
+    function renderOpponentList(opponentsList, resetList = true) {
+      const opponentList = document.getElementById("opponentList");
+      
+      // Rimuovi l'indicatore di caricamento se presente (potrebbe essere già stato rimosso nel finally)
+      const loadingIndicator = document.getElementById('loadingIndicator');
+      if (loadingIndicator) {
+        loadingIndicator.remove();
+      }
+      
+      // Se è la prima pagina o resetList è true, svuota la lista
+      // Altrimenti, rimuovi solo il vecchio pulsante "Carica altri" se esiste
+      if (resetList) {
+        opponentList.innerHTML = "";
+      } else {
+        const existingLoadMoreBtn = document.getElementById('loadMoreBtn');
+        if (existingLoadMoreBtn) {
+          existingLoadMoreBtn.remove();
+        }
+      }
+      
+      if (opponentsList.length === 0 && currentPage === 1) {
+         opponentList.innerHTML = "<p style='text-align: center; color: #ccc; margin-top: 20px;'>Nessun utente trovato</p>";
+         // Assicurati che non ci sia il pulsante "Carica altri" se non ci sono risultati
+         const existingLoadMoreBtn = document.getElementById('loadMoreBtn');
+         if (existingLoadMoreBtn) {
+           existingLoadMoreBtn.remove();
+         }
+         return;
+      }
+      
+      // Determina l'indice da cui iniziare ad aggiungere elementi (per evitare di riprocessare tutto)
+      const startIndex = resetList ? 0 : opponentList.children.length;
+      
+      // Aggiungi solo i nuovi utenti al DOM
+      const usersToAdd = resetList ? opponentsList : opponentsList.slice(startIndex);
+      
+      usersToAdd.forEach(user => {
+        const opponentItem = document.createElement("div");
+        opponentItem.className = "opponent-item";
+        opponentItem.style.cursor = "pointer";
+        const avatarSrc = getAvatarUrl(user.avatar);
+        const teexBalance = parseFloat(user.teex_balance || 0).toFixed(1);
+        opponentItem.innerHTML = `
+          <div class="opponent-info">
+            <img src="${avatarSrc}" alt="${user.username}" class="opponent-avatar">
+            <div>
+              <h3 class="opponent-name">${user.username}</h3>
+              <div class="ppc-value">
+                <img src="icons/ppc.png" alt="PPC" class="ppc-icon">
+                ${teexBalance}
+              </div>
+            </div>
+          </div>
+          <button class="play-contest-button" data-id="${user.user_id}">PLAY</button>
+        `;
+        opponentItem.setAttribute("data-id", user.user_id);
+        opponentList.appendChild(opponentItem);
+      });
+      
+      // Rimuovi il vecchio pulsante "Carica altri" (di nuovo, per sicurezza)
+      const existingLoadMoreBtn = document.getElementById('loadMoreBtn');
+      if (existingLoadMoreBtn) {
+        existingLoadMoreBtn.remove();
+      }
+      
+      // Aggiungi il pulsante "Carica altri" solo se la pagina corrente è minore del totale pagine
+      if (currentPage < totalPages) {
+        const loadMoreBtn = document.createElement('button');
+        loadMoreBtn.id = 'loadMoreBtn';
+        loadMoreBtn.className = 'load-more-button';
+        loadMoreBtn.textContent = 'CARICA ALTRI';
+        loadMoreBtn.addEventListener('click', () => {
+          // Carica la pagina successiva senza resettare la lista
+          loadUsers(currentPage + 1, document.getElementById('searchInput').value.trim(), false);
+        });
+        opponentList.appendChild(loadMoreBtn);
+      }
+      
+      // Aggiungi event listener (solo ai nuovi elementi se non si resetta la lista)
+      const itemsToListen = resetList ? opponentList.querySelectorAll(".opponent-item") : opponentList.querySelectorAll(".opponent-item:nth-child(n+" + (startIndex + 1) + ")");
+      
+      itemsToListen.forEach(item => {
+         const playButton = item.querySelector(".play-contest-button");
+         const oppId = item.getAttribute("data-id");
+
+         if(playButton) {
+            playButton.addEventListener("click", (event) => {
+               event.stopPropagation();
+               createContest(oppId);
+            });
+         }
+
+         item.addEventListener("click", () => {
+            createContest(oppId);
+         });
+      });
+    }
+    
+    // Funzione per gestire la creazione del contest
+    async function createContest(oppId) {
+      try {
+        const authToken = localStorage.getItem('authToken');
+        const resp = await fetch("/contests", {
+          method: "POST",
+          headers: { 
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${authToken}`
+          },
+          body: JSON.stringify({
+            owner: ownerId,
+            opponent: oppId,
+            event_unit_id: eventUnitId,
+            multiply: 1  // Aggiungo il valore predefinito per multiply
+          })
+        });
+        
+        if (!resp.ok) {
+          let errorMsg = "Errore creazione contest";
+          try {
+            const err = await resp.json();
+            errorMsg += ": " + (err.error || err.message || "");
+          } catch (e) {
+            // Se non è possibile analizzare la risposta come JSON
+            errorMsg += ` (${resp.status})`;
+          }
+          alert(errorMsg);
+          return;
+        }
+        
+        const data = await resp.json(); // contestId
+        
+        // Salva i dati nel localStorage invece di passarli nell'URL
+        localStorage.setItem('contestData', JSON.stringify({
+          contestId: data.contestId,
+          event_unit_id: eventUnitId,
+          eventUnitId: eventUnitId, // Aggiungi anche questo campo per compatibilità
+          opponentId: oppId,
+          ownerId: ownerId,
+          userId: currentUser,
+          timestamp: new Date().getTime()
+        }));
+        
+        // Reindirizza alla pagina riassunto
+        window.location.href = `/riassunto.html`;
+      } catch (e) {
+        console.error("Errore POST /contests", e);
+        alert("Impossibile creare contest: " + e.message);
+      }
     }
     
     window.addEventListener("DOMContentLoaded", async () => {
@@ -96,146 +393,60 @@
         console.error("Errore nel recupero dei dati utente", e);
       }
       
-      // Carica tutti gli utenti
-      try {
-        const resp = await fetch("/users");
-        const allUsers = await resp.json();
-        const opponents = allUsers.filter(u => u.user_id != ownerId);
-        
-        // Ordina gli utenti per username
-        opponents.sort((a, b) => a.username.localeCompare(b.username));
-        
-        renderOpponentList(opponents);
-        
-        // Aggiungi funzionalità di ricerca - versione alternativa
-        document.getElementById("searchInput").addEventListener("input", function() {
-          const searchTerm = this.value.toLowerCase().trim();
+      // Aggiungi event listener per gli elementi di ordinamento
+      document.querySelectorAll('.sort-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const sortField = item.dataset.sort;
           
-          // Se il campo di ricerca è vuoto, mostra tutti gli utenti
-          if (searchTerm === "") {
-            renderOpponentList(opponents);
-            return;
+          // Toggle direction if clicking the same field
+          if (currentSort.field === sortField) {
+            currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+          } else {
+            currentSort.field = sortField;
+            currentSort.direction = 'asc';
           }
           
-          // Filtra gli utenti il cui nome contiene il termine di ricerca
-          const filteredOpponents = [];
-          for (const user of opponents) {
-            if (user.username.toLowerCase().indexOf(searchTerm) !== -1 || 
-                (user.email && user.email.toLowerCase().indexOf(searchTerm) !== -1)) {
-              filteredOpponents.push(user);
+          // Update UI to show active sort
+          document.querySelectorAll('.sort-item').forEach(el => {
+            el.classList.remove('active');
+            const triangle = el.querySelector('.sort-triangle');
+            if (triangle) {
+              triangle.remove();
             }
-          }
-          
-          renderOpponentList(filteredOpponents);
-        });
-      } catch(e) {
-        console.error("Errore fetch /users", e);
-      }
-    });
-    
-    function renderOpponentList(opponents) {
-      const opponentList = document.getElementById("opponentList");
-      opponentList.innerHTML = "";
-      
-      if (opponents.length === 0) {
-        opponentList.innerHTML = "<p style='text-align: center; color: #ccc; margin-top: 20px;'>Nessun utente trovato</p>";
-        return;
-      }
-      
-      opponents.forEach(user => {
-        const opponentItem = document.createElement("div");
-        opponentItem.className = "opponent-item";
-        opponentItem.style.cursor = "pointer"; // Aggiungi cursore pointer per indicare che è cliccabile
-        
-        // Usa la funzione getAvatarUrl per gestire correttamente gli avatar
-        const avatarSrc = getAvatarUrl(user.avatar);
-        
-        opponentItem.innerHTML = `
-          <div class="opponent-info">
-            <img src="${avatarSrc}" alt="${user.username}" class="opponent-avatar">
-            <div>
-              <h3 class="opponent-name">${user.username}</h3>
-
-            </div>
-          </div>
-          <button class="play-contest-button" data-id="${user.user_id}">PLAY</button>
-        `;
-        
-        // Aggiungi l'attributo data-id anche all'elemento opponentItem
-        opponentItem.setAttribute("data-id", user.user_id);
-        
-        opponentList.appendChild(opponentItem);
-      });
-      
-      // Funzione per gestire la creazione del contest
-      async function createContest(oppId) {
-        try {
-          const authToken = localStorage.getItem('authToken');
-          const resp = await fetch("/contests", {
-            method: "POST",
-            headers: { 
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${authToken}`
-            },
-            body: JSON.stringify({
-              owner: ownerId,
-              opponent: oppId,
-              event_unit_id: eventUnitId,
-              multiply: 1  // Aggiungo il valore predefinito per multiply
-            })
           });
           
-          if (!resp.ok) {
-            let errorMsg = "Errore creazione contest";
-            try {
-              const err = await resp.json();
-              errorMsg += ": " + (err.error || err.message || "");
-            } catch (e) {
-              // Se non è possibile analizzare la risposta come JSON
-              errorMsg += ` (${resp.status})`;
-            }
-            alert(errorMsg);
-            return;
-          }
+          item.classList.add('active');
           
-          const data = await resp.json(); // contestId
+          const triangle = document.createElement('div');
+          triangle.className = `sort-triangle ${currentSort.direction}`;
+          item.appendChild(triangle);
           
-          // Salva i dati nel localStorage invece di passarli nell'URL
-          localStorage.setItem('contestData', JSON.stringify({
-            contestId: data.contestId,
-            event_unit_id: eventUnitId,
-            eventUnitId: eventUnitId, // Aggiungi anche questo campo per compatibilità
-            opponentId: oppId,
-            ownerId: ownerId,
-            userId: currentUser,
-            timestamp: new Date().getTime()
-          }));
-          
-          // Reindirizza alla pagina riassunto
-          window.location.href = `/riassunto.html`;
-        } catch (e) {
-          console.error("Errore POST /contests", e);
-          alert("Impossibile creare contest: " + e.message);
+          // Carica gli utenti con il nuovo ordinamento
+          currentPage = 1;
+          loadUsers(1, document.getElementById('searchInput').value.trim());
+        });
+      });
+      
+      // Aggiungi funzionalità di ricerca con debounce
+      document.getElementById("searchInput").addEventListener("input", function() {
+        const searchTerm = this.value.toLowerCase().trim();
+        
+        // Cancella il timeout precedente
+        if (searchTimeout) {
+          clearTimeout(searchTimeout);
         }
-      }
-      
-      // Aggiungi event listener ai pulsanti PLAY
-      document.querySelectorAll(".play-contest-button").forEach(button => {
-        button.addEventListener("click", (event) => {
-          event.stopPropagation(); // Impedisci che l'evento si propaghi all'elemento genitore
-          const oppId = button.getAttribute("data-id");
-          createContest(oppId);
-        });
+        
+        // Imposta un nuovo timeout per evitare troppe richieste durante la digitazione
+        searchTimeout = setTimeout(() => {
+          // Resetta la paginazione e carica i risultati
+          currentPage = 1;
+          loadUsers(1, searchTerm);
+        }, 300); // Attendi 300ms dopo l'ultima digitazione
       });
       
-      // Aggiungi event listener alle righe degli utenti
-      document.querySelectorAll(".opponent-item").forEach(item => {
-        item.addEventListener("click", () => {
-          const oppId = item.getAttribute("data-id");
-          createContest(oppId);
-        });
-      });
-    }
+      // Carica la prima pagina di utenti
+      loadUsers(1);
+    });
   </script>
 </body>
 </html>

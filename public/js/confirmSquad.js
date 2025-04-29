@@ -189,6 +189,9 @@ export async function confirmSquad(multiplier) {
       return;
     }
     
+
+console.log('🎯 Payload pronto da inviare:', JSON.stringify(squadData, null, 2));
+
     // Invia la richiesta con il token di autenticazione
     const response = await fetch('/contests/confirm-squad', { // Modifica qui l'URL
       method: 'POST',
@@ -203,6 +206,9 @@ export async function confirmSquad(multiplier) {
       // Squadra confermata con successo
       const result = await response.json();
       console.log("Squadra confermata con successo:", result);
+
+
+
       
       // Pulisci la lista dei giocatori scelti
       localStorage.removeItem('chosenPlayers');

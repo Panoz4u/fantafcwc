@@ -1,0 +1,131 @@
+Errore nella creazione della squadra Error: Field 'updated_at' doesn't have a default value
+    at Packet.asError (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\packets\packet.js:740:17)
+    at Query.execute (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\commands\command.js:29:26)
+    at PoolConnection.handlePacket (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\base\connection.js:475:34)
+    at PacketParser.onPacket (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\base\connection.js:93:12)
+    at PacketParser.executeStart (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\packet_parser.js:75:16)
+    at Socket.<anonymous> (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\base\connection.js:100:25)
+    at Socket.emit (node:events:518:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Readable.push (node:internal/streams/readable:392:5) {
+  code: 'ER_NO_DEFAULT_FOR_FIELD',
+  errno: 1364,
+  sqlState: 'HY000',
+  sqlMessage: "Field 'updated_at' doesn't have a default value",
+  sql: "INSERT INTO fantasy_teams (user_id, contest_id, total_cost) VALUES ('59', 410, 3.5)"
+}
+Errore nella creazione della squadra Error: Field 'updated_at' doesn't have a default value
+    at Packet.asError (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\packets\packet.js:740:17)
+    at Query.execute (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\commands\command.js:29:26)
+    at PoolConnection.handlePacket (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\base\connection.js:475:34)
+    at PacketParser.onPacket (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\base\connection.js:93:12)
+    at PacketParser.executeStart (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\packet_parser.js:75:16)
+    at Socket.<anonymous> (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\base\connection.js:100:25)
+    at Socket.emit (node:events:518:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Readable.push (node:internal/streams/readable:392:5) {
+  code: 'ER_NO_DEFAULT_FOR_FIELD',
+  errno: 1364,
+  sqlState: 'HY000',
+  sqlMessage: "Field 'updated_at' doesn't have a default value",
+  sql: "INSERT INTO fantasy_teams (user_id, contest_id, total_cost) VALUES ('59', 410, 3.5)"
+}
+Errore nell'elaborazione della richiesta: Error: Nessun fantasy team trovato per questo contest
+    at Query.onResult (C:\Users\Administrator\Documents\fantaconclave\fantasyresult.js:76:18)
+    at C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\commands\query.js:87:16
+    at process.processTicksAndRejections (node:internal/process/task_queues:85:11)
+Errore nell'elaborazione della richiesta: Error: Nessun fantasy team trovato per questo contest
+    at Query.onResult (C:\Users\Administrator\Documents\fantaconclave\fantasyresult.js:76:18)
+    at C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\commands\query.js:87:16
+    at process.processTicksAndRejections (node:internal/process/task_queues:85:11)
+Errore nella creazione della squadra Error: Field 'updated_at' doesn't have a default value
+    at Packet.asError (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\packets\packet.js:740:17)
+    at Query.execute (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\commands\command.js:29:26)
+    at PoolConnection.handlePacket (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\base\connection.js:475:34)
+    at PacketParser.onPacket (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\base\connection.js:93:12)
+    at PacketParser.executeStart (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\packet_parser.js:75:16)
+    at Socket.<anonymous> (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\base\connection.js:100:25)
+    at Socket.emit (node:events:518:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Readable.push (node:internal/streams/readable:392:5) {
+  code: 'ER_NO_DEFAULT_FOR_FIELD',
+  errno: 1364,
+  sqlState: 'HY000',
+  sqlMessage: "Field 'updated_at' doesn't have a default value",
+  sql: "INSERT INTO fantasy_teams (user_id, contest_id, total_cost) VALUES ('58', 411, 2)"
+}
+Errore nella creazione della squadra Error: Field 'updated_at' doesn't have a default value
+    at Packet.asError (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\packets\packet.js:740:17)
+    at Query.execute (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\commands\command.js:29:26)
+    at PoolConnection.handlePacket (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\base\connection.js:475:34)
+    at PacketParser.onPacket (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\base\connection.js:93:12)
+    at PacketParser.executeStart (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\packet_parser.js:75:16)
+    at Socket.<anonymous> (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\base\connection.js:100:25)
+    at Socket.emit (node:events:518:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Readable.push (node:internal/streams/readable:392:5) {
+  code: 'ER_NO_DEFAULT_FOR_FIELD',
+  errno: 1364,
+  sqlState: 'HY000',
+  sqlMessage: "Field 'updated_at' doesn't have a default value",
+  sql: "INSERT INTO fantasy_teams (user_id, contest_id, total_cost) VALUES ('59', 412, 3.5)"
+}
+Errore nella creazione della squadra Error: Field 'updated_at' doesn't have a default value
+    at Packet.asError (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\packets\packet.js:740:17)
+    at Query.execute (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\commands\command.js:29:26)
+    at PoolConnection.handlePacket (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\base\connection.js:475:34)
+    at PacketParser.onPacket (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\base\connection.js:93:12)
+    at PacketParser.executeStart (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\packet_parser.js:75:16)
+    at Socket.<anonymous> (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\base\connection.js:100:25)
+    at Socket.emit (node:events:518:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Readable.push (node:internal/streams/readable:392:5) {
+  code: 'ER_NO_DEFAULT_FOR_FIELD',
+  errno: 1364,
+  sqlState: 'HY000',
+  sqlMessage: "Field 'updated_at' doesn't have a default value",
+  sql: "INSERT INTO fantasy_teams (user_id, contest_id, total_cost) VALUES ('59', 413, 3.5)"
+}
+Errore nella creazione della squadra Error: Field 'updated_at' doesn't have a default value
+    at Packet.asError (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\packets\packet.js:740:17)
+    at Query.execute (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\commands\command.js:29:26)
+    at PoolConnection.handlePacket (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\base\connection.js:475:34)
+    at PacketParser.onPacket (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\base\connection.js:93:12)
+    at PacketParser.executeStart (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\packet_parser.js:75:16)
+    at Socket.<anonymous> (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\base\connection.js:100:25)
+    at Socket.emit (node:events:518:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Readable.push (node:internal/streams/readable:392:5) {
+  code: 'ER_NO_DEFAULT_FOR_FIELD',
+  errno: 1364,
+  sqlState: 'HY000',
+  sqlMessage: "Field 'updated_at' doesn't have a default value",
+  sql: "INSERT INTO fantasy_teams (user_id, contest_id, total_cost) VALUES ('59', 414, 3.5)"
+}
+❌ Rollback causa errore: Errore nella creazione della squadra
+Dettagli errore: Error: Field 'updated_at' doesn't have a default value
+    at Packet.asError (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\packets\packet.js:740:17)
+    at Query.execute (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\commands\command.js:29:26)
+    at PoolConnection.handlePacket (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\base\connection.js:475:34)
+    at PacketParser.onPacket (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\base\connection.js:93:12)
+    at PacketParser.executeStart (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\packet_parser.js:75:16)
+    at Socket.<anonymous> (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\base\connection.js:100:25)
+    at Socket.emit (node:events:518:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Readable.push (node:internal/streams/readable:392:5) {
+  code: 'ER_NO_DEFAULT_FOR_FIELD',
+  errno: 1364,
+  sqlState: 'HY000',
+  sqlMessage: "Field 'updated_at' doesn't have a default value",
+  sql: "INSERT INTO fantasy_teams (user_id, contest_id, total_cost) VALUES ('59', 415, 6)"
+}
+❌ Rollback causa errore: Hai già confermato una squadra per questo contest
+❌ Rollback causa errore: Hai già confermato una squadra per questo contest
+❌ Rollback causa errore: Hai già confermato una squadra per questo contest
