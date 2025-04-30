@@ -21,6 +21,7 @@ app.use(express.static("public"));
 app.use(express.static(path.join(__dirname, 'public')));
 
 
+
 // Create a router for the API endpoints
 const sfideRouter = express.Router();
 
@@ -77,6 +78,10 @@ sfideRouter.post('/contests/delete-expired', async (req, res) => {
 
 // Use the router for the API endpoints
 app.use('/api', sfideRouter);
+
+const contestsRouter = require('./contests');
+app.use('/contests', contestsRouter);
+
 
 // Funzioni di avatarUtils.js spostate qui
 // Definisci le funzioni per la gestione degli avatar

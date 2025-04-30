@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Contest Details - Fanteex</title>
+  <title>Contest Details - Fantaconclave</title>
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,800;1,800&family=Barlow+Condensed:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/mobile.css">
@@ -420,12 +420,7 @@
             const scoreContainer = contestCard.querySelector('.contest-bar div[style*="display: flex"]');
             if (scoreContainer) {
               scoreContainer.innerHTML = `
-                <span class="result_bold" style="position: static; transform: none; color: #fff">${leftScoreInt}</span>
-                <span class="win_index_perc" style="color: #fff">.${leftScoreDec}</span>
-                <span style="margin: 0 5px; color: white; font-size: 20px;"> </span>
-                <span class="result_bold" style="position: static; transform: none; color: #fff">${rightScoreInt}</span>
-                <span class="win_index_perc" style="color: #fff">.${rightScoreDec}</span>
-              `;
+                <div class="result_bold_2">VS</div>`;
             }
           })
           .catch(error => {
