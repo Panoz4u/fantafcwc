@@ -608,7 +608,7 @@
               <div class="teex_spent left-teex">${myCost}</div>
               <div class="teex_spent right-teex">${oppCost}</div>
             </div>
-            <div class="status-badge-base ${badgeClass}">${teexWonDisplayStr}</div>
+            <div class="status-badge-base ${badgeClass}">${teexWonSign}${teexWonDisplayStr}</div>
             ${contestData.multiply && parseInt(contestData.multiply) > 1 ? `<div class="multiply-contest-mini">${Math.floor(contestData.multiply)}</div>` : ''}
           </div>
         `;
