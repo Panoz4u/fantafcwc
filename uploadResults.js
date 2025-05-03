@@ -122,16 +122,20 @@ function setLiveContests(eventUnitId) {
       
       // Ora verifichiamo quali contest hanno atleti con is_ended = 1
       const checkQuery = `
-        SELECT DISTINCT ft.contest_id, c.status, 
-               COUNT(DISTINCT CASE WHEN aep.is_ended = 1 THEN aep.athlete_id END) AS ended_athletes,
-               COUNT(DISTINCT aep.athlete_id) AS total_athletes
-        FROM fantasy_team_entities fte
-        JOIN fantasy_teams ft ON fte.fantasy_team_id = ft.fantasy_team_id
-        JOIN athlete_eventunit_participation aep
+      SELECT
+        ft.contest_id,
+        c.status,
+        SUM(CASE WHEN aep.is_ended = 1 THEN 1 ELSE 0 END) AS ended_athletes,
+        COUNT(fte.aep_id) AS total_athletes
+      FROM fantasy_team_entities fte
+      JOIN fantasy_teams ft
+        ON fte.fantasy_team_id = ft.fantasy_team_id
+      JOIN athlete_eventunit_participation aep
         ON fte.aep_id = aep.aep_id
-        JOIN contests c ON ft.contest_id = c.contest_id
-        WHERE aep.event_unit_id = ?
-        GROUP BY ft.contest_id, c.status
+      JOIN contests c
+        ON ft.contest_id = c.contest_id
+      WHERE aep.event_unit_id = ?
+      GROUP BY ft.contest_id, c.status
       `;
       
       pool.query(checkQuery, [eventUnitId], (checkErr, checkResults) => {
@@ -179,17 +183,20 @@ function closeContests(eventUnitId) {
     
     // Verifichiamo lo stato di tutti gli atleti per ogni utente in ogni contest
     const debugQuery = `
-      SELECT 
-        ft.contest_id, 
+      SELECT
+        ft.contest_id,
         c.status,
-        ft.user_id, 
-        COUNT(DISTINCT fte.athlete_id) AS total_athletes,
+        ft.user_id,
+        COUNT(fte.aep_id) AS total_athletes,
         SUM(CASE WHEN aep.is_ended = 1 THEN 1 ELSE 0 END) AS ended_athletes,
-        GROUP_CONCAT(DISTINCT CONCAT(fte.athlete_id, ':', aep.is_ended)) AS athlete_details
+        GROUP_CONCAT(CONCAT(fte.aep_id, ':', aep.is_ended)) AS athlete_details
       FROM fantasy_teams ft
-      JOIN fantasy_team_entities fte ON ft.fantasy_team_id = fte.fantasy_team_id
-      JOIN athlete_eventunit_participation aep  ON fte.aep_id = aep.aep_id
-      JOIN contests c ON ft.contest_id = c.contest_id
+      JOIN fantasy_team_entities fte
+        ON ft.fantasy_team_id = fte.fantasy_team_id
+      JOIN athlete_eventunit_participation aep
+        ON fte.aep_id = aep.aep_id
+      JOIN contests c
+        ON ft.contest_id = c.contest_id
       WHERE c.status IN (2,4)
       GROUP BY ft.contest_id, c.status, ft.user_id
       ORDER BY ft.contest_id, ft.user_id
