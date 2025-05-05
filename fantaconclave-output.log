@@ -18333,3 +18333,3916 @@ OPPONENT query - contest_id: 699, user: 81, event_unit: 1
   iat: 1746279238,
   exp: 1746884038
 }
+OWNER query - contest_id: 699, user: 201, event_unit: 1
+OPPONENT query - contest_id: 699, user: 81, event_unit: 1
+OWNER query - contest_id: 700, user: 202, event_unit: 1
+OPPONENT query - contest_id: 700, user: 98, event_unit: 1
+OWNER query - contest_id: 700, user: 202, event_unit: 1
+OPPONENT query - contest_id: 700, user: 98, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 689, user: 198, event_unit: 1
+OPPONENT query - contest_id: 689, user: 136, event_unit: 1
+OWNER query - contest_id: 689, user: 198, event_unit: 1
+OPPONENT query - contest_id: 689, user: 136, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 689, user: 198, event_unit: 1
+OPPONENT query - contest_id: 689, user: 136, event_unit: 1
+OWNER query - contest_id: 689, user: 198, event_unit: 1
+OPPONENT query - contest_id: 689, user: 136, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 689,
+  "userId": "136",
+  "owner_id": 198,
+  "opponent_id": 136,
+  "players": [
+    {
+      "athleteId": 52,
+      "eventUnitId": 3,
+      "event_unit_cost": 1.5,
+      "aep_id": 1893
+    },
+    {
+      "athleteId": 51,
+      "eventUnitId": 1,
+      "event_unit_cost": 2,
+      "aep_id": 1778
+    },
+    {
+      "athleteId": 54,
+      "eventUnitId": 3,
+      "event_unit_cost": 2,
+      "aep_id": 1895
+    },
+    {
+      "athleteId": 7,
+      "eventUnitId": 1,
+      "event_unit_cost": 0.5,
+      "aep_id": 7
+    },
+    {
+      "athleteId": 8,
+      "eventUnitId": 2,
+      "event_unit_cost": 0.5,
+      "aep_id": 1791
+    },
+    {
+      "athleteId": 25,
+      "eventUnitId": 2,
+      "event_unit_cost": 0.5,
+      "aep_id": 1808
+    },
+    {
+      "athleteId": 16,
+      "eventUnitId": 3,
+      "event_unit_cost": 0.5,
+      "aep_id": 1857
+    },
+    {
+      "athleteId": 49,
+      "eventUnitId": 2,
+      "event_unit_cost": 0.5,
+      "aep_id": 1832
+    },
+    {
+      "athleteId": 46,
+      "eventUnitId": 2,
+      "event_unit_cost": 0.5,
+      "aep_id": 1829
+    },
+    {
+      "athleteId": 47,
+      "eventUnitId": 3,
+      "event_unit_cost": 1,
+      "aep_id": 1888
+    },
+    {
+      "athleteId": 28,
+      "eventUnitId": 2,
+      "event_unit_cost": 0.5,
+      "aep_id": 1811
+    }
+  ],
+  "multiplier": 5,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 136,
+  email: 'defend.valentina@gmail.com',
+  username: 'Valentina Defend',
+  iat: 1746126857,
+  exp: 1746731657
+}
+OWNER query - contest_id: 696, user: 87, event_unit: 1
+OPPONENT query - contest_id: 696, user: 136, event_unit: 1
+OWNER query - contest_id: 696, user: 87, event_unit: 1
+OPPONENT query - contest_id: 696, user: 136, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 696, user: 87, event_unit: 1
+OPPONENT query - contest_id: 696, user: 136, event_unit: 1
+OWNER query - contest_id: 696, user: 87, event_unit: 1
+OPPONENT query - contest_id: 696, user: 136, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 696,
+  "userId": "136",
+  "owner_id": 87,
+  "opponent_id": 136,
+  "players": [
+    {
+      "athleteId": 52,
+      "eventUnitId": 2,
+      "event_unit_cost": 2,
+      "aep_id": 1835
+    },
+    {
+      "athleteId": 51,
+      "eventUnitId": 1,
+      "event_unit_cost": 2,
+      "aep_id": 1778
+    },
+    {
+      "athleteId": 53,
+      "eventUnitId": 3,
+      "event_unit_cost": 2.5,
+      "aep_id": 1894
+    },
+    {
+      "athleteId": 54,
+      "eventUnitId": 3,
+      "event_unit_cost": 2,
+      "aep_id": 1895
+    },
+    {
+      "athleteId": 7,
+      "eventUnitId": 1,
+      "event_unit_cost": 0.5,
+      "aep_id": 7
+    },
+    {
+      "athleteId": 8,
+      "eventUnitId": 2,
+      "event_unit_cost": 0.5,
+      "aep_id": 1791
+    },
+    {
+      "athleteId": 25,
+      "eventUnitId": 2,
+      "event_unit_cost": 0.5,
+      "aep_id": 1808
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 136,
+  email: 'defend.valentina@gmail.com',
+  username: 'Valentina Defend',
+  iat: 1746126857,
+  exp: 1746731657
+}
+OWNER query - contest_id: 689, user: 198, event_unit: 1
+OPPONENT query - contest_id: 689, user: 136, event_unit: 1
+OWNER query - contest_id: 646, user: 185, event_unit: 1
+OPPONENT query - contest_id: 646, user: 136, event_unit: 1
+OWNER query - contest_id: 701, user: 203, event_unit: 1
+OPPONENT query - contest_id: 701, user: 113, event_unit: 1
+OWNER query - contest_id: 701, user: 203, event_unit: 1
+OPPONENT query - contest_id: 701, user: 113, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 701, user: 203, event_unit: 1
+OPPONENT query - contest_id: 701, user: 113, event_unit: 1
+OWNER query - contest_id: 701, user: 203, event_unit: 1
+OPPONENT query - contest_id: 701, user: 113, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 701,
+  "userId": "203",
+  "owner_id": "203",
+  "opponent_id": "113",
+  "players": [
+    {
+      "athleteId": 53,
+      "eventUnitId": 1,
+      "event_unit_cost": 3.5,
+      "aep_id": 1780
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 3.5
+}
+👤 Utente autenticato: {
+  userId: 203,
+  email: 'minotticlaudio@tin.it',
+  username: 'Ariunben',
+  iat: 1746286961,
+  exp: 1746891761
+}
+OWNER query - contest_id: 702, user: 203, event_unit: 1
+OPPONENT query - contest_id: 702, user: 65, event_unit: 1
+OWNER query - contest_id: 702, user: 203, event_unit: 1
+OPPONENT query - contest_id: 702, user: 65, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 702, user: 203, event_unit: 1
+OPPONENT query - contest_id: 702, user: 65, event_unit: 1
+OWNER query - contest_id: 702, user: 203, event_unit: 1
+OPPONENT query - contest_id: 702, user: 65, event_unit: 1
+OWNER query - contest_id: 691, user: 198, event_unit: 1
+OPPONENT query - contest_id: 691, user: 78, event_unit: 1
+OWNER query - contest_id: 691, user: 198, event_unit: 1
+OPPONENT query - contest_id: 691, user: 78, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 691, user: 198, event_unit: 1
+OPPONENT query - contest_id: 691, user: 78, event_unit: 1
+OWNER query - contest_id: 691, user: 198, event_unit: 1
+OPPONENT query - contest_id: 691, user: 78, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 691, user: 198, event_unit: 1
+OPPONENT query - contest_id: 691, user: 78, event_unit: 1
+OWNER query - contest_id: 691, user: 198, event_unit: 1
+OPPONENT query - contest_id: 691, user: 78, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 691, user: 198, event_unit: 1
+OPPONENT query - contest_id: 691, user: 78, event_unit: 1
+OWNER query - contest_id: 691, user: 198, event_unit: 1
+OPPONENT query - contest_id: 691, user: 78, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 691,
+  "userId": "78",
+  "owner_id": 198,
+  "opponent_id": 78,
+  "players": [
+    {
+      "athleteId": 1,
+      "eventUnitId": 2,
+      "event_unit_cost": 3.5,
+      "aep_id": 1784
+    },
+    {
+      "athleteId": 54,
+      "eventUnitId": 3,
+      "event_unit_cost": 2,
+      "aep_id": 1895
+    },
+    {
+      "athleteId": 53,
+      "eventUnitId": 3,
+      "event_unit_cost": 2.5,
+      "aep_id": 1894
+    }
+  ],
+  "multiplier": 5,
+  "totalCost": 8
+}
+👤 Utente autenticato: {
+  userId: 78,
+  email: 'davide.defend@gmail.com',
+  username: 'Davide Defend',
+  iat: 1746119701,
+  exp: 1746724501
+}
+OWNER query - contest_id: 561, user: 78, event_unit: 1
+OPPONENT query - contest_id: 561, user: 136, event_unit: 1
+OWNER query - contest_id: 703, user: 207, event_unit: 1
+OPPONENT query - contest_id: 703, user: 205, event_unit: 1
+OWNER query - contest_id: 703, user: 207, event_unit: 1
+OPPONENT query - contest_id: 703, user: 205, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 704, user: 205, event_unit: 1
+OPPONENT query - contest_id: 704, user: 207, event_unit: 1
+OWNER query - contest_id: 704, user: 205, event_unit: 1
+OPPONENT query - contest_id: 704, user: 207, event_unit: 1
+OWNER query - contest_id: 705, user: 205, event_unit: 1
+OPPONENT query - contest_id: 705, user: 207, event_unit: 1
+OWNER query - contest_id: 705, user: 205, event_unit: 1
+OPPONENT query - contest_id: 705, user: 207, event_unit: 1
+OWNER query - contest_id: 703, user: 207, event_unit: 1
+OPPONENT query - contest_id: 703, user: 205, event_unit: 1
+OWNER query - contest_id: 703, user: 207, event_unit: 1
+OPPONENT query - contest_id: 703, user: 205, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 706, user: 207, event_unit: 1
+OPPONENT query - contest_id: 706, user: 205, event_unit: 1
+OWNER query - contest_id: 706, user: 207, event_unit: 1
+OPPONENT query - contest_id: 706, user: 205, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 706,
+  "userId": "207",
+  "owner_id": "207",
+  "opponent_id": "205",
+  "players": [
+    {
+      "athleteId": 1,
+      "eventUnitId": 1,
+      "event_unit_cost": 5,
+      "aep_id": 1
+    },
+    {
+      "athleteId": 4,
+      "eventUnitId": 1,
+      "event_unit_cost": 4.5,
+      "aep_id": 4
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 9.5
+}
+👤 Utente autenticato: {
+  userId: 207,
+  email: 'g.pichelan@gmail.com',
+  username: 'Valvolamitralica',
+  iat: 1746291577,
+  exp: 1746896377
+}
+OWNER query - contest_id: 706, user: 207, event_unit: 1
+OPPONENT query - contest_id: 706, user: 205, event_unit: 1
+OWNER query - contest_id: 705, user: 205, event_unit: 1
+OPPONENT query - contest_id: 705, user: 207, event_unit: 1
+OWNER query - contest_id: 705, user: 205, event_unit: 1
+OPPONENT query - contest_id: 705, user: 207, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 705,
+  "userId": "205",
+  "owner_id": "205",
+  "opponent_id": "207",
+  "players": [
+    {
+      "athleteId": 4,
+      "eventUnitId": 1,
+      "event_unit_cost": 4.5,
+      "aep_id": 4
+    },
+    {
+      "athleteId": 7,
+      "eventUnitId": 1,
+      "event_unit_cost": 0.5,
+      "aep_id": 7
+    },
+    {
+      "athleteId": 1,
+      "eventUnitId": 1,
+      "event_unit_cost": 5,
+      "aep_id": 1
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 205,
+  email: 'emiliomegna@outlook.it',
+  username: 'Corneatime',
+  iat: 1746290663,
+  exp: 1746895463
+}
+OWNER query - contest_id: 705, user: 205, event_unit: 1
+OPPONENT query - contest_id: 705, user: 207, event_unit: 1
+OWNER query - contest_id: 705, user: 205, event_unit: 1
+OPPONENT query - contest_id: 705, user: 207, event_unit: 1
+OWNER query - contest_id: 706, user: 207, event_unit: 1
+OPPONENT query - contest_id: 706, user: 205, event_unit: 1
+OWNER query - contest_id: 706, user: 207, event_unit: 1
+OPPONENT query - contest_id: 706, user: 205, event_unit: 1
+OWNER query - contest_id: 669, user: 136, event_unit: 1
+OPPONENT query - contest_id: 669, user: 90, event_unit: 1
+OWNER query - contest_id: 669, user: 136, event_unit: 1
+OPPONENT query - contest_id: 669, user: 90, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 669, user: 136, event_unit: 1
+OPPONENT query - contest_id: 669, user: 90, event_unit: 1
+OWNER query - contest_id: 669, user: 136, event_unit: 1
+OPPONENT query - contest_id: 669, user: 90, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 669,
+  "userId": "90",
+  "owner_id": 136,
+  "opponent_id": 90,
+  "players": [
+    {
+      "athleteId": 54,
+      "eventUnitId": 3,
+      "event_unit_cost": 2,
+      "aep_id": 1895
+    },
+    {
+      "athleteId": 25,
+      "eventUnitId": 3,
+      "event_unit_cost": 1.5,
+      "aep_id": 1866
+    },
+    {
+      "athleteId": 27,
+      "eventUnitId": 3,
+      "event_unit_cost": 1,
+      "aep_id": 1868
+    },
+    {
+      "athleteId": 31,
+      "eventUnitId": 1,
+      "event_unit_cost": 1.5,
+      "aep_id": 31
+    },
+    {
+      "athleteId": 2,
+      "eventUnitId": 3,
+      "event_unit_cost": 3.5,
+      "aep_id": 1843
+    },
+    {
+      "athleteId": 43,
+      "eventUnitId": 3,
+      "event_unit_cost": 0.5,
+      "aep_id": 1884
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 90,
+  email: 'max.pozzo44@gmail.com',
+  username: 'Max',
+  iat: 1746124086,
+  exp: 1746728886
+}
+OWNER query - contest_id: 693, user: 198, event_unit: 1
+OPPONENT query - contest_id: 693, user: 90, event_unit: 1
+OWNER query - contest_id: 693, user: 198, event_unit: 1
+OPPONENT query - contest_id: 693, user: 90, event_unit: 1
+OWNER query - contest_id: 693, user: 198, event_unit: 1
+OPPONENT query - contest_id: 693, user: 90, event_unit: 1
+OWNER query - contest_id: 693, user: 198, event_unit: 1
+OPPONENT query - contest_id: 693, user: 90, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 693, user: 198, event_unit: 1
+OPPONENT query - contest_id: 693, user: 90, event_unit: 1
+OWNER query - contest_id: 693, user: 198, event_unit: 1
+OPPONENT query - contest_id: 693, user: 90, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 693, user: 198, event_unit: 1
+OPPONENT query - contest_id: 693, user: 90, event_unit: 1
+OWNER query - contest_id: 693, user: 198, event_unit: 1
+OPPONENT query - contest_id: 693, user: 90, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 693,
+  "userId": "90",
+  "owner_id": 198,
+  "opponent_id": 90,
+  "players": [
+    {
+      "athleteId": 2,
+      "eventUnitId": 1,
+      "event_unit_cost": 4,
+      "aep_id": 2
+    },
+    {
+      "athleteId": 3,
+      "eventUnitId": 1,
+      "event_unit_cost": 2.5,
+      "aep_id": 3
+    },
+    {
+      "athleteId": 3,
+      "eventUnitId": 2,
+      "event_unit_cost": 3.5,
+      "aep_id": 1786
+    }
+  ],
+  "multiplier": 5,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 90,
+  email: 'max.pozzo44@gmail.com',
+  username: 'Max',
+  iat: 1746124086,
+  exp: 1746728886
+}
+OWNER query - contest_id: 707, user: 90, event_unit: 1
+OPPONENT query - contest_id: 707, user: 99, event_unit: 1
+OWNER query - contest_id: 707, user: 90, event_unit: 1
+OPPONENT query - contest_id: 707, user: 99, event_unit: 1
+OWNER query - contest_id: 554, user: 90, event_unit: 1
+OPPONENT query - contest_id: 554, user: 133, event_unit: 1
+OWNER query - contest_id: 554, user: 90, event_unit: 1
+OPPONENT query - contest_id: 554, user: 133, event_unit: 1
+OWNER query - contest_id: 708, user: 154, event_unit: 1
+OPPONENT query - contest_id: 708, user: 91, event_unit: 1
+OWNER query - contest_id: 708, user: 154, event_unit: 1
+OPPONENT query - contest_id: 708, user: 91, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 709, user: 87, event_unit: 1
+OPPONENT query - contest_id: 709, user: 61, event_unit: 1
+OWNER query - contest_id: 709, user: 87, event_unit: 1
+OPPONENT query - contest_id: 709, user: 61, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 709, user: 87, event_unit: 1
+OPPONENT query - contest_id: 709, user: 61, event_unit: 1
+OWNER query - contest_id: 709, user: 87, event_unit: 1
+OPPONENT query - contest_id: 709, user: 61, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 709,
+  "userId": "87",
+  "owner_id": "87",
+  "opponent_id": "61",
+  "players": [
+    {
+      "athleteId": 51,
+      "eventUnitId": 2,
+      "event_unit_cost": 2.5,
+      "aep_id": 1834
+    },
+    {
+      "athleteId": 54,
+      "eventUnitId": 2,
+      "event_unit_cost": 3,
+      "aep_id": 1837
+    },
+    {
+      "athleteId": 3,
+      "eventUnitId": 2,
+      "event_unit_cost": 3.5,
+      "aep_id": 1786
+    },
+    {
+      "athleteId": 7,
+      "eventUnitId": 1,
+      "event_unit_cost": 0.5,
+      "aep_id": 7
+    },
+    {
+      "athleteId": 47,
+      "eventUnitId": 1,
+      "event_unit_cost": 0.5,
+      "aep_id": 47
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 87,
+  email: 'stefa.pozzo@gmail.com',
+  username: 'Fantastefy',
+  iat: 1746021248,
+  exp: 1746626048
+}
+OWNER query - contest_id: 710, user: 87, event_unit: 1
+OPPONENT query - contest_id: 710, user: 107, event_unit: 1
+OWNER query - contest_id: 710, user: 87, event_unit: 1
+OPPONENT query - contest_id: 710, user: 107, event_unit: 1
+OWNER query - contest_id: 711, user: 87, event_unit: 1
+OPPONENT query - contest_id: 711, user: 193, event_unit: 1
+OWNER query - contest_id: 711, user: 87, event_unit: 1
+OPPONENT query - contest_id: 711, user: 193, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 711, user: 87, event_unit: 1
+OPPONENT query - contest_id: 711, user: 193, event_unit: 1
+OWNER query - contest_id: 711, user: 87, event_unit: 1
+OPPONENT query - contest_id: 711, user: 193, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 711,
+  "userId": "87",
+  "owner_id": "87",
+  "opponent_id": "193",
+  "players": [
+    {
+      "athleteId": 51,
+      "eventUnitId": 2,
+      "event_unit_cost": 2.5,
+      "aep_id": 1834
+    },
+    {
+      "athleteId": 54,
+      "eventUnitId": 2,
+      "event_unit_cost": 3,
+      "aep_id": 1837
+    },
+    {
+      "athleteId": 49,
+      "eventUnitId": 2,
+      "event_unit_cost": 0.5,
+      "aep_id": 1832
+    },
+    {
+      "athleteId": 55,
+      "eventUnitId": 1,
+      "event_unit_cost": 3.5,
+      "aep_id": 1782
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 9.5
+}
+👤 Utente autenticato: {
+  userId: 87,
+  email: 'stefa.pozzo@gmail.com',
+  username: 'Fantastefy',
+  iat: 1746021248,
+  exp: 1746626048
+}
+OWNER query - contest_id: 712, user: 59, event_unit: 1
+OPPONENT query - contest_id: 712, user: 89, event_unit: 1
+OWNER query - contest_id: 712, user: 59, event_unit: 1
+OPPONENT query - contest_id: 712, user: 89, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 712, user: 59, event_unit: 1
+OPPONENT query - contest_id: 712, user: 89, event_unit: 1
+OWNER query - contest_id: 712, user: 59, event_unit: 1
+OPPONENT query - contest_id: 712, user: 89, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 712,
+  "userId": "59",
+  "owner_id": "59",
+  "opponent_id": "89",
+  "players": [
+    {
+      "athleteId": 6,
+      "eventUnitId": 2,
+      "event_unit_cost": 1.5,
+      "aep_id": 1789
+    },
+    {
+      "athleteId": 6,
+      "eventUnitId": 3,
+      "event_unit_cost": 1,
+      "aep_id": 1847
+    },
+    {
+      "athleteId": 9,
+      "eventUnitId": 3,
+      "event_unit_cost": 0.5,
+      "aep_id": 1850
+    },
+    {
+      "athleteId": 9,
+      "eventUnitId": 2,
+      "event_unit_cost": 1.5,
+      "aep_id": 1792
+    },
+    {
+      "athleteId": 8,
+      "eventUnitId": 3,
+      "event_unit_cost": 1,
+      "aep_id": 1849
+    },
+    {
+      "athleteId": 8,
+      "eventUnitId": 2,
+      "event_unit_cost": 0.5,
+      "aep_id": 1791
+    },
+    {
+      "athleteId": 8,
+      "eventUnitId": 1,
+      "event_unit_cost": 1.5,
+      "aep_id": 8
+    },
+    {
+      "athleteId": 7,
+      "eventUnitId": 2,
+      "event_unit_cost": 1,
+      "aep_id": 1790
+    },
+    {
+      "athleteId": 7,
+      "eventUnitId": 3,
+      "event_unit_cost": 1.5,
+      "aep_id": 1848
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 59,
+  email: 'panozfc@gmail.com',
+  username: 'Panoz Football Club',
+  iat: 1746295697,
+  exp: 1746900497
+}
+OWNER query - contest_id: 706, user: 207, event_unit: 1
+OPPONENT query - contest_id: 706, user: 205, event_unit: 1
+OWNER query - contest_id: 706, user: 207, event_unit: 1
+OPPONENT query - contest_id: 706, user: 205, event_unit: 1
+OWNER query - contest_id: 605, user: 164, event_unit: 1
+OPPONENT query - contest_id: 605, user: 67, event_unit: 1
+OWNER query - contest_id: 605, user: 164, event_unit: 1
+OPPONENT query - contest_id: 605, user: 67, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 706, user: 207, event_unit: 1
+OPPONENT query - contest_id: 706, user: 205, event_unit: 1
+OWNER query - contest_id: 605, user: 164, event_unit: 1
+OPPONENT query - contest_id: 605, user: 67, event_unit: 1
+OWNER query - contest_id: 605, user: 164, event_unit: 1
+OPPONENT query - contest_id: 605, user: 67, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 713, user: 208, event_unit: 1
+OPPONENT query - contest_id: 713, user: 113, event_unit: 1
+OWNER query - contest_id: 713, user: 208, event_unit: 1
+OPPONENT query - contest_id: 713, user: 113, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 713, user: 208, event_unit: 1
+OPPONENT query - contest_id: 713, user: 113, event_unit: 1
+OWNER query - contest_id: 713, user: 208, event_unit: 1
+OPPONENT query - contest_id: 713, user: 113, event_unit: 1
+OWNER query - contest_id: 605, user: 164, event_unit: 1
+OPPONENT query - contest_id: 605, user: 67, event_unit: 1
+OWNER query - contest_id: 605, user: 164, event_unit: 1
+OPPONENT query - contest_id: 605, user: 67, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 605,
+  "userId": "67",
+  "owner_id": 164,
+  "opponent_id": 67,
+  "players": [
+    {
+      "athleteId": 9,
+      "eventUnitId": 1,
+      "event_unit_cost": 1,
+      "aep_id": 9
+    },
+    {
+      "athleteId": 9,
+      "eventUnitId": 2,
+      "event_unit_cost": 1.5,
+      "aep_id": 1792
+    },
+    {
+      "athleteId": 9,
+      "eventUnitId": 3,
+      "event_unit_cost": 0.5,
+      "aep_id": 1850
+    },
+    {
+      "athleteId": 55,
+      "eventUnitId": 1,
+      "event_unit_cost": 3.5,
+      "aep_id": 1782
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 6.5
+}
+👤 Utente autenticato: {
+  userId: 67,
+  email: 'ricercafm@panoz.it',
+  username: 'Pony',
+  iat: 1746295864,
+  exp: 1746900664
+}
+📥 Dati ricevuti dal client: {
+  "contestId": 713,
+  "userId": "208",
+  "owner_id": "208",
+  "opponent_id": "113",
+  "players": [
+    {
+      "athleteId": 54,
+      "eventUnitId": 1,
+      "event_unit_cost": 4,
+      "aep_id": 1781
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 4
+}
+👤 Utente autenticato: {
+  userId: 208,
+  email: 'tomvitturi@alice.it',
+  username: 'tomvitturi@alice.it ',
+  iat: 1746295897,
+  exp: 1746900697
+}
+OWNER query - contest_id: 670, user: 195, event_unit: 1
+OPPONENT query - contest_id: 670, user: 67, event_unit: 1
+OWNER query - contest_id: 670, user: 195, event_unit: 1
+OPPONENT query - contest_id: 670, user: 67, event_unit: 1
+OWNER query - contest_id: 713, user: 208, event_unit: 1
+OPPONENT query - contest_id: 713, user: 113, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 670, user: 195, event_unit: 1
+OPPONENT query - contest_id: 670, user: 67, event_unit: 1
+OWNER query - contest_id: 670, user: 195, event_unit: 1
+OPPONENT query - contest_id: 670, user: 67, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 670,
+  "userId": "67",
+  "owner_id": 195,
+  "opponent_id": 67,
+  "players": [
+    {
+      "athleteId": 55,
+      "eventUnitId": 1,
+      "event_unit_cost": 3.5,
+      "aep_id": 1782
+    },
+    {
+      "athleteId": 55,
+      "eventUnitId": 2,
+      "event_unit_cost": 2.5,
+      "aep_id": 1838
+    },
+    {
+      "athleteId": 57,
+      "eventUnitId": 3,
+      "event_unit_cost": 3.5,
+      "aep_id": 1898
+    },
+    {
+      "athleteId": 13,
+      "eventUnitId": 1,
+      "event_unit_cost": 0.5,
+      "aep_id": 13
+    }
+  ],
+  "multiplier": 5,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 67,
+  email: 'ricercafm@panoz.it',
+  username: 'Pony',
+  iat: 1746295864,
+  exp: 1746900664
+}
+OWNER query - contest_id: 714, user: 208, event_unit: 1
+OPPONENT query - contest_id: 714, user: 127, event_unit: 1
+OWNER query - contest_id: 714, user: 208, event_unit: 1
+OPPONENT query - contest_id: 714, user: 127, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 690, user: 198, event_unit: 1
+OPPONENT query - contest_id: 690, user: 60, event_unit: 1
+OWNER query - contest_id: 690, user: 198, event_unit: 1
+OPPONENT query - contest_id: 690, user: 60, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 714, user: 208, event_unit: 1
+OPPONENT query - contest_id: 714, user: 127, event_unit: 1
+OWNER query - contest_id: 714, user: 208, event_unit: 1
+OPPONENT query - contest_id: 714, user: 127, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 714, user: 208, event_unit: 1
+OPPONENT query - contest_id: 714, user: 127, event_unit: 1
+OWNER query - contest_id: 714, user: 208, event_unit: 1
+OPPONENT query - contest_id: 714, user: 127, event_unit: 1
+OWNER query - contest_id: 690, user: 198, event_unit: 1
+OPPONENT query - contest_id: 690, user: 60, event_unit: 1
+OWNER query - contest_id: 690, user: 198, event_unit: 1
+OPPONENT query - contest_id: 690, user: 60, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+📥 Dati ricevuti dal client: {
+  "contestId": 690,
+  "userId": "60",
+  "owner_id": 198,
+  "opponent_id": 60,
+  "players": [
+    {
+      "athleteId": 9,
+      "eventUnitId": 2,
+      "event_unit_cost": 1.5,
+      "aep_id": 1792
+    },
+    {
+      "athleteId": 9,
+      "eventUnitId": 3,
+      "event_unit_cost": 0.5,
+      "aep_id": 1850
+    },
+    {
+      "athleteId": 1,
+      "eventUnitId": 3,
+      "event_unit_cost": 2,
+      "aep_id": 1842
+    },
+    {
+      "athleteId": 6,
+      "eventUnitId": 1,
+      "event_unit_cost": 1,
+      "aep_id": 6
+    },
+    {
+      "athleteId": 6,
+      "eventUnitId": 2,
+      "event_unit_cost": 1.5,
+      "aep_id": 1789
+    },
+    {
+      "athleteId": 6,
+      "eventUnitId": 3,
+      "event_unit_cost": 1,
+      "aep_id": 1847
+    },
+    {
+      "athleteId": 7,
+      "eventUnitId": 3,
+      "event_unit_cost": 1.5,
+      "aep_id": 1848
+    },
+    {
+      "athleteId": 7,
+      "eventUnitId": 2,
+      "event_unit_cost": 1,
+      "aep_id": 1790
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 60,
+  email: 'panoz4ever@gmail.com',
+  username: 'Alby Schott',
+  iat: 1746295982,
+  exp: 1746900782
+}
+OWNER query - contest_id: 690, user: 198, event_unit: 1
+OPPONENT query - contest_id: 690, user: 60, event_unit: 1
+OWNER query - contest_id: 714, user: 208, event_unit: 1
+OPPONENT query - contest_id: 714, user: 127, event_unit: 1
+OWNER query - contest_id: 714, user: 208, event_unit: 1
+OPPONENT query - contest_id: 714, user: 127, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 714,
+  "userId": "208",
+  "owner_id": "208",
+  "opponent_id": "127",
+  "players": [
+    {
+      "athleteId": 1,
+      "eventUnitId": 2,
+      "event_unit_cost": 3.5,
+      "aep_id": 1784
+    },
+    {
+      "athleteId": 17,
+      "eventUnitId": 1,
+      "event_unit_cost": 0.5,
+      "aep_id": 17
+    },
+    {
+      "athleteId": 9,
+      "eventUnitId": 1,
+      "event_unit_cost": 1,
+      "aep_id": 9
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 5
+}
+👤 Utente autenticato: {
+  userId: 208,
+  email: 'tomvitturi@alice.it',
+  username: 'tomvitturi@alice.it ',
+  iat: 1746295897,
+  exp: 1746900697
+}
+OWNER query - contest_id: 714, user: 208, event_unit: 1
+OPPONENT query - contest_id: 714, user: 127, event_unit: 1
+OWNER query - contest_id: 504, user: 108, event_unit: 1
+OPPONENT query - contest_id: 504, user: 60, event_unit: 1
+OWNER query - contest_id: 554, user: 90, event_unit: 1
+OPPONENT query - contest_id: 554, user: 133, event_unit: 1
+OWNER query - contest_id: 554, user: 90, event_unit: 1
+OPPONENT query - contest_id: 554, user: 133, event_unit: 1
+OWNER query - contest_id: 554, user: 90, event_unit: 1
+OPPONENT query - contest_id: 554, user: 133, event_unit: 1
+OWNER query - contest_id: 669, user: 136, event_unit: 1
+OPPONENT query - contest_id: 669, user: 90, event_unit: 1
+OWNER query - contest_id: 669, user: 136, event_unit: 1
+OPPONENT query - contest_id: 669, user: 90, event_unit: 1
+OWNER query - contest_id: 669, user: 136, event_unit: 1
+OPPONENT query - contest_id: 669, user: 90, event_unit: 1
+OWNER query - contest_id: 715, user: 90, event_unit: 1
+OPPONENT query - contest_id: 715, user: 58, event_unit: 1
+OWNER query - contest_id: 715, user: 90, event_unit: 1
+OPPONENT query - contest_id: 715, user: 58, event_unit: 1
+OWNER query - contest_id: 680, user: 136, event_unit: 1
+OPPONENT query - contest_id: 680, user: 92, event_unit: 1
+OWNER query - contest_id: 680, user: 136, event_unit: 1
+OPPONENT query - contest_id: 680, user: 92, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 716, user: 188, event_unit: 1
+OPPONENT query - contest_id: 716, user: 57, event_unit: 1
+OWNER query - contest_id: 716, user: 188, event_unit: 1
+OPPONENT query - contest_id: 716, user: 57, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 717, user: 90, event_unit: 1
+OPPONENT query - contest_id: 717, user: 198, event_unit: 1
+OWNER query - contest_id: 717, user: 90, event_unit: 1
+OPPONENT query - contest_id: 717, user: 198, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 717, user: 90, event_unit: 1
+OPPONENT query - contest_id: 717, user: 198, event_unit: 1
+OWNER query - contest_id: 717, user: 90, event_unit: 1
+OPPONENT query - contest_id: 717, user: 198, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 717,
+  "userId": "90",
+  "owner_id": "90",
+  "opponent_id": "198",
+  "players": [
+    {
+      "athleteId": 2,
+      "eventUnitId": 1,
+      "event_unit_cost": 4,
+      "aep_id": 2
+    },
+    {
+      "athleteId": 3,
+      "eventUnitId": 1,
+      "event_unit_cost": 2.5,
+      "aep_id": 3
+    },
+    {
+      "athleteId": 3,
+      "eventUnitId": 2,
+      "event_unit_cost": 3.5,
+      "aep_id": 1786
+    }
+  ],
+  "multiplier": 10,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 90,
+  email: 'max.pozzo44@gmail.com',
+  username: 'Max',
+  iat: 1746124086,
+  exp: 1746728886
+}
+OWNER query - contest_id: 680, user: 136, event_unit: 1
+OPPONENT query - contest_id: 680, user: 92, event_unit: 1
+OWNER query - contest_id: 680, user: 136, event_unit: 1
+OPPONENT query - contest_id: 680, user: 92, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 680,
+  "userId": "92",
+  "owner_id": 136,
+  "opponent_id": 92,
+  "players": [
+    {
+      "athleteId": 54,
+      "eventUnitId": 2,
+      "event_unit_cost": 3,
+      "aep_id": 1837
+    },
+    {
+      "athleteId": 17,
+      "eventUnitId": 3,
+      "event_unit_cost": 1.5,
+      "aep_id": 1858
+    },
+    {
+      "athleteId": 1,
+      "eventUnitId": 3,
+      "event_unit_cost": 2,
+      "aep_id": 1842
+    },
+    {
+      "athleteId": 4,
+      "eventUnitId": 2,
+      "event_unit_cost": 3.5,
+      "aep_id": 1787
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 92,
+  email: 'roberto.tresoldi80@gmail.com',
+  username: 'Roberto Tresoldi',
+  iat: 1746029302,
+  exp: 1746634102
+}
+OWNER query - contest_id: 478, user: 87, event_unit: 1
+OPPONENT query - contest_id: 478, user: 92, event_unit: 1
+OWNER query - contest_id: 478, user: 87, event_unit: 1
+OPPONENT query - contest_id: 478, user: 92, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 478, user: 87, event_unit: 1
+OPPONENT query - contest_id: 478, user: 92, event_unit: 1
+OWNER query - contest_id: 478, user: 87, event_unit: 1
+OPPONENT query - contest_id: 478, user: 92, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 478,
+  "userId": "92",
+  "owner_id": 87,
+  "opponent_id": 92,
+  "players": [
+    {
+      "athleteId": 54,
+      "eventUnitId": 1,
+      "event_unit_cost": 4,
+      "aep_id": 1781
+    },
+    {
+      "athleteId": 1,
+      "eventUnitId": 2,
+      "event_unit_cost": 3.5,
+      "aep_id": 1784
+    },
+    {
+      "athleteId": 3,
+      "eventUnitId": 1,
+      "event_unit_cost": 2.5,
+      "aep_id": 3
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 92,
+  email: 'roberto.tresoldi80@gmail.com',
+  username: 'Roberto Tresoldi',
+  iat: 1746029302,
+  exp: 1746634102
+}
+OWNER query - contest_id: 488, user: 107, event_unit: 1
+OPPONENT query - contest_id: 488, user: 92, event_unit: 1
+OWNER query - contest_id: 488, user: 107, event_unit: 1
+OPPONENT query - contest_id: 488, user: 92, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 488, user: 107, event_unit: 1
+OPPONENT query - contest_id: 488, user: 92, event_unit: 1
+OWNER query - contest_id: 488, user: 107, event_unit: 1
+OPPONENT query - contest_id: 488, user: 92, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 488,
+  "userId": "92",
+  "owner_id": 107,
+  "opponent_id": 92,
+  "players": [
+    {
+      "athleteId": 52,
+      "eventUnitId": 1,
+      "event_unit_cost": 2.5,
+      "aep_id": 1779
+    },
+    {
+      "athleteId": 53,
+      "eventUnitId": 3,
+      "event_unit_cost": 2.5,
+      "aep_id": 1894
+    },
+    {
+      "athleteId": 57,
+      "eventUnitId": 1,
+      "event_unit_cost": 2.5,
+      "aep_id": 1840
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 7.5
+}
+👤 Utente autenticato: {
+  userId: 92,
+  email: 'roberto.tresoldi80@gmail.com',
+  username: 'Roberto Tresoldi',
+  iat: 1746029302,
+  exp: 1746634102
+}
+OWNER query - contest_id: 718, user: 92, event_unit: 1
+OPPONENT query - contest_id: 718, user: 83, event_unit: 1
+OWNER query - contest_id: 718, user: 92, event_unit: 1
+OPPONENT query - contest_id: 718, user: 83, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 717, user: 90, event_unit: 1
+OPPONENT query - contest_id: 717, user: 198, event_unit: 1
+OWNER query - contest_id: 719, user: 209, event_unit: 1
+OPPONENT query - contest_id: 719, user: 138, event_unit: 1
+OWNER query - contest_id: 719, user: 209, event_unit: 1
+OPPONENT query - contest_id: 719, user: 138, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 719, user: 209, event_unit: 1
+OPPONENT query - contest_id: 719, user: 138, event_unit: 1
+OWNER query - contest_id: 719, user: 209, event_unit: 1
+OPPONENT query - contest_id: 719, user: 138, event_unit: 1
+OWNER query - contest_id: 720, user: 210, event_unit: 1
+OPPONENT query - contest_id: 720, user: 94, event_unit: 1
+OWNER query - contest_id: 720, user: 210, event_unit: 1
+OPPONENT query - contest_id: 720, user: 94, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 720, user: 210, event_unit: 1
+OPPONENT query - contest_id: 720, user: 94, event_unit: 1
+OWNER query - contest_id: 720, user: 210, event_unit: 1
+OPPONENT query - contest_id: 720, user: 94, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 721, user: 210, event_unit: 1
+OPPONENT query - contest_id: 721, user: 70, event_unit: 1
+OWNER query - contest_id: 721, user: 210, event_unit: 1
+OPPONENT query - contest_id: 721, user: 70, event_unit: 1
+OWNER query - contest_id: 722, user: 210, event_unit: 1
+OPPONENT query - contest_id: 722, user: 94, event_unit: 1
+OWNER query - contest_id: 722, user: 210, event_unit: 1
+OPPONENT query - contest_id: 722, user: 94, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 722,
+  "userId": "210",
+  "owner_id": "210",
+  "opponent_id": "94",
+  "players": [
+    {
+      "athleteId": 55,
+      "eventUnitId": 1,
+      "event_unit_cost": 3.5,
+      "aep_id": 1782
+    },
+    {
+      "athleteId": 55,
+      "eventUnitId": 2,
+      "event_unit_cost": 2.5,
+      "aep_id": 1838
+    },
+    {
+      "athleteId": 2,
+      "eventUnitId": 3,
+      "event_unit_cost": 3.5,
+      "aep_id": 1843
+    }
+  ],
+  "multiplier": 5,
+  "totalCost": 9.5
+}
+👤 Utente autenticato: {
+  userId: 210,
+  email: 'marco.bernabei.it@gmail.com',
+  username: 'MB',
+  iat: 1746299580,
+  exp: 1746904380
+}
+OWNER query - contest_id: 723, user: 210, event_unit: 1
+OPPONENT query - contest_id: 723, user: 57, event_unit: 1
+OWNER query - contest_id: 723, user: 210, event_unit: 1
+OPPONENT query - contest_id: 723, user: 57, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 723, user: 210, event_unit: 1
+OPPONENT query - contest_id: 723, user: 57, event_unit: 1
+OWNER query - contest_id: 723, user: 210, event_unit: 1
+OPPONENT query - contest_id: 723, user: 57, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 723,
+  "userId": "210",
+  "owner_id": "210",
+  "opponent_id": "57",
+  "players": [
+    {
+      "athleteId": 55,
+      "eventUnitId": 1,
+      "event_unit_cost": 3.5,
+      "aep_id": 1782
+    },
+    {
+      "athleteId": 3,
+      "eventUnitId": 2,
+      "event_unit_cost": 3.5,
+      "aep_id": 1786
+    },
+    {
+      "athleteId": 51,
+      "eventUnitId": 3,
+      "event_unit_cost": 3,
+      "aep_id": 1892
+    }
+  ],
+  "multiplier": 10,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 210,
+  email: 'marco.bernabei.it@gmail.com',
+  username: 'MB',
+  iat: 1746299580,
+  exp: 1746904380
+}
+OWNER query - contest_id: 724, user: 131, event_unit: 1
+OPPONENT query - contest_id: 724, user: 57, event_unit: 1
+OWNER query - contest_id: 724, user: 131, event_unit: 1
+OPPONENT query - contest_id: 724, user: 57, event_unit: 1
+OWNER query - contest_id: 717, user: 90, event_unit: 1
+OPPONENT query - contest_id: 717, user: 198, event_unit: 1
+OWNER query - contest_id: 554, user: 90, event_unit: 1
+OPPONENT query - contest_id: 554, user: 133, event_unit: 1
+OWNER query - contest_id: 554, user: 90, event_unit: 1
+OPPONENT query - contest_id: 554, user: 133, event_unit: 1
+OWNER query - contest_id: 725, user: 211, event_unit: 1
+OPPONENT query - contest_id: 725, user: 114, event_unit: 1
+OWNER query - contest_id: 725, user: 211, event_unit: 1
+OPPONENT query - contest_id: 725, user: 114, event_unit: 1
+OWNER query - contest_id: 727, user: 206, event_unit: 1
+OPPONENT query - contest_id: 727, user: 122, event_unit: 1
+OWNER query - contest_id: 727, user: 206, event_unit: 1
+OPPONENT query - contest_id: 727, user: 122, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 727, user: 206, event_unit: 1
+OPPONENT query - contest_id: 727, user: 122, event_unit: 1
+OWNER query - contest_id: 727, user: 206, event_unit: 1
+OPPONENT query - contest_id: 727, user: 122, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 727,
+  "userId": "206",
+  "owner_id": "206",
+  "opponent_id": "122",
+  "players": [
+    {
+      "athleteId": 3,
+      "eventUnitId": 1,
+      "event_unit_cost": 2.5,
+      "aep_id": 3
+    },
+    {
+      "athleteId": 1,
+      "eventUnitId": 1,
+      "event_unit_cost": 5,
+      "aep_id": 1
+    },
+    {
+      "athleteId": 7,
+      "eventUnitId": 1,
+      "event_unit_cost": 0.5,
+      "aep_id": 7
+    },
+    {
+      "athleteId": 13,
+      "eventUnitId": 1,
+      "event_unit_cost": 0.5,
+      "aep_id": 13
+    },
+    {
+      "athleteId": 25,
+      "eventUnitId": 1,
+      "event_unit_cost": 1,
+      "aep_id": 25
+    },
+    {
+      "athleteId": 26,
+      "eventUnitId": 1,
+      "event_unit_cost": 0.5,
+      "aep_id": 26
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 206,
+  email: 'giulia.casagrande1998@gmail.com',
+  username: 'Giulia Casagrande',
+  iat: 1746291511,
+  exp: 1746896311
+}
+OWNER query - contest_id: 727, user: 206, event_unit: 1
+OPPONENT query - contest_id: 727, user: 122, event_unit: 1
+OWNER query - contest_id: 727, user: 206, event_unit: 1
+OPPONENT query - contest_id: 727, user: 122, event_unit: 1
+OWNER query - contest_id: 728, user: 212, event_unit: 1
+OPPONENT query - contest_id: 728, user: 206, event_unit: 1
+OWNER query - contest_id: 728, user: 212, event_unit: 1
+OPPONENT query - contest_id: 728, user: 206, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 729, user: 214, event_unit: 1
+OPPONENT query - contest_id: 729, user: 131, event_unit: 1
+OWNER query - contest_id: 729, user: 214, event_unit: 1
+OPPONENT query - contest_id: 729, user: 131, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 729, user: 214, event_unit: 1
+OPPONENT query - contest_id: 729, user: 131, event_unit: 1
+OWNER query - contest_id: 729, user: 214, event_unit: 1
+OPPONENT query - contest_id: 729, user: 131, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 729, user: 214, event_unit: 1
+OPPONENT query - contest_id: 729, user: 131, event_unit: 1
+OWNER query - contest_id: 729, user: 214, event_unit: 1
+OPPONENT query - contest_id: 729, user: 131, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 729, user: 214, event_unit: 1
+OPPONENT query - contest_id: 729, user: 131, event_unit: 1
+OWNER query - contest_id: 729, user: 214, event_unit: 1
+OPPONENT query - contest_id: 729, user: 131, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 729, user: 214, event_unit: 1
+OPPONENT query - contest_id: 729, user: 131, event_unit: 1
+OWNER query - contest_id: 729, user: 214, event_unit: 1
+OPPONENT query - contest_id: 729, user: 131, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 729, user: 214, event_unit: 1
+OPPONENT query - contest_id: 729, user: 131, event_unit: 1
+OWNER query - contest_id: 729, user: 214, event_unit: 1
+OPPONENT query - contest_id: 729, user: 131, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 729,
+  "userId": "214",
+  "owner_id": "214",
+  "opponent_id": "131",
+  "players": [
+    {
+      "athleteId": 1,
+      "eventUnitId": 1,
+      "event_unit_cost": 5,
+      "aep_id": 1
+    },
+    {
+      "athleteId": 2,
+      "eventUnitId": 1,
+      "event_unit_cost": 4,
+      "aep_id": 2
+    },
+    {
+      "athleteId": 8,
+      "eventUnitId": 2,
+      "event_unit_cost": 0.5,
+      "aep_id": 1791
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 9.5
+}
+👤 Utente autenticato: {
+  userId: 214,
+  email: 'ncl.adr@gmail.com',
+  username: 'Niky',
+  iat: 1746308990,
+  exp: 1746913790
+}
+OWNER query - contest_id: 729, user: 214, event_unit: 1
+OPPONENT query - contest_id: 729, user: 131, event_unit: 1
+OWNER query - contest_id: 495, user: 108, event_unit: 1
+OPPONENT query - contest_id: 495, user: 69, event_unit: 1
+OWNER query - contest_id: 730, user: 215, event_unit: 1
+OPPONENT query - contest_id: 730, user: 114, event_unit: 1
+OWNER query - contest_id: 730, user: 215, event_unit: 1
+OPPONENT query - contest_id: 730, user: 114, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 730, user: 215, event_unit: 1
+OPPONENT query - contest_id: 730, user: 114, event_unit: 1
+OWNER query - contest_id: 730, user: 215, event_unit: 1
+OPPONENT query - contest_id: 730, user: 114, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 731, user: 216, event_unit: 1
+OPPONENT query - contest_id: 731, user: 114, event_unit: 1
+OWNER query - contest_id: 731, user: 216, event_unit: 1
+OPPONENT query - contest_id: 731, user: 114, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 731, user: 216, event_unit: 1
+OPPONENT query - contest_id: 731, user: 114, event_unit: 1
+OWNER query - contest_id: 731, user: 216, event_unit: 1
+OPPONENT query - contest_id: 731, user: 114, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 731,
+  "userId": "216",
+  "owner_id": "216",
+  "opponent_id": "114",
+  "players": [
+    {
+      "athleteId": 2,
+      "eventUnitId": 1,
+      "event_unit_cost": 4,
+      "aep_id": 2
+    },
+    {
+      "athleteId": 1,
+      "eventUnitId": 1,
+      "event_unit_cost": 5,
+      "aep_id": 1
+    },
+    {
+      "athleteId": 34,
+      "eventUnitId": 1,
+      "event_unit_cost": 1,
+      "aep_id": 34
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 216,
+  email: 'riccardozellini@gmail.com',
+  username: 'Riccardoze',
+  iat: 1746318063,
+  exp: 1746922863
+}
+OWNER query - contest_id: 732, user: 216, event_unit: 1
+OPPONENT query - contest_id: 732, user: 57, event_unit: 1
+OWNER query - contest_id: 732, user: 216, event_unit: 1
+OPPONENT query - contest_id: 732, user: 57, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 732, user: 216, event_unit: 1
+OPPONENT query - contest_id: 732, user: 57, event_unit: 1
+OWNER query - contest_id: 732, user: 216, event_unit: 1
+OPPONENT query - contest_id: 732, user: 57, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 732,
+  "userId": "216",
+  "owner_id": "216",
+  "opponent_id": "57",
+  "players": [
+    {
+      "athleteId": 3,
+      "eventUnitId": 1,
+      "event_unit_cost": 2.5,
+      "aep_id": 3
+    },
+    {
+      "athleteId": 4,
+      "eventUnitId": 2,
+      "event_unit_cost": 3.5,
+      "aep_id": 1787
+    },
+    {
+      "athleteId": 2,
+      "eventUnitId": 2,
+      "event_unit_cost": 4,
+      "aep_id": 1785
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 216,
+  email: 'riccardozellini@gmail.com',
+  username: 'Riccardoze',
+  iat: 1746318063,
+  exp: 1746922863
+}
+OWNER query - contest_id: 733, user: 217, event_unit: 1
+OPPONENT query - contest_id: 733, user: 76, event_unit: 1
+OWNER query - contest_id: 733, user: 217, event_unit: 1
+OPPONENT query - contest_id: 733, user: 76, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 733, user: 217, event_unit: 1
+OPPONENT query - contest_id: 733, user: 76, event_unit: 1
+OWNER query - contest_id: 733, user: 217, event_unit: 1
+OPPONENT query - contest_id: 733, user: 76, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 733, user: 217, event_unit: 1
+OPPONENT query - contest_id: 733, user: 76, event_unit: 1
+OWNER query - contest_id: 733, user: 217, event_unit: 1
+OPPONENT query - contest_id: 733, user: 76, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 733, user: 217, event_unit: 1
+OPPONENT query - contest_id: 733, user: 76, event_unit: 1
+OWNER query - contest_id: 733, user: 217, event_unit: 1
+OPPONENT query - contest_id: 733, user: 76, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 733, user: 217, event_unit: 1
+OPPONENT query - contest_id: 733, user: 76, event_unit: 1
+OWNER query - contest_id: 733, user: 217, event_unit: 1
+OPPONENT query - contest_id: 733, user: 76, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 734, user: 217, event_unit: 1
+OPPONENT query - contest_id: 734, user: 114, event_unit: 1
+OWNER query - contest_id: 734, user: 217, event_unit: 1
+OPPONENT query - contest_id: 734, user: 114, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 734, user: 217, event_unit: 1
+OPPONENT query - contest_id: 734, user: 114, event_unit: 1
+OWNER query - contest_id: 734, user: 217, event_unit: 1
+OPPONENT query - contest_id: 734, user: 114, event_unit: 1
+OWNER query - contest_id: 734, user: 217, event_unit: 1
+OPPONENT query - contest_id: 734, user: 114, event_unit: 1
+OWNER query - contest_id: 734, user: 217, event_unit: 1
+OPPONENT query - contest_id: 734, user: 114, event_unit: 1
+OWNER query - contest_id: 735, user: 217, event_unit: 1
+OPPONENT query - contest_id: 735, user: 114, event_unit: 1
+OWNER query - contest_id: 735, user: 217, event_unit: 1
+OPPONENT query - contest_id: 735, user: 114, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 735, user: 217, event_unit: 1
+OPPONENT query - contest_id: 735, user: 114, event_unit: 1
+OWNER query - contest_id: 735, user: 217, event_unit: 1
+OPPONENT query - contest_id: 735, user: 114, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 735, user: 217, event_unit: 1
+OPPONENT query - contest_id: 735, user: 114, event_unit: 1
+OWNER query - contest_id: 735, user: 217, event_unit: 1
+OPPONENT query - contest_id: 735, user: 114, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 735, user: 217, event_unit: 1
+OPPONENT query - contest_id: 735, user: 114, event_unit: 1
+OWNER query - contest_id: 735, user: 217, event_unit: 1
+OPPONENT query - contest_id: 735, user: 114, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 735,
+  "userId": "217",
+  "owner_id": "217",
+  "opponent_id": "114",
+  "players": [
+    {
+      "athleteId": 37,
+      "eventUnitId": 3,
+      "event_unit_cost": 1.5,
+      "aep_id": 1878
+    },
+    {
+      "athleteId": 7,
+      "eventUnitId": 1,
+      "event_unit_cost": 0.5,
+      "aep_id": 7
+    },
+    {
+      "athleteId": 8,
+      "eventUnitId": 2,
+      "event_unit_cost": 0.5,
+      "aep_id": 1791
+    },
+    {
+      "athleteId": 1,
+      "eventUnitId": 3,
+      "event_unit_cost": 2,
+      "aep_id": 1842
+    },
+    {
+      "athleteId": 4,
+      "eventUnitId": 2,
+      "event_unit_cost": 3.5,
+      "aep_id": 1787
+    },
+    {
+      "athleteId": 20,
+      "eventUnitId": 1,
+      "event_unit_cost": 0.5,
+      "aep_id": 20
+    },
+    {
+      "athleteId": 23,
+      "eventUnitId": 1,
+      "event_unit_cost": 0.5,
+      "aep_id": 23
+    },
+    {
+      "athleteId": 15,
+      "eventUnitId": 2,
+      "event_unit_cost": 0.5,
+      "aep_id": 1798
+    },
+    {
+      "athleteId": 43,
+      "eventUnitId": 3,
+      "event_unit_cost": 0.5,
+      "aep_id": 1884
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 217,
+  email: 'scosse85@gmail.com',
+  username: 'Scaele ',
+  iat: 1746332508,
+  exp: 1746937308
+}
+OWNER query - contest_id: 736, user: 220, event_unit: 1
+OPPONENT query - contest_id: 736, user: 105, event_unit: 1
+OWNER query - contest_id: 736, user: 220, event_unit: 1
+OPPONENT query - contest_id: 736, user: 105, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 736, user: 220, event_unit: 1
+OPPONENT query - contest_id: 736, user: 105, event_unit: 1
+OWNER query - contest_id: 736, user: 220, event_unit: 1
+OPPONENT query - contest_id: 736, user: 105, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 736,
+  "userId": "220",
+  "owner_id": "220",
+  "opponent_id": "105",
+  "players": [
+    {
+      "athleteId": 2,
+      "eventUnitId": 2,
+      "event_unit_cost": 4,
+      "aep_id": 1785
+    },
+    {
+      "athleteId": 54,
+      "eventUnitId": 2,
+      "event_unit_cost": 3,
+      "aep_id": 1837
+    },
+    {
+      "athleteId": 4,
+      "eventUnitId": 3,
+      "event_unit_cost": 2.5,
+      "aep_id": 1845
+    },
+    {
+      "athleteId": 20,
+      "eventUnitId": 1,
+      "event_unit_cost": 0.5,
+      "aep_id": 20
+    }
+  ],
+  "multiplier": 5,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 220,
+  email: 'sere.piva@gmail.com',
+  username: 'Serendipity',
+  iat: 1746362242,
+  exp: 1746967042
+}
+OWNER query - contest_id: 717, user: 90, event_unit: 1
+OPPONENT query - contest_id: 717, user: 198, event_unit: 1
+OWNER query - contest_id: 554, user: 90, event_unit: 1
+OPPONENT query - contest_id: 554, user: 133, event_unit: 1
+OWNER query - contest_id: 554, user: 90, event_unit: 1
+OPPONENT query - contest_id: 554, user: 133, event_unit: 1
+OWNER query - contest_id: 737, user: 221, event_unit: 1
+OPPONENT query - contest_id: 737, user: 114, event_unit: 1
+OWNER query - contest_id: 737, user: 221, event_unit: 1
+OPPONENT query - contest_id: 737, user: 114, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 738, user: 222, event_unit: 1
+OPPONENT query - contest_id: 738, user: 114, event_unit: 1
+OWNER query - contest_id: 738, user: 222, event_unit: 1
+OPPONENT query - contest_id: 738, user: 114, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 737, user: 221, event_unit: 1
+OPPONENT query - contest_id: 737, user: 114, event_unit: 1
+OWNER query - contest_id: 737, user: 221, event_unit: 1
+OPPONENT query - contest_id: 737, user: 114, event_unit: 1
+OWNER query - contest_id: 738, user: 222, event_unit: 1
+OPPONENT query - contest_id: 738, user: 114, event_unit: 1
+OWNER query - contest_id: 738, user: 222, event_unit: 1
+OPPONENT query - contest_id: 738, user: 114, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 738,
+  "userId": "222",
+  "owner_id": "222",
+  "opponent_id": "114",
+  "players": [
+    {
+      "athleteId": 54,
+      "eventUnitId": 3,
+      "event_unit_cost": 2,
+      "aep_id": 1895
+    },
+    {
+      "athleteId": 54,
+      "eventUnitId": 2,
+      "event_unit_cost": 3,
+      "aep_id": 1837
+    },
+    {
+      "athleteId": 54,
+      "eventUnitId": 1,
+      "event_unit_cost": 4,
+      "aep_id": 1781
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 9
+}
+👤 Utente autenticato: {
+  userId: 222,
+  email: 'bobbivalsecchi29@gmail.com',
+  username: 'Bobbi Valsecchi',
+  iat: 1746367022,
+  exp: 1746971822
+}
+OWNER query - contest_id: 739, user: 222, event_unit: 1
+OPPONENT query - contest_id: 739, user: 57, event_unit: 1
+OWNER query - contest_id: 739, user: 222, event_unit: 1
+OPPONENT query - contest_id: 739, user: 57, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 739, user: 222, event_unit: 1
+OPPONENT query - contest_id: 739, user: 57, event_unit: 1
+OWNER query - contest_id: 739, user: 222, event_unit: 1
+OPPONENT query - contest_id: 739, user: 57, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 739,
+  "userId": "222",
+  "owner_id": "222",
+  "opponent_id": "57",
+  "players": [
+    {
+      "athleteId": 51,
+      "eventUnitId": 1,
+      "event_unit_cost": 2,
+      "aep_id": 1778
+    },
+    {
+      "athleteId": 51,
+      "eventUnitId": 2,
+      "event_unit_cost": 2.5,
+      "aep_id": 1834
+    },
+    {
+      "athleteId": 51,
+      "eventUnitId": 3,
+      "event_unit_cost": 3,
+      "aep_id": 1892
+    }
+  ],
+  "multiplier": 5,
+  "totalCost": 7.5
+}
+👤 Utente autenticato: {
+  userId: 222,
+  email: 'bobbivalsecchi29@gmail.com',
+  username: 'Bobbi Valsecchi',
+  iat: 1746367022,
+  exp: 1746971822
+}
+OWNER query - contest_id: 740, user: 222, event_unit: 1
+OPPONENT query - contest_id: 740, user: 81, event_unit: 1
+OWNER query - contest_id: 740, user: 222, event_unit: 1
+OPPONENT query - contest_id: 740, user: 81, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 740, user: 222, event_unit: 1
+OPPONENT query - contest_id: 740, user: 81, event_unit: 1
+OWNER query - contest_id: 740, user: 222, event_unit: 1
+OPPONENT query - contest_id: 740, user: 81, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 740,
+  "userId": "222",
+  "owner_id": "222",
+  "opponent_id": "81",
+  "players": [
+    {
+      "athleteId": 53,
+      "eventUnitId": 1,
+      "event_unit_cost": 3.5,
+      "aep_id": 1780
+    },
+    {
+      "athleteId": 7,
+      "eventUnitId": 3,
+      "event_unit_cost": 1.5,
+      "aep_id": 1848
+    },
+    {
+      "athleteId": 3,
+      "eventUnitId": 2,
+      "event_unit_cost": 3.5,
+      "aep_id": 1786
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 8.5
+}
+👤 Utente autenticato: {
+  userId: 222,
+  email: 'bobbivalsecchi29@gmail.com',
+  username: 'Bobbi Valsecchi',
+  iat: 1746367022,
+  exp: 1746971822
+}
+OWNER query - contest_id: 741, user: 222, event_unit: 1
+OPPONENT query - contest_id: 741, user: 113, event_unit: 1
+OWNER query - contest_id: 741, user: 222, event_unit: 1
+OPPONENT query - contest_id: 741, user: 113, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 741, user: 222, event_unit: 1
+OPPONENT query - contest_id: 741, user: 113, event_unit: 1
+OWNER query - contest_id: 741, user: 222, event_unit: 1
+OPPONENT query - contest_id: 741, user: 113, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 741,
+  "userId": "222",
+  "owner_id": "222",
+  "opponent_id": "113",
+  "players": [
+    {
+      "athleteId": 4,
+      "eventUnitId": 1,
+      "event_unit_cost": 4.5,
+      "aep_id": 4
+    },
+    {
+      "athleteId": 2,
+      "eventUnitId": 2,
+      "event_unit_cost": 4,
+      "aep_id": 1785
+    },
+    {
+      "athleteId": 9,
+      "eventUnitId": 1,
+      "event_unit_cost": 1,
+      "aep_id": 9
+    }
+  ],
+  "multiplier": 5,
+  "totalCost": 9.5
+}
+👤 Utente autenticato: {
+  userId: 222,
+  email: 'bobbivalsecchi29@gmail.com',
+  username: 'Bobbi Valsecchi',
+  iat: 1746367022,
+  exp: 1746971822
+}
+OWNER query - contest_id: 742, user: 222, event_unit: 1
+OPPONENT query - contest_id: 742, user: 114, event_unit: 1
+OWNER query - contest_id: 742, user: 222, event_unit: 1
+OPPONENT query - contest_id: 742, user: 114, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 742, user: 222, event_unit: 1
+OPPONENT query - contest_id: 742, user: 114, event_unit: 1
+OWNER query - contest_id: 742, user: 222, event_unit: 1
+OPPONENT query - contest_id: 742, user: 114, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 742,
+  "userId": "222",
+  "owner_id": "222",
+  "opponent_id": "114",
+  "players": [
+    {
+      "athleteId": 57,
+      "eventUnitId": 2,
+      "event_unit_cost": 3,
+      "aep_id": 1841
+    },
+    {
+      "athleteId": 55,
+      "eventUnitId": 1,
+      "event_unit_cost": 3.5,
+      "aep_id": 1782
+    },
+    {
+      "athleteId": 55,
+      "eventUnitId": 3,
+      "event_unit_cost": 1.5,
+      "aep_id": 1896
+    }
+  ],
+  "multiplier": 10,
+  "totalCost": 8
+}
+👤 Utente autenticato: {
+  userId: 222,
+  email: 'bobbivalsecchi29@gmail.com',
+  username: 'Bobbi Valsecchi',
+  iat: 1746367022,
+  exp: 1746971822
+}
+OWNER query - contest_id: 743, user: 222, event_unit: 1
+OPPONENT query - contest_id: 743, user: 204, event_unit: 1
+OWNER query - contest_id: 743, user: 222, event_unit: 1
+OPPONENT query - contest_id: 743, user: 204, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 743, user: 222, event_unit: 1
+OPPONENT query - contest_id: 743, user: 204, event_unit: 1
+OWNER query - contest_id: 743, user: 222, event_unit: 1
+OPPONENT query - contest_id: 743, user: 204, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 743,
+  "userId": "222",
+  "owner_id": "222",
+  "opponent_id": "204",
+  "players": [
+    {
+      "athleteId": 51,
+      "eventUnitId": 1,
+      "event_unit_cost": 2,
+      "aep_id": 1778
+    },
+    {
+      "athleteId": 52,
+      "eventUnitId": 3,
+      "event_unit_cost": 1.5,
+      "aep_id": 1893
+    },
+    {
+      "athleteId": 53,
+      "eventUnitId": 1,
+      "event_unit_cost": 3.5,
+      "aep_id": 1780
+    }
+  ],
+  "multiplier": 10,
+  "totalCost": 7
+}
+👤 Utente autenticato: {
+  userId: 222,
+  email: 'bobbivalsecchi29@gmail.com',
+  username: 'Bobbi Valsecchi',
+  iat: 1746367022,
+  exp: 1746971822
+}
+OWNER query - contest_id: 744, user: 225, event_unit: 1
+OPPONENT query - contest_id: 744, user: 218, event_unit: 1
+OWNER query - contest_id: 744, user: 225, event_unit: 1
+OPPONENT query - contest_id: 744, user: 218, event_unit: 1
+OWNER query - contest_id: 745, user: 228, event_unit: 1
+OPPONENT query - contest_id: 745, user: 114, event_unit: 1
+OWNER query - contest_id: 745, user: 228, event_unit: 1
+OPPONENT query - contest_id: 745, user: 114, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 745, user: 228, event_unit: 1
+OPPONENT query - contest_id: 745, user: 114, event_unit: 1
+OWNER query - contest_id: 745, user: 228, event_unit: 1
+OPPONENT query - contest_id: 745, user: 114, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 745, user: 228, event_unit: 1
+OPPONENT query - contest_id: 745, user: 114, event_unit: 1
+OWNER query - contest_id: 745, user: 228, event_unit: 1
+OPPONENT query - contest_id: 745, user: 114, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 745, user: 228, event_unit: 1
+OPPONENT query - contest_id: 745, user: 114, event_unit: 1
+OWNER query - contest_id: 745, user: 228, event_unit: 1
+OPPONENT query - contest_id: 745, user: 114, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 745, user: 228, event_unit: 1
+OPPONENT query - contest_id: 745, user: 114, event_unit: 1
+OWNER query - contest_id: 745, user: 228, event_unit: 1
+OPPONENT query - contest_id: 745, user: 114, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 745,
+  "userId": "228",
+  "owner_id": "228",
+  "opponent_id": "114",
+  "players": [
+    {
+      "athleteId": 2,
+      "eventUnitId": 1,
+      "event_unit_cost": 4,
+      "aep_id": 2
+    },
+    {
+      "athleteId": 1,
+      "eventUnitId": 1,
+      "event_unit_cost": 5,
+      "aep_id": 1
+    },
+    {
+      "athleteId": 7,
+      "eventUnitId": 1,
+      "event_unit_cost": 0.5,
+      "aep_id": 7
+    },
+    {
+      "athleteId": 13,
+      "eventUnitId": 1,
+      "event_unit_cost": 0.5,
+      "aep_id": 13
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 228,
+  email: 'mattytrombetta2003@gmail.com',
+  username: 'MATTIAMAGNUM',
+  iat: 1746381583,
+  exp: 1746986383
+}
+OWNER query - contest_id: 745, user: 228, event_unit: 1
+OPPONENT query - contest_id: 745, user: 114, event_unit: 1
+OWNER query - contest_id: 746, user: 229, event_unit: 1
+OPPONENT query - contest_id: 746, user: 114, event_unit: 1
+OWNER query - contest_id: 746, user: 229, event_unit: 1
+OPPONENT query - contest_id: 746, user: 114, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 746, user: 229, event_unit: 1
+OPPONENT query - contest_id: 746, user: 114, event_unit: 1
+OWNER query - contest_id: 746, user: 229, event_unit: 1
+OPPONENT query - contest_id: 746, user: 114, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 746,
+  "userId": "229",
+  "owner_id": "229",
+  "opponent_id": "114",
+  "players": [
+    {
+      "athleteId": 48,
+      "eventUnitId": 3,
+      "event_unit_cost": 1,
+      "aep_id": 1889
+    },
+    {
+      "athleteId": 7,
+      "eventUnitId": 1,
+      "event_unit_cost": 0.5,
+      "aep_id": 7
+    },
+    {
+      "athleteId": 17,
+      "eventUnitId": 1,
+      "event_unit_cost": 0.5,
+      "aep_id": 17
+    },
+    {
+      "athleteId": 17,
+      "eventUnitId": 3,
+      "event_unit_cost": 1.5,
+      "aep_id": 1858
+    },
+    {
+      "athleteId": 38,
+      "eventUnitId": 1,
+      "event_unit_cost": 1.5,
+      "aep_id": 38
+    },
+    {
+      "athleteId": 25,
+      "eventUnitId": 2,
+      "event_unit_cost": 0.5,
+      "aep_id": 1808
+    },
+    {
+      "athleteId": 25,
+      "eventUnitId": 3,
+      "event_unit_cost": 1.5,
+      "aep_id": 1866
+    },
+    {
+      "athleteId": 21,
+      "eventUnitId": 1,
+      "event_unit_cost": 1.5,
+      "aep_id": 21
+    },
+    {
+      "athleteId": 33,
+      "eventUnitId": 2,
+      "event_unit_cost": 1.5,
+      "aep_id": 1816
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 229,
+  email: 'shanti.ranchetti@gmail.com',
+  username: 'Don Abbondia ',
+  iat: 1746381788,
+  exp: 1746986588
+}
+OWNER query - contest_id: 745, user: 228, event_unit: 1
+OPPONENT query - contest_id: 745, user: 114, event_unit: 1
+OWNER query - contest_id: 747, user: 230, event_unit: 1
+OPPONENT query - contest_id: 747, user: 113, event_unit: 1
+OWNER query - contest_id: 747, user: 230, event_unit: 1
+OPPONENT query - contest_id: 747, user: 113, event_unit: 1
+OWNER query - contest_id: 748, user: 230, event_unit: 1
+OPPONENT query - contest_id: 748, user: 113, event_unit: 1
+OWNER query - contest_id: 748, user: 230, event_unit: 1
+OPPONENT query - contest_id: 748, user: 113, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 748, user: 230, event_unit: 1
+OPPONENT query - contest_id: 748, user: 113, event_unit: 1
+OWNER query - contest_id: 748, user: 230, event_unit: 1
+OPPONENT query - contest_id: 748, user: 113, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 748, user: 230, event_unit: 1
+OPPONENT query - contest_id: 748, user: 113, event_unit: 1
+OWNER query - contest_id: 748, user: 230, event_unit: 1
+OPPONENT query - contest_id: 748, user: 113, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 748, user: 230, event_unit: 1
+OPPONENT query - contest_id: 748, user: 113, event_unit: 1
+OWNER query - contest_id: 748, user: 230, event_unit: 1
+OPPONENT query - contest_id: 748, user: 113, event_unit: 1
+OWNER query - contest_id: 745, user: 228, event_unit: 1
+OPPONENT query - contest_id: 745, user: 114, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 748,
+  "userId": "230",
+  "owner_id": "230",
+  "opponent_id": "113",
+  "players": [
+    {
+      "athleteId": 7,
+      "eventUnitId": 3,
+      "event_unit_cost": 1.5,
+      "aep_id": 1848
+    },
+    {
+      "athleteId": 54,
+      "eventUnitId": 1,
+      "event_unit_cost": 4,
+      "aep_id": 1781
+    },
+    {
+      "athleteId": 53,
+      "eventUnitId": 2,
+      "event_unit_cost": 3,
+      "aep_id": 1836
+    }
+  ],
+  "multiplier": 10,
+  "totalCost": 8.5
+}
+👤 Utente autenticato: {
+  userId: 230,
+  email: 'cupcake89@libero.it',
+  username: 'Inara',
+  iat: 1746381922,
+  exp: 1746986722
+}
+OWNER query - contest_id: 749, user: 228, event_unit: 1
+OPPONENT query - contest_id: 749, user: 113, event_unit: 1
+OWNER query - contest_id: 749, user: 228, event_unit: 1
+OPPONENT query - contest_id: 749, user: 113, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 749, user: 228, event_unit: 1
+OPPONENT query - contest_id: 749, user: 113, event_unit: 1
+OWNER query - contest_id: 749, user: 228, event_unit: 1
+OPPONENT query - contest_id: 749, user: 113, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 749, user: 228, event_unit: 1
+OPPONENT query - contest_id: 749, user: 113, event_unit: 1
+OWNER query - contest_id: 749, user: 228, event_unit: 1
+OPPONENT query - contest_id: 749, user: 113, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 749,
+  "userId": "228",
+  "owner_id": "228",
+  "opponent_id": "113",
+  "players": [
+    {
+      "athleteId": 2,
+      "eventUnitId": 3,
+      "event_unit_cost": 3.5,
+      "aep_id": 1843
+    },
+    {
+      "athleteId": 53,
+      "eventUnitId": 2,
+      "event_unit_cost": 3,
+      "aep_id": 1836
+    },
+    {
+      "athleteId": 55,
+      "eventUnitId": 1,
+      "event_unit_cost": 3.5,
+      "aep_id": 1782
+    }
+  ],
+  "multiplier": 5,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 228,
+  email: 'mattytrombetta2003@gmail.com',
+  username: 'MATTIAMAGNUM',
+  iat: 1746381583,
+  exp: 1746986383
+}
+OWNER query - contest_id: 750, user: 228, event_unit: 1
+OPPONENT query - contest_id: 750, user: 57, event_unit: 1
+OWNER query - contest_id: 750, user: 228, event_unit: 1
+OPPONENT query - contest_id: 750, user: 57, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 750, user: 228, event_unit: 1
+OPPONENT query - contest_id: 750, user: 57, event_unit: 1
+OWNER query - contest_id: 750, user: 228, event_unit: 1
+OPPONENT query - contest_id: 750, user: 57, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 750, user: 228, event_unit: 1
+OPPONENT query - contest_id: 750, user: 57, event_unit: 1
+OWNER query - contest_id: 750, user: 228, event_unit: 1
+OPPONENT query - contest_id: 750, user: 57, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 750, user: 228, event_unit: 1
+OPPONENT query - contest_id: 750, user: 57, event_unit: 1
+OWNER query - contest_id: 750, user: 228, event_unit: 1
+OPPONENT query - contest_id: 750, user: 57, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 750,
+  "userId": "228",
+  "owner_id": "228",
+  "opponent_id": "57",
+  "players": [
+    {
+      "athleteId": 1,
+      "eventUnitId": 2,
+      "event_unit_cost": 3.5,
+      "aep_id": 1784
+    },
+    {
+      "athleteId": 57,
+      "eventUnitId": 3,
+      "event_unit_cost": 3.5,
+      "aep_id": 1898
+    },
+    {
+      "athleteId": 52,
+      "eventUnitId": 1,
+      "event_unit_cost": 2.5,
+      "aep_id": 1779
+    }
+  ],
+  "multiplier": 5,
+  "totalCost": 9.5
+}
+👤 Utente autenticato: {
+  userId: 228,
+  email: 'mattytrombetta2003@gmail.com',
+  username: 'MATTIAMAGNUM',
+  iat: 1746381583,
+  exp: 1746986383
+}
+OWNER query - contest_id: 751, user: 228, event_unit: 1
+OPPONENT query - contest_id: 751, user: 76, event_unit: 1
+OWNER query - contest_id: 751, user: 228, event_unit: 1
+OPPONENT query - contest_id: 751, user: 76, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 751, user: 228, event_unit: 1
+OPPONENT query - contest_id: 751, user: 76, event_unit: 1
+OWNER query - contest_id: 751, user: 228, event_unit: 1
+OPPONENT query - contest_id: 751, user: 76, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 751, user: 228, event_unit: 1
+OPPONENT query - contest_id: 751, user: 76, event_unit: 1
+OWNER query - contest_id: 751, user: 228, event_unit: 1
+OPPONENT query - contest_id: 751, user: 76, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 751,
+  "userId": "228",
+  "owner_id": "228",
+  "opponent_id": "76",
+  "players": [
+    {
+      "athleteId": 7,
+      "eventUnitId": 1,
+      "event_unit_cost": 0.5,
+      "aep_id": 7
+    },
+    {
+      "athleteId": 55,
+      "eventUnitId": 2,
+      "event_unit_cost": 2.5,
+      "aep_id": 1838
+    },
+    {
+      "athleteId": 55,
+      "eventUnitId": 3,
+      "event_unit_cost": 1.5,
+      "aep_id": 1896
+    },
+    {
+      "athleteId": 54,
+      "eventUnitId": 3,
+      "event_unit_cost": 2,
+      "aep_id": 1895
+    },
+    {
+      "athleteId": 55,
+      "eventUnitId": 1,
+      "event_unit_cost": 3.5,
+      "aep_id": 1782
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 228,
+  email: 'mattytrombetta2003@gmail.com',
+  username: 'MATTIAMAGNUM',
+  iat: 1746381583,
+  exp: 1746986383
+}
+OWNER query - contest_id: 749, user: 228, event_unit: 1
+OPPONENT query - contest_id: 749, user: 113, event_unit: 1
+OWNER query - contest_id: 752, user: 235, event_unit: 1
+OPPONENT query - contest_id: 752, user: 114, event_unit: 1
+OWNER query - contest_id: 752, user: 235, event_unit: 1
+OPPONENT query - contest_id: 752, user: 114, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 752, user: 235, event_unit: 1
+OPPONENT query - contest_id: 752, user: 114, event_unit: 1
+OWNER query - contest_id: 752, user: 235, event_unit: 1
+OPPONENT query - contest_id: 752, user: 114, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 752, user: 235, event_unit: 1
+OPPONENT query - contest_id: 752, user: 114, event_unit: 1
+OWNER query - contest_id: 752, user: 235, event_unit: 1
+OPPONENT query - contest_id: 752, user: 114, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 752,
+  "userId": "235",
+  "owner_id": "235",
+  "opponent_id": "114",
+  "players": [
+    {
+      "athleteId": 52,
+      "eventUnitId": 1,
+      "event_unit_cost": 2.5,
+      "aep_id": 1779
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 2.5
+}
+👤 Utente autenticato: {
+  userId: 235,
+  email: 'Davide.ferraris83@libero.it',
+  username: 'Habemuspapapam',
+  iat: 1746393984,
+  exp: 1746998784
+}
+OWNER query - contest_id: 752, user: 235, event_unit: 1
+OPPONENT query - contest_id: 752, user: 114, event_unit: 1
+OWNER query - contest_id: 753, user: 235, event_unit: 1
+OPPONENT query - contest_id: 753, user: 91, event_unit: 1
+OWNER query - contest_id: 753, user: 235, event_unit: 1
+OPPONENT query - contest_id: 753, user: 91, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 753, user: 235, event_unit: 1
+OPPONENT query - contest_id: 753, user: 91, event_unit: 1
+OWNER query - contest_id: 753, user: 235, event_unit: 1
+OPPONENT query - contest_id: 753, user: 91, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 753,
+  "userId": "235",
+  "owner_id": "235",
+  "opponent_id": "91",
+  "players": [
+    {
+      "athleteId": 3,
+      "eventUnitId": 2,
+      "event_unit_cost": 3.5,
+      "aep_id": 1786
+    },
+    {
+      "athleteId": 55,
+      "eventUnitId": 1,
+      "event_unit_cost": 3.5,
+      "aep_id": 1782
+    },
+    {
+      "athleteId": 51,
+      "eventUnitId": 3,
+      "event_unit_cost": 3,
+      "aep_id": 1892
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 235,
+  email: 'Davide.ferraris83@libero.it',
+  username: 'Habemuspapapam',
+  iat: 1746393984,
+  exp: 1746998784
+}
+OWNER query - contest_id: 754, user: 235, event_unit: 1
+OPPONENT query - contest_id: 754, user: 57, event_unit: 1
+OWNER query - contest_id: 754, user: 235, event_unit: 1
+OPPONENT query - contest_id: 754, user: 57, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 754, user: 235, event_unit: 1
+OPPONENT query - contest_id: 754, user: 57, event_unit: 1
+OWNER query - contest_id: 754, user: 235, event_unit: 1
+OPPONENT query - contest_id: 754, user: 57, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 754,
+  "userId": "235",
+  "owner_id": "235",
+  "opponent_id": "57",
+  "players": [
+    {
+      "athleteId": 37,
+      "eventUnitId": 1,
+      "event_unit_cost": 0.5,
+      "aep_id": 37
+    },
+    {
+      "athleteId": 12,
+      "eventUnitId": 2,
+      "event_unit_cost": 0.5,
+      "aep_id": 1795
+    },
+    {
+      "athleteId": 15,
+      "eventUnitId": 2,
+      "event_unit_cost": 0.5,
+      "aep_id": 1798
+    },
+    {
+      "athleteId": 25,
+      "eventUnitId": 2,
+      "event_unit_cost": 0.5,
+      "aep_id": 1808
+    },
+    {
+      "athleteId": 42,
+      "eventUnitId": 2,
+      "event_unit_cost": 0.5,
+      "aep_id": 1825
+    },
+    {
+      "athleteId": 9,
+      "eventUnitId": 3,
+      "event_unit_cost": 0.5,
+      "aep_id": 1850
+    },
+    {
+      "athleteId": 18,
+      "eventUnitId": 3,
+      "event_unit_cost": 0.5,
+      "aep_id": 1859
+    },
+    {
+      "athleteId": 9,
+      "eventUnitId": 1,
+      "event_unit_cost": 1,
+      "aep_id": 9
+    },
+    {
+      "athleteId": 16,
+      "eventUnitId": 1,
+      "event_unit_cost": 1,
+      "aep_id": 16
+    },
+    {
+      "athleteId": 34,
+      "eventUnitId": 1,
+      "event_unit_cost": 1,
+      "aep_id": 34
+    },
+    {
+      "athleteId": 36,
+      "eventUnitId": 1,
+      "event_unit_cost": 1,
+      "aep_id": 36
+    },
+    {
+      "athleteId": 43,
+      "eventUnitId": 1,
+      "event_unit_cost": 1,
+      "aep_id": 43
+    },
+    {
+      "athleteId": 41,
+      "eventUnitId": 1,
+      "event_unit_cost": 1,
+      "aep_id": 41
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 9.5
+}
+👤 Utente autenticato: {
+  userId: 235,
+  email: 'Davide.ferraris83@libero.it',
+  username: 'Habemuspapapam',
+  iat: 1746393984,
+  exp: 1746998784
+}
+OWNER query - contest_id: 755, user: 236, event_unit: 1
+OPPONENT query - contest_id: 755, user: 113, event_unit: 1
+OWNER query - contest_id: 755, user: 236, event_unit: 1
+OPPONENT query - contest_id: 755, user: 113, event_unit: 1
+OWNER query - contest_id: 756, user: 237, event_unit: 1
+OPPONENT query - contest_id: 756, user: 114, event_unit: 1
+OWNER query - contest_id: 756, user: 237, event_unit: 1
+OPPONENT query - contest_id: 756, user: 114, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 495, user: 108, event_unit: 1
+OPPONENT query - contest_id: 495, user: 69, event_unit: 1
+OWNER query - contest_id: 757, user: 238, event_unit: 1
+OPPONENT query - contest_id: 757, user: 192, event_unit: 1
+OWNER query - contest_id: 757, user: 238, event_unit: 1
+OPPONENT query - contest_id: 757, user: 192, event_unit: 1
+OWNER query - contest_id: 758, user: 204, event_unit: 1
+OPPONENT query - contest_id: 758, user: 85, event_unit: 1
+OWNER query - contest_id: 758, user: 204, event_unit: 1
+OPPONENT query - contest_id: 758, user: 85, event_unit: 1
+OWNER query - contest_id: 759, user: 239, event_unit: 1
+OPPONENT query - contest_id: 759, user: 101, event_unit: 1
+OWNER query - contest_id: 759, user: 239, event_unit: 1
+OPPONENT query - contest_id: 759, user: 101, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 759, user: 239, event_unit: 1
+OPPONENT query - contest_id: 759, user: 101, event_unit: 1
+OWNER query - contest_id: 759, user: 239, event_unit: 1
+OPPONENT query - contest_id: 759, user: 101, event_unit: 1
+OWNER query - contest_id: 759, user: 239, event_unit: 1
+OPPONENT query - contest_id: 759, user: 101, event_unit: 1
+OWNER query - contest_id: 759, user: 239, event_unit: 1
+OPPONENT query - contest_id: 759, user: 101, event_unit: 1
+OWNER query - contest_id: 759, user: 239, event_unit: 1
+OPPONENT query - contest_id: 759, user: 101, event_unit: 1
+OWNER query - contest_id: 759, user: 239, event_unit: 1
+OPPONENT query - contest_id: 759, user: 101, event_unit: 1
+OWNER query - contest_id: 759, user: 239, event_unit: 1
+OPPONENT query - contest_id: 759, user: 101, event_unit: 1
+OWNER query - contest_id: 759, user: 239, event_unit: 1
+OPPONENT query - contest_id: 759, user: 101, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 554, user: 90, event_unit: 1
+OPPONENT query - contest_id: 554, user: 133, event_unit: 1
+OWNER query - contest_id: 760, user: 240, event_unit: 1
+OPPONENT query - contest_id: 760, user: 111, event_unit: 1
+OWNER query - contest_id: 760, user: 240, event_unit: 1
+OPPONENT query - contest_id: 760, user: 111, event_unit: 1
+OWNER query - contest_id: 761, user: 240, event_unit: 1
+OPPONENT query - contest_id: 761, user: 241, event_unit: 1
+OWNER query - contest_id: 761, user: 240, event_unit: 1
+OPPONENT query - contest_id: 761, user: 241, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 762, user: 241, event_unit: 1
+OPPONENT query - contest_id: 762, user: 240, event_unit: 1
+OWNER query - contest_id: 762, user: 241, event_unit: 1
+OPPONENT query - contest_id: 762, user: 240, event_unit: 1
+OWNER query - contest_id: 761, user: 240, event_unit: 1
+OPPONENT query - contest_id: 761, user: 241, event_unit: 1
+OWNER query - contest_id: 761, user: 240, event_unit: 1
+OPPONENT query - contest_id: 761, user: 241, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 761, user: 240, event_unit: 1
+OPPONENT query - contest_id: 761, user: 241, event_unit: 1
+OWNER query - contest_id: 761, user: 240, event_unit: 1
+OPPONENT query - contest_id: 761, user: 241, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 761, user: 240, event_unit: 1
+OPPONENT query - contest_id: 761, user: 241, event_unit: 1
+OWNER query - contest_id: 761, user: 240, event_unit: 1
+OPPONENT query - contest_id: 761, user: 241, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 761, user: 240, event_unit: 1
+OPPONENT query - contest_id: 761, user: 241, event_unit: 1
+OWNER query - contest_id: 761, user: 240, event_unit: 1
+OPPONENT query - contest_id: 761, user: 241, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 761,
+  "userId": "240",
+  "owner_id": "240",
+  "opponent_id": "241",
+  "players": [
+    {
+      "athleteId": 54,
+      "eventUnitId": 1,
+      "event_unit_cost": 4,
+      "aep_id": 1781
+    },
+    {
+      "athleteId": 1,
+      "eventUnitId": 1,
+      "event_unit_cost": 5,
+      "aep_id": 1
+    },
+    {
+      "athleteId": 25,
+      "eventUnitId": 1,
+      "event_unit_cost": 1,
+      "aep_id": 25
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 240,
+  email: 'brovidamarialuisa@gmail.com',
+  username: 'Nico',
+  iat: 1746446373,
+  exp: 1747051173
+}
+OWNER query - contest_id: 762, user: 241, event_unit: 1
+OPPONENT query - contest_id: 762, user: 240, event_unit: 1
+OWNER query - contest_id: 762, user: 241, event_unit: 1
+OPPONENT query - contest_id: 762, user: 240, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 762,
+  "userId": "241",
+  "owner_id": "241",
+  "opponent_id": "240",
+  "players": [
+    {
+      "athleteId": 7,
+      "eventUnitId": 3,
+      "event_unit_cost": 1.5,
+      "aep_id": 1848
+    },
+    {
+      "athleteId": 7,
+      "eventUnitId": 2,
+      "event_unit_cost": 1,
+      "aep_id": 1790
+    },
+    {
+      "athleteId": 7,
+      "eventUnitId": 1,
+      "event_unit_cost": 0.5,
+      "aep_id": 7
+    },
+    {
+      "athleteId": 27,
+      "eventUnitId": 3,
+      "event_unit_cost": 1,
+      "aep_id": 1868
+    },
+    {
+      "athleteId": 33,
+      "eventUnitId": 2,
+      "event_unit_cost": 1.5,
+      "aep_id": 1816
+    },
+    {
+      "athleteId": 6,
+      "eventUnitId": 3,
+      "event_unit_cost": 1,
+      "aep_id": 1847
+    },
+    {
+      "athleteId": 20,
+      "eventUnitId": 3,
+      "event_unit_cost": 1,
+      "aep_id": 1861
+    },
+    {
+      "athleteId": 46,
+      "eventUnitId": 1,
+      "event_unit_cost": 1,
+      "aep_id": 46
+    },
+    {
+      "athleteId": 52,
+      "eventUnitId": 3,
+      "event_unit_cost": 1.5,
+      "aep_id": 1893
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 241,
+  email: 'essere1999@hotmail.it',
+  username: 'Nicorobinlover',
+  iat: 1746447533,
+  exp: 1747052333
+}
+OWNER query - contest_id: 761, user: 240, event_unit: 1
+OPPONENT query - contest_id: 761, user: 241, event_unit: 1
+OWNER query - contest_id: 761, user: 240, event_unit: 1
+OPPONENT query - contest_id: 761, user: 241, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 761, user: 240, event_unit: 1
+OPPONENT query - contest_id: 761, user: 241, event_unit: 1
+OWNER query - contest_id: 761, user: 240, event_unit: 1
+OPPONENT query - contest_id: 761, user: 241, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 761,
+  "userId": "241",
+  "owner_id": 240,
+  "opponent_id": 241,
+  "players": [
+    {
+      "athleteId": 52,
+      "eventUnitId": 1,
+      "event_unit_cost": 2.5,
+      "aep_id": 1779
+    },
+    {
+      "athleteId": 53,
+      "eventUnitId": 2,
+      "event_unit_cost": 3,
+      "aep_id": 1836
+    },
+    {
+      "athleteId": 32,
+      "eventUnitId": 1,
+      "event_unit_cost": 1,
+      "aep_id": 32
+    },
+    {
+      "athleteId": 50,
+      "eventUnitId": 1,
+      "event_unit_cost": 1,
+      "aep_id": 50
+    },
+    {
+      "athleteId": 33,
+      "eventUnitId": 2,
+      "event_unit_cost": 1.5,
+      "aep_id": 1816
+    },
+    {
+      "athleteId": 28,
+      "eventUnitId": 3,
+      "event_unit_cost": 1,
+      "aep_id": 1869
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 241,
+  email: 'essere1999@hotmail.it',
+  username: 'Nicorobinlover',
+  iat: 1746447533,
+  exp: 1747052333
+}
+OWNER query - contest_id: 761, user: 240, event_unit: 1
+OPPONENT query - contest_id: 761, user: 241, event_unit: 1
+OWNER query - contest_id: 763, user: 69, event_unit: 1
+OPPONENT query - contest_id: 763, user: 163, event_unit: 1
+OWNER query - contest_id: 763, user: 69, event_unit: 1
+OPPONENT query - contest_id: 763, user: 163, event_unit: 1
+Totale atleti attivi trovati: 171
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 171 (0.00%)
+OWNER query - contest_id: 763, user: 69, event_unit: 1
+OPPONENT query - contest_id: 763, user: 163, event_unit: 1
+OWNER query - contest_id: 763, user: 69, event_unit: 1
+OPPONENT query - contest_id: 763, user: 163, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 763,
+  "userId": "69",
+  "owner_id": "69",
+  "opponent_id": "163",
+  "players": [
+    {
+      "athleteId": 57,
+      "eventUnitId": 2,
+      "event_unit_cost": 3,
+      "aep_id": 1841
+    },
+    {
+      "athleteId": 2,
+      "eventUnitId": 3,
+      "event_unit_cost": 3.5,
+      "aep_id": 1843
+    },
+    {
+      "athleteId": 4,
+      "eventUnitId": 3,
+      "event_unit_cost": 2.5,
+      "aep_id": 1845
+    }
+  ],
+  "multiplier": 5,
+  "totalCost": 9
+}
+👤 Utente autenticato: {
+  userId: 69,
+  email: 'liciapotenza19@gmail.com',
+  username: 'Licia Potenza',
+  iat: 1745929607,
+  exp: 1746534407
+}
+OWNER query - contest_id: 763, user: 69, event_unit: 1
+OPPONENT query - contest_id: 763, user: 163, event_unit: 1
+OWNER query - contest_id: 530, user: 69, event_unit: 1
+OPPONENT query - contest_id: 530, user: 103, event_unit: 1
+OWNER query - contest_id: 457, user: 69, event_unit: 1
+OPPONENT query - contest_id: 457, user: 62, event_unit: 1
+Record aggiornato per athlete_id 1 e event_unit_id 1
+Record aggiornato per athlete_id 2 e event_unit_id 1
+Record aggiornato per athlete_id 3 e event_unit_id 1
+Record aggiornato per athlete_id 4 e event_unit_id 1
+Record aggiornato per athlete_id 5 e event_unit_id 1
+Record aggiornato per athlete_id 6 e event_unit_id 1
+Record aggiornato per athlete_id 7 e event_unit_id 1
+Record aggiornato per athlete_id 8 e event_unit_id 1
+Record aggiornato per athlete_id 9 e event_unit_id 1
+Record aggiornato per athlete_id 10 e event_unit_id 1
+Record aggiornato per athlete_id 11 e event_unit_id 1
+Record aggiornato per athlete_id 12 e event_unit_id 1
+Record aggiornato per athlete_id 13 e event_unit_id 1
+Record aggiornato per athlete_id 14 e event_unit_id 1
+Record aggiornato per athlete_id 15 e event_unit_id 1
+Record aggiornato per athlete_id 16 e event_unit_id 1
+Record aggiornato per athlete_id 17 e event_unit_id 1
+Record aggiornato per athlete_id 18 e event_unit_id 1
+Record aggiornato per athlete_id 19 e event_unit_id 1
+Record aggiornato per athlete_id 20 e event_unit_id 1
+Record aggiornato per athlete_id 21 e event_unit_id 1
+Record aggiornato per athlete_id 22 e event_unit_id 1
+Record aggiornato per athlete_id 23 e event_unit_id 1
+Record aggiornato per athlete_id 24 e event_unit_id 1
+Record aggiornato per athlete_id 25 e event_unit_id 1
+Record aggiornato per athlete_id 26 e event_unit_id 1
+Record aggiornato per athlete_id 27 e event_unit_id 1
+Record aggiornato per athlete_id 28 e event_unit_id 1
+Record aggiornato per athlete_id 29 e event_unit_id 1
+Record aggiornato per athlete_id 30 e event_unit_id 1
+Record aggiornato per athlete_id 31 e event_unit_id 1
+Record aggiornato per athlete_id 32 e event_unit_id 1
+Record aggiornato per athlete_id 33 e event_unit_id 1
+Record aggiornato per athlete_id 34 e event_unit_id 1
+Record aggiornato per athlete_id 35 e event_unit_id 1
+Record aggiornato per athlete_id 36 e event_unit_id 1
+Record aggiornato per athlete_id 37 e event_unit_id 1
+Record aggiornato per athlete_id 38 e event_unit_id 1
+Record aggiornato per athlete_id 39 e event_unit_id 1
+Record aggiornato per athlete_id 40 e event_unit_id 1
+Record aggiornato per athlete_id 41 e event_unit_id 1
+Record aggiornato per athlete_id 42 e event_unit_id 1
+Record aggiornato per athlete_id 43 e event_unit_id 1
+Record aggiornato per athlete_id 44 e event_unit_id 1
+Record aggiornato per athlete_id 45 e event_unit_id 1
+Record aggiornato per athlete_id 46 e event_unit_id 1
+Record aggiornato per athlete_id 47 e event_unit_id 1
+Record aggiornato per athlete_id 48 e event_unit_id 1
+Record aggiornato per athlete_id 49 e event_unit_id 1
+Record aggiornato per athlete_id 50 e event_unit_id 1
+Record aggiornato per athlete_id 51 e event_unit_id 1
+Record aggiornato per athlete_id 52 e event_unit_id 1
+Record aggiornato per athlete_id 53 e event_unit_id 1
+Record aggiornato per athlete_id 54 e event_unit_id 1
+Record aggiornato per athlete_id 55 e event_unit_id 1
+Record aggiornato per athlete_id 56 e event_unit_id 1
+Record aggiornato per athlete_id 57 e event_unit_id 1
+Nuovo record inserito per athlete_id 58 e event_unit_id 1
+Nuovo record inserito per athlete_id 59 e event_unit_id 1
+Nuovo record inserito per athlete_id 60 e event_unit_id 1
+Nuovo record inserito per athlete_id 61 e event_unit_id 1
+Nuovo record inserito per athlete_id 62 e event_unit_id 1
+Nuovo record inserito per athlete_id 63 e event_unit_id 1
+Nuovo record inserito per athlete_id 64 e event_unit_id 1
+Nuovo record inserito per athlete_id 65 e event_unit_id 1
+Nuovo record inserito per athlete_id 66 e event_unit_id 1
+Nuovo record inserito per athlete_id 67 e event_unit_id 1
+Record aggiornato per athlete_id 1 e event_unit_id 2
+Record aggiornato per athlete_id 2 e event_unit_id 2
+Record aggiornato per athlete_id 3 e event_unit_id 2
+Record aggiornato per athlete_id 4 e event_unit_id 2
+Record aggiornato per athlete_id 5 e event_unit_id 2
+Record aggiornato per athlete_id 6 e event_unit_id 2
+Record aggiornato per athlete_id 7 e event_unit_id 2
+Record aggiornato per athlete_id 8 e event_unit_id 2
+Record aggiornato per athlete_id 9 e event_unit_id 2
+Record aggiornato per athlete_id 10 e event_unit_id 2
+Record aggiornato per athlete_id 11 e event_unit_id 2
+Record aggiornato per athlete_id 12 e event_unit_id 2
+Record aggiornato per athlete_id 13 e event_unit_id 2
+Record aggiornato per athlete_id 14 e event_unit_id 2
+Record aggiornato per athlete_id 15 e event_unit_id 2
+Record aggiornato per athlete_id 16 e event_unit_id 2
+Record aggiornato per athlete_id 17 e event_unit_id 2
+Record aggiornato per athlete_id 18 e event_unit_id 2
+Record aggiornato per athlete_id 19 e event_unit_id 2
+Record aggiornato per athlete_id 20 e event_unit_id 2
+Record aggiornato per athlete_id 21 e event_unit_id 2
+Record aggiornato per athlete_id 22 e event_unit_id 2
+Record aggiornato per athlete_id 23 e event_unit_id 2
+Record aggiornato per athlete_id 24 e event_unit_id 2
+Record aggiornato per athlete_id 25 e event_unit_id 2
+Record aggiornato per athlete_id 26 e event_unit_id 2
+Record aggiornato per athlete_id 27 e event_unit_id 2
+Record aggiornato per athlete_id 28 e event_unit_id 2
+Record aggiornato per athlete_id 29 e event_unit_id 2
+Record aggiornato per athlete_id 30 e event_unit_id 2
+Record aggiornato per athlete_id 31 e event_unit_id 2
+Record aggiornato per athlete_id 32 e event_unit_id 2
+Record aggiornato per athlete_id 33 e event_unit_id 2
+Record aggiornato per athlete_id 34 e event_unit_id 2
+Record aggiornato per athlete_id 35 e event_unit_id 2
+Record aggiornato per athlete_id 36 e event_unit_id 2
+Record aggiornato per athlete_id 37 e event_unit_id 2
+Record aggiornato per athlete_id 38 e event_unit_id 2
+Record aggiornato per athlete_id 39 e event_unit_id 2
+Record aggiornato per athlete_id 40 e event_unit_id 2
+Record aggiornato per athlete_id 41 e event_unit_id 2
+Record aggiornato per athlete_id 42 e event_unit_id 2
+Record aggiornato per athlete_id 43 e event_unit_id 2
+Record aggiornato per athlete_id 44 e event_unit_id 2
+Record aggiornato per athlete_id 45 e event_unit_id 2
+Record aggiornato per athlete_id 46 e event_unit_id 2
+Record aggiornato per athlete_id 47 e event_unit_id 2
+Record aggiornato per athlete_id 48 e event_unit_id 2
+Record aggiornato per athlete_id 49 e event_unit_id 2
+Record aggiornato per athlete_id 50 e event_unit_id 2
+Record aggiornato per athlete_id 51 e event_unit_id 2
+Record aggiornato per athlete_id 52 e event_unit_id 2
+Record aggiornato per athlete_id 53 e event_unit_id 2
+Record aggiornato per athlete_id 54 e event_unit_id 2
+Record aggiornato per athlete_id 55 e event_unit_id 2
+Record aggiornato per athlete_id 56 e event_unit_id 2
+Record aggiornato per athlete_id 57 e event_unit_id 2
+Nuovo record inserito per athlete_id 58 e event_unit_id 2
+Nuovo record inserito per athlete_id 59 e event_unit_id 2
+Nuovo record inserito per athlete_id 60 e event_unit_id 2
+Nuovo record inserito per athlete_id 61 e event_unit_id 2
+Nuovo record inserito per athlete_id 62 e event_unit_id 2
+Nuovo record inserito per athlete_id 63 e event_unit_id 2
+Nuovo record inserito per athlete_id 64 e event_unit_id 2
+Nuovo record inserito per athlete_id 65 e event_unit_id 2
+Nuovo record inserito per athlete_id 66 e event_unit_id 2
+Nuovo record inserito per athlete_id 67 e event_unit_id 2
+Record aggiornato per athlete_id 1 e event_unit_id 3
+Record aggiornato per athlete_id 2 e event_unit_id 3
+Record aggiornato per athlete_id 3 e event_unit_id 3
+Record aggiornato per athlete_id 4 e event_unit_id 3
+Record aggiornato per athlete_id 5 e event_unit_id 3
+Record aggiornato per athlete_id 6 e event_unit_id 3
+Record aggiornato per athlete_id 7 e event_unit_id 3
+Record aggiornato per athlete_id 8 e event_unit_id 3
+Record aggiornato per athlete_id 9 e event_unit_id 3
+Record aggiornato per athlete_id 10 e event_unit_id 3
+Record aggiornato per athlete_id 11 e event_unit_id 3
+Record aggiornato per athlete_id 12 e event_unit_id 3
+Record aggiornato per athlete_id 13 e event_unit_id 3
+Record aggiornato per athlete_id 14 e event_unit_id 3
+Record aggiornato per athlete_id 15 e event_unit_id 3
+Record aggiornato per athlete_id 16 e event_unit_id 3
+Record aggiornato per athlete_id 17 e event_unit_id 3
+Record aggiornato per athlete_id 18 e event_unit_id 3
+Record aggiornato per athlete_id 19 e event_unit_id 3
+Record aggiornato per athlete_id 20 e event_unit_id 3
+Record aggiornato per athlete_id 21 e event_unit_id 3
+Record aggiornato per athlete_id 22 e event_unit_id 3
+Record aggiornato per athlete_id 23 e event_unit_id 3
+Record aggiornato per athlete_id 24 e event_unit_id 3
+Record aggiornato per athlete_id 25 e event_unit_id 3
+Record aggiornato per athlete_id 26 e event_unit_id 3
+Record aggiornato per athlete_id 27 e event_unit_id 3
+Record aggiornato per athlete_id 28 e event_unit_id 3
+Record aggiornato per athlete_id 29 e event_unit_id 3
+Record aggiornato per athlete_id 30 e event_unit_id 3
+Record aggiornato per athlete_id 31 e event_unit_id 3
+Record aggiornato per athlete_id 32 e event_unit_id 3
+Record aggiornato per athlete_id 33 e event_unit_id 3
+Record aggiornato per athlete_id 34 e event_unit_id 3
+Record aggiornato per athlete_id 35 e event_unit_id 3
+Record aggiornato per athlete_id 36 e event_unit_id 3
+Record aggiornato per athlete_id 37 e event_unit_id 3
+Record aggiornato per athlete_id 38 e event_unit_id 3
+Record aggiornato per athlete_id 39 e event_unit_id 3
+Record aggiornato per athlete_id 40 e event_unit_id 3
+Record aggiornato per athlete_id 41 e event_unit_id 3
+Record aggiornato per athlete_id 42 e event_unit_id 3
+Record aggiornato per athlete_id 43 e event_unit_id 3
+Record aggiornato per athlete_id 44 e event_unit_id 3
+Record aggiornato per athlete_id 45 e event_unit_id 3
+Record aggiornato per athlete_id 46 e event_unit_id 3
+Record aggiornato per athlete_id 47 e event_unit_id 3
+Record aggiornato per athlete_id 48 e event_unit_id 3
+Record aggiornato per athlete_id 49 e event_unit_id 3
+Record aggiornato per athlete_id 50 e event_unit_id 3
+Record aggiornato per athlete_id 51 e event_unit_id 3
+Record aggiornato per athlete_id 52 e event_unit_id 3
+Record aggiornato per athlete_id 53 e event_unit_id 3
+Record aggiornato per athlete_id 54 e event_unit_id 3
+Record aggiornato per athlete_id 55 e event_unit_id 3
+Record aggiornato per athlete_id 56 e event_unit_id 3
+Record aggiornato per athlete_id 57 e event_unit_id 3
+Nuovo record inserito per athlete_id 58 e event_unit_id 3
+Nuovo record inserito per athlete_id 59 e event_unit_id 3
+Nuovo record inserito per athlete_id 60 e event_unit_id 3
+Nuovo record inserito per athlete_id 61 e event_unit_id 3
+Nuovo record inserito per athlete_id 62 e event_unit_id 3
+Nuovo record inserito per athlete_id 63 e event_unit_id 3
+Nuovo record inserito per athlete_id 64 e event_unit_id 3
+Nuovo record inserito per athlete_id 65 e event_unit_id 3
+Nuovo record inserito per athlete_id 66 e event_unit_id 3
+Nuovo record inserito per athlete_id 67 e event_unit_id 3
+OWNER query - contest_id: 764, user: 60, event_unit: 1
+OPPONENT query - contest_id: 764, user: 243, event_unit: 1
+OWNER query - contest_id: 764, user: 60, event_unit: 1
+OPPONENT query - contest_id: 764, user: 243, event_unit: 1
+Totale atleti attivi trovati: 201
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 201 (0.00%)
+OWNER query - contest_id: 764, user: 60, event_unit: 1
+OPPONENT query - contest_id: 764, user: 243, event_unit: 1
+OWNER query - contest_id: 764, user: 60, event_unit: 1
+OPPONENT query - contest_id: 764, user: 243, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 764,
+  "userId": "60",
+  "owner_id": "60",
+  "opponent_id": "243",
+  "players": [
+    {
+      "athleteId": 59,
+      "eventUnitId": 3,
+      "event_unit_cost": 1.5,
+      "aep_id": 1920
+    },
+    {
+      "athleteId": 3,
+      "eventUnitId": 3,
+      "event_unit_cost": 4.5,
+      "aep_id": 1844
+    },
+    {
+      "athleteId": 1,
+      "eventUnitId": 1,
+      "event_unit_cost": 4,
+      "aep_id": 1
+    }
+  ],
+  "multiplier": 5,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 60,
+  email: 'panoz4ever@gmail.com',
+  username: 'Alby Schott',
+  iat: 1746295982,
+  exp: 1746900782
+}
+OWNER query - contest_id: 765, user: 69, event_unit: 1
+OPPONENT query - contest_id: 765, user: 235, event_unit: 1
+OWNER query - contest_id: 765, user: 69, event_unit: 1
+OPPONENT query - contest_id: 765, user: 235, event_unit: 1
+Totale atleti attivi trovati: 201
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 201 (0.00%)
+OWNER query - contest_id: 765, user: 69, event_unit: 1
+OPPONENT query - contest_id: 765, user: 235, event_unit: 1
+OWNER query - contest_id: 765, user: 69, event_unit: 1
+OPPONENT query - contest_id: 765, user: 235, event_unit: 1
+Totale atleti attivi trovati: 201
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 201 (0.00%)
+Totale atleti attivi trovati: 201
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 201 (0.00%)
+📥 Dati ricevuti dal client: {
+  "contestId": 765,
+  "userId": "69",
+  "owner_id": "69",
+  "opponent_id": "235",
+  "players": [
+    {
+      "athleteId": 3,
+      "eventUnitId": 2,
+      "event_unit_cost": 4,
+      "aep_id": 1786
+    },
+    {
+      "athleteId": 31,
+      "eventUnitId": 2,
+      "event_unit_cost": 1,
+      "aep_id": 1814
+    },
+    {
+      "athleteId": 54,
+      "eventUnitId": 2,
+      "event_unit_cost": 3,
+      "aep_id": 1837
+    }
+  ],
+  "multiplier": 10,
+  "totalCost": 8
+}
+👤 Utente autenticato: {
+  userId: 69,
+  email: 'liciapotenza19@gmail.com',
+  username: 'Licia Potenza',
+  iat: 1745929607,
+  exp: 1746534407
+}
+OWNER query - contest_id: 764, user: 60, event_unit: 1
+OPPONENT query - contest_id: 764, user: 243, event_unit: 1
+OWNER query - contest_id: 524, user: 122, event_unit: 1
+OPPONENT query - contest_id: 524, user: 67, event_unit: 1
+OWNER query - contest_id: 766, user: 67, event_unit: 1
+OPPONENT query - contest_id: 766, user: 89, event_unit: 1
+OWNER query - contest_id: 766, user: 67, event_unit: 1
+OPPONENT query - contest_id: 766, user: 89, event_unit: 1
+Totale atleti attivi trovati: 201
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parolin P., aep_id: 1, athlete_id: 1
+Atleta 2: Zuppi M.M., aep_id: 2, athlete_id: 2
+Atleta 3: Pizzaballa P., aep_id: 3, athlete_id: 3
+Atleta 4: Tagle L.A., aep_id: 4, athlete_id: 4
+Atleta 5: Hollerich J.C., aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 201 (0.00%)
+OWNER query - contest_id: 766, user: 67, event_unit: 1
+OPPONENT query - contest_id: 766, user: 89, event_unit: 1
+OWNER query - contest_id: 766, user: 67, event_unit: 1
+OPPONENT query - contest_id: 766, user: 89, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 766,
+  "userId": "67",
+  "owner_id": "67",
+  "opponent_id": "89",
+  "players": [
+    {
+      "athleteId": 59,
+      "eventUnitId": 1,
+      "event_unit_cost": 1.5,
+      "aep_id": 1900
+    },
+    {
+      "athleteId": 59,
+      "eventUnitId": 2,
+      "event_unit_cost": 1.5,
+      "aep_id": 1910
+    },
+    {
+      "athleteId": 59,
+      "eventUnitId": 3,
+      "event_unit_cost": 1.5,
+      "aep_id": 1920
+    },
+    {
+      "athleteId": 55,
+      "eventUnitId": 1,
+      "event_unit_cost": 3.5,
+      "aep_id": 1782
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 8
+}
+👤 Utente autenticato: {
+  userId: 67,
+  email: 'ricercafm@panoz.it',
+  username: 'Pony',
+  iat: 1746462528,
+  exp: 1747067328
+}
+La porta 3000 è già in uso. Assicurati che nessun altro processo stia utilizzando questa porta.
+La porta 3000 è già in uso. Assicurati che nessun altro processo stia utilizzando questa porta.
+La porta 3000 è già in uso. Assicurati che nessun altro processo stia utilizzando questa porta.
+La porta 3000 è già in uso. Assicurati che nessun altro processo stia utilizzando questa porta.
+La porta 3000 è già in uso. Assicurati che nessun altro processo stia utilizzando questa porta.
+La porta 3000 è già in uso. Assicurati che nessun altro processo stia utilizzando questa porta.
+La porta 3000 è già in uso. Assicurati che nessun altro processo stia utilizzando questa porta.
+La porta 3000 è già in uso. Assicurati che nessun altro processo stia utilizzando questa porta.
+La porta 3000 è già in uso. Assicurati che nessun altro processo stia utilizzando questa porta.
+La porta 3000 è già in uso. Assicurati che nessun altro processo stia utilizzando questa porta.
+La porta 3000 è già in uso. Assicurati che nessun altro processo stia utilizzando questa porta.
+La porta 3000 è già in uso. Assicurati che nessun altro processo stia utilizzando questa porta.
+La porta 3000 è già in uso. Assicurati che nessun altro processo stia utilizzando questa porta.
+La porta 3000 è già in uso. Assicurati che nessun altro processo stia utilizzando questa porta.
+La porta 3000 è già in uso. Assicurati che nessun altro processo stia utilizzando questa porta.
+La porta 3000 è già in uso. Assicurati che nessun altro processo stia utilizzando questa porta.
+La porta 3000 è già in uso. Assicurati che nessun altro processo stia utilizzando questa porta.
+La porta 3000 è già in uso. Assicurati che nessun altro processo stia utilizzando questa porta.
+La porta 3000 è già in uso. Assicurati che nessun altro processo stia utilizzando questa porta.
+La porta 3000 è già in uso. Assicurati che nessun altro processo stia utilizzando questa porta.
+La porta 3000 è già in uso. Assicurati che nessun altro processo stia utilizzando questa porta.
+La porta 3000 è già in uso. Assicurati che nessun altro processo stia utilizzando questa porta.
+La porta 3000 è già in uso. Assicurati che nessun altro processo stia utilizzando questa porta.
+La porta 3000 è già in uso. Assicurati che nessun altro processo stia utilizzando questa porta.
+La porta 3000 è già in uso. Assicurati che nessun altro processo stia utilizzando questa porta.
+La porta 3000 è già in uso. Assicurati che nessun altro processo stia utilizzando questa porta.

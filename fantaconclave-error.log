@@ -300,3 +300,307 @@ Errore INSERT /users: Error: Data too long for column 'avatar' at row 1
 ❌ Rollback causa errore: Saldo Teex insufficiente
 ❌ Rollback causa errore: Saldo Teex insufficiente
 ❌ Rollback causa errore: Saldo Teex insufficiente
+Errore INSERT /users: Error: Data too long for column 'avatar' at row 1
+    at Packet.asError (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\packets\packet.js:740:17)
+    at Query.execute (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\commands\command.js:29:26)
+    at PoolConnection.handlePacket (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\base\connection.js:475:34)
+    at PacketParser.onPacket (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\base\connection.js:93:12)
+    at PacketParser.executeStart (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\packet_parser.js:75:16)
+    at Socket.<anonymous> (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\base\connection.js:100:25)
+    at Socket.emit (node:events:518:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Readable.push (node:internal/streams/readable:392:5) {
+  code: 'ER_DATA_TOO_LONG',
+  errno: 1406,
+  sqlState: '22001',
+  sqlMessage: "Data too long for column 'avatar' at row 1",
+  sql: '\n' +
+    '      INSERT INTO users \n' +
+    '        (username, email, teex_balance, is_active, updated_at, avatar, google_id, uniquename, color)\n' +
+    '      VALUES \n' +
+    "        ('Carlotta Pluchino', 'carlottapluc@gmail.com', 500, 1, NOW(), 'https://lh3.googleusercontent.com/a-/ALV-UjWJBjyrUla6ROYQsI2IaZBig_Jgwgyd67IGmUA_u9c48suWHLtyHrYwD7DtoZfZSy-gYWnx4xTUTXz_RwNSNe-DHGBOgHgGTkWM7AHqwQd370Os7aBwqPtOVePVmNmia4BI3S36XgmFPCosu04ipByhiRs43sF_QBIutY8Z_J9a2mbGkhZYEQ1nTYVpQ493D77wIQolaySxWxBvXWQkKO6m8RVT_8EfUmbHQ6tNv_VNBzCam6O_ZY6EpTf3INLVkGCXt2f1V8G07EaQjpx44VjIz_y4dq1mteJvKRayE2M7tE62Sa6WmuxGKCpYR40nG3Fd2I0f1wO4cWEwQcz3Yokd8YWWGHFLk7XK1V34SlkLh0pJRh7S1GjH-pdmNDqcpSkLhRJ4oy5OPt3-lZwemlTIhKZD7K2SCY76vfZzEbqP47pThTSIgLucMIlOHoobq5Otrmb4YAcgV2RJnkyNSU_pvNqM-zNwntqGUjYx3WJSWiVQHBbJ62QCzBk6bVRpRbQ2o5PyeXLPTGOvgIfsFoUZpcPtkGPpTLJ7uKpiF1x9o0GOuvejGkO0adS3VfyBxGY2zSIJXkgWj2DXtkpOoydJUzHDIo0U6wQA55lC-_LcA-o8W4XHUGwRCcx8R3-FETW1VVUdAMALIfAh8ct1OsbWLeBNydmROa9qFwgvXXuZJXhc16DJDfBdpZps6vwus70cuNkXGhdr5j5pYwjAEpNlD3EXmSkCWrGJ7ncJXXGPdsjtz1-raoY4kn1IZ9iiVT7D8VSqRxxZfadwzCAwt_2qGw-UTfszCMX_KxLZCTRhyTsxR_UO1RsyIseI3aTHRA0kPppUBECdkD5dbomklYJj4oLlM_5NNyRmRUT5OcWrBb3cLJSGvF-zbZkvLI_CKBOoAtZuPBNhHX7izHglTBMbXXfYV4vSfUKeaAKjJfX7j4yyK6KzbU9C4qkE5sO-TdbEhSfXG8UuJYiTSez17LnH3dIcvTKSj3g=s96-c', 'Ln341gNUVbO2fidaMrPzPauAK8E3', 'Carlotta Pluchino', '020162')\n" +
+    '    '
+}
+Errore INSERT /users: Error: Data too long for column 'avatar' at row 1
+    at Packet.asError (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\packets\packet.js:740:17)
+    at Query.execute (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\commands\command.js:29:26)
+    at PoolConnection.handlePacket (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\base\connection.js:475:34)
+    at PacketParser.onPacket (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\base\connection.js:93:12)
+    at PacketParser.executeStart (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\packet_parser.js:75:16)
+    at Socket.<anonymous> (C:\Users\Administrator\Documents\fantaconclave\node_modules\mysql2\lib\base\connection.js:100:25)
+    at Socket.emit (node:events:518:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Readable.push (node:internal/streams/readable:392:5) {
+  code: 'ER_DATA_TOO_LONG',
+  errno: 1406,
+  sqlState: '22001',
+  sqlMessage: "Data too long for column 'avatar' at row 1",
+  sql: '\n' +
+    '      INSERT INTO users \n' +
+    '        (username, email, teex_balance, is_active, updated_at, avatar, google_id, uniquename, color)\n' +
+    '      VALUES \n' +
+    "        ('Carlotta Pluchino', 'carlottapluc@gmail.com', 500, 1, NOW(), 'https://lh3.googleusercontent.com/a-/ALV-UjWJBjyrUla6ROYQsI2IaZBig_Jgwgyd67IGmUA_u9c48suWHLtyHrYwD7DtoZfZSy-gYWnx4xTUTXz_RwNSNe-DHGBOgHgGTkWM7AHqwQd370Os7aBwqPtOVePVmNmia4BI3S36XgmFPCosu04ipByhiRs43sF_QBIutY8Z_J9a2mbGkhZYEQ1nTYVpQ493D77wIQolaySxWxBvXWQkKO6m8RVT_8EfUmbHQ6tNv_VNBzCam6O_ZY6EpTf3INLVkGCXt2f1V8G07EaQjpx44VjIz_y4dq1mteJvKRayE2M7tE62Sa6WmuxGKCpYR40nG3Fd2I0f1wO4cWEwQcz3Yokd8YWWGHFLk7XK1V34SlkLh0pJRh7S1GjH-pdmNDqcpSkLhRJ4oy5OPt3-lZwemlTIhKZD7K2SCY76vfZzEbqP47pThTSIgLucMIlOHoobq5Otrmb4YAcgV2RJnkyNSU_pvNqM-zNwntqGUjYx3WJSWiVQHBbJ62QCzBk6bVRpRbQ2o5PyeXLPTGOvgIfsFoUZpcPtkGPpTLJ7uKpiF1x9o0GOuvejGkO0adS3VfyBxGY2zSIJXkgWj2DXtkpOoydJUzHDIo0U6wQA55lC-_LcA-o8W4XHUGwRCcx8R3-FETW1VVUdAMALIfAh8ct1OsbWLeBNydmROa9qFwgvXXuZJXhc16DJDfBdpZps6vwus70cuNkXGhdr5j5pYwjAEpNlD3EXmSkCWrGJ7ncJXXGPdsjtz1-raoY4kn1IZ9iiVT7D8VSqRxxZfadwzCAwt_2qGw-UTfszCMX_KxLZCTRhyTsxR_UO1RsyIseI3aTHRA0kPppUBECdkD5dbomklYJj4oLlM_5NNyRmRUT5OcWrBb3cLJSGvF-zbZkvLI_CKBOoAtZuPBNhHX7izHglTBMbXXfYV4vSfUKeaAKjJfX7j4yyK6KzbU9C4qkE5sO-TdbEhSfXG8UuJYiTSez17LnH3dIcvTKSj3g=s96-c', 'Ln341gNUVbO2fidaMrPzPauAK8E3', 'Carlotta Pluchino', '10d0b3')\n" +
+    '    '
+}
+node:internal/modules/cjs/loader:1404
+  throw err;
+  ^
+
+Error: Cannot find module 'cors'
+Require stack:
+- C:\Users\Administrator\Documents\fantaconclave\adminserver.js
+- C:\Users\Administrator\Documents\fantaconclave\index.js
+    at Function._resolveFilename (node:internal/modules/cjs/loader:1401:15)
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1057:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1062:22)
+    at Function._load (node:internal/modules/cjs/loader:1211:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+    at Module.require (node:internal/modules/cjs/loader:1487:12)
+    at require (node:internal/modules/helpers:135:16)
+    at Object.<anonymous> (C:\Users\Administrator\Documents\fantaconclave\adminserver.js:4:14)
+    at Module._compile (node:internal/modules/cjs/loader:1730:14) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\Administrator\\Documents\\fantaconclave\\adminserver.js',
+    'C:\\Users\\Administrator\\Documents\\fantaconclave\\index.js'
+  ]
+}
+
+Node.js v22.15.0
+node:internal/modules/cjs/loader:1404
+  throw err;
+  ^
+
+Error: Cannot find module 'cors'
+Require stack:
+- C:\Users\Administrator\Documents\fantaconclave\adminserver.js
+- C:\Users\Administrator\Documents\fantaconclave\index.js
+    at Function._resolveFilename (node:internal/modules/cjs/loader:1401:15)
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1057:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1062:22)
+    at Function._load (node:internal/modules/cjs/loader:1211:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+    at Module.require (node:internal/modules/cjs/loader:1487:12)
+    at require (node:internal/modules/helpers:135:16)
+    at Object.<anonymous> (C:\Users\Administrator\Documents\fantaconclave\adminserver.js:4:14)
+    at Module._compile (node:internal/modules/cjs/loader:1730:14) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\Administrator\\Documents\\fantaconclave\\adminserver.js',
+    'C:\\Users\\Administrator\\Documents\\fantaconclave\\index.js'
+  ]
+}
+
+Node.js v22.15.0
+node:internal/modules/cjs/loader:1404
+  throw err;
+  ^
+
+Error: Cannot find module 'cors'
+Require stack:
+- C:\Users\Administrator\Documents\fantaconclave\adminserver.js
+- C:\Users\Administrator\Documents\fantaconclave\index.js
+    at Function._resolveFilename (node:internal/modules/cjs/loader:1401:15)
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1057:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1062:22)
+    at Function._load (node:internal/modules/cjs/loader:1211:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+    at Module.require (node:internal/modules/cjs/loader:1487:12)
+    at require (node:internal/modules/helpers:135:16)
+    at Object.<anonymous> (C:\Users\Administrator\Documents\fantaconclave\adminserver.js:4:14)
+    at Module._compile (node:internal/modules/cjs/loader:1730:14) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\Administrator\\Documents\\fantaconclave\\adminserver.js',
+    'C:\\Users\\Administrator\\Documents\\fantaconclave\\index.js'
+  ]
+}
+
+Node.js v22.15.0
+node:internal/modules/cjs/loader:1404
+  throw err;
+  ^
+
+Error: Cannot find module 'cors'
+Require stack:
+- C:\Users\Administrator\Documents\fantaconclave\adminserver.js
+- C:\Users\Administrator\Documents\fantaconclave\index.js
+    at Function._resolveFilename (node:internal/modules/cjs/loader:1401:15)
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1057:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1062:22)
+    at Function._load (node:internal/modules/cjs/loader:1211:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+    at Module.require (node:internal/modules/cjs/loader:1487:12)
+    at require (node:internal/modules/helpers:135:16)
+    at Object.<anonymous> (C:\Users\Administrator\Documents\fantaconclave\adminserver.js:4:14)
+    at Module._compile (node:internal/modules/cjs/loader:1730:14) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\Administrator\\Documents\\fantaconclave\\adminserver.js',
+    'C:\\Users\\Administrator\\Documents\\fantaconclave\\index.js'
+  ]
+}
+
+Node.js v22.15.0
+node:internal/modules/cjs/loader:1404
+  throw err;
+  ^
+
+Error: Cannot find module 'cors'
+Require stack:
+- C:\Users\Administrator\Documents\fantaconclave\adminserver.js
+- C:\Users\Administrator\Documents\fantaconclave\index.js
+    at Function._resolveFilename (node:internal/modules/cjs/loader:1401:15)
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1057:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1062:22)
+    at Function._load (node:internal/modules/cjs/loader:1211:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+    at Module.require (node:internal/modules/cjs/loader:1487:12)
+    at require (node:internal/modules/helpers:135:16)
+    at Object.<anonymous> (C:\Users\Administrator\Documents\fantaconclave\adminserver.js:4:14)
+    at Module._compile (node:internal/modules/cjs/loader:1730:14) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\Administrator\\Documents\\fantaconclave\\adminserver.js',
+    'C:\\Users\\Administrator\\Documents\\fantaconclave\\index.js'
+  ]
+}
+
+Node.js v22.15.0
+node:internal/modules/cjs/loader:1404
+  throw err;
+  ^
+
+Error: Cannot find module 'cors'
+Require stack:
+- C:\Users\Administrator\Documents\fantaconclave\adminserver.js
+- C:\Users\Administrator\Documents\fantaconclave\index.js
+    at Function._resolveFilename (node:internal/modules/cjs/loader:1401:15)
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1057:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1062:22)
+    at Function._load (node:internal/modules/cjs/loader:1211:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+    at Module.require (node:internal/modules/cjs/loader:1487:12)
+    at require (node:internal/modules/helpers:135:16)
+    at Object.<anonymous> (C:\Users\Administrator\Documents\fantaconclave\adminserver.js:4:14)
+    at Module._compile (node:internal/modules/cjs/loader:1730:14) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\Administrator\\Documents\\fantaconclave\\adminserver.js',
+    'C:\\Users\\Administrator\\Documents\\fantaconclave\\index.js'
+  ]
+}
+
+Node.js v22.15.0
+node:internal/modules/cjs/loader:1404
+  throw err;
+  ^
+
+Error: Cannot find module 'cors'
+Require stack:
+- C:\Users\Administrator\Documents\fantaconclave\adminserver.js
+- C:\Users\Administrator\Documents\fantaconclave\index.js
+    at Function._resolveFilename (node:internal/modules/cjs/loader:1401:15)
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1057:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1062:22)
+    at Function._load (node:internal/modules/cjs/loader:1211:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+    at Module.require (node:internal/modules/cjs/loader:1487:12)
+    at require (node:internal/modules/helpers:135:16)
+    at Object.<anonymous> (C:\Users\Administrator\Documents\fantaconclave\adminserver.js:4:14)
+    at Module._compile (node:internal/modules/cjs/loader:1730:14) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\Administrator\\Documents\\fantaconclave\\adminserver.js',
+    'C:\\Users\\Administrator\\Documents\\fantaconclave\\index.js'
+  ]
+}
+
+Node.js v22.15.0
+node:internal/modules/cjs/loader:1404
+  throw err;
+  ^
+
+Error: Cannot find module 'cors'
+Require stack:
+- C:\Users\Administrator\Documents\fantaconclave\adminserver.js
+- C:\Users\Administrator\Documents\fantaconclave\index.js
+    at Function._resolveFilename (node:internal/modules/cjs/loader:1401:15)
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1057:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1062:22)
+    at Function._load (node:internal/modules/cjs/loader:1211:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+    at Module.require (node:internal/modules/cjs/loader:1487:12)
+    at require (node:internal/modules/helpers:135:16)
+    at Object.<anonymous> (C:\Users\Administrator\Documents\fantaconclave\adminserver.js:4:14)
+    at Module._compile (node:internal/modules/cjs/loader:1730:14) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\Administrator\\Documents\\fantaconclave\\adminserver.js',
+    'C:\\Users\\Administrator\\Documents\\fantaconclave\\index.js'
+  ]
+}
+
+Node.js v22.15.0
+node:internal/modules/cjs/loader:1404
+  throw err;
+  ^
+
+Error: Cannot find module 'cors'
+Require stack:
+- C:\Users\Administrator\Documents\fantaconclave\adminserver.js
+- C:\Users\Administrator\Documents\fantaconclave\index.js
+    at Function._resolveFilename (node:internal/modules/cjs/loader:1401:15)
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1057:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1062:22)
+    at Function._load (node:internal/modules/cjs/loader:1211:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+    at Module.require (node:internal/modules/cjs/loader:1487:12)
+    at require (node:internal/modules/helpers:135:16)
+    at Object.<anonymous> (C:\Users\Administrator\Documents\fantaconclave\adminserver.js:4:14)
+    at Module._compile (node:internal/modules/cjs/loader:1730:14) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\Administrator\\Documents\\fantaconclave\\adminserver.js',
+    'C:\\Users\\Administrator\\Documents\\fantaconclave\\index.js'
+  ]
+}
+
+Node.js v22.15.0
+node:internal/modules/cjs/loader:1404
+  throw err;
+  ^
+
+Error: Cannot find module 'cors'
+Require stack:
+- C:\Users\Administrator\Documents\fantaconclave\adminserver.js
+- C:\Users\Administrator\Documents\fantaconclave\index.js
+    at Function._resolveFilename (node:internal/modules/cjs/loader:1401:15)
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1057:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1062:22)
+    at Function._load (node:internal/modules/cjs/loader:1211:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+    at Module.require (node:internal/modules/cjs/loader:1487:12)
+    at require (node:internal/modules/helpers:135:16)
+    at Object.<anonymous> (C:\Users\Administrator\Documents\fantaconclave\adminserver.js:4:14)
+    at Module._compile (node:internal/modules/cjs/loader:1730:14) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\Administrator\\Documents\\fantaconclave\\adminserver.js',
+    'C:\\Users\\Administrator\\Documents\\fantaconclave\\index.js'
+  ]
+}
+
+Node.js v22.15.0
