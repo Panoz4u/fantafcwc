@@ -8,6 +8,11 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
 const adminRouter = require('./adminserver');
+const gestioneSfideRouter = express.Router();
+const adminContestRoutes = require('./server/routes/admincontest');
+
+
+app.use('/admin-api', adminContestRoutes);
 // Comment out or remove this line:
 // const fcserver = require('./public/fcserver');
 
@@ -22,7 +27,14 @@ app.use(express.static("public"));
 app.use(express.static(path.join(__dirname, 'public')));
 // Usa il router di amministrazione
 app.use('/', adminRouter);
-
+// Configura il router per gestione-sfide.js
+app.get('/gestione-sfide.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'gestione-sfide.html'));
+});
+// Servi il file JavaScript per la gestione delle sfide
+app.get('/js/gestione-sfide.js', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'js', 'gestione-sfide.js'));
+});
 
 // Create a router for the API endpoints
 const sfideRouter = express.Router();

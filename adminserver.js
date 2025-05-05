@@ -6,7 +6,10 @@ const router = express.Router();
 
 // Middleware
 router.use(cors());
-
+// Endpoint per servire la pagina di gestione delle sfide
+router.get('/gestione-sfide.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'gestione-sfide.html'));
+  });
 // Endpoint per ottenere la configurazione Firebase
 router.get('/api/firebase-config', (req, res) => {
   // Verifica se la richiesta proviene da un'origine autorizzata

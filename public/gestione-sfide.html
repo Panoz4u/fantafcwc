@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fantaconclave - Gestione Sfide</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,800;1,800&family=Barlow+Condensed:wght@400;700&display=swap" rel="stylesheet">
+  
+  <!-- Stili CSS -->
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #260E3D;
+      background-image: url('images/GradientBG.png');
+      background-size: cover;
+      background-position: center top;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      color: #fff;
+      position: relative;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 20px;
+      padding: 20px;
+      background-color: rgba(10, 0, 52, 0.7);
+      border-radius: 10px;
+    }
+    
+    h1 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 36px;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    
+    h2 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 24px;
+      font-weight: 400;
+      opacity: 0.8;
+    }
+    
+    .tabs {
+      display: flex;
+      margin-bottom: 20px;
+    }
+    
+    .tab {
+      padding: 10px 20px;
+      background-color: rgba(10, 0, 52, 0.5);
+      border: none;
+      border-radius: 5px 5px 0 0;
+      color: #fff;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-right: 5px;
+      transition: background-color 0.3s;
+    }
+    
+    .tab.active {
+      background-color: rgba(93, 253, 203, 0.2);
+      border-bottom: 3px solid #5DFDCB;
+    }
+    
+    .tab:hover {
+      background-color: rgba(93, 253, 203, 0.1);
+    }
+    
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      background-color: rgba(10, 0, 52, 0.7);
+      padding: 15px;
+      border-radius: 10px;
+    }
+    
+    .sort-controls {
+      display: flex;
+      align-items: center;
+    }
+    
+    .sort-label {
+      margin-right: 10px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 16px;
+    }
+    
+    .sort-direction {
+      background-color: rgba(93, 253, 203, 0.2);
+      border: none;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-left: 10px;
+      font-family: 'Barlow Condensed', sans-serif;
+    }
+    
+    .table-container {
+      background-color: rgba(10, 0, 52, 0.7);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      overflow-x: auto;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    th, td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    th {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      color: #5DFDCB;
+      text-transform: uppercase;
+    }
+    
+    tr:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+    
+    .select-all {
+      margin-right: 10px;
+    }
+    
+    .btn {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      text-transform: uppercase;
+      border-radius: 50px;
+      padding: 8px 16px;
+      border: none;
+      cursor: pointer;
+      text-align: center;
+      display: inline-block;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary {
+      background-color: #FE4208;
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background-color: #ff5a28;
+      box-shadow: 0 5px 15px rgba(254, 66, 8, 0.4);
+    }
+    
+    .btn-secondary {
+      background-color: #5DFDCB;
+      color: #0A0034;
+    }
+    
+    .btn-secondary:hover {
+      background-color: #7dffd5;
+      box-shadow: 0 5px 15px rgba(93, 253, 203, 0.4);
+    }
+    
+    .btn-dark {
+      background-color: #0B0C2A;
+      color: white;
+      border: 2px solid #5DFDCB;
+    }
+    
+    .btn-dark:hover {
+      background-color: #161856;
+      box-shadow: 0 5px 15px rgba(11, 12, 42, 0.4);
+    }
+    
+    .btn-small {
+      font-size: 14px;
+      padding: 6px 12px;
+    }
+    
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 20px;
+    }
+    
+    .pagination button {
+      margin: 0 5px;
+    }
+    
+    #pageInfo {
+      margin: 0 15px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 16px;
+    }
+    
+    .status-message {
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
+    }
+    
+    .status-success {
+      background-color: rgba(93, 253, 203, 0.2);
+      border-left: 4px solid #5DFDCB;
+    }
+    
+    .status-error {
+      background-color: rgba(254, 66, 8, 0.2);
+      border-left: 4px solid #FE4208;
+    }
+    
+    .back-button {
+      margin-top: 20px;
+      display: inline-block;
+    }
+    
+    /* Stili per la modale */
+    .modal {
+      display: none; /* Nascosto di default */
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.6); /* Sfondo scuro semi-trasparente */
+    }
+
+    .modal-content {
+      background-color: #1a0a2e; /* Sfondo scuro per il contenuto */
+      margin: 10% auto; /* Centrato verticalmente e orizzontalmente */
+      padding: 30px;
+      border: 1px solid #5DFDCB;
+      border-radius: 10px;
+      width: 80%;
+      max-width: 600px; /* Larghezza massima */
+      position: relative;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    }
+
+    .close-modal {
+      color: #aaa;
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close-modal:hover,
+    .close-modal:focus {
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .modal-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: #5DFDCB;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .detail-label {
+      font-weight: 700;
+      color: #aaa;
+      width: 40%;
+    }
+
+    .detail-value {
+      color: #fff;
+      width: 60%;
+      text-align: right;
+    }
+
+    .modal-actions {
+      margin-top: 25px;
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Gestione Sfide</h1>
+      <h2>Visualizza e gestisci le sfide Pending e Created</h2>
+    </header>
+    
+    <div id="statusMessage" class="status-message"></div>
+    
+    <div class="tabs">
+      <button class="tab active" data-status="1" id="pendingTab">Sfide Pending</button>
+      <button class="tab" data-status="0" id="createdTab">Sfide Created</button>
+    </div>
+    
+    <div class="controls">
+      <div class="sort-controls">
+        <span class="sort-label">Ordina per:</span>
+        <button class="sort-direction" id="sortDirection">
+          <span id="sortDirectionText">ASC</span>
+          <span id="sortDirectionIcon">↑</span>
+        </button>
+      </div>
+      
+      <div class="action-controls">
+        <button class="btn btn-secondary" id="selectAllBtn">Seleziona Tutte</button>
+        <button class="btn btn-primary" id="deleteSelectedBtn">Cancella Selezionate</button>
+        <button class="btn btn-dark" id="exportCsvBtn">Esporta CSV</button>
+      </div>
+    </div>
+    
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th width="5%"><input type="checkbox" id="selectAll"></th>
+            <th width="8%">ID</th>
+            <th width="15%">Owner ID</th>
+            <th width="15%">Opponent ID</th>
+            <th width="10%">Status</th>
+            <th width="15%">Data Creazione</th>
+            <th width="15%">Ultimo Aggiornamento</th>
+            <th width="17%">Azioni</th>
+          </tr>
+        </thead>
+        <tbody id="sfideList">
+          <!-- Le sfide verranno caricate qui dinamicamente -->
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Dopo la chiusura della tabella e prima della chiusura del div container -->
+    <div class="pagination">
+      <button id="prevPage" class="btn btn-dark">Precedente</button>
+      <span id="pageInfo">Pagina 1 di 1</span>
+      <button id="nextPage" class="btn btn-dark">Successivo</button>
+    </div>
+    
+    <a href="FanteexBackend.html" class="btn btn-dark back-button">Torna al Backend</a>
+  </div>
+
+  <!-- Struttura HTML della Modale -->
+  <div id="detailsModal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <h3 class="modal-title">Dettagli Sfida</h3>
+      <div id="modalContent">
+        <!-- Il contenuto dei dettagli verrà inserito qui dal JavaScript -->
+      </div>
+      <div class="modal-actions">
+        <button id="closeModalBtn" class="btn btn-dark">Chiudi</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script per gestire il popup modale -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const modal = document.getElementById('detailsModal');
+      const closeBtn = document.querySelector('.close-modal');
+      const closeModalBtn = document.getElementById('closeModalBtn');
+      
+      // Funzione per chiudere il modale
+      function closeModal() {
+        modal.style.display = 'none';
+      }
+      
+      // Event listeners per chiudere il modale
+      if (closeBtn) closeBtn.addEventListener('click', closeModal);
+      if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+      
+      // Chiudi il modale se si clicca fuori dal contenuto
+      window.addEventListener('click', function(event) {
+        if (event.target === modal) {
+          closeModal();
+        }
+      });
+      
+      // Esponi la funzione per aprire il modale a livello globale
+      window.showDetailsModal = function(contestId) {
+        // Trova la sfida nell'array
+        const contest = window.allContests.find(c => c.contest_id === contestId);
+        if (!contest) {
+          alert('Sfida non trovata');
+          return;
+        }
+        
+        // Crea il contenuto HTML per i dettagli
+        const statusText = {
+          '0': 'Created',
+          '1': 'Pending',
+          '2': 'Ready',
+          '4': 'Live',
+          '5': 'Completed'
+        }[contest.status] || contest.status;
+        
+        const createdDate = new Date(contest.created_at).toLocaleString('it-IT');
+        const updatedDate = new Date(contest.updated_at).toLocaleString('it-IT');
+        
+        let content = `
+          <div class="detail-row">
+            <div class="detail-label">ID:</div>
+            <div class="detail-value">${contest.contest_id}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Owner:</div>
+            <div class="detail-value">${contest.owner_username || contest.owner_id}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Opponent:</div>
+            <div class="detail-value">${contest.opponent_username || contest.opponent_id || 'Non assegnato'}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Status:</div>
+            <div class="detail-value">${statusText}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Stake:</div>
+            <div class="detail-value">${contest.stake || 0} Teex</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Data Creazione:</div>
+            <div class="detail-value">${createdDate}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Ultimo Aggiornamento:</div>
+            <div class="detail-value">${updatedDate}</div>
+          </div>
+        `;
+        
+        // Aggiungi campi aggiuntivi se presenti
+        if (contest.event_unit_id) {
+          content += `
+            <div class="detail-row">
+              <div class="detail-label">Event Unit ID:</div>
+              <div class="detail-value">${contest.event_unit_id}</div>
+            </div>
+          `;
+        }
+        
+        if (contest.multiply) {
+          content += `
+            <div class="detail-row">
+              <div class="detail-label">Multiply:</div>
+              <div class="detail-value">${contest.multiply}</div>
+            </div>
+          `;
+        }
+        
+        // Aggiorna il contenuto del modale e mostralo
+        document.getElementById('modalContent').innerHTML = content;
+        document.querySelector('.modal-title').textContent = `Dettagli Sfida #${contestId}`;
+        modal.style.display = 'block';
+      };
+    });
+  </script>
+  <script src="js/admin-protection.js"></script>
+  <script src="js/gestione-sfide.js"></script>
+  
+  <!-- Script per gestire i pulsanti di dettaglio -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Aggiungi un event listener per i pulsanti di dettaglio
+      // usando event delegation per catturare anche i pulsanti aggiunti dinamicamente
+      document.getElementById('sfideList').addEventListener('click', function(event) {
+        if (event.target.classList.contains('details-btn')) {
+          const contestId = event.target.getAttribute('data-id');
+          window.showDetailsModal(contestId);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
