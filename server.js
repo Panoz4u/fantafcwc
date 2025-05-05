@@ -40,6 +40,27 @@ app.post('/api/register-user', async (req, res) => {
   }
 });
 
+// Endpoint per ottenere la configurazione Firebase
+app.get('/api/firebase-config', (req, res) => {
+  // Verifica se la richiesta proviene da un'origine autorizzata
+  const origin = req.headers.origin || req.headers.referer;
+  if (!origin || !origin.includes('fantaconclave')) {
+    return res.status(403).json({ error: 'Accesso non autorizzato' });
+  }
+
+  // Restituisci solo i dati necessari per l'autenticazione client
+  const firebaseConfig = {
+    apiKey: process.env.FIREBASE_API_KEY,
+    authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+    projectId: process.env.FIREBASE_PROJECT_ID,
+    storageBucket: process.env.FIREBASE_STORAGE_BUCKET || `${process.env.FIREBASE_PROJECT_ID}.appspot.com`,
+    messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.FIREBASE_APP_ID
+  };
+
+  res.json(firebaseConfig);
+});
+
 // Server startup code with port 3000 and fallback mechanism
 const PORT = process.env.PORT || 3000;
 const MAX_PORT_ATTEMPTS = 10;

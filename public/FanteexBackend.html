@@ -6,6 +6,13 @@
   <title>Fantaconclave - Admin Backend</title>
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,800;1,800&family=Barlow+Condensed:wght@400;700&display=swap" rel="stylesheet">
+  
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  
+  <!-- Stili CSS -->
   <style>
     * {
       box-sizing: border-box;
@@ -16,7 +23,7 @@
     body {
       font-family: 'Montserrat', sans-serif;
       background-color: #260E3D;
-      background-image: url('public/images/GradientBG.png');
+      background-image: url('images/GradientBG.png');
       background-size: cover;
       background-position: center top;
       background-repeat: no-repeat;
@@ -150,38 +157,133 @@
         grid-template-columns: repeat(3, 1fr);
       }
     }
+    
+    /* Stili per il form di login */
+    .login-container {
+      max-width: 400px;
+      margin: 50px auto;
+      padding: 30px;
+      background-color: rgba(10, 0, 52, 0.7);
+      border-radius: 10px;
+      text-align: center;
+    }
+    
+    .login-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: #fff;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 12px;
+      border-radius: 5px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background-color: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      font-family: 'Montserrat', sans-serif;
+    }
+    
+    .login-btn {
+      width: 100%;
+      margin-top: 10px;
+    }
+    
+    .error-message {
+      color: #ff5a5a;
+      margin-top: 15px;
+      padding: 10px;
+      background-color: rgba(255, 0, 0, 0.1);
+      border-radius: 5px;
+      display: none;
+    }
+    
+    .loader {
+      display: none;
+      margin: 20px auto;
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top: 4px solid #5DFDCB;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>Fanteex Admin Backend</h1>
-      <h2>Gestione dati e configurazioni</h2>
-    </header>
-    
-    <div class="admin-links">
-      <div class="admin-card">
-        <h3>Chiudi sfide scadute</h3>
-        <p>Gestisci e chiudi automaticamente le sfide che hanno raggiunto la data di scadenza.</p>
-        <a href="sfidescadute.html" class="btn btn-primary">Accedi</a>
+  <!-- Contenitore per il login -->
+  <div id="loginContainer" class="login-container">
+    <h2 class="login-title">Accesso Amministratore</h2>
+    <form id="loginForm" onsubmit="event.preventDefault(); document.getElementById('loginBtn').click();">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" class="form-control" placeholder="Inserisci la tua email">
       </div>
-      
-      <div class="admin-card">
-        <h3>Upload Lineup Atleti</h3>
-        <p>Gestisci le lineup degli atleti caricando file Excel o JSON con i dati aggiornati delle formazioni.</p>
-        <a href="uploadLineups.html" class="btn btn-secondary">Accedi</a>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" class="form-control" placeholder="Inserisci la tua password">
       </div>
+      <button type="submit" id="loginBtn" class="btn btn-primary login-btn">Accedi</button>
+    </form>
+    <div id="errorMessage" class="error-message"></div>
+    <div id="loader" class="loader"></div>
+  </div>
+
+  <!-- Contenitore per il contenuto admin -->
+  <div id="adminContent" style="display: none;">
+    <button id="logoutBtn" class="btn btn-dark logout-btn">Logout</button>
+    <div class="container">
+      <header>
+        <h1>Fanteex Admin Backend</h1>
+        <h2>Gestione dati e configurazioni</h2>
+      </header>
       
-      <div class="admin-card">
-        <h3>Upload Risultati</h3>
-        <p>Carica i risultati delle partite e aggiorna i punteggi dei contest e delle fantasy teams.</p>
-        <a href="uploadResults.html" class="btn btn-dark">Accedi</a>
+      <div class="admin-links">
+        <div class="admin-card">
+          <h3>Chiudi sfide scadute</h3>
+          <p>Gestisci e chiudi automaticamente le sfide che hanno raggiunto la data di scadenza.</p>
+          <a href="sfidescadute.html" class="btn btn-primary">Accedi</a>
+        </div>
+        
+        <div class="admin-card">
+          <h3>Upload Lineup Atleti</h3>
+          <p>Gestisci le lineup degli atleti caricando file Excel o JSON con i dati aggiornati delle formazioni.</p>
+          <a href="uploadLineups.html" class="btn btn-secondary">Accedi</a>
+        </div>
+        
+        <div class="admin-card">
+          <h3>Upload Risultati</h3>
+          <p>Carica i risultati delle partite e aggiorna i punteggi dei contest e delle fantasy teams.</p>
+          <a href="uploadResults.html" class="btn btn-dark">Accedi</a>
+        </div>
       </div>
     </div>
   </div>
   
   <footer>
-    <p>&copy; 2023 Fanteex - Admin Panel</p>
+    <p>&copy; 2025 Fanteex - Admin Panel</p>
   </footer>
+
+  <!-- Includi il file JavaScript esterno -->
+  <script src="js/admin-auth.js"></script>
 </body>
 </html>

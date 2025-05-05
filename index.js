@@ -7,6 +7,7 @@ const pool = require("./db");
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
+const adminRouter = require('./adminserver');
 // Comment out or remove this line:
 // const fcserver = require('./public/fcserver');
 
@@ -19,7 +20,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use(express.static(path.join(__dirname, 'public')));
-
+// Usa il router di amministrazione
+app.use('/', adminRouter);
 
 
 // Create a router for the API endpoints
