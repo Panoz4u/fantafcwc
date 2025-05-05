@@ -4,6 +4,7 @@ node_modules/
 # Log di sistema
 npm-debug.log
 yarn-error.log
+*.log
 
 # File di ambiente (importante!)
 .env
