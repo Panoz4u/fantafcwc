@@ -52,6 +52,21 @@ router.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'FanteexBackend.html'));
 });
 
+// Endpoint per servire la pagina di upload dei risultati
+router.get('/uploadResults.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'uploadResults.html'));
+});
+
+// Endpoint per servire la pagina di upload delle lineup
+router.get('/uploadLineups.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'uploadLineups.html'));
+});
+
+// Endpoint per servire la pagina di gestione delle sfide scadute
+router.get('/sfidescadute.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'sfidescadute.html'));
+});
+
 // Endpoint per gestire l'upload dei risultati
 router.post('/api/admin/upload-results', (req, res) => {
   // Implementa la logica per l'upload dei risultati
