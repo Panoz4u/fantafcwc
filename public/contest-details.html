@@ -719,7 +719,10 @@ function createPlayerRow(player, side) {
       .then(res => res.json())
       .then(data => {
         if (data.event_unit_id) {
-          eventUnitSpan.textContent = data.event_unit_id;
+          
+          const cc = parseInt(data.event_unit_id);
+          eventUnitSpan.textContent = (cc === 1) ? '1' : `${cc}ab`;
+
         }
         if (data.athlete_unit_points != null) {
           playerUnitPoints = parseFloat(data.athlete_unit_points) || 0;

@@ -446,7 +446,20 @@ function createPlayerRow(player, index) {
     matchSpan.appendChild(awaySpan);
   } else {
     // Nuovo formato: Codice paese | CONCLAVE event_unit_id
-    matchSpan.innerHTML = `<span style="font-family: 'Montserrat', sans-serif; font-weight: 800;">${player.player_team_code || ''}</span> | CC. <span style="font-family: 'Montserrat', sans-serif; font-weight: 800;">${player.event_unit_id || ''}</span>`;
+   
+    const cc = parseInt(player.event_unit_id);
+    const ccLabel = (cc === 1) ? '1' : `${cc}ab`;
+    
+    matchSpan.innerHTML = `
+      <span style="font-family: 'Montserrat', sans-serif; font-weight: 800;">
+        ${player.player_team_code || ''}
+      </span> | CC. 
+      <span style="font-family: 'Montserrat', sans-serif; font-weight: 800;">
+        ${ccLabel}
+      </span>`;
+    
+ 
+ 
   }
   
   infoBlock.appendChild(nameSpan);

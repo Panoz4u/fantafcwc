@@ -577,8 +577,19 @@
         matchElement.className = 'player-match';
         
         // Format: COUNTRY | CONCLAVE event_unit_id
-        matchElement.innerHTML = `<span style="font-family: 'Montserrat', sans-serif; font-weight: 800;">${player.player_team_code || ''}</span> | CONCLAVE <span style="font-family: 'Montserrat', sans-serif; font-weight: 800;">${player.event_unit_id || ''}</span>`;
+        const conclave = parseInt(player.event_unit_id);
+        const conclaveLabel = (conclave === 1) ? '1' : `${conclave}ab`;
+
+        matchElement.innerHTML = `
+          <span style="font-family: 'Montserrat', sans-serif; font-weight: 800;">
+            ${player.player_team_code || ''}
+          </span> | CONCLAVE 
+          <span style="font-family: 'Montserrat', sans-serif; font-weight: 800;">
+            ${conclaveLabel}
+          </span>`;
+
         
+
         infoContainer.appendChild(nameElement);
         infoContainer.appendChild(matchElement);
         
