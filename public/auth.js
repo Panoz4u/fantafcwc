@@ -220,6 +220,82 @@
       });
     }
 
+    // ====================================================
+    // REGISTRAZIONE CON GOOGLE
+    const googleRegisterBtn = document.getElementById('googleRegister');
+    if (googleRegisterBtn) {
+      googleRegisterBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+    
+        const googleProvider = new firebase.auth.GoogleAuthProvider();
+        googleProvider.addScope('email');
+        googleProvider.setCustomParameters({ prompt: 'select_account' });
+    
+        auth
+          .signInWithPopup(googleProvider)
+          .then(async function (result) {
+            const user = result.user;
+            try {
+              const response = await fetch(
+                `/user-by-email?email=${encodeURIComponent(user.email)}`
+              );
+              if (!response.ok && response.status !== 404) {
+                throw new Error('Errore nella verifica utente: ' +
+                  response.status);
+              }
+              let dbUser;
+              if (response.status === 404) {
+                const username = user.displayName ||
+                  user.email.split('@')[0];
+                const uniquename = await generateUniqueUsername(username);
+                const userColor = generateRandomColor();
+                const registerResponse = await fetch('/users', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    username: username,
+                    uniquename: uniquename,
+                    email: user.email,
+                    teex_balance: 500,
+                    avatar: user.photoURL,
+                    google_id: user.uid,
+                    color: userColor,
+                  }),
+                });
+                if (!registerResponse.ok) {
+                  throw new Error(
+                    'Errore nella registrazione utente: ' +
+                      registerResponse.status
+                  );
+                }
+                dbUser = await registerResponse.json();
+                localStorage.setItem('userId', dbUser.userId);
+              } else {
+                dbUser = await response.json();
+                localStorage.setItem('userId', dbUser.user_id);
+              }
+              const tokenResponse = await fetch('/generate-token', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId: dbUser.user_id || dbUser.userId }),
+              });
+              if (tokenResponse.ok) {
+                const tokenData = await tokenResponse.json();
+                localStorage.setItem('authToken', tokenData.token);
+              }
+              window.location.href = 'user-landing.html';
+            } catch (error) {
+              console.error('Errore durante la registrazione con Google:', error);
+              alert(error.message);
+            }
+          })
+          .catch(function (error) {
+            console.error('Errore durante la registrazione con Google:', error);
+            alert(error.message);
+          });
+      });
+    }
+
     // Funzione per verificare l'autenticazione dell'utente
     function checkAuth() {
       const authToken = localStorage.getItem('authToken');

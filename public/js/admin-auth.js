@@ -53,7 +53,7 @@ async function initApp() {
     const logoutBtn = document.getElementById('logoutBtn');
     
     // Email dell'amministratore autorizzato
-    const adminEmail = 'admin@fantaconclave.it'; // Sostituisci con l'email dell'admin
+    const adminEmail = 'admin@fantaeurovision25'; // Sostituisci con l'email dell'admin
     
     // Funzione per verificare se un utente è l'amministratore
     function isAdmin(user) {
@@ -147,7 +147,7 @@ async function checkAdminAuth() {
       firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
           // Verifica se l'utente è l'amministratore
-          if (user.email === 'admin@fantaconclave.it') {
+          if (user.email === 'admin@fantaeurovision25') {
             resolve(true);
           } else {
             // Reindirizza alla pagina di login

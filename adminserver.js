@@ -41,7 +41,7 @@ router.post('/api/check-admin-auth', (req, res) => {
   
   // Qui dovresti verificare il token con Firebase Admin SDK
   // Per ora, facciamo un controllo semplice sull'email
-  const adminEmail = 'admin@fantaconclave.it';
+  const adminEmail = 'admin@fantaeurovision25';
   
   if (email === adminEmail) {
     return res.json({ isAdmin: true });

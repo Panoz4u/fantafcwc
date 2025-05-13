@@ -329,7 +329,7 @@ async function renderPlayerList() {
     const teexLeft = getAvailableBudget();
     const teexLeftEl = document.getElementById("teexLeft");
     if (teexLeftEl) {
-      teexLeftEl.innerHTML = `<span class="teex-left-text-cyan">${teexLeft.toFixed(1)}</span> <span class="teex-left-text-white">Papa Coins left</span>`;
+      teexLeftEl.innerHTML = `<span class="teex-left-text-cyan">${teexLeft.toFixed(1)}</span> <span class="teex-left-text-white">SwissHearts left</span>`;
     }
     
     // Renderizza i giocatori

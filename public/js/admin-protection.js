@@ -17,8 +17,8 @@ async function checkAdminAuth() {
         // Verifica lo stato di autenticazione
         firebase.auth().onAuthStateChanged(function(user) {
           if (user) {
-            // Verifica se l'utente è admin@fantaconclave.it o ha un token valido
-            if (user.email === 'admin@fantaconclave.it' || localStorage.getItem('adminToken')) {
+            // Verifica se l'utente è admin@fantaeurovision25 o ha un token valido
+            if (user.email === 'admin@fantaeurovision25' || localStorage.getItem('adminToken')) {
               // L'utente è autenticato come amministratore
               // Salva un token per le future verifiche
               localStorage.setItem('adminToken', 'authenticated');

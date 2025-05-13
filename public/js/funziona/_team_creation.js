@@ -62,7 +62,7 @@
       const teexLeft = getAvailableBudget();
       const teexLeftEl = document.getElementById("teexLeft");
       if (teexLeftEl) {
-        teexLeftEl.innerHTML = `<span class="teex-left-text-cyan">${teexLeft.toFixed(1)}</span> <span class="teex-left-text-white">Papa Coins left</span>`;
+        teexLeftEl.innerHTML = `<span class="teex-left-text-cyan">${teexLeft.toFixed(1)}</span> <span class="teex-left-text-white">SwissHearts left</span>`;
       }
       // Aggiorna le classi dei pulsanti CONFIRM e RESET in base alla presenza di giocatori
       const confirmBtn = document.getElementById("confirmFooterBtn");
@@ -483,7 +483,7 @@
           const totalTeamCost = getTotalCost();
           // Aggiorna i Teex rimasti (20 - costo totale)
           const teexLeft = getAvailableBudget();
-          document.getElementById("teexLeft").innerHTML = `<span class="teex-left-text-cyan">${teexLeft.toFixed(1)}</span> <span class="teex-left-text-white">Papa Coins left</span>`;
+          document.getElementById("teexLeft").innerHTML = `<span class="teex-left-text-cyan">${teexLeft.toFixed(1)}</span> <span class="teex-left-text-white">SwissHearts left</span>`;
         }
         // Get contest details to get team costs
         const contestResp = await fetch(`/contest-details?contest=${contestId}&user=${userId}`);
@@ -570,7 +570,7 @@
         const totalTeamCost = getTotalCost();
         // Aggiorna i Teex rimasti (20 - costo totale)
         const teexLeft = getAvailableBudget();
-        document.getElementById("teexLeft").innerHTML = `<span class="teex-left-text-cyan">${teexLeft.toFixed(1)}</span> <span class="teex-left-text-white">Papa Coins left</span>`;
+        document.getElementById("teexLeft").innerHTML = `<span class="teex-left-text-cyan">${teexLeft.toFixed(1)}</span> <span class="teex-left-text-white">SwissHearts left</span>`;
         // These elements might not exist in this page, so wrap them in try/catch
         try {
           document.getElementById("currentUserName").textContent = currentUser.username;

@@ -50,6 +50,24 @@
     .load-more-button:hover {
       background-color: #6c6d5a;
     }
+
+
+    /* Stile per il pulsante di cancellazione della ricerca */
+    .clear-search {
+      position: absolute;
+      right: 36px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      z-index: 10;
+      background-image: url('icons/searchclose.png');
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
   </style>
 </head>
 <body>
@@ -72,6 +90,7 @@
   <div class="search-container sc-select-fr">
     <span class="search-icon">🔍</span>
     <input type="text" id="searchInput" class="search-box" placeholder="Search by name">
+    <span class="clear-search" id="clearSearch" style="display: none;"></span>
   </div>
   
   <!-- Barra di ordinamento -->
@@ -372,6 +391,39 @@
       // Add back button functionality
       document.getElementById("backArrow").addEventListener("click", () => {
         window.history.back();
+      });
+      
+      // Gestione del pulsante di cancellazione della ricerca
+      const searchInput = document.getElementById("searchInput");
+      const clearSearch = document.getElementById("clearSearch");
+      
+      // Mostra/nascondi il pulsante di cancellazione in base al contenuto del campo
+      searchInput.addEventListener("input", function() {
+        const searchTerm = this.value.toLowerCase().trim();
+        
+        // Mostra il pulsante di cancellazione solo se c'è testo nel campo
+        clearSearch.style.display = searchTerm ? "block" : "none";
+        
+        // Cancella il timeout precedente
+        if (searchTimeout) {
+          clearTimeout(searchTimeout);
+        }
+        
+        // Imposta un nuovo timeout per evitare troppe richieste durante la digitazione
+        searchTimeout = setTimeout(() => {
+          // Resetta la paginazione e carica i risultati
+          currentPage = 1;
+          loadUsers(1, searchTerm);
+        }, 300); // Attendi 300ms dopo l'ultima digitazione
+      });
+      
+      // Aggiungi funzionalità al pulsante di cancellazione
+      clearSearch.addEventListener("click", function() {
+        searchInput.value = "";
+        clearSearch.style.display = "none";
+        // Resetta la paginazione e carica tutti gli utenti
+        currentPage = 1;
+        loadUsers(1, "");
       });
       
       // Carica il saldo Teex dell'utente usando il token di autenticazione
