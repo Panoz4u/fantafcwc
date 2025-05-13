@@ -676,12 +676,12 @@ function createPlayerRow(player, side) {
   iconImg.onerror = function() { this.src = 'pictures/player_placeholder.png'; };
   avatarContainer.appendChild(iconImg);
 
-  const posCircle = document.createElement("div");
-  posCircle.classList.add("position_circle", player.position);
-  posCircle.textContent = player.position;
+//  const posCircle = document.createElement("div");
+//  posCircle.classList.add("position_circle", player.position);
+//  posCircle.textContent = player.position;
 
   avatarBlock.appendChild(avatarContainer);
-  avatarBlock.appendChild(posCircle);
+//  avatarBlock.appendChild(posCircle);
 
   // Info block
   const infoBlock = document.createElement("div");
@@ -693,9 +693,9 @@ function createPlayerRow(player, side) {
 
   const matchSpan = document.createElement("div");
   matchSpan.classList.add("match_3letter");
-  matchSpan.innerHTML = `<span style="font-weight: 800;">${player.player_team_code || ''}</span> | CC: <span style="font-weight: 800;">...</span>`;
-  // Prendo il riferimento diretto allo span
-  const eventUnitSpan = matchSpan.querySelector('span:last-child');
+  matchSpan.innerHTML = `<span style="font-weight: 800;">${player.player_team_code || ''}</span>`;
+  // Rimuoviamo il riferimento allo span dell'event ID poiché non lo utilizzeremo più
+  // const eventUnitSpan = matchSpan.querySelector('span:last-child');
 
   infoBlock.appendChild(nameSpan);
   infoBlock.appendChild(matchSpan);

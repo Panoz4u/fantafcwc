@@ -10,9 +10,10 @@
   <link rel="stylesheet" href="css/mobile.css">
   <style>
  /* Stile per il pulsante di cancellazione della ricerca */
+    /* Stile per il pulsante di cancellazione della ricerca */
  .clear-search {
       position: absolute;
-      right: 12px;
+      right: 36px;
       top: 50%;
       transform: translateY(-50%);
       width: 20px;
@@ -23,10 +24,9 @@
       background-size: contain;
       background-position: center;
       background-repeat: no-repeat;
-      display: none; /* Nascosto di default */
     }
-    
 
+    
 
   </style>
 </head>
@@ -56,12 +56,14 @@
     </div>
   </header>
 
+
   <!-- Search box -->
   <div class="search-container">
     <span class="search-icon">🔍</span>
-    <input type="text" id="searchInput" class="search-box" placeholder="Search by: Name, Surname, Country, Conclave">
-    <span class="clear-search" id="clearSearch"></span>
+    <input type="text" id="searchInput" class="search-box" placeholder="Search by name">
+    <span class="clear-search" id="clearSearch" style="display: none;"></span>
   </div>
+
 
   <!-- Sort header -->
   <div class="sort-header">
@@ -296,13 +298,28 @@
         // Update header stats
         updateHeaderStats();
         
-        // Add event listener to search box
-        document.querySelector('.search-box').addEventListener('input', (e) => {
-          searchTerm = e.target.value.toLowerCase().trim();
+        // Gestione del pulsante di cancellazione della ricerca
+        const searchInput = document.getElementById("searchInput");
+        const clearSearch = document.getElementById("clearSearch");
+        
+        // Mostra/nascondi il pulsante di cancellazione in base al contenuto del campo
+        searchInput.addEventListener("input", (e) => {
+          const searchTerm = e.target.value.toLowerCase().trim();
+          
+          // Mostra il pulsante di cancellazione solo se c'è testo nel campo
+          clearSearch.style.display = searchTerm ? "block" : "none";
           
           // Normalizza il termine di ricerca rimuovendo accenti e caratteri speciali
           searchTerm = searchTerm.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
           
+          filterAndRenderPlayers();
+        });
+        
+        // Aggiungi funzionalità al pulsante di cancellazione
+        clearSearch.addEventListener("click", function() {
+          searchInput.value = "";
+          clearSearch.style.display = "none";
+          // Resetta la ricerca e aggiorna la visualizzazione
           filterAndRenderPlayers();
         });
         
@@ -316,6 +333,16 @@
           </div>`;
       }
     });
+
+      // Aggiungi funzionalità al pulsante di cancellazione
+      clearSearch.addEventListener("click", function() {
+        searchInput.value = "";
+        clearSearch.style.display = "none";
+        // Resetta la paginazione e carica tutti gli utenti
+        currentPage = 1;
+        loadUsers(1, "");
+      });
+
 
     // Add event listeners to sort headers
     document.querySelectorAll('.sort-item').forEach(item => {
@@ -576,12 +603,12 @@
         playerIcon.appendChild(img);
         
         // Position indicator
-        const posIndicator = document.createElement('div');
-        posIndicator.className = `position_circle`;
-        posIndicator.textContent = player.position;
+        //const posIndicator = document.createElement('div');
+        //posIndicator.className = `position_circle`;
+        //posIndicator.textContent = player.position;
         
         iconContainer.appendChild(playerIcon);
-        iconContainer.appendChild(posIndicator);
+        //iconContainer.appendChild(posIndicator);
         
         // Player info
         const infoContainer = document.createElement('div');
@@ -603,10 +630,8 @@
         matchElement.innerHTML = `
           <span style="font-family: 'Montserrat', sans-serif; font-weight: 800;">
             ${player.player_team_code || ''}
-          </span> | CONCLAVE 
-          <span style="font-family: 'Montserrat', sans-serif; font-weight: 800;">
-            ${conclaveLabel}
-          </span>`;
+          </span> 
+    `;
 
         
 
