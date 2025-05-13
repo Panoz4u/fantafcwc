@@ -54,7 +54,7 @@
   display: flex;
   justify-content: space-between;
   padding: 10px 16px;
-  background-color: #595a4a;
+  background-color: #131313;
   height: 40px;
   box-sizing: border-box;
 }
@@ -68,7 +68,7 @@
   display: flex;
   justify-content: flex-start;
   padding: 10px 16px;
-  background-color: #595a4a;
+  background-color: #131313;
   height: 40px;
   box-sizing: border-box;
 }
@@ -104,12 +104,12 @@
 }
 
 .sort-triangle.asc {
-  border-bottom: 5px solid #d81e5b;
+  border-bottom: 5px solid #ed2224;
   border-top: none;
 }
 
 .sort-triangle.desc {
-  border-top: 5px solid #d81e5b;
+  border-top: 5px solid #ed2224;
   border-bottom: none;
 }
 
@@ -147,7 +147,7 @@
   height: 50px;
   border-radius: 50%;
   overflow: hidden;
-  background-color: #d81e5b;
+  background-color: #ed2224;
 }
 
 .player-icon img {
@@ -221,7 +221,7 @@
 
 /* Player Cost Styles */
 .player-cost {
-  background-color: #FFF201;
+  background-color: #0bdad7;
   border-radius: 12px;
   padding: 4px 10px;
   font-family: 'Montserrat', sans-serif;
@@ -385,7 +385,7 @@
 .progress-bar-fill {
   height: 100%;
   width: 35%;
-  background: linear-gradient(to right, #d81e5b, #ED33B9);
+  background: linear-gradient(to right, #ed2224, #ED33B9);
   border-radius: 3px;
 }
 
@@ -398,7 +398,7 @@
 /* Small Button Main Style */
 .small-button-main {
   background-color: #0A0034;
-  border: 2px solid #d81e5b;
+  border: 2px solid #ed2224;
   border-radius: 20px;
   padding: 6px 16px;
   font-family: 'Barlow Condensed', sans-serif;
@@ -416,7 +416,7 @@
 
 .play-contest-button {
   background-color: #2a2b2a;
-  border: 2px solid #d81e5b;
+  border: 2px solid #ed2224;
   border-radius: 20px;
   padding: 6px 16px;
   font-family: 'Barlow Condensed', sans-serif;
@@ -449,7 +449,7 @@
 }
 
 .multiply-container {
-  background: #363635;
+  background: #131313;
   border-radius: 24px 24px 0 0;
   padding: 24px;
 }
@@ -498,7 +498,7 @@
 .big-cost {
   width: 120px;
   height: 46px;
-  background-color: #FFF201;
+  background-color: #0bdad7;
   border-radius: 23px;
   display: flex;
   justify-content: center;
@@ -535,7 +535,7 @@
 }
 
 .multiply-confirm {
-  background-color: #d81e5b;
+  background-color: #ed2224;
   color: white;
 }
 
@@ -593,7 +593,7 @@
   font-family: 'Barlow Condensed', sans-serif;
   font-size: 18px;
   text-transform: uppercase;
-  background-color: #FFF201;
+  background-color: #0bdad7;
   color: #333;
 }
 
@@ -602,8 +602,8 @@
   font-size: 18px;
   background-color: transparent;
   text-transform: uppercase;
-  color: #FFF201;
-  border: 2px solid #FFF201;
+  color: #0bdad7;
+  border: 2px solid #0bdad7;
 }
 
 .divider {
@@ -663,7 +663,7 @@
       font-weight: 800;
       font-size: 48px;
       margin-bottom: 0px;
-      color: #fff201;
+      color: #0bdad7;
     }
     
     .start-game {
@@ -721,16 +721,16 @@
     }
 
     .status-badge-invited {
-      background-color: #d81e5b;
+      background-color: #ed2224;
       color: #ffffff;
     }
 
     .status-badge-ready {
-      background-color: #FFF201;
+      background-color: #0bdad7;
     }
 
     .status-badge-live {
-      background-color: #FFF201;
+      background-color: #0bdad7;
     }
 
     .status-badge-win {
@@ -751,7 +751,7 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      background-color: #595a4a;
+      background-color: #131313;
       width: 100%;
     }
     

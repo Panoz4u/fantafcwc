@@ -390,11 +390,11 @@ import { fetchCurrentEventUnit } from './fetch_unit.js';
               <img src="${getAvatarSrc(myAvatar)}" alt="${myName}" class="player-avatar-contest left-avatar ${leftWon ? 'winner-avatar' : ''}">
               <div class="triletter_contest left-name ${leftWon ? 'winner-name' : ''}">${myName.substring(0, 3)}</div>
               <div style="position: absolute; top: calc(50% - 14px); left: 50%; transform: translate(-50%, -50%); display: flex; align-items: baseline;">
-                <span class="result_bold" style="position: static; transform: none; color: ${leftWon ? '#FFD700' : '#fff'}">${leftScoreInt}</span>
-                <span class="win_index_perc" style="color: ${leftWon ? '#FFD700' : '#fff'}">.${leftScoreDec}</span>
+                <span class="result_bold" style="position: static; transform: none; color: ${leftWon ? '#0bdad7' : '#fff'}">${leftScoreInt}</span>
+                <span class="win_index_perc" style="color: ${leftWon ? '#0bdad7' : '#fff'}">.${leftScoreDec}</span>
                 <span style="margin: 0 5px; color: white; font-size: 20px;"> </span>
-                <span class="result_bold" style="position: static; transform: none; color: ${rightWon ? '#FFD700' : '#fff'}">${rightScoreInt}</span>
-                <span class="win_index_perc" style="color: ${rightWon ? '#FFD700' : '#fff'}">.${rightScoreDec}</span>
+                <span class="result_bold" style="position: static; transform: none; color: ${rightWon ? '#0bdad7' : '#fff'}">${rightScoreInt}</span>
+                <span class="win_index_perc" style="color: ${rightWon ? '#0bdad7' : '#fff'}">.${rightScoreDec}</span>
               </div>
               <div class="triletter_contest right-name ${rightWon ? 'winner-name' : ''}">${oppName.substring(0, 3)}</div>
               <img src="${getAvatarSrc(oppAvatar)}" alt="${oppName}" class="player-avatar-contest right-avatar ${rightWon ? 'winner-avatar' : ''}">

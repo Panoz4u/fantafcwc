@@ -44,7 +44,7 @@ app.post('/api/register-user', async (req, res) => {
 app.get('/api/firebase-config', (req, res) => {
   // Verifica se la richiesta proviene da un'origine autorizzata
   const origin = req.headers.origin || req.headers.referer;
-  if (!origin || !origin.includes('fantaconclave')) {
+  if (!origin || !origin.includes('FANTAEUROVISION25')) {
     return res.status(403).json({ error: 'Accesso non autorizzato' });
   }
 

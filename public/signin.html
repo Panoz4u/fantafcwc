@@ -7,7 +7,7 @@
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fantaconclave - Home</title>
+  <title>FANTAEUROVISION25 - Home</title>
   <!-- Importa le librerie Firebase in modalità compat -->
   <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-auth-compat.js"></script>
@@ -85,7 +85,7 @@
 </head>
 <body>
   <div class="logo">
-    <div class="logo-text">FANTACONCLAVE</div>
+    <div class="logo-text">FANTAEUROVISION25</div>
   </div>
   
   <!-- Add error message container -->
@@ -114,11 +114,13 @@
   
   <div class="terms">
     by signing in, you agree with the <a href="terms.html" target="_blank">Terms & Conditions</a>
-    <br><br>© 2025 Fantaconclave.it All rights reserved. <a href="mailto:info@fantaconclave.it">info@fantaconclave.it</a>
+    <br><br>© 2025 fantaconclave.it All rights reserved. <a href="mailto:info@fantaconclave.it">info@fantaconclave.it</a>
 </div>
   
   <!-- Includi il file auth.js, che contiene la configurazione Firebase -->
-  <script src="auth.js"></script>
+<script src="/api/firebase-config" type="module"></script>
+<script src="auth.js"></script>
+
   <script>
   // Chiave segreta per i JWT (meglio metterla in .env)
   const JWT_SECRET = 'chiave_segreta_molto_sicura';

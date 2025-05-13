@@ -7,7 +7,7 @@
   
   body {
     font-family: 'Montserrat', sans-serif;
-    background-color: #595a4a;
+    background-color: #131313;
     background-image: url('../images/GradientBG.png');
     background-size: cover;
     background-position: center top;
@@ -61,7 +61,7 @@
   /* Modify the header styles to make it sticky */
   .header {
     padding: 16px;
-    background-color: #595a4a;
+    background-color: #131313;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -123,7 +123,7 @@
   
   .progress-bar {
     height: 100%;
-    background: linear-gradient(to right, #D81E5B, #ED33B9);
+    background: linear-gradient(to right, #ed2224, #ED33B9);
     border-radius: 3px;
   }
   
@@ -151,7 +151,7 @@
   .teex-balance {
     display: flex;
     align-items: center;
-    background-color: #FFF201;
+    background-color: #0bdad7;
     border-radius: 50px;
     padding: 6px 0;
     height: 24px;
@@ -267,7 +267,10 @@
   /* Tab Container Styles */
   .tab-container {
     display: flex;
-    background-color: #2a2b2a;
+    background-image: url('../images/tab_bg.png');
+    background-color: #000000;
+    background-size: cover;
+    background-position: center;
   }
   
   .tab {
@@ -293,7 +296,7 @@
     left: 10%;
     width: 80%;
     height: 3px;
-    background-color: #D81E5B;
+    background-color: #ed2224;
   }
   
   .tab_off {
@@ -314,7 +317,7 @@
     justify-content: space-between;
     align-items: center;
     /*background-color: rgba(10, 0, 52, 0.5); /* 50% trasparente */
-    background-color: #363635;
+    background-color: #131313;
     padding: 8px 16px;
     z-index: 100;
     height: 80px;
@@ -349,7 +352,7 @@
     min-width: 40px;
     margin: 0 4px;
     line-height: 1;  /* Added to further reduce height */
-    background-color: #D81E5B;
+    background-color: #ed2224;
     color: #ffffff;
     position: relative;
     z-index: 101;
@@ -364,7 +367,7 @@
     right: -3px;
     bottom: -3px;
     border-radius: 50px;
-    background: linear-gradient(90deg, #D81E5B, #ac0036, #D81E5B);
+    background: linear-gradient(90deg, #ed2224, #ac0036, #ed2224);
     background-size: 300% 100%;
     z-index: -1;
     animation: animatedBorder 9s linear infinite;
@@ -405,25 +408,25 @@
     color: #fff;
   }
   .footer_button_cyan {
-    background-color: #D81E5B;
+    background-color: #ed2224;
     color: #2a2b2a;
   }
 
   .footer_button_orange {
     background-color:  #2a2b2a;
-    border: 2px solid #D81E5B;
+    border: 2px solid #ed2224;
     color: white;
   }
 
   .footer_button_orange_fill {
-    background-color: #D81E5B;
+    background-color: #ed2224;
         color: white;
   }
 
   .fb_unable_orange {
     background-color: #2a2b2a;
     opacity: 0.5 ;
-    border: 2px solid #D81E5B;
+    border: 2px solid #ed2224;
     color: white;
   } 
 
@@ -466,7 +469,7 @@
   .play-button {
     width: 80px;
     height: 80px;
-    background-color: #D81E5B;
+    background-color: #ed2224;
     border-radius: 50%;
     display: flex;
     flex-direction: column;
@@ -502,7 +505,11 @@
   }
   
   .contest-bar {
-    background-color: #2a2b2a;
+    background-image: url('../images/contest_bg.png');
+    background-color: #000000;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
     height: 48px;
     margin: 0 32px;
     position: relative;
@@ -658,7 +665,7 @@
       border-radius: 50%;
       object-fit: cover;
       position: relative;
-      background-color: #D81E5B;
+      background-color: #ed2224;
     }
     
     /* Athlete Avatar - 23% larger but same starting point */
@@ -668,7 +675,7 @@
       border-radius: 50%;
       object-fit: cover;
       position: relative;
-      background-color: #D81E5B;
+      background-color: #ed2224;
       overflow: hidden;
     }
     
@@ -804,7 +811,7 @@
     
     /* Cost styles */
     .athlete_cost {
-      background-color: #FFF201;
+      background-color: #0bdad7;
       border-radius: 12px;
       padding: 0px  2px 18px 2px;
       font-family: 'Montserrat', sans-serif;
@@ -873,7 +880,7 @@
     font-family: 'Montserrat', sans-serif;
     font-weight: 800;
     font-size: 16px;
-    color: #FFF201;
+    color: #0bdad7;
     text-transform: uppercase;
   }
   
@@ -888,7 +895,7 @@
     font-family: 'Montserrat', sans-serif;
     font-weight: 800;
     font-size: 16px;
-    color: #FFF201;
+    color: #0bdad7;
   }
 
 
@@ -936,12 +943,12 @@
   }
   
   .scc_porpora {
-    background-color: #D81E5B;
+    background-color: #ed2224;
     color: #ffffff;
   }
   
   .scc_cyan {
-    background-color: #FFF201;
+    background-color: #0bdad7;
     color: #2a2b2a;
   }
   

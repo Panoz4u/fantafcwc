@@ -14,7 +14,7 @@ router.get('/gestione-sfide.html', (req, res) => {
 router.get('/api/firebase-config', (req, res) => {
   // Verifica se la richiesta proviene da un'origine autorizzata
   const origin = req.headers.origin || req.headers.referer;
-  if (!origin || (!origin.includes('fantaconclave') && !origin.includes('localhost'))) {
+  if (!origin || (!origin.includes('FANTAEUROVISION25') && !origin.includes('localhost'))) {
     return res.status(403).json({ error: 'Accesso non autorizzato' });
   }
 
