@@ -8,6 +8,27 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,800;1,800&family=Barlow+Condensed:wght@400;700&display=swap" rel="stylesheet">
    <link rel="stylesheet" href="css/mobile2.css">
   <link rel="stylesheet" href="css/mobile.css">
+  <style>
+ /* Stile per il pulsante di cancellazione della ricerca */
+ .clear-search {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      z-index: 10;
+      background-image: url('icons/searchclose.png');
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      display: none; /* Nascosto di default */
+    }
+    
+
+
+  </style>
 </head>
 <body>
   <!-- Header -->
@@ -16,14 +37,14 @@
     <div class="user-profile">
       <img src="icons/freccia.png" alt="Back" id="backArrow" style="width: 30px; height: 30px; cursor: pointer; margin-right: 12px;">
       <div class="user-info">
-        <h1 class="user-name">ADD PAPABILI</h1>
+        <h1 class="user-name">ADD ARTISTS</h1>
       </div>
     </div>
     
     <!-- New header right section with player stats -->
     <div class="header-stats">
       <div class="stats-row">
-        <div class="label_m_small">Papabili</div>
+        <div class="label_m_small">ARTISTS</div>
         <div class="label_m_small">Cost</div>
         <div class="label_m_small">PPC left</div>
       </div>
@@ -38,17 +59,16 @@
   <!-- Search box -->
   <div class="search-container">
     <span class="search-icon">🔍</span>
-    <input type="text" class="search-box" placeholder="Search by: Name, Surname, Country, Conclave">
+    <input type="text" id="searchInput" class="search-box" placeholder="Search by: Name, Surname, Country, Conclave">
+    <span class="clear-search" id="clearSearch"></span>
   </div>
 
   <!-- Sort header -->
   <div class="sort-header">
-    <div class="sort-item" data-sort="position">Age</div>
     <div class="sort-item active" data-sort="name">
       Name
       <div class="sort-triangle asc"></div>
     </div>
-    <div class="sort-item" data-sort="match">Conclave</div>
     <div class="sort-item" data-sort="team">Country</div>
     <div class="sort-item" data-sort="cost">Cost</div>
   </div>

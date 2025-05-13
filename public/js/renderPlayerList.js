@@ -53,7 +53,7 @@ export async function renderPlayerList() {
         <div class="welcome-container">
           <div class="welcome-text">
             <div class="welcome-to">START ADDING</div>
-            <div class="fanteex-title">PAPABILI</div>
+            <div class="fanteex-title">ARTISTS</div>
             <div class="start-game">TO YOUR TEAM</div>
           </div>
           <div class="animated-arrows">
