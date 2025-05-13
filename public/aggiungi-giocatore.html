@@ -25,9 +25,12 @@
       background-position: center;
       background-repeat: no-repeat;
     }
-
-    
-
+    /* Stile per allineare a destra l'elemento Cost */
+    .sort-item[data-sort="cost"] {
+      text-align: right;
+      margin-left: auto;
+      margin-right: 10px;
+    }
   </style>
 </head>
 <body>
@@ -72,7 +75,7 @@
       <div class="sort-triangle asc"></div>
     </div>
     <div class="sort-item" data-sort="team">Country</div>
-    <div class="sort-item" data-sort="cost">Cost</div>
+    <div class="sort-item right-align" data-sort="cost">Cost</div>
   </div>
 
   <div id="msg"></div>
@@ -304,13 +307,14 @@
         
         // Mostra/nascondi il pulsante di cancellazione in base al contenuto del campo
         searchInput.addEventListener("input", (e) => {
-          const searchTerm = e.target.value.toLowerCase().trim();
+          searchTerm = e.target.value.toLowerCase().trim();
           
           // Mostra il pulsante di cancellazione solo se c'è testo nel campo
           clearSearch.style.display = searchTerm ? "block" : "none";
           
           // Normalizza il termine di ricerca rimuovendo accenti e caratteri speciali
-          searchTerm = searchTerm.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+          const normalizedSearchTerm = searchTerm.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+          searchTerm = normalizedSearchTerm;
           
           filterAndRenderPlayers();
         });
