@@ -2,6 +2,7 @@ require('dotenv').config();
 const path = require('path');
 const express = require("express");
 const app = express();
+const firebaseConfigRoutes = require('./server/routes/firebase-config');
 const port = process.env.PORT || 3000;
 const pool = require("./db");
 const jwt = require('jsonwebtoken');
@@ -11,15 +12,9 @@ const adminRouter = require('./adminserver');
 const gestioneSfideRouter = express.Router();
 const adminContestRoutes = require('./server/routes/admincontest');
 
-
+app.use('/api', firebaseConfigRoutes);
 app.use('/admin-api', adminContestRoutes);
-// Comment out or remove this line:
-// const fcserver = require('./public/fcserver');
-
-// Import the dbsfide module
 const dbsfide = require('./dbsfide');
-
-// Configure middleware
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -35,6 +30,21 @@ app.get('/gestione-sfide.html', (req, res) => {
 app.get('/js/gestione-sfide.js', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'js', 'gestione-sfide.js'));
 });
+
+
+// Serve dinamicamente solo la configurazione Firebase (presa da .env/Render)
+app.get('/api/firebase-config', (req, res) => {
+  res.json({
+    apiKey:     process.env.FIREBASE_API_KEY,
+    authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+    projectId:  process.env.FIREBASE_PROJECT_ID,
+    storageBucket:      process.env.FIREBASE_STORAGE_BUCKET,
+    messagingSenderId:  process.env.FIREBASE_MESSAGING_SENDER_ID,
+    appId:      process.env.FIREBASE_APP_ID
+  });
+});
+
+
 
 // Create a router for the API endpoints
 const sfideRouter = express.Router();
