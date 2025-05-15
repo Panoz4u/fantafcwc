@@ -323,7 +323,9 @@
         clearSearch.addEventListener("click", function() {
           searchInput.value = "";
           clearSearch.style.display = "none";
-          // Resetta la ricerca e aggiorna la visualizzazione
+          // Resetta il termine di ricerca
+          searchTerm = "";
+          // Aggiorna la visualizzazione
           filterAndRenderPlayers();
         });
         
@@ -339,13 +341,14 @@
     });
 
       // Aggiungi funzionalità al pulsante di cancellazione
-      clearSearch.addEventListener("click", function() {
-        searchInput.value = "";
-        clearSearch.style.display = "none";
-        // Resetta la paginazione e carica tutti gli utenti
-        currentPage = 1;
-        loadUsers(1, "");
-      });
+      // Rimuovi questo blocco di codice duplicato
+      // clearSearch.addEventListener("click", function() {
+      //   searchInput.value = "";
+      //   clearSearch.style.display = "none";
+      //   // Resetta la paginazione e carica tutti gli utenti
+      //   currentPage = 1;
+      //   loadUsers(1, "");
+      // });
 
 
     // Add event listeners to sort headers

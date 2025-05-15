@@ -405,12 +405,12 @@ function createPlayerRow(player, index) {
   
   avatarContainer.appendChild(iconImg);
   
-  const posCircle = document.createElement("div");
-  posCircle.classList.add("position_circle");
-  posCircle.textContent = player.position;
+  //const posCircle = document.createElement("div");
+  //posCircle.classList.add("position_circle");
+  //posCircle.textContent = player.position;
   
   avatarBlock.appendChild(avatarContainer);
-  avatarBlock.appendChild(posCircle);
+  //avatarBlock.appendChild(posCircle);
   
   // BLOCCO INFO: Nome e match info
   const infoBlock = document.createElement("div");
@@ -421,6 +421,7 @@ function createPlayerRow(player, index) {
   nameSpan.textContent = player.athlete_shortname;
   
   const matchSpan = document.createElement("div");
+  /*
   if (player.home_team_code && player.away_team_code) {
     // Determina se il giocatore è della squadra di casa o trasferta
     const playerTeamId = parseInt(player.team_id);
@@ -445,23 +446,18 @@ function createPlayerRow(player, index) {
     matchSpan.appendChild(dashSpan);
     matchSpan.appendChild(awaySpan);
   } else {
-    // Nuovo formato: Codice paese | CONCLAVE event_unit_id
-   
-    const cc = parseInt(player.event_unit_id);
-    const ccLabel = (cc === 1) ? '1' : `${cc}ab`;
-    
-    matchSpan.innerHTML = `
-      <span style="font-family: 'Montserrat', sans-serif; font-weight: 800;">
-        ${player.player_team_code || ''}
-      </span> | CC. 
-      <span style="font-family: 'Montserrat', sans-serif; font-weight: 800;">
-        ${ccLabel}
-      </span>`;
-    
- 
- 
-  }
+  */
+  // Nuovo formato: Codice paese | CONCLAVE event_unit_id
+  const cc = parseInt(player.event_unit_id);
+  const ccLabel = (cc === 1) ? '1' : `${cc}ab`;
   
+  matchSpan.innerHTML = `
+    <span style="font-family: 'Montserrat', sans-serif; font-weight: 800;">
+      ${player.player_team_code || ''}
+    </span> `;
+  /*
+  }
+  */
   infoBlock.appendChild(nameSpan);
   infoBlock.appendChild(matchSpan);
   
@@ -519,4 +515,3 @@ document.addEventListener("DOMContentLoaded", initApp);
 import './team_creation.js';
 
 // Assicurati che anche altre chiamate a showErrorMessage siano gestite come preferisci
-// (es. commentandole o mostrando l'errore in modo permanente)

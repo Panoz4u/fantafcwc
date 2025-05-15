@@ -90,11 +90,11 @@ function createPlayerRow(player, index) {
   };
   // Add the image to the avatar container
   avatarContainer.appendChild(iconImg);
-  const posCircle = document.createElement("div");
-  posCircle.classList.add("position_circle");
-  posCircle.textContent = player.position;
+  //const posCircle = document.createElement("div");
+  //posCircle.classList.add("position_circle");
+  //posCircle.textContent = player.position;
   avatarBlock.appendChild(avatarContainer);
-  avatarBlock.appendChild(posCircle);
+  //avatarBlock.appendChild(posCircle);
   // BLOCCO INFO: Nome e match info
   const infoBlock = document.createElement("div");
   infoBlock.classList.add("player-info");
@@ -102,29 +102,30 @@ function createPlayerRow(player, index) {
   nameSpan.classList.add("athlete_shortname");
   nameSpan.textContent = player.athlete_shortname;
   const matchSpan = document.createElement("div");
-  if (player.home_team_code && player.away_team_code) {
-    // Determina se il giocatore è della squadra di casa o trasferta
-    const playerTeamId = parseInt(player.team_id);
-    const homeTeamId = parseInt(player.home_team);
-    const awayTeamId = parseInt(player.away_team);
-    const isHomeTeam = playerTeamId === homeTeamId;
-    const isAwayTeam = playerTeamId === awayTeamId;
-    // Crea il testo del match con il team del giocatore in grassetto
-    const homeSpan = document.createElement("span");
-    homeSpan.textContent = player.home_team_code;
-    if (isHomeTeam) homeSpan.classList.add("team-bold");
-    const dashSpan = document.createElement("span");
-    dashSpan.textContent = "-";
-    const awaySpan = document.createElement("span");
-    awaySpan.textContent = player.away_team_code;
-    if (isAwayTeam) awaySpan.classList.add("team-bold");
-    matchSpan.appendChild(homeSpan);
-    matchSpan.appendChild(dashSpan);
-    matchSpan.appendChild(awaySpan);
-  } else {
+ 
+  // if (player.home_team_code && player.away_team_code) {
+  //   // Determina se il giocatore è della squadra di casa o trasferta
+  //   const playerTeamId = parseInt(player.team_id);
+  //   const homeTeamId = parseInt(player.home_team);
+  //   const awayTeamId = parseInt(player.away_team);
+  //   const isHomeTeam = playerTeamId === homeTeamId;
+  //   const isAwayTeam = playerTeamId === awayTeamId;
+  //   // Crea il testo del match con il team del giocatore in grassetto
+  //   const homeSpan = document.createElement("span");
+  //   homeSpan.textContent = player.home_team_code;
+  //   if (isHomeTeam) homeSpan.classList.add("team-bold");
+  //   const dashSpan = document.createElement("span");
+  //   dashSpan.textContent = "-";
+  //   const awaySpan = document.createElement("span");
+  //   awaySpan.textContent = player.away_team_code;
+  //   if (isAwayTeam) awaySpan.classList.add("team-bold");
+  //   matchSpan.appendChild(homeSpan);
+  //   matchSpan.appendChild(dashSpan);
+  //   matchSpan.appendChild(awaySpan);
+  // } else {
     // Nuovo formato: Codice paese | CONCLAVE event_unit_id
-    matchSpan.innerHTML = `<span style="font-family: 'Montserrat', sans-serif; font-weight: 800;">${player.player_team_code || ''}</span> | CONC. <span style="font-family: 'Montserrat', sans-serif; font-weight: 800;">${player.event_unit_id || ''}</span>`;
-  }
+    matchSpan.innerHTML = `<span style="font-family: 'Montserrat', sans-serif; font-weight: 800;">${player.player_team_code || ''}</span>`;
+  // }
   infoBlock.appendChild(nameSpan);
   infoBlock.appendChild(matchSpan);
   // BLOCCO COSTO
