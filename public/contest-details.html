@@ -718,22 +718,16 @@ function createPlayerRow(player, side) {
     fetch(`/aep-event-unit?aep_id=${player.aep_id}`)
       .then(res => res.json())
       .then(data => {
-        if (data.event_unit_id) {
-          
-          const cc = parseInt(data.event_unit_id);
-          eventUnitSpan.textContent = (cc === 1) ? '1' : `${cc}ab`;
 
-        }
         if (data.athlete_unit_points != null) {
           playerUnitPoints = parseFloat(data.athlete_unit_points) || 0;
           // Usa il valore is_ended che arriva dall'API invece di quello definito localmente
+          console.log("❓ Dati ricevuti da /aep-event-unit:", data);
           const isEnded = data.is_ended === 1 || data.is_ended === true;
           updatePointsDisplay(playerUnitPoints, isEnded, pointsContainer);
         }
       })
-      .catch(() => {
-        eventUnitSpan.textContent = "-";
-      });
+      
   }
 
   // Mostro "0.0" di default, verrà aggiornato dal fetch
