@@ -26028,3 +26028,13 @@ OWNER query - contest_id: 877, user: 281, event_unit: 1
 OPPONENT query - contest_id: 877, user: 282, event_unit: 1
 OWNER query - contest_id: 870, user: 283, event_unit: 1
 OPPONENT query - contest_id: 870, user: 281, event_unit: 1
+OWNER query - contest_id: 890, user: 284, event_unit: 1
+OPPONENT query - contest_id: 890, user: 276, event_unit: 1
+OWNER query - contest_id: 890, user: 284, event_unit: 1
+OPPONENT query - contest_id: 890, user: 276, event_unit: 1
+OWNER query - contest_id: 891, user: 284, event_unit: 1
+OPPONENT query - contest_id: 891, user: 276, event_unit: 1
+OWNER query - contest_id: 891, user: 284, event_unit: 1
+OPPONENT query - contest_id: 891, user: 276, event_unit: 1
+OWNER query - contest_id: 888, user: 284, event_unit: 1
+OPPONENT query - contest_id: 888, user: 276, event_unit: 1
