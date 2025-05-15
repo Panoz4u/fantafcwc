@@ -22315,3 +22315,3708 @@ OPPONENT query - contest_id: 770, user: 115, event_unit: 1
 =======
 >>>>>>> d02e3f9564e47c4f49c11a9d9ddd6f3b2029ac03
 Server avviato su http://0.0.0.0:3000
+Server avviato su http://0.0.0.0:3000
+Server avviato su http://0.0.0.0:3000
+Server avviato su http://0.0.0.0:3000
+Server avviato su http://0.0.0.0:3000
+Server avviato su http://0.0.0.0:3000
+Server avviato su http://0.0.0.0:3000
+Server avviato su http://0.0.0.0:3000
+Server avviato su http://0.0.0.0:3000
+Server avviato su http://0.0.0.0:3000
+OWNER query - contest_id: 864, user: 276, event_unit: 1
+OPPONENT query - contest_id: 864, user: 275, event_unit: 1
+OWNER query - contest_id: 864, user: 276, event_unit: 1
+OPPONENT query - contest_id: 864, user: 275, event_unit: 1
+Totale atleti attivi trovati: 37
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Shkodra Elektronike, aep_id: 1, athlete_id: 1
+Atleta 2: Parg, aep_id: 2, athlete_id: 2
+Atleta 3: Go-Jo, aep_id: 3, athlete_id: 3
+Atleta 4: JJ, aep_id: 4, athlete_id: 4
+Atleta 5: Mamagama, aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 37 (0.00%)
+OWNER query - contest_id: 864, user: 276, event_unit: 1
+OPPONENT query - contest_id: 864, user: 275, event_unit: 1
+OWNER query - contest_id: 864, user: 276, event_unit: 1
+OPPONENT query - contest_id: 864, user: 275, event_unit: 1
+Totale atleti attivi trovati: 37
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Shkodra Elektronike, aep_id: 1, athlete_id: 1
+Atleta 2: Parg, aep_id: 2, athlete_id: 2
+Atleta 3: Go-Jo, aep_id: 3, athlete_id: 3
+Atleta 4: JJ, aep_id: 4, athlete_id: 4
+Atleta 5: Mamagama, aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 37 (0.00%)
+OWNER query - contest_id: 864, user: 276, event_unit: 1
+OPPONENT query - contest_id: 864, user: 275, event_unit: 1
+OWNER query - contest_id: 864, user: 276, event_unit: 1
+OPPONENT query - contest_id: 864, user: 275, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 864,
+  "userId": "276",
+  "owner_id": "276",
+  "opponent_id": "275",
+  "players": [
+    {
+      "athleteId": 20,
+      "eventUnitId": 1,
+      "event_unit_cost": 1.5,
+      "aep_id": 20
+    },
+    {
+      "athleteId": 30,
+      "eventUnitId": 1,
+      "event_unit_cost": 1,
+      "aep_id": 30
+    },
+    {
+      "athleteId": 34,
+      "eventUnitId": 1,
+      "event_unit_cost": 5,
+      "aep_id": 34
+    },
+    {
+      "athleteId": 11,
+      "eventUnitId": 1,
+      "event_unit_cost": 2.5,
+      "aep_id": 11
+    }
+  ],
+  "multiplier": 5,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 276,
+  email: 'panoz4u@gmail.com',
+  username: 'Panoz 4U',
+  iat: 1747164264,
+  exp: 1747769064
+}
+OWNER query - contest_id: 864, user: 276, event_unit: 1
+OPPONENT query - contest_id: 864, user: 275, event_unit: 1
+Server avviato su http://0.0.0.0:3000
+OWNER query - contest_id: 864, user: 276, event_unit: 1
+OPPONENT query - contest_id: 864, user: 275, event_unit: 1
+OWNER query - contest_id: 865, user: 277, event_unit: 1
+OPPONENT query - contest_id: 865, user: 278, event_unit: 1
+OWNER query - contest_id: 865, user: 277, event_unit: 1
+OPPONENT query - contest_id: 865, user: 278, event_unit: 1
+Totale atleti attivi trovati: 37
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Shkodra Elektronike, aep_id: 1, athlete_id: 1
+Atleta 2: Parg, aep_id: 2, athlete_id: 2
+Atleta 3: Go-Jo, aep_id: 3, athlete_id: 3
+Atleta 4: JJ, aep_id: 4, athlete_id: 4
+Atleta 5: Mamagama, aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 37 (0.00%)
+OWNER query - contest_id: 865, user: 277, event_unit: 1
+OPPONENT query - contest_id: 865, user: 278, event_unit: 1
+OWNER query - contest_id: 865, user: 277, event_unit: 1
+OPPONENT query - contest_id: 865, user: 278, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 865,
+  "userId": "277",
+  "owner_id": "277",
+  "opponent_id": "278",
+  "players": [
+    {
+      "athleteId": 2,
+      "eventUnitId": 1,
+      "event_unit_cost": 0.5,
+      "aep_id": 2
+    },
+    {
+      "athleteId": 5,
+      "eventUnitId": 1,
+      "event_unit_cost": 0.5,
+      "aep_id": 5
+    },
+    {
+      "athleteId": 7,
+      "eventUnitId": 1,
+      "event_unit_cost": 0.5,
+      "aep_id": 7
+    },
+    {
+      "athleteId": 10,
+      "eventUnitId": 1,
+      "event_unit_cost": 0.5,
+      "aep_id": 10
+    },
+    {
+      "athleteId": 14,
+      "eventUnitId": 1,
+      "event_unit_cost": 0.5,
+      "aep_id": 14
+    },
+    {
+      "athleteId": 3,
+      "eventUnitId": 1,
+      "event_unit_cost": 1,
+      "aep_id": 3
+    },
+    {
+      "athleteId": 15,
+      "eventUnitId": 1,
+      "event_unit_cost": 1,
+      "aep_id": 15
+    },
+    {
+      "athleteId": 28,
+      "eventUnitId": 1,
+      "event_unit_cost": 1,
+      "aep_id": 28
+    },
+    {
+      "athleteId": 37,
+      "eventUnitId": 1,
+      "event_unit_cost": 1,
+      "aep_id": 37
+    },
+    {
+      "athleteId": 30,
+      "eventUnitId": 1,
+      "event_unit_cost": 1,
+      "aep_id": 30
+    },
+    {
+      "athleteId": 33,
+      "eventUnitId": 1,
+      "event_unit_cost": 1.5,
+      "aep_id": 33
+    }
+  ],
+  "multiplier": 5,
+  "totalCost": 9
+}
+👤 Utente autenticato: {
+  userId: 277,
+  email: 'maneskin@maneskin.it',
+  username: 'Maneskin',
+  iat: 1747164379,
+  exp: 1747769179
+}
+OWNER query - contest_id: 865, user: 277, event_unit: 1
+OPPONENT query - contest_id: 865, user: 278, event_unit: 1
+OWNER query - contest_id: 864, user: 276, event_unit: 1
+OPPONENT query - contest_id: 864, user: 275, event_unit: 1
+OWNER query - contest_id: 866, user: 279, event_unit: 1
+OPPONENT query - contest_id: 866, user: 276, event_unit: 1
+OWNER query - contest_id: 866, user: 279, event_unit: 1
+OPPONENT query - contest_id: 866, user: 276, event_unit: 1
+OWNER query - contest_id: 867, user: 281, event_unit: 1
+OPPONENT query - contest_id: 867, user: 276, event_unit: 1
+OWNER query - contest_id: 867, user: 281, event_unit: 1
+OPPONENT query - contest_id: 867, user: 276, event_unit: 1
+Totale atleti attivi trovati: 37
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Shkodra Elektronike, aep_id: 1, athlete_id: 1
+Atleta 2: Parg, aep_id: 2, athlete_id: 2
+Atleta 3: Go-Jo, aep_id: 3, athlete_id: 3
+Atleta 4: JJ, aep_id: 4, athlete_id: 4
+Atleta 5: Mamagama, aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 37 (0.00%)
+OWNER query - contest_id: 867, user: 281, event_unit: 1
+OPPONENT query - contest_id: 867, user: 276, event_unit: 1
+OWNER query - contest_id: 867, user: 281, event_unit: 1
+OPPONENT query - contest_id: 867, user: 276, event_unit: 1
+OWNER query - contest_id: 867, user: 281, event_unit: 1
+OPPONENT query - contest_id: 867, user: 276, event_unit: 1
+OWNER query - contest_id: 867, user: 281, event_unit: 1
+OPPONENT query - contest_id: 867, user: 276, event_unit: 1
+OWNER query - contest_id: 867, user: 281, event_unit: 1
+OPPONENT query - contest_id: 867, user: 276, event_unit: 1
+OWNER query - contest_id: 867, user: 281, event_unit: 1
+OPPONENT query - contest_id: 867, user: 276, event_unit: 1
+OWNER query - contest_id: 867, user: 281, event_unit: 1
+OPPONENT query - contest_id: 867, user: 276, event_unit: 1
+OWNER query - contest_id: 867, user: 281, event_unit: 1
+OPPONENT query - contest_id: 867, user: 276, event_unit: 1
+Chiamata GET /admin-api/contests ricevuta
+Chiamata GET /admin-api/contests ricevuta
+Server avviato su http://0.0.0.0:3000
+Chiamata GET /admin-api/contests ricevuta
+OWNER query - contest_id: 868, user: 276, event_unit: 1
+OPPONENT query - contest_id: 868, user: 275, event_unit: 1
+OWNER query - contest_id: 868, user: 276, event_unit: 1
+OPPONENT query - contest_id: 868, user: 275, event_unit: 1
+Totale atleti attivi trovati: 37
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Shkodra Elektronike, aep_id: 1, athlete_id: 1
+Atleta 2: Parg, aep_id: 2, athlete_id: 2
+Atleta 3: Go-Jo, aep_id: 3, athlete_id: 3
+Atleta 4: JJ, aep_id: 4, athlete_id: 4
+Atleta 5: Mamagama, aep_id: 5, athlete_id: 5
+Atleti senza aep_id: 0 su 37 (0.00%)
+Nuovo record inserito per athlete_id 1 e event_unit_id 2
+Nuovo record inserito per athlete_id 2 e event_unit_id 2
+Nuovo record inserito per athlete_id 3 e event_unit_id 2
+Nuovo record inserito per athlete_id 4 e event_unit_id 2
+Nuovo record inserito per athlete_id 5 e event_unit_id 2
+Nuovo record inserito per athlete_id 6 e event_unit_id 2
+Nuovo record inserito per athlete_id 7 e event_unit_id 2
+Nuovo record inserito per athlete_id 8 e event_unit_id 2
+Nuovo record inserito per athlete_id 9 e event_unit_id 2
+Nuovo record inserito per athlete_id 10 e event_unit_id 2
+Nuovo record inserito per athlete_id 11 e event_unit_id 2
+Nuovo record inserito per athlete_id 12 e event_unit_id 2
+Nuovo record inserito per athlete_id 13 e event_unit_id 2
+Nuovo record inserito per athlete_id 14 e event_unit_id 2
+Nuovo record inserito per athlete_id 15 e event_unit_id 2
+Nuovo record inserito per athlete_id 16 e event_unit_id 2
+Nuovo record inserito per athlete_id 17 e event_unit_id 2
+Nuovo record inserito per athlete_id 18 e event_unit_id 2
+Nuovo record inserito per athlete_id 19 e event_unit_id 2
+Nuovo record inserito per athlete_id 20 e event_unit_id 2
+Nuovo record inserito per athlete_id 21 e event_unit_id 2
+Nuovo record inserito per athlete_id 22 e event_unit_id 2
+Nuovo record inserito per athlete_id 23 e event_unit_id 2
+Nuovo record inserito per athlete_id 24 e event_unit_id 2
+Nuovo record inserito per athlete_id 25 e event_unit_id 2
+Nuovo record inserito per athlete_id 26 e event_unit_id 2
+Nuovo record inserito per athlete_id 27 e event_unit_id 2
+Nuovo record inserito per athlete_id 28 e event_unit_id 2
+Nuovo record inserito per athlete_id 29 e event_unit_id 2
+Nuovo record inserito per athlete_id 30 e event_unit_id 2
+Nuovo record inserito per athlete_id 31 e event_unit_id 2
+Nuovo record inserito per athlete_id 32 e event_unit_id 2
+Nuovo record inserito per athlete_id 33 e event_unit_id 2
+Nuovo record inserito per athlete_id 34 e event_unit_id 2
+Nuovo record inserito per athlete_id 35 e event_unit_id 2
+Nuovo record inserito per athlete_id 36 e event_unit_id 2
+Nuovo record inserito per athlete_id 37 e event_unit_id 2
+Record aggiornato per athlete_id 1 e event_unit_id 1
+Record aggiornato per athlete_id 2 e event_unit_id 1
+Record aggiornato per athlete_id 3 e event_unit_id 1
+Record aggiornato per athlete_id 4 e event_unit_id 1
+Record aggiornato per athlete_id 5 e event_unit_id 1
+Record aggiornato per athlete_id 6 e event_unit_id 1
+Record aggiornato per athlete_id 7 e event_unit_id 1
+Record aggiornato per athlete_id 8 e event_unit_id 1
+Record aggiornato per athlete_id 9 e event_unit_id 1
+Record aggiornato per athlete_id 10 e event_unit_id 1
+Record aggiornato per athlete_id 11 e event_unit_id 1
+Record aggiornato per athlete_id 12 e event_unit_id 1
+Record aggiornato per athlete_id 13 e event_unit_id 1
+Record aggiornato per athlete_id 14 e event_unit_id 1
+Record aggiornato per athlete_id 15 e event_unit_id 1
+Record aggiornato per athlete_id 16 e event_unit_id 1
+Record aggiornato per athlete_id 17 e event_unit_id 1
+Record aggiornato per athlete_id 18 e event_unit_id 1
+Record aggiornato per athlete_id 19 e event_unit_id 1
+Record aggiornato per athlete_id 20 e event_unit_id 1
+Record aggiornato per athlete_id 21 e event_unit_id 1
+Record aggiornato per athlete_id 22 e event_unit_id 1
+Record aggiornato per athlete_id 23 e event_unit_id 1
+Record aggiornato per athlete_id 24 e event_unit_id 1
+Record aggiornato per athlete_id 25 e event_unit_id 1
+Record aggiornato per athlete_id 26 e event_unit_id 1
+Record aggiornato per athlete_id 27 e event_unit_id 1
+Record aggiornato per athlete_id 28 e event_unit_id 1
+Record aggiornato per athlete_id 29 e event_unit_id 1
+Record aggiornato per athlete_id 30 e event_unit_id 1
+Record aggiornato per athlete_id 31 e event_unit_id 1
+Record aggiornato per athlete_id 32 e event_unit_id 1
+Record aggiornato per athlete_id 33 e event_unit_id 1
+Record aggiornato per athlete_id 34 e event_unit_id 1
+Record aggiornato per athlete_id 35 e event_unit_id 1
+Record aggiornato per athlete_id 36 e event_unit_id 1
+Record aggiornato per athlete_id 37 e event_unit_id 1
+OWNER query - contest_id: 868, user: 276, event_unit: 1
+OPPONENT query - contest_id: 868, user: 275, event_unit: 1
+OWNER query - contest_id: 868, user: 276, event_unit: 1
+OPPONENT query - contest_id: 868, user: 275, event_unit: 1
+Totale atleti attivi trovati: 14
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Erika Vikman, aep_id: 49, athlete_id: 12
+Atleti senza aep_id: 0 su 14 (0.00%)
+OWNER query - contest_id: 869, user: 282, event_unit: 1
+OPPONENT query - contest_id: 869, user: 281, event_unit: 1
+OWNER query - contest_id: 869, user: 282, event_unit: 1
+OPPONENT query - contest_id: 869, user: 281, event_unit: 1
+Totale atleti attivi trovati: 14
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Erika Vikman, aep_id: 49, athlete_id: 12
+Atleti senza aep_id: 0 su 14 (0.00%)
+OWNER query - contest_id: 870, user: 283, event_unit: 1
+OPPONENT query - contest_id: 870, user: 281, event_unit: 1
+OWNER query - contest_id: 870, user: 283, event_unit: 1
+OPPONENT query - contest_id: 870, user: 281, event_unit: 1
+Totale atleti attivi trovati: 14
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Erika Vikman, aep_id: 49, athlete_id: 12
+Atleti senza aep_id: 0 su 14 (0.00%)
+OWNER query - contest_id: 871, user: 281, event_unit: 1
+OPPONENT query - contest_id: 871, user: 282, event_unit: 1
+OWNER query - contest_id: 871, user: 281, event_unit: 1
+OPPONENT query - contest_id: 871, user: 282, event_unit: 1
+Totale atleti attivi trovati: 14
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Erika Vikman, aep_id: 49, athlete_id: 12
+Atleti senza aep_id: 0 su 14 (0.00%)
+OWNER query - contest_id: 869, user: 282, event_unit: 1
+OPPONENT query - contest_id: 869, user: 281, event_unit: 1
+OWNER query - contest_id: 869, user: 282, event_unit: 1
+OPPONENT query - contest_id: 869, user: 281, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 869,
+  "userId": "282",
+  "owner_id": "282",
+  "opponent_id": "281",
+  "players": [
+    {
+      "athleteId": 4,
+      "eventUnitId": 2,
+      "event_unit_cost": 4,
+      "aep_id": 41
+    },
+    {
+      "athleteId": 12,
+      "eventUnitId": 2,
+      "event_unit_cost": 4,
+      "aep_id": 49
+    },
+    {
+      "athleteId": 9,
+      "eventUnitId": 2,
+      "event_unit_cost": 2,
+      "aep_id": 46
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 282,
+  email: 'stefa.pozzo@gmail.com',
+  username: 'Stefania Pozzo',
+  iat: 1747336737,
+  exp: 1747941537
+}
+Chiamata GET /admin-api/contests ricevuta
+OWNER query - contest_id: 870, user: 283, event_unit: 1
+OPPONENT query - contest_id: 870, user: 281, event_unit: 1
+OWNER query - contest_id: 870, user: 283, event_unit: 1
+OPPONENT query - contest_id: 870, user: 281, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 870,
+  "userId": "283",
+  "owner_id": "283",
+  "opponent_id": "281",
+  "players": [
+    {
+      "athleteId": 19,
+      "eventUnitId": 2,
+      "event_unit_cost": 4,
+      "aep_id": 56
+    },
+    {
+      "athleteId": 22,
+      "eventUnitId": 2,
+      "event_unit_cost": 3,
+      "aep_id": 59
+    },
+    {
+      "athleteId": 23,
+      "eventUnitId": 2,
+      "event_unit_cost": 3,
+      "aep_id": 60
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 283,
+  email: 'defend.alessandro@gmail.com',
+  username: 'sandruz',
+  iat: 1747336785,
+  exp: 1747941585
+}
+OWNER query - contest_id: 872, user: 283, event_unit: 1
+OPPONENT query - contest_id: 872, user: 282, event_unit: 1
+OWNER query - contest_id: 872, user: 283, event_unit: 1
+OPPONENT query - contest_id: 872, user: 282, event_unit: 1
+Totale atleti attivi trovati: 14
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Erika Vikman, aep_id: 49, athlete_id: 12
+Atleti senza aep_id: 0 su 14 (0.00%)
+OWNER query - contest_id: 871, user: 281, event_unit: 1
+OPPONENT query - contest_id: 871, user: 282, event_unit: 1
+OWNER query - contest_id: 871, user: 281, event_unit: 1
+OPPONENT query - contest_id: 871, user: 282, event_unit: 1
+OWNER query - contest_id: 873, user: 282, event_unit: 1
+OPPONENT query - contest_id: 873, user: 276, event_unit: 1
+OWNER query - contest_id: 873, user: 282, event_unit: 1
+OPPONENT query - contest_id: 873, user: 276, event_unit: 1
+OWNER query - contest_id: 871, user: 281, event_unit: 1
+OPPONENT query - contest_id: 871, user: 282, event_unit: 1
+OWNER query - contest_id: 871, user: 281, event_unit: 1
+OPPONENT query - contest_id: 871, user: 282, event_unit: 1
+Totale atleti attivi trovati: 14
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Erika Vikman, aep_id: 49, athlete_id: 12
+Atleti senza aep_id: 0 su 14 (0.00%)
+OWNER query - contest_id: 874, user: 276, event_unit: 1
+OPPONENT query - contest_id: 874, user: 281, event_unit: 1
+OWNER query - contest_id: 874, user: 276, event_unit: 1
+OPPONENT query - contest_id: 874, user: 281, event_unit: 1
+Totale atleti attivi trovati: 14
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Erika Vikman, aep_id: 49, athlete_id: 12
+Atleti senza aep_id: 0 su 14 (0.00%)
+OWNER query - contest_id: 871, user: 281, event_unit: 1
+OPPONENT query - contest_id: 871, user: 282, event_unit: 1
+OWNER query - contest_id: 871, user: 281, event_unit: 1
+OPPONENT query - contest_id: 871, user: 282, event_unit: 1
+OWNER query - contest_id: 873, user: 282, event_unit: 1
+OPPONENT query - contest_id: 873, user: 276, event_unit: 1
+OWNER query - contest_id: 873, user: 282, event_unit: 1
+OPPONENT query - contest_id: 873, user: 276, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 873,
+  "userId": "282",
+  "owner_id": "282",
+  "opponent_id": "276",
+  "players": [
+    {
+      "athleteId": 12,
+      "eventUnitId": 2,
+      "event_unit_cost": 4,
+      "aep_id": 49
+    },
+    {
+      "athleteId": 4,
+      "eventUnitId": 2,
+      "event_unit_cost": 4,
+      "aep_id": 41
+    },
+    {
+      "athleteId": 21,
+      "eventUnitId": 2,
+      "event_unit_cost": 2,
+      "aep_id": 58
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 282,
+  email: 'stefa.pozzo@gmail.com',
+  username: 'Stefania Pozzo',
+  iat: 1747336737,
+  exp: 1747941537
+}
+OWNER query - contest_id: 871, user: 281, event_unit: 1
+OPPONENT query - contest_id: 871, user: 282, event_unit: 1
+OWNER query - contest_id: 871, user: 281, event_unit: 1
+OPPONENT query - contest_id: 871, user: 282, event_unit: 1
+OWNER query - contest_id: 872, user: 283, event_unit: 1
+OPPONENT query - contest_id: 872, user: 282, event_unit: 1
+OWNER query - contest_id: 872, user: 283, event_unit: 1
+OPPONENT query - contest_id: 872, user: 282, event_unit: 1
+OWNER query - contest_id: 871, user: 281, event_unit: 1
+OPPONENT query - contest_id: 871, user: 282, event_unit: 1
+OWNER query - contest_id: 871, user: 281, event_unit: 1
+OPPONENT query - contest_id: 871, user: 282, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 872,
+  "userId": "283",
+  "owner_id": "283",
+  "opponent_id": "282",
+  "players": [
+    {
+      "athleteId": 12,
+      "eventUnitId": 2,
+      "event_unit_cost": 4,
+      "aep_id": 49
+    },
+    {
+      "athleteId": 16,
+      "eventUnitId": 2,
+      "event_unit_cost": 2.5,
+      "aep_id": 53
+    },
+    {
+      "athleteId": 3,
+      "eventUnitId": 2,
+      "event_unit_cost": 3.5,
+      "aep_id": 40
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 283,
+  email: 'defend.alessandro@gmail.com',
+  username: 'sandruz',
+  iat: 1747336785,
+  exp: 1747941585
+}
+OWNER query - contest_id: 871, user: 281, event_unit: 1
+OPPONENT query - contest_id: 871, user: 282, event_unit: 1
+OWNER query - contest_id: 871, user: 281, event_unit: 1
+OPPONENT query - contest_id: 871, user: 282, event_unit: 1
+OWNER query - contest_id: 875, user: 283, event_unit: 1
+OPPONENT query - contest_id: 875, user: 276, event_unit: 1
+OWNER query - contest_id: 875, user: 283, event_unit: 1
+OPPONENT query - contest_id: 875, user: 276, event_unit: 1
+Totale atleti attivi trovati: 14
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Erika Vikman, aep_id: 49, athlete_id: 12
+Atleti senza aep_id: 0 su 14 (0.00%)
+OWNER query - contest_id: 870, user: 283, event_unit: 1
+OPPONENT query - contest_id: 870, user: 281, event_unit: 1
+OWNER query - contest_id: 870, user: 283, event_unit: 1
+OPPONENT query - contest_id: 870, user: 281, event_unit: 1
+Totale atleti attivi trovati: 14
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Erika Vikman, aep_id: 49, athlete_id: 12
+Atleti senza aep_id: 0 su 14 (0.00%)
+OWNER query - contest_id: 875, user: 283, event_unit: 1
+OPPONENT query - contest_id: 875, user: 276, event_unit: 1
+OWNER query - contest_id: 875, user: 283, event_unit: 1
+OPPONENT query - contest_id: 875, user: 276, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 875,
+  "userId": "283",
+  "owner_id": "283",
+  "opponent_id": "276",
+  "players": [
+    {
+      "athleteId": 4,
+      "eventUnitId": 2,
+      "event_unit_cost": 4,
+      "aep_id": 41
+    },
+    {
+      "athleteId": 19,
+      "eventUnitId": 2,
+      "event_unit_cost": 4,
+      "aep_id": 56
+    },
+    {
+      "athleteId": 9,
+      "eventUnitId": 2,
+      "event_unit_cost": 2,
+      "aep_id": 46
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 283,
+  email: 'defend.alessandro@gmail.com',
+  username: 'sandruz',
+  iat: 1747336785,
+  exp: 1747941585
+}
+OWNER query - contest_id: 869, user: 282, event_unit: 1
+OPPONENT query - contest_id: 869, user: 281, event_unit: 1
+OWNER query - contest_id: 872, user: 283, event_unit: 1
+OPPONENT query - contest_id: 872, user: 282, event_unit: 1
+OWNER query - contest_id: 872, user: 283, event_unit: 1
+OPPONENT query - contest_id: 872, user: 282, event_unit: 1
+Totale atleti attivi trovati: 14
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Erika Vikman, aep_id: 49, athlete_id: 12
+Atleti senza aep_id: 0 su 14 (0.00%)
+OWNER query - contest_id: 874, user: 276, event_unit: 1
+OPPONENT query - contest_id: 874, user: 281, event_unit: 1
+OWNER query - contest_id: 874, user: 276, event_unit: 1
+OPPONENT query - contest_id: 874, user: 281, event_unit: 1
+OWNER query - contest_id: 876, user: 283, event_unit: 1
+OPPONENT query - contest_id: 876, user: 280, event_unit: 1
+OWNER query - contest_id: 876, user: 283, event_unit: 1
+OPPONENT query - contest_id: 876, user: 280, event_unit: 1
+Totale atleti attivi trovati: 14
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Erika Vikman, aep_id: 49, athlete_id: 12
+Atleti senza aep_id: 0 su 14 (0.00%)
+📥 Dati ricevuti dal client: {
+  "contestId": 874,
+  "userId": "276",
+  "owner_id": "276",
+  "opponent_id": "281",
+  "players": [
+    {
+      "athleteId": 4,
+      "eventUnitId": 2,
+      "event_unit_cost": 4,
+      "aep_id": 41
+    },
+    {
+      "athleteId": 3,
+      "eventUnitId": 2,
+      "event_unit_cost": 3.5,
+      "aep_id": 40
+    },
+    {
+      "athleteId": 21,
+      "eventUnitId": 2,
+      "event_unit_cost": 2,
+      "aep_id": 58
+    },
+    {
+      "athleteId": 14,
+      "eventUnitId": 2,
+      "event_unit_cost": 0.5,
+      "aep_id": 51
+    }
+  ],
+  "multiplier": 5,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 276,
+  email: 'panoz4u@gmail.com',
+  username: 'Panoz 4U',
+  iat: 1747336313,
+  exp: 1747941113
+}
+OWNER query - contest_id: 872, user: 283, event_unit: 1
+OPPONENT query - contest_id: 872, user: 282, event_unit: 1
+OWNER query - contest_id: 872, user: 283, event_unit: 1
+OPPONENT query - contest_id: 872, user: 282, event_unit: 1
+OWNER query - contest_id: 875, user: 283, event_unit: 1
+OPPONENT query - contest_id: 875, user: 276, event_unit: 1
+OWNER query - contest_id: 875, user: 283, event_unit: 1
+OPPONENT query - contest_id: 875, user: 276, event_unit: 1
+Totale atleti attivi trovati: 14
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Erika Vikman, aep_id: 49, athlete_id: 12
+Atleti senza aep_id: 0 su 14 (0.00%)
+📥 Dati ricevuti dal client: {
+  "contestId": 872,
+  "userId": "282",
+  "owner_id": 283,
+  "opponent_id": 282,
+  "players": [
+    {
+      "athleteId": 4,
+      "eventUnitId": 2,
+      "event_unit_cost": 4,
+      "aep_id": 41
+    },
+    {
+      "athleteId": 12,
+      "eventUnitId": 2,
+      "event_unit_cost": 4,
+      "aep_id": 49
+    },
+    {
+      "athleteId": 9,
+      "eventUnitId": 2,
+      "event_unit_cost": 2,
+      "aep_id": 46
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 282,
+  email: 'stefa.pozzo@gmail.com',
+  username: 'Stefania Pozzo',
+  iat: 1747336737,
+  exp: 1747941537
+}
+OWNER query - contest_id: 876, user: 283, event_unit: 1
+OPPONENT query - contest_id: 876, user: 280, event_unit: 1
+OWNER query - contest_id: 876, user: 283, event_unit: 1
+OPPONENT query - contest_id: 876, user: 280, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 876,
+  "userId": "283",
+  "owner_id": "283",
+  "opponent_id": "280",
+  "players": [
+    {
+      "athleteId": 12,
+      "eventUnitId": 2,
+      "event_unit_cost": 4,
+      "aep_id": 49
+    },
+    {
+      "athleteId": 3,
+      "eventUnitId": 2,
+      "event_unit_cost": 3.5,
+      "aep_id": 40
+    },
+    {
+      "athleteId": 16,
+      "eventUnitId": 2,
+      "event_unit_cost": 2.5,
+      "aep_id": 53
+    }
+  ],
+  "multiplier": 5,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 283,
+  email: 'defend.alessandro@gmail.com',
+  username: 'sandruz',
+  iat: 1747336785,
+  exp: 1747941585
+}
+Totale atleti attivi trovati: 14
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Erika Vikman, aep_id: 49, athlete_id: 12
+Atleti senza aep_id: 0 su 14 (0.00%)
+OWNER query - contest_id: 875, user: 283, event_unit: 1
+OPPONENT query - contest_id: 875, user: 276, event_unit: 1
+OWNER query - contest_id: 875, user: 283, event_unit: 1
+OPPONENT query - contest_id: 875, user: 276, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 875,
+  "userId": "276",
+  "owner_id": 283,
+  "opponent_id": 276,
+  "players": [
+    {
+      "athleteId": 23,
+      "eventUnitId": 2,
+      "event_unit_cost": 3,
+      "aep_id": 60
+    },
+    {
+      "athleteId": 22,
+      "eventUnitId": 2,
+      "event_unit_cost": 3,
+      "aep_id": 59
+    },
+    {
+      "athleteId": 21,
+      "eventUnitId": 2,
+      "event_unit_cost": 2,
+      "aep_id": 58
+    },
+    {
+      "athleteId": 9,
+      "eventUnitId": 2,
+      "event_unit_cost": 2,
+      "aep_id": 46
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 276,
+  email: 'panoz4u@gmail.com',
+  username: 'Panoz 4U',
+  iat: 1747336313,
+  exp: 1747941113
+}
+OWNER query - contest_id: 873, user: 282, event_unit: 1
+OPPONENT query - contest_id: 873, user: 276, event_unit: 1
+OWNER query - contest_id: 873, user: 282, event_unit: 1
+OPPONENT query - contest_id: 873, user: 276, event_unit: 1
+Totale atleti attivi trovati: 14
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Erika Vikman, aep_id: 49, athlete_id: 12
+Atleti senza aep_id: 0 su 14 (0.00%)
+Totale atleti attivi trovati: 14
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Erika Vikman, aep_id: 49, athlete_id: 12
+Atleti senza aep_id: 0 su 14 (0.00%)
+Totale atleti attivi trovati: 14
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Erika Vikman, aep_id: 49, athlete_id: 12
+Atleti senza aep_id: 0 su 14 (0.00%)
+OWNER query - contest_id: 870, user: 283, event_unit: 1
+OPPONENT query - contest_id: 870, user: 281, event_unit: 1
+OWNER query - contest_id: 870, user: 283, event_unit: 1
+OPPONENT query - contest_id: 870, user: 281, event_unit: 1
+OWNER query - contest_id: 870, user: 283, event_unit: 1
+OPPONENT query - contest_id: 870, user: 281, event_unit: 1
+OWNER query - contest_id: 870, user: 283, event_unit: 1
+OPPONENT query - contest_id: 870, user: 281, event_unit: 1
+OWNER query - contest_id: 870, user: 283, event_unit: 1
+OPPONENT query - contest_id: 870, user: 281, event_unit: 1
+OWNER query - contest_id: 870, user: 283, event_unit: 1
+OPPONENT query - contest_id: 870, user: 281, event_unit: 1
+OWNER query - contest_id: 870, user: 283, event_unit: 1
+OPPONENT query - contest_id: 870, user: 281, event_unit: 1
+OWNER query - contest_id: 870, user: 283, event_unit: 1
+OPPONENT query - contest_id: 870, user: 281, event_unit: 1
+Record aggiornato per athlete_id 1 e event_unit_id 2
+Record aggiornato per athlete_id 2 e event_unit_id 2
+Record aggiornato per athlete_id 3 e event_unit_id 2
+Record aggiornato per athlete_id 4 e event_unit_id 2
+Record aggiornato per athlete_id 5 e event_unit_id 2
+Record aggiornato per athlete_id 6 e event_unit_id 2
+Record aggiornato per athlete_id 7 e event_unit_id 2
+Record aggiornato per athlete_id 8 e event_unit_id 2
+Record aggiornato per athlete_id 9 e event_unit_id 2
+Record aggiornato per athlete_id 10 e event_unit_id 2
+Record aggiornato per athlete_id 11 e event_unit_id 2
+Record aggiornato per athlete_id 12 e event_unit_id 2
+Record aggiornato per athlete_id 13 e event_unit_id 2
+Record aggiornato per athlete_id 14 e event_unit_id 2
+Record aggiornato per athlete_id 15 e event_unit_id 2
+Record aggiornato per athlete_id 16 e event_unit_id 2
+Record aggiornato per athlete_id 17 e event_unit_id 2
+Record aggiornato per athlete_id 18 e event_unit_id 2
+Record aggiornato per athlete_id 19 e event_unit_id 2
+Record aggiornato per athlete_id 20 e event_unit_id 2
+Record aggiornato per athlete_id 21 e event_unit_id 2
+Record aggiornato per athlete_id 22 e event_unit_id 2
+Record aggiornato per athlete_id 23 e event_unit_id 2
+Record aggiornato per athlete_id 24 e event_unit_id 2
+Record aggiornato per athlete_id 25 e event_unit_id 2
+Record aggiornato per athlete_id 26 e event_unit_id 2
+Record aggiornato per athlete_id 27 e event_unit_id 2
+Record aggiornato per athlete_id 28 e event_unit_id 2
+Record aggiornato per athlete_id 29 e event_unit_id 2
+Record aggiornato per athlete_id 30 e event_unit_id 2
+Record aggiornato per athlete_id 31 e event_unit_id 2
+Record aggiornato per athlete_id 32 e event_unit_id 2
+Record aggiornato per athlete_id 33 e event_unit_id 2
+Record aggiornato per athlete_id 34 e event_unit_id 2
+Record aggiornato per athlete_id 35 e event_unit_id 2
+Record aggiornato per athlete_id 36 e event_unit_id 2
+Record aggiornato per athlete_id 37 e event_unit_id 2
+Record aggiornato per athlete_id 1 e event_unit_id 1
+Record aggiornato per athlete_id 2 e event_unit_id 1
+Record aggiornato per athlete_id 3 e event_unit_id 1
+Record aggiornato per athlete_id 4 e event_unit_id 1
+Record aggiornato per athlete_id 5 e event_unit_id 1
+Record aggiornato per athlete_id 6 e event_unit_id 1
+Record aggiornato per athlete_id 7 e event_unit_id 1
+Record aggiornato per athlete_id 8 e event_unit_id 1
+Record aggiornato per athlete_id 9 e event_unit_id 1
+Record aggiornato per athlete_id 10 e event_unit_id 1
+Record aggiornato per athlete_id 11 e event_unit_id 1
+Record aggiornato per athlete_id 12 e event_unit_id 1
+Record aggiornato per athlete_id 13 e event_unit_id 1
+Record aggiornato per athlete_id 14 e event_unit_id 1
+Record aggiornato per athlete_id 15 e event_unit_id 1
+Record aggiornato per athlete_id 16 e event_unit_id 1
+Record aggiornato per athlete_id 17 e event_unit_id 1
+Record aggiornato per athlete_id 18 e event_unit_id 1
+Record aggiornato per athlete_id 19 e event_unit_id 1
+Record aggiornato per athlete_id 20 e event_unit_id 1
+Record aggiornato per athlete_id 21 e event_unit_id 1
+Record aggiornato per athlete_id 22 e event_unit_id 1
+Record aggiornato per athlete_id 23 e event_unit_id 1
+Record aggiornato per athlete_id 24 e event_unit_id 1
+Record aggiornato per athlete_id 25 e event_unit_id 1
+Record aggiornato per athlete_id 26 e event_unit_id 1
+Record aggiornato per athlete_id 27 e event_unit_id 1
+Record aggiornato per athlete_id 28 e event_unit_id 1
+Record aggiornato per athlete_id 29 e event_unit_id 1
+Record aggiornato per athlete_id 30 e event_unit_id 1
+Record aggiornato per athlete_id 31 e event_unit_id 1
+Record aggiornato per athlete_id 32 e event_unit_id 1
+Record aggiornato per athlete_id 33 e event_unit_id 1
+Record aggiornato per athlete_id 34 e event_unit_id 1
+Record aggiornato per athlete_id 35 e event_unit_id 1
+Record aggiornato per athlete_id 36 e event_unit_id 1
+Record aggiornato per athlete_id 37 e event_unit_id 1
+OWNER query - contest_id: 869, user: 282, event_unit: 1
+OPPONENT query - contest_id: 869, user: 281, event_unit: 1
+OWNER query - contest_id: 869, user: 282, event_unit: 1
+OPPONENT query - contest_id: 869, user: 281, event_unit: 1
+Totale atleti attivi trovati: 15
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Erika Vikman, aep_id: 49, athlete_id: 12
+Atleti senza aep_id: 0 su 15 (0.00%)
+Totale atleti attivi trovati: 15
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Erika Vikman, aep_id: 49, athlete_id: 12
+Atleti senza aep_id: 0 su 15 (0.00%)
+OWNER query - contest_id: 873, user: 282, event_unit: 1
+OPPONENT query - contest_id: 873, user: 276, event_unit: 1
+OWNER query - contest_id: 873, user: 282, event_unit: 1
+OPPONENT query - contest_id: 873, user: 276, event_unit: 1
+Totale atleti attivi trovati: 15
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Erika Vikman, aep_id: 49, athlete_id: 12
+Atleti senza aep_id: 0 su 15 (0.00%)
+OWNER query - contest_id: 869, user: 282, event_unit: 1
+OPPONENT query - contest_id: 869, user: 281, event_unit: 1
+OWNER query - contest_id: 869, user: 282, event_unit: 1
+OPPONENT query - contest_id: 869, user: 281, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 869,
+  "userId": "281",
+  "owner_id": 282,
+  "opponent_id": 281,
+  "players": [
+    {
+      "athleteId": 18,
+      "eventUnitId": 2,
+      "event_unit_cost": 1,
+      "aep_id": 55
+    },
+    {
+      "athleteId": 3,
+      "eventUnitId": 2,
+      "event_unit_cost": 3.5,
+      "aep_id": 40
+    },
+    {
+      "athleteId": 2,
+      "eventUnitId": 2,
+      "event_unit_cost": 1,
+      "aep_id": 39
+    },
+    {
+      "athleteId": 4,
+      "eventUnitId": 2,
+      "event_unit_cost": 4,
+      "aep_id": 41
+    },
+    {
+      "athleteId": 14,
+      "eventUnitId": 2,
+      "event_unit_cost": 0.5,
+      "aep_id": 51
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 281,
+  email: 'zappydef@gmail.com',
+  username: 'Davide Andrea',
+  iat: 1747334778,
+  exp: 1747939578
+}
+Record aggiornato per athlete_id 1 e event_unit_id 2
+Record aggiornato per athlete_id 2 e event_unit_id 2
+Record aggiornato per athlete_id 3 e event_unit_id 2
+Record aggiornato per athlete_id 4 e event_unit_id 2
+Record aggiornato per athlete_id 5 e event_unit_id 2
+Record aggiornato per athlete_id 6 e event_unit_id 2
+Record aggiornato per athlete_id 7 e event_unit_id 2
+Record aggiornato per athlete_id 8 e event_unit_id 2
+Record aggiornato per athlete_id 9 e event_unit_id 2
+Record aggiornato per athlete_id 10 e event_unit_id 2
+Record aggiornato per athlete_id 11 e event_unit_id 2
+Record aggiornato per athlete_id 12 e event_unit_id 2
+Record aggiornato per athlete_id 13 e event_unit_id 2
+Record aggiornato per athlete_id 14 e event_unit_id 2
+Record aggiornato per athlete_id 15 e event_unit_id 2
+Record aggiornato per athlete_id 16 e event_unit_id 2
+Record aggiornato per athlete_id 17 e event_unit_id 2
+Record aggiornato per athlete_id 18 e event_unit_id 2
+Record aggiornato per athlete_id 19 e event_unit_id 2
+Record aggiornato per athlete_id 20 e event_unit_id 2
+Record aggiornato per athlete_id 21 e event_unit_id 2
+Record aggiornato per athlete_id 22 e event_unit_id 2
+Record aggiornato per athlete_id 23 e event_unit_id 2
+Record aggiornato per athlete_id 24 e event_unit_id 2
+Record aggiornato per athlete_id 25 e event_unit_id 2
+Record aggiornato per athlete_id 26 e event_unit_id 2
+Record aggiornato per athlete_id 27 e event_unit_id 2
+Record aggiornato per athlete_id 28 e event_unit_id 2
+Record aggiornato per athlete_id 29 e event_unit_id 2
+Record aggiornato per athlete_id 30 e event_unit_id 2
+Record aggiornato per athlete_id 31 e event_unit_id 2
+Record aggiornato per athlete_id 32 e event_unit_id 2
+Record aggiornato per athlete_id 33 e event_unit_id 2
+Record aggiornato per athlete_id 34 e event_unit_id 2
+Record aggiornato per athlete_id 35 e event_unit_id 2
+Record aggiornato per athlete_id 36 e event_unit_id 2
+Record aggiornato per athlete_id 37 e event_unit_id 2
+Record aggiornato per athlete_id 1 e event_unit_id 1
+Record aggiornato per athlete_id 2 e event_unit_id 1
+Record aggiornato per athlete_id 3 e event_unit_id 1
+Record aggiornato per athlete_id 4 e event_unit_id 1
+Record aggiornato per athlete_id 5 e event_unit_id 1
+Record aggiornato per athlete_id 6 e event_unit_id 1
+Record aggiornato per athlete_id 7 e event_unit_id 1
+Record aggiornato per athlete_id 8 e event_unit_id 1
+Record aggiornato per athlete_id 9 e event_unit_id 1
+Record aggiornato per athlete_id 10 e event_unit_id 1
+Record aggiornato per athlete_id 11 e event_unit_id 1
+Record aggiornato per athlete_id 12 e event_unit_id 1
+Record aggiornato per athlete_id 13 e event_unit_id 1
+Record aggiornato per athlete_id 14 e event_unit_id 1
+Record aggiornato per athlete_id 15 e event_unit_id 1
+Record aggiornato per athlete_id 16 e event_unit_id 1
+Record aggiornato per athlete_id 17 e event_unit_id 1
+Record aggiornato per athlete_id 18 e event_unit_id 1
+Record aggiornato per athlete_id 19 e event_unit_id 1
+Record aggiornato per athlete_id 20 e event_unit_id 1
+Record aggiornato per athlete_id 21 e event_unit_id 1
+Record aggiornato per athlete_id 22 e event_unit_id 1
+Record aggiornato per athlete_id 23 e event_unit_id 1
+Record aggiornato per athlete_id 24 e event_unit_id 1
+Record aggiornato per athlete_id 25 e event_unit_id 1
+Record aggiornato per athlete_id 26 e event_unit_id 1
+Record aggiornato per athlete_id 27 e event_unit_id 1
+Record aggiornato per athlete_id 28 e event_unit_id 1
+Record aggiornato per athlete_id 29 e event_unit_id 1
+Record aggiornato per athlete_id 30 e event_unit_id 1
+Record aggiornato per athlete_id 31 e event_unit_id 1
+Record aggiornato per athlete_id 32 e event_unit_id 1
+Record aggiornato per athlete_id 33 e event_unit_id 1
+Record aggiornato per athlete_id 34 e event_unit_id 1
+Record aggiornato per athlete_id 35 e event_unit_id 1
+Record aggiornato per athlete_id 36 e event_unit_id 1
+Record aggiornato per athlete_id 37 e event_unit_id 1
+OWNER query - contest_id: 869, user: 282, event_unit: 1
+OPPONENT query - contest_id: 869, user: 281, event_unit: 1
+OWNER query - contest_id: 873, user: 282, event_unit: 1
+OPPONENT query - contest_id: 873, user: 276, event_unit: 1
+OWNER query - contest_id: 873, user: 282, event_unit: 1
+OPPONENT query - contest_id: 873, user: 276, event_unit: 1
+Totale atleti attivi trovati: 16
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Sissal, aep_id: 47, athlete_id: 10
+Atleti senza aep_id: 0 su 16 (0.00%)
+OWNER query - contest_id: 873, user: 282, event_unit: 1
+OPPONENT query - contest_id: 873, user: 276, event_unit: 1
+OWNER query - contest_id: 873, user: 282, event_unit: 1
+OPPONENT query - contest_id: 873, user: 276, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 873,
+  "userId": "276",
+  "owner_id": 282,
+  "opponent_id": 276,
+  "players": [
+    {
+      "athleteId": 21,
+      "eventUnitId": 2,
+      "event_unit_cost": 2,
+      "aep_id": 58
+    },
+    {
+      "athleteId": 16,
+      "eventUnitId": 2,
+      "event_unit_cost": 2.5,
+      "aep_id": 53
+    },
+    {
+      "athleteId": 22,
+      "eventUnitId": 2,
+      "event_unit_cost": 3,
+      "aep_id": 59
+    },
+    {
+      "athleteId": 31,
+      "eventUnitId": 2,
+      "event_unit_cost": 1.5,
+      "aep_id": 68
+    },
+    {
+      "athleteId": 18,
+      "eventUnitId": 2,
+      "event_unit_cost": 1,
+      "aep_id": 55
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 276,
+  email: 'panoz4u@gmail.com',
+  username: 'Panoz 4U',
+  iat: 1747336313,
+  exp: 1747941113
+}
+OWNER query - contest_id: 875, user: 283, event_unit: 1
+OPPONENT query - contest_id: 875, user: 276, event_unit: 1
+OWNER query - contest_id: 873, user: 282, event_unit: 1
+OPPONENT query - contest_id: 873, user: 276, event_unit: 1
+OWNER query - contest_id: 874, user: 276, event_unit: 1
+OPPONENT query - contest_id: 874, user: 281, event_unit: 1
+OWNER query - contest_id: 874, user: 276, event_unit: 1
+OPPONENT query - contest_id: 874, user: 281, event_unit: 1
+OWNER query - contest_id: 870, user: 283, event_unit: 1
+OPPONENT query - contest_id: 870, user: 281, event_unit: 1
+OWNER query - contest_id: 870, user: 283, event_unit: 1
+OPPONENT query - contest_id: 870, user: 281, event_unit: 1
+Totale atleti attivi trovati: 16
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Sissal, aep_id: 47, athlete_id: 10
+Atleti senza aep_id: 0 su 16 (0.00%)
+OWNER query - contest_id: 870, user: 283, event_unit: 1
+OPPONENT query - contest_id: 870, user: 281, event_unit: 1
+OWNER query - contest_id: 870, user: 283, event_unit: 1
+OPPONENT query - contest_id: 870, user: 281, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 870,
+  "userId": "281",
+  "owner_id": 283,
+  "opponent_id": 281,
+  "players": [
+    {
+      "athleteId": 2,
+      "eventUnitId": 2,
+      "event_unit_cost": 1,
+      "aep_id": 39
+    },
+    {
+      "athleteId": 3,
+      "eventUnitId": 2,
+      "event_unit_cost": 3.5,
+      "aep_id": 40
+    },
+    {
+      "athleteId": 9,
+      "eventUnitId": 2,
+      "event_unit_cost": 2,
+      "aep_id": 46
+    },
+    {
+      "athleteId": 19,
+      "eventUnitId": 2,
+      "event_unit_cost": 3.5,
+      "aep_id": 56
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 281,
+  email: 'zappydef@gmail.com',
+  username: 'Davide Andrea',
+  iat: 1747334778,
+  exp: 1747939578
+}
+OWNER query - contest_id: 870, user: 283, event_unit: 1
+OPPONENT query - contest_id: 870, user: 281, event_unit: 1
+OWNER query - contest_id: 874, user: 276, event_unit: 1
+OPPONENT query - contest_id: 874, user: 281, event_unit: 1
+OWNER query - contest_id: 874, user: 276, event_unit: 1
+OPPONENT query - contest_id: 874, user: 281, event_unit: 1
+Totale atleti attivi trovati: 16
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Sissal, aep_id: 47, athlete_id: 10
+Atleti senza aep_id: 0 su 16 (0.00%)
+OWNER query - contest_id: 874, user: 276, event_unit: 1
+OPPONENT query - contest_id: 874, user: 281, event_unit: 1
+OWNER query - contest_id: 874, user: 276, event_unit: 1
+OPPONENT query - contest_id: 874, user: 281, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 874,
+  "userId": "281",
+  "owner_id": 276,
+  "opponent_id": 281,
+  "players": [
+    {
+      "athleteId": 3,
+      "eventUnitId": 2,
+      "event_unit_cost": 3.5,
+      "aep_id": 40
+    },
+    {
+      "athleteId": 4,
+      "eventUnitId": 2,
+      "event_unit_cost": 4,
+      "aep_id": 41
+    },
+    {
+      "athleteId": 2,
+      "eventUnitId": 2,
+      "event_unit_cost": 1,
+      "aep_id": 39
+    },
+    {
+      "athleteId": 10,
+      "eventUnitId": 2,
+      "event_unit_cost": 1,
+      "aep_id": 47
+    },
+    {
+      "athleteId": 14,
+      "eventUnitId": 2,
+      "event_unit_cost": 0.5,
+      "aep_id": 51
+    }
+  ],
+  "multiplier": 5,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 281,
+  email: 'zappydef@gmail.com',
+  username: 'Davide Andrea',
+  iat: 1747334778,
+  exp: 1747939578
+}
+OWNER query - contest_id: 874, user: 276, event_unit: 1
+OPPONENT query - contest_id: 874, user: 281, event_unit: 1
+OWNER query - contest_id: 874, user: 276, event_unit: 1
+OPPONENT query - contest_id: 874, user: 281, event_unit: 1
+OWNER query - contest_id: 877, user: 281, event_unit: 1
+OPPONENT query - contest_id: 877, user: 282, event_unit: 1
+OWNER query - contest_id: 877, user: 281, event_unit: 1
+OPPONENT query - contest_id: 877, user: 282, event_unit: 1
+Totale atleti attivi trovati: 16
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Sissal, aep_id: 47, athlete_id: 10
+Atleti senza aep_id: 0 su 16 (0.00%)
+OWNER query - contest_id: 877, user: 281, event_unit: 1
+OPPONENT query - contest_id: 877, user: 282, event_unit: 1
+OWNER query - contest_id: 877, user: 281, event_unit: 1
+OPPONENT query - contest_id: 877, user: 282, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 877,
+  "userId": "281",
+  "owner_id": "281",
+  "opponent_id": "282",
+  "players": [
+    {
+      "athleteId": 14,
+      "eventUnitId": 2,
+      "event_unit_cost": 0.5,
+      "aep_id": 51
+    },
+    {
+      "athleteId": 2,
+      "eventUnitId": 2,
+      "event_unit_cost": 1,
+      "aep_id": 39
+    },
+    {
+      "athleteId": 10,
+      "eventUnitId": 2,
+      "event_unit_cost": 1,
+      "aep_id": 47
+    },
+    {
+      "athleteId": 18,
+      "eventUnitId": 2,
+      "event_unit_cost": 1,
+      "aep_id": 55
+    },
+    {
+      "athleteId": 31,
+      "eventUnitId": 2,
+      "event_unit_cost": 1.5,
+      "aep_id": 68
+    },
+    {
+      "athleteId": 9,
+      "eventUnitId": 2,
+      "event_unit_cost": 2,
+      "aep_id": 46
+    },
+    {
+      "athleteId": 23,
+      "eventUnitId": 2,
+      "event_unit_cost": 3,
+      "aep_id": 60
+    }
+  ],
+  "multiplier": 10,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 281,
+  email: 'zappydef@gmail.com',
+  username: 'Davide Andrea',
+  iat: 1747334778,
+  exp: 1747939578
+}
+OWNER query - contest_id: 878, user: 281, event_unit: 1
+OPPONENT query - contest_id: 878, user: 283, event_unit: 1
+OWNER query - contest_id: 878, user: 281, event_unit: 1
+OPPONENT query - contest_id: 878, user: 283, event_unit: 1
+Totale atleti attivi trovati: 16
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Sissal, aep_id: 47, athlete_id: 10
+Atleti senza aep_id: 0 su 16 (0.00%)
+OWNER query - contest_id: 878, user: 281, event_unit: 1
+OPPONENT query - contest_id: 878, user: 283, event_unit: 1
+OWNER query - contest_id: 878, user: 281, event_unit: 1
+OPPONENT query - contest_id: 878, user: 283, event_unit: 1
+Totale atleti attivi trovati: 16
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Sissal, aep_id: 47, athlete_id: 10
+Atleti senza aep_id: 0 su 16 (0.00%)
+OWNER query - contest_id: 878, user: 281, event_unit: 1
+OPPONENT query - contest_id: 878, user: 283, event_unit: 1
+OWNER query - contest_id: 878, user: 281, event_unit: 1
+OPPONENT query - contest_id: 878, user: 283, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 878,
+  "userId": "281",
+  "owner_id": "281",
+  "opponent_id": "283",
+  "players": [
+    {
+      "athleteId": 2,
+      "eventUnitId": 2,
+      "event_unit_cost": 1,
+      "aep_id": 39
+    },
+    {
+      "athleteId": 10,
+      "eventUnitId": 2,
+      "event_unit_cost": 1,
+      "aep_id": 47
+    },
+    {
+      "athleteId": 18,
+      "eventUnitId": 2,
+      "event_unit_cost": 1,
+      "aep_id": 55
+    },
+    {
+      "athleteId": 31,
+      "eventUnitId": 2,
+      "event_unit_cost": 1.5,
+      "aep_id": 68
+    },
+    {
+      "athleteId": 9,
+      "eventUnitId": 2,
+      "event_unit_cost": 2,
+      "aep_id": 46
+    },
+    {
+      "athleteId": 14,
+      "eventUnitId": 2,
+      "event_unit_cost": 0.5,
+      "aep_id": 51
+    },
+    {
+      "athleteId": 25,
+      "eventUnitId": 2,
+      "event_unit_cost": 0.5,
+      "aep_id": 62
+    },
+    {
+      "athleteId": 21,
+      "eventUnitId": 2,
+      "event_unit_cost": 2,
+      "aep_id": 58
+    }
+  ],
+  "multiplier": 10,
+  "totalCost": 9.5
+}
+👤 Utente autenticato: {
+  userId: 281,
+  email: 'zappydef@gmail.com',
+  username: 'Davide Andrea',
+  iat: 1747334778,
+  exp: 1747939578
+}
+OWNER query - contest_id: 877, user: 281, event_unit: 1
+OPPONENT query - contest_id: 877, user: 282, event_unit: 1
+OWNER query - contest_id: 877, user: 281, event_unit: 1
+OPPONENT query - contest_id: 877, user: 282, event_unit: 1
+Totale atleti attivi trovati: 16
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Sissal, aep_id: 47, athlete_id: 10
+Atleti senza aep_id: 0 su 16 (0.00%)
+OWNER query - contest_id: 877, user: 281, event_unit: 1
+OPPONENT query - contest_id: 877, user: 282, event_unit: 1
+OWNER query - contest_id: 877, user: 281, event_unit: 1
+OPPONENT query - contest_id: 877, user: 282, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 877,
+  "userId": "282",
+  "owner_id": 281,
+  "opponent_id": 282,
+  "players": [
+    {
+      "athleteId": 19,
+      "eventUnitId": 2,
+      "event_unit_cost": 3.5,
+      "aep_id": 56
+    },
+    {
+      "athleteId": 23,
+      "eventUnitId": 2,
+      "event_unit_cost": 3,
+      "aep_id": 60
+    },
+    {
+      "athleteId": 24,
+      "eventUnitId": 2,
+      "event_unit_cost": 3.5,
+      "aep_id": 61
+    }
+  ],
+  "multiplier": 10,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 282,
+  email: 'stefa.pozzo@gmail.com',
+  username: 'Stefania Pozzo',
+  iat: 1747336737,
+  exp: 1747941537
+}
+OWNER query - contest_id: 877, user: 281, event_unit: 1
+OPPONENT query - contest_id: 877, user: 282, event_unit: 1
+OWNER query - contest_id: 878, user: 281, event_unit: 1
+OPPONENT query - contest_id: 878, user: 283, event_unit: 1
+OWNER query - contest_id: 877, user: 281, event_unit: 1
+OPPONENT query - contest_id: 877, user: 282, event_unit: 1
+OWNER query - contest_id: 878, user: 281, event_unit: 1
+OPPONENT query - contest_id: 878, user: 283, event_unit: 1
+OWNER query - contest_id: 878, user: 281, event_unit: 1
+OPPONENT query - contest_id: 878, user: 283, event_unit: 1
+OWNER query - contest_id: 878, user: 281, event_unit: 1
+OPPONENT query - contest_id: 878, user: 283, event_unit: 1
+Totale atleti attivi trovati: 16
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Sissal, aep_id: 47, athlete_id: 10
+Atleti senza aep_id: 0 su 16 (0.00%)
+OWNER query - contest_id: 878, user: 281, event_unit: 1
+OPPONENT query - contest_id: 878, user: 283, event_unit: 1
+OWNER query - contest_id: 878, user: 281, event_unit: 1
+OPPONENT query - contest_id: 878, user: 283, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 878,
+  "userId": "283",
+  "owner_id": 281,
+  "opponent_id": 283,
+  "players": [
+    {
+      "athleteId": 19,
+      "eventUnitId": 2,
+      "event_unit_cost": 3.5,
+      "aep_id": 56
+    },
+    {
+      "athleteId": 24,
+      "eventUnitId": 2,
+      "event_unit_cost": 3.5,
+      "aep_id": 61
+    },
+    {
+      "athleteId": 23,
+      "eventUnitId": 2,
+      "event_unit_cost": 3,
+      "aep_id": 60
+    }
+  ],
+  "multiplier": 10,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 283,
+  email: 'defend.alessandro@gmail.com',
+  username: 'sandruz',
+  iat: 1747336785,
+  exp: 1747941585
+}
+OWNER query - contest_id: 878, user: 281, event_unit: 1
+OPPONENT query - contest_id: 878, user: 283, event_unit: 1
+OWNER query - contest_id: 878, user: 281, event_unit: 1
+OPPONENT query - contest_id: 878, user: 283, event_unit: 1
+OWNER query - contest_id: 878, user: 281, event_unit: 1
+OPPONENT query - contest_id: 878, user: 283, event_unit: 1
+OWNER query - contest_id: 878, user: 281, event_unit: 1
+OPPONENT query - contest_id: 878, user: 283, event_unit: 1
+OWNER query - contest_id: 878, user: 281, event_unit: 1
+OPPONENT query - contest_id: 878, user: 283, event_unit: 1
+OWNER query - contest_id: 878, user: 281, event_unit: 1
+OPPONENT query - contest_id: 878, user: 283, event_unit: 1
+OWNER query - contest_id: 879, user: 280, event_unit: 1
+OPPONENT query - contest_id: 879, user: 275, event_unit: 1
+OWNER query - contest_id: 879, user: 280, event_unit: 1
+OPPONENT query - contest_id: 879, user: 275, event_unit: 1
+Totale atleti attivi trovati: 16
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Sissal, aep_id: 47, athlete_id: 10
+Atleti senza aep_id: 0 su 16 (0.00%)
+OWNER query - contest_id: 879, user: 280, event_unit: 1
+OPPONENT query - contest_id: 879, user: 275, event_unit: 1
+OWNER query - contest_id: 879, user: 280, event_unit: 1
+OPPONENT query - contest_id: 879, user: 275, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 879,
+  "userId": "280",
+  "owner_id": "280",
+  "opponent_id": "275",
+  "players": [
+    {
+      "athleteId": 12,
+      "eventUnitId": 2,
+      "event_unit_cost": 4,
+      "aep_id": 49
+    },
+    {
+      "athleteId": 23,
+      "eventUnitId": 2,
+      "event_unit_cost": 3,
+      "aep_id": 60
+    },
+    {
+      "athleteId": 25,
+      "eventUnitId": 2,
+      "event_unit_cost": 0.5,
+      "aep_id": 62
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 7.5
+}
+👤 Utente autenticato: {
+  userId: 280,
+  email: 'scotta.valentina@gmail.com',
+  username: 'Valentina Scotta',
+  iat: 1747242111,
+  exp: 1747846911
+}
+OWNER query - contest_id: 876, user: 283, event_unit: 1
+OPPONENT query - contest_id: 876, user: 280, event_unit: 1
+OWNER query - contest_id: 876, user: 283, event_unit: 1
+OPPONENT query - contest_id: 876, user: 280, event_unit: 1
+Totale atleti attivi trovati: 16
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Sissal, aep_id: 47, athlete_id: 10
+Atleti senza aep_id: 0 su 16 (0.00%)
+OWNER query - contest_id: 876, user: 283, event_unit: 1
+OPPONENT query - contest_id: 876, user: 280, event_unit: 1
+OWNER query - contest_id: 876, user: 283, event_unit: 1
+OPPONENT query - contest_id: 876, user: 280, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 876,
+  "userId": "280",
+  "owner_id": 283,
+  "opponent_id": 280,
+  "players": [
+    {
+      "athleteId": 18,
+      "eventUnitId": 2,
+      "event_unit_cost": 1,
+      "aep_id": 55
+    },
+    {
+      "athleteId": 12,
+      "eventUnitId": 2,
+      "event_unit_cost": 4,
+      "aep_id": 49
+    },
+    {
+      "athleteId": 3,
+      "eventUnitId": 2,
+      "event_unit_cost": 3.5,
+      "aep_id": 40
+    },
+    {
+      "athleteId": 14,
+      "eventUnitId": 2,
+      "event_unit_cost": 0.5,
+      "aep_id": 51
+    }
+  ],
+  "multiplier": 5,
+  "totalCost": 9
+}
+👤 Utente autenticato: {
+  userId: 280,
+  email: 'scotta.valentina@gmail.com',
+  username: 'Valentina Scotta',
+  iat: 1747242111,
+  exp: 1747846911
+}
+OWNER query - contest_id: 878, user: 281, event_unit: 1
+OPPONENT query - contest_id: 878, user: 283, event_unit: 1
+OWNER query - contest_id: 874, user: 276, event_unit: 1
+OPPONENT query - contest_id: 874, user: 281, event_unit: 1
+OWNER query - contest_id: 880, user: 276, event_unit: 1
+OPPONENT query - contest_id: 880, user: 279, event_unit: 1
+OWNER query - contest_id: 880, user: 276, event_unit: 1
+OPPONENT query - contest_id: 880, user: 279, event_unit: 1
+OWNER query - contest_id: 881, user: 279, event_unit: 1
+OPPONENT query - contest_id: 881, user: 276, event_unit: 1
+OWNER query - contest_id: 881, user: 279, event_unit: 1
+OPPONENT query - contest_id: 881, user: 276, event_unit: 1
+Totale atleti attivi trovati: 16
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Sissal, aep_id: 47, athlete_id: 10
+Atleti senza aep_id: 0 su 16 (0.00%)
+OWNER query - contest_id: 881, user: 279, event_unit: 1
+OPPONENT query - contest_id: 881, user: 276, event_unit: 1
+OWNER query - contest_id: 881, user: 279, event_unit: 1
+OPPONENT query - contest_id: 881, user: 276, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 881,
+  "userId": "279",
+  "owner_id": "279",
+  "opponent_id": "276",
+  "players": [
+    {
+      "athleteId": 14,
+      "eventUnitId": 2,
+      "event_unit_cost": 0.5,
+      "aep_id": 51
+    },
+    {
+      "athleteId": 25,
+      "eventUnitId": 2,
+      "event_unit_cost": 0.5,
+      "aep_id": 62
+    },
+    {
+      "athleteId": 2,
+      "eventUnitId": 2,
+      "event_unit_cost": 1,
+      "aep_id": 39
+    },
+    {
+      "athleteId": 10,
+      "eventUnitId": 2,
+      "event_unit_cost": 1,
+      "aep_id": 47
+    },
+    {
+      "athleteId": 18,
+      "eventUnitId": 2,
+      "event_unit_cost": 1,
+      "aep_id": 55
+    },
+    {
+      "athleteId": 31,
+      "eventUnitId": 2,
+      "event_unit_cost": 1.5,
+      "aep_id": 68
+    },
+    {
+      "athleteId": 9,
+      "eventUnitId": 2,
+      "event_unit_cost": 2,
+      "aep_id": 46
+    },
+    {
+      "athleteId": 21,
+      "eventUnitId": 2,
+      "event_unit_cost": 2,
+      "aep_id": 58
+    }
+  ],
+  "multiplier": 10,
+  "totalCost": 9.5
+}
+👤 Utente autenticato: {
+  userId: 279,
+  email: 'klara@klara.it',
+  username: 'Klara',
+  iat: 1747339926,
+  exp: 1747944726
+}
+OWNER query - contest_id: 881, user: 279, event_unit: 1
+OPPONENT query - contest_id: 881, user: 276, event_unit: 1
+OWNER query - contest_id: 881, user: 279, event_unit: 1
+OPPONENT query - contest_id: 881, user: 276, event_unit: 1
+Totale atleti attivi trovati: 16
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Sissal, aep_id: 47, athlete_id: 10
+Atleti senza aep_id: 0 su 16 (0.00%)
+OWNER query - contest_id: 881, user: 279, event_unit: 1
+OPPONENT query - contest_id: 881, user: 276, event_unit: 1
+OWNER query - contest_id: 881, user: 279, event_unit: 1
+OPPONENT query - contest_id: 881, user: 276, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 881,
+  "userId": "276",
+  "owner_id": 279,
+  "opponent_id": 276,
+  "players": [
+    {
+      "athleteId": 12,
+      "eventUnitId": 2,
+      "event_unit_cost": 4,
+      "aep_id": 49
+    },
+    {
+      "athleteId": 16,
+      "eventUnitId": 2,
+      "event_unit_cost": 2.5,
+      "aep_id": 53
+    },
+    {
+      "athleteId": 31,
+      "eventUnitId": 2,
+      "event_unit_cost": 1.5,
+      "aep_id": 68
+    },
+    {
+      "athleteId": 9,
+      "eventUnitId": 2,
+      "event_unit_cost": 2,
+      "aep_id": 46
+    }
+  ],
+  "multiplier": 10,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 276,
+  email: 'panoz4u@gmail.com',
+  username: 'Panoz 4U',
+  iat: 1747339978,
+  exp: 1747944778
+}
+OWNER query - contest_id: 877, user: 281, event_unit: 1
+OPPONENT query - contest_id: 877, user: 282, event_unit: 1
+OWNER query - contest_id: 878, user: 281, event_unit: 1
+OPPONENT query - contest_id: 878, user: 283, event_unit: 1
+OWNER query - contest_id: 882, user: 278, event_unit: 1
+OPPONENT query - contest_id: 882, user: 276, event_unit: 1
+OWNER query - contest_id: 882, user: 278, event_unit: 1
+OPPONENT query - contest_id: 882, user: 276, event_unit: 1
+Totale atleti attivi trovati: 16
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Sissal, aep_id: 47, athlete_id: 10
+Atleti senza aep_id: 0 su 16 (0.00%)
+OWNER query - contest_id: 882, user: 278, event_unit: 1
+OPPONENT query - contest_id: 882, user: 276, event_unit: 1
+OWNER query - contest_id: 882, user: 278, event_unit: 1
+OPPONENT query - contest_id: 882, user: 276, event_unit: 1
+Totale atleti attivi trovati: 16
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Sissal, aep_id: 47, athlete_id: 10
+Atleti senza aep_id: 0 su 16 (0.00%)
+OWNER query - contest_id: 883, user: 276, event_unit: 1
+OPPONENT query - contest_id: 883, user: 280, event_unit: 1
+OWNER query - contest_id: 883, user: 276, event_unit: 1
+OPPONENT query - contest_id: 883, user: 280, event_unit: 1
+OWNER query - contest_id: 882, user: 278, event_unit: 1
+OPPONENT query - contest_id: 882, user: 276, event_unit: 1
+OWNER query - contest_id: 882, user: 278, event_unit: 1
+OPPONENT query - contest_id: 882, user: 276, event_unit: 1
+Totale atleti attivi trovati: 16
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Sissal, aep_id: 47, athlete_id: 10
+Atleti senza aep_id: 0 su 16 (0.00%)
+Totale atleti attivi trovati: 16
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Sissal, aep_id: 47, athlete_id: 10
+Atleti senza aep_id: 0 su 16 (0.00%)
+OWNER query - contest_id: 882, user: 278, event_unit: 1
+OPPONENT query - contest_id: 882, user: 276, event_unit: 1
+OWNER query - contest_id: 882, user: 278, event_unit: 1
+OPPONENT query - contest_id: 882, user: 276, event_unit: 1
+OWNER query - contest_id: 883, user: 276, event_unit: 1
+OPPONENT query - contest_id: 883, user: 280, event_unit: 1
+OWNER query - contest_id: 883, user: 276, event_unit: 1
+OPPONENT query - contest_id: 883, user: 280, event_unit: 1
+OWNER query - contest_id: 883, user: 276, event_unit: 1
+OPPONENT query - contest_id: 883, user: 280, event_unit: 1
+OWNER query - contest_id: 883, user: 276, event_unit: 1
+OPPONENT query - contest_id: 883, user: 280, event_unit: 1
+Totale atleti attivi trovati: 16
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Sissal, aep_id: 47, athlete_id: 10
+Atleti senza aep_id: 0 su 16 (0.00%)
+OWNER query - contest_id: 882, user: 278, event_unit: 1
+OPPONENT query - contest_id: 882, user: 276, event_unit: 1
+OWNER query - contest_id: 882, user: 278, event_unit: 1
+OPPONENT query - contest_id: 882, user: 276, event_unit: 1
+OWNER query - contest_id: 879, user: 280, event_unit: 1
+OPPONENT query - contest_id: 879, user: 275, event_unit: 1
+OWNER query - contest_id: 879, user: 280, event_unit: 1
+OPPONENT query - contest_id: 879, user: 275, event_unit: 1
+Totale atleti attivi trovati: 16
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Sissal, aep_id: 47, athlete_id: 10
+Atleti senza aep_id: 0 su 16 (0.00%)
+📥 Dati ricevuti dal client: {
+  "contestId": 882,
+  "userId": "278",
+  "owner_id": "278",
+  "opponent_id": "276",
+  "players": [
+    {
+      "athleteId": 24,
+      "eventUnitId": 2,
+      "event_unit_cost": 3.5,
+      "aep_id": 61
+    },
+    {
+      "athleteId": 10,
+      "eventUnitId": 2,
+      "event_unit_cost": 1,
+      "aep_id": 47
+    },
+    {
+      "athleteId": 19,
+      "eventUnitId": 2,
+      "event_unit_cost": 3.5,
+      "aep_id": 56
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 8
+}
+👤 Utente autenticato: {
+  userId: 278,
+  email: 'mistyx87@gmail.com',
+  username: 'AlbaBrio',
+  iat: 1747170039,
+  exp: 1747774839
+}
+OWNER query - contest_id: 879, user: 280, event_unit: 1
+OPPONENT query - contest_id: 879, user: 275, event_unit: 1
+OWNER query - contest_id: 879, user: 280, event_unit: 1
+OPPONENT query - contest_id: 879, user: 275, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 879,
+  "userId": "275",
+  "owner_id": 280,
+  "opponent_id": 275,
+  "players": [
+    {
+      "athleteId": 12,
+      "eventUnitId": 2,
+      "event_unit_cost": 4,
+      "aep_id": 49
+    },
+    {
+      "athleteId": 19,
+      "eventUnitId": 2,
+      "event_unit_cost": 3.5,
+      "aep_id": 56
+    },
+    {
+      "athleteId": 31,
+      "eventUnitId": 2,
+      "event_unit_cost": 1.5,
+      "aep_id": 68
+    },
+    {
+      "athleteId": 18,
+      "eventUnitId": 2,
+      "event_unit_cost": 1,
+      "aep_id": 55
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 275,
+  email: 'panozfc@gmail.com',
+  username: 'Panoz Football Club',
+  iat: 1747342460,
+  exp: 1747947260
+}
+OWNER query - contest_id: 879, user: 280, event_unit: 1
+OPPONENT query - contest_id: 879, user: 275, event_unit: 1
+OWNER query - contest_id: 882, user: 278, event_unit: 1
+OPPONENT query - contest_id: 882, user: 276, event_unit: 1
+OWNER query - contest_id: 882, user: 278, event_unit: 1
+OPPONENT query - contest_id: 882, user: 276, event_unit: 1
+Totale atleti attivi trovati: 16
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Sissal, aep_id: 47, athlete_id: 10
+Atleti senza aep_id: 0 su 16 (0.00%)
+OWNER query - contest_id: 882, user: 278, event_unit: 1
+OPPONENT query - contest_id: 882, user: 276, event_unit: 1
+OWNER query - contest_id: 882, user: 278, event_unit: 1
+OPPONENT query - contest_id: 882, user: 276, event_unit: 1
+Totale atleti attivi trovati: 16
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Sissal, aep_id: 47, athlete_id: 10
+Atleti senza aep_id: 0 su 16 (0.00%)
+OWNER query - contest_id: 882, user: 278, event_unit: 1
+OPPONENT query - contest_id: 882, user: 276, event_unit: 1
+OWNER query - contest_id: 882, user: 278, event_unit: 1
+OPPONENT query - contest_id: 882, user: 276, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 882,
+  "userId": "276",
+  "owner_id": 278,
+  "opponent_id": 276,
+  "players": [
+    {
+      "athleteId": 12,
+      "eventUnitId": 2,
+      "event_unit_cost": 4,
+      "aep_id": 49
+    },
+    {
+      "athleteId": 19,
+      "eventUnitId": 2,
+      "event_unit_cost": 3.5,
+      "aep_id": 56
+    },
+    {
+      "athleteId": 18,
+      "eventUnitId": 2,
+      "event_unit_cost": 1,
+      "aep_id": 55
+    },
+    {
+      "athleteId": 31,
+      "eventUnitId": 2,
+      "event_unit_cost": 1.5,
+      "aep_id": 68
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 276,
+  email: 'panoz4u@gmail.com',
+  username: 'Panoz 4U',
+  iat: 1747342527,
+  exp: 1747947327
+}
+OWNER query - contest_id: 882, user: 278, event_unit: 1
+OPPONENT query - contest_id: 882, user: 276, event_unit: 1
+OWNER query - contest_id: 884, user: 276, event_unit: 1
+OPPONENT query - contest_id: 884, user: 277, event_unit: 1
+OWNER query - contest_id: 884, user: 276, event_unit: 1
+OPPONENT query - contest_id: 884, user: 277, event_unit: 1
+Totale atleti attivi trovati: 16
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Sissal, aep_id: 47, athlete_id: 10
+Atleti senza aep_id: 0 su 16 (0.00%)
+OWNER query - contest_id: 884, user: 276, event_unit: 1
+OPPONENT query - contest_id: 884, user: 277, event_unit: 1
+OWNER query - contest_id: 884, user: 276, event_unit: 1
+OPPONENT query - contest_id: 884, user: 277, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 884,
+  "userId": "276",
+  "owner_id": "276",
+  "opponent_id": "277",
+  "players": [
+    {
+      "athleteId": 12,
+      "eventUnitId": 2,
+      "event_unit_cost": 4,
+      "aep_id": 49
+    },
+    {
+      "athleteId": 9,
+      "eventUnitId": 2,
+      "event_unit_cost": 2,
+      "aep_id": 46
+    },
+    {
+      "athleteId": 19,
+      "eventUnitId": 2,
+      "event_unit_cost": 3.5,
+      "aep_id": 56
+    },
+    {
+      "athleteId": 14,
+      "eventUnitId": 2,
+      "event_unit_cost": 0.5,
+      "aep_id": 51
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 10
+}
+👤 Utente autenticato: {
+  userId: 276,
+  email: 'panoz4u@gmail.com',
+  username: 'Panoz 4U',
+  iat: 1747342527,
+  exp: 1747947327
+}
+OWNER query - contest_id: 885, user: 276, event_unit: 1
+OPPONENT query - contest_id: 885, user: 277, event_unit: 1
+OWNER query - contest_id: 885, user: 276, event_unit: 1
+OPPONENT query - contest_id: 885, user: 277, event_unit: 1
+Totale atleti attivi trovati: 16
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Sissal, aep_id: 47, athlete_id: 10
+Atleti senza aep_id: 0 su 16 (0.00%)
+OWNER query - contest_id: 885, user: 276, event_unit: 1
+OPPONENT query - contest_id: 885, user: 277, event_unit: 1
+OWNER query - contest_id: 885, user: 276, event_unit: 1
+OPPONENT query - contest_id: 885, user: 277, event_unit: 1
+OWNER query - contest_id: 885, user: 276, event_unit: 1
+OPPONENT query - contest_id: 885, user: 277, event_unit: 1
+OWNER query - contest_id: 885, user: 276, event_unit: 1
+OPPONENT query - contest_id: 885, user: 277, event_unit: 1
+OWNER query - contest_id: 885, user: 276, event_unit: 1
+OPPONENT query - contest_id: 885, user: 277, event_unit: 1
+OWNER query - contest_id: 885, user: 276, event_unit: 1
+OPPONENT query - contest_id: 885, user: 277, event_unit: 1
+Totale atleti attivi trovati: 16
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Sissal, aep_id: 47, athlete_id: 10
+Atleti senza aep_id: 0 su 16 (0.00%)
+OWNER query - contest_id: 886, user: 284, event_unit: 1
+OPPONENT query - contest_id: 886, user: 279, event_unit: 1
+OWNER query - contest_id: 886, user: 284, event_unit: 1
+OPPONENT query - contest_id: 886, user: 279, event_unit: 1
+Totale atleti attivi trovati: 16
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Sissal, aep_id: 47, athlete_id: 10
+Atleti senza aep_id: 0 su 16 (0.00%)
+OWNER query - contest_id: 886, user: 284, event_unit: 1
+OPPONENT query - contest_id: 886, user: 279, event_unit: 1
+OWNER query - contest_id: 886, user: 284, event_unit: 1
+OPPONENT query - contest_id: 886, user: 279, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 886,
+  "userId": "284",
+  "owner_id": "284",
+  "opponent_id": "279",
+  "players": [
+    {
+      "athleteId": 12,
+      "eventUnitId": 2,
+      "event_unit_cost": 4,
+      "aep_id": 49
+    },
+    {
+      "athleteId": 22,
+      "eventUnitId": 2,
+      "event_unit_cost": 3,
+      "aep_id": 59
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 7
+}
+👤 Utente autenticato: {
+  userId: 284,
+  email: 'liciapotenza19@gmail.com',
+  username: 'Licia',
+  iat: 1747343634,
+  exp: 1747948434
+}
+Totale atleti attivi trovati: 16
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Sissal, aep_id: 47, athlete_id: 10
+Atleti senza aep_id: 0 su 16 (0.00%)
+OWNER query - contest_id: 887, user: 284, event_unit: 1
+OPPONENT query - contest_id: 887, user: 276, event_unit: 1
+OWNER query - contest_id: 887, user: 284, event_unit: 1
+OPPONENT query - contest_id: 887, user: 276, event_unit: 1
+OWNER query - contest_id: 888, user: 284, event_unit: 1
+OPPONENT query - contest_id: 888, user: 276, event_unit: 1
+OWNER query - contest_id: 888, user: 284, event_unit: 1
+OPPONENT query - contest_id: 888, user: 276, event_unit: 1
+Totale atleti attivi trovati: 16
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Sissal, aep_id: 47, athlete_id: 10
+Atleti senza aep_id: 0 su 16 (0.00%)
+OWNER query - contest_id: 888, user: 284, event_unit: 1
+OPPONENT query - contest_id: 888, user: 276, event_unit: 1
+OWNER query - contest_id: 888, user: 284, event_unit: 1
+OPPONENT query - contest_id: 888, user: 276, event_unit: 1
+Totale atleti attivi trovati: 16
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Parg, aep_id: 39, athlete_id: 2
+Atleta 2: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 3: JJ, aep_id: 41, athlete_id: 4
+Atleta 4: Adonxs, aep_id: 46, athlete_id: 9
+Atleta 5: Sissal, aep_id: 47, athlete_id: 10
+Atleti senza aep_id: 0 su 16 (0.00%)
+📥 Dati ricevuti dal client: {
+  "contestId": 888,
+  "userId": "284",
+  "owner_id": "284",
+  "opponent_id": "276",
+  "players": [
+    {
+      "athleteId": 12,
+      "eventUnitId": 2,
+      "event_unit_cost": 4,
+      "aep_id": 49
+    },
+    {
+      "athleteId": 10,
+      "eventUnitId": 2,
+      "event_unit_cost": 1,
+      "aep_id": 47
+    },
+    {
+      "athleteId": 2,
+      "eventUnitId": 2,
+      "event_unit_cost": 1,
+      "aep_id": 39
+    },
+    {
+      "athleteId": 23,
+      "eventUnitId": 2,
+      "event_unit_cost": 3,
+      "aep_id": 60
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 9
+}
+👤 Utente autenticato: {
+  userId: 284,
+  email: 'liciapotenza19@gmail.com',
+  username: 'Licia',
+  iat: 1747343867,
+  exp: 1747948667
+}
+OWNER query - contest_id: 889, user: 284, event_unit: 1
+OPPONENT query - contest_id: 889, user: 276, event_unit: 1
+OWNER query - contest_id: 889, user: 284, event_unit: 1
+OPPONENT query - contest_id: 889, user: 276, event_unit: 1
+Record aggiornato per athlete_id 1 e event_unit_id 2
+Record aggiornato per athlete_id 2 e event_unit_id 2
+Record aggiornato per athlete_id 3 e event_unit_id 2
+Record aggiornato per athlete_id 4 e event_unit_id 2
+Record aggiornato per athlete_id 5 e event_unit_id 2
+Record aggiornato per athlete_id 6 e event_unit_id 2
+Record aggiornato per athlete_id 7 e event_unit_id 2
+Record aggiornato per athlete_id 8 e event_unit_id 2
+Record aggiornato per athlete_id 9 e event_unit_id 2
+Record aggiornato per athlete_id 10 e event_unit_id 2
+Record aggiornato per athlete_id 11 e event_unit_id 2
+Record aggiornato per athlete_id 12 e event_unit_id 2
+Record aggiornato per athlete_id 13 e event_unit_id 2
+Record aggiornato per athlete_id 14 e event_unit_id 2
+Record aggiornato per athlete_id 15 e event_unit_id 2
+Record aggiornato per athlete_id 16 e event_unit_id 2
+Record aggiornato per athlete_id 17 e event_unit_id 2
+Record aggiornato per athlete_id 18 e event_unit_id 2
+Record aggiornato per athlete_id 19 e event_unit_id 2
+Record aggiornato per athlete_id 20 e event_unit_id 2
+Record aggiornato per athlete_id 21 e event_unit_id 2
+Record aggiornato per athlete_id 22 e event_unit_id 2
+Record aggiornato per athlete_id 23 e event_unit_id 2
+Record aggiornato per athlete_id 24 e event_unit_id 2
+Record aggiornato per athlete_id 25 e event_unit_id 2
+Record aggiornato per athlete_id 26 e event_unit_id 2
+Record aggiornato per athlete_id 27 e event_unit_id 2
+Record aggiornato per athlete_id 28 e event_unit_id 2
+Record aggiornato per athlete_id 29 e event_unit_id 2
+Record aggiornato per athlete_id 30 e event_unit_id 2
+Record aggiornato per athlete_id 31 e event_unit_id 2
+Record aggiornato per athlete_id 32 e event_unit_id 2
+Record aggiornato per athlete_id 33 e event_unit_id 2
+Record aggiornato per athlete_id 34 e event_unit_id 2
+Record aggiornato per athlete_id 35 e event_unit_id 2
+Record aggiornato per athlete_id 36 e event_unit_id 2
+Record aggiornato per athlete_id 37 e event_unit_id 2
+Record aggiornato per athlete_id 1 e event_unit_id 1
+Record aggiornato per athlete_id 2 e event_unit_id 1
+Record aggiornato per athlete_id 3 e event_unit_id 1
+Record aggiornato per athlete_id 4 e event_unit_id 1
+Record aggiornato per athlete_id 5 e event_unit_id 1
+Record aggiornato per athlete_id 6 e event_unit_id 1
+Record aggiornato per athlete_id 7 e event_unit_id 1
+Record aggiornato per athlete_id 8 e event_unit_id 1
+Record aggiornato per athlete_id 9 e event_unit_id 1
+Record aggiornato per athlete_id 10 e event_unit_id 1
+Record aggiornato per athlete_id 11 e event_unit_id 1
+Record aggiornato per athlete_id 12 e event_unit_id 1
+Record aggiornato per athlete_id 13 e event_unit_id 1
+Record aggiornato per athlete_id 14 e event_unit_id 1
+Record aggiornato per athlete_id 15 e event_unit_id 1
+Record aggiornato per athlete_id 16 e event_unit_id 1
+Record aggiornato per athlete_id 17 e event_unit_id 1
+Record aggiornato per athlete_id 18 e event_unit_id 1
+Record aggiornato per athlete_id 19 e event_unit_id 1
+Record aggiornato per athlete_id 20 e event_unit_id 1
+Record aggiornato per athlete_id 21 e event_unit_id 1
+Record aggiornato per athlete_id 22 e event_unit_id 1
+Record aggiornato per athlete_id 23 e event_unit_id 1
+Record aggiornato per athlete_id 24 e event_unit_id 1
+Record aggiornato per athlete_id 25 e event_unit_id 1
+Record aggiornato per athlete_id 26 e event_unit_id 1
+Record aggiornato per athlete_id 27 e event_unit_id 1
+Record aggiornato per athlete_id 28 e event_unit_id 1
+Record aggiornato per athlete_id 29 e event_unit_id 1
+Record aggiornato per athlete_id 30 e event_unit_id 1
+Record aggiornato per athlete_id 31 e event_unit_id 1
+Record aggiornato per athlete_id 32 e event_unit_id 1
+Record aggiornato per athlete_id 33 e event_unit_id 1
+Record aggiornato per athlete_id 34 e event_unit_id 1
+Record aggiornato per athlete_id 35 e event_unit_id 1
+Record aggiornato per athlete_id 36 e event_unit_id 1
+Record aggiornato per athlete_id 37 e event_unit_id 1
+OWNER query - contest_id: 882, user: 278, event_unit: 1
+OPPONENT query - contest_id: 882, user: 276, event_unit: 1
+OWNER query - contest_id: 888, user: 284, event_unit: 1
+OPPONENT query - contest_id: 888, user: 276, event_unit: 1
+OWNER query - contest_id: 888, user: 284, event_unit: 1
+OPPONENT query - contest_id: 888, user: 276, event_unit: 1
+OWNER query - contest_id: 888, user: 284, event_unit: 1
+OPPONENT query - contest_id: 888, user: 276, event_unit: 1
+OWNER query - contest_id: 888, user: 284, event_unit: 1
+OPPONENT query - contest_id: 888, user: 276, event_unit: 1
+Record aggiornato per athlete_id 1 e event_unit_id 2
+Record aggiornato per athlete_id 2 e event_unit_id 2
+Record aggiornato per athlete_id 3 e event_unit_id 2
+Record aggiornato per athlete_id 4 e event_unit_id 2
+Record aggiornato per athlete_id 5 e event_unit_id 2
+Record aggiornato per athlete_id 6 e event_unit_id 2
+Record aggiornato per athlete_id 7 e event_unit_id 2
+Record aggiornato per athlete_id 8 e event_unit_id 2
+Record aggiornato per athlete_id 9 e event_unit_id 2
+Record aggiornato per athlete_id 10 e event_unit_id 2
+Record aggiornato per athlete_id 11 e event_unit_id 2
+Record aggiornato per athlete_id 12 e event_unit_id 2
+Record aggiornato per athlete_id 13 e event_unit_id 2
+Record aggiornato per athlete_id 14 e event_unit_id 2
+Record aggiornato per athlete_id 15 e event_unit_id 2
+Record aggiornato per athlete_id 16 e event_unit_id 2
+Record aggiornato per athlete_id 17 e event_unit_id 2
+Record aggiornato per athlete_id 18 e event_unit_id 2
+Record aggiornato per athlete_id 19 e event_unit_id 2
+Record aggiornato per athlete_id 20 e event_unit_id 2
+Record aggiornato per athlete_id 21 e event_unit_id 2
+Record aggiornato per athlete_id 22 e event_unit_id 2
+Record aggiornato per athlete_id 23 e event_unit_id 2
+Record aggiornato per athlete_id 24 e event_unit_id 2
+Record aggiornato per athlete_id 25 e event_unit_id 2
+Record aggiornato per athlete_id 26 e event_unit_id 2
+Record aggiornato per athlete_id 27 e event_unit_id 2
+Record aggiornato per athlete_id 28 e event_unit_id 2
+Record aggiornato per athlete_id 29 e event_unit_id 2
+Record aggiornato per athlete_id 30 e event_unit_id 2
+Record aggiornato per athlete_id 31 e event_unit_id 2
+Record aggiornato per athlete_id 32 e event_unit_id 2
+Record aggiornato per athlete_id 33 e event_unit_id 2
+Record aggiornato per athlete_id 34 e event_unit_id 2
+Record aggiornato per athlete_id 35 e event_unit_id 2
+Record aggiornato per athlete_id 36 e event_unit_id 2
+Record aggiornato per athlete_id 37 e event_unit_id 2
+Record aggiornato per athlete_id 1 e event_unit_id 1
+Record aggiornato per athlete_id 2 e event_unit_id 1
+Record aggiornato per athlete_id 3 e event_unit_id 1
+Record aggiornato per athlete_id 4 e event_unit_id 1
+Record aggiornato per athlete_id 5 e event_unit_id 1
+Record aggiornato per athlete_id 6 e event_unit_id 1
+Record aggiornato per athlete_id 7 e event_unit_id 1
+Record aggiornato per athlete_id 8 e event_unit_id 1
+Record aggiornato per athlete_id 9 e event_unit_id 1
+Record aggiornato per athlete_id 10 e event_unit_id 1
+Record aggiornato per athlete_id 11 e event_unit_id 1
+Record aggiornato per athlete_id 12 e event_unit_id 1
+Record aggiornato per athlete_id 13 e event_unit_id 1
+Record aggiornato per athlete_id 14 e event_unit_id 1
+Record aggiornato per athlete_id 15 e event_unit_id 1
+Record aggiornato per athlete_id 16 e event_unit_id 1
+Record aggiornato per athlete_id 17 e event_unit_id 1
+Record aggiornato per athlete_id 18 e event_unit_id 1
+Record aggiornato per athlete_id 19 e event_unit_id 1
+Record aggiornato per athlete_id 20 e event_unit_id 1
+Record aggiornato per athlete_id 21 e event_unit_id 1
+Record aggiornato per athlete_id 22 e event_unit_id 1
+Record aggiornato per athlete_id 23 e event_unit_id 1
+Record aggiornato per athlete_id 24 e event_unit_id 1
+Record aggiornato per athlete_id 25 e event_unit_id 1
+Record aggiornato per athlete_id 26 e event_unit_id 1
+Record aggiornato per athlete_id 27 e event_unit_id 1
+Record aggiornato per athlete_id 28 e event_unit_id 1
+Record aggiornato per athlete_id 29 e event_unit_id 1
+Record aggiornato per athlete_id 30 e event_unit_id 1
+Record aggiornato per athlete_id 31 e event_unit_id 1
+Record aggiornato per athlete_id 32 e event_unit_id 1
+Record aggiornato per athlete_id 33 e event_unit_id 1
+Record aggiornato per athlete_id 34 e event_unit_id 1
+Record aggiornato per athlete_id 35 e event_unit_id 1
+Record aggiornato per athlete_id 36 e event_unit_id 1
+Record aggiornato per athlete_id 37 e event_unit_id 1
+Totale atleti attivi trovati: 37
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Shkodra Elektronike, aep_id: 38, athlete_id: 1
+Atleta 2: Parg, aep_id: 39, athlete_id: 2
+Atleta 3: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 4: JJ, aep_id: 41, athlete_id: 4
+Atleta 5: Mamagama, aep_id: 42, athlete_id: 5
+Atleti senza aep_id: 0 su 37 (0.00%)
+Record aggiornato per athlete_id 1 e event_unit_id 2
+Record aggiornato per athlete_id 2 e event_unit_id 2
+Record aggiornato per athlete_id 4 e event_unit_id 2
+Record aggiornato per athlete_id 5 e event_unit_id 2
+Record aggiornato per athlete_id 6 e event_unit_id 2
+Record aggiornato per athlete_id 7 e event_unit_id 2
+Record aggiornato per athlete_id 8 e event_unit_id 2
+Record aggiornato per athlete_id 9 e event_unit_id 2
+Record aggiornato per athlete_id 10 e event_unit_id 2
+Record aggiornato per athlete_id 11 e event_unit_id 2
+Record aggiornato per athlete_id 12 e event_unit_id 2
+Record aggiornato per athlete_id 13 e event_unit_id 2
+Record aggiornato per athlete_id 15 e event_unit_id 2
+Record aggiornato per athlete_id 17 e event_unit_id 2
+Record aggiornato per athlete_id 18 e event_unit_id 2
+Record aggiornato per athlete_id 20 e event_unit_id 2
+Record aggiornato per athlete_id 21 e event_unit_id 2
+Record aggiornato per athlete_id 22 e event_unit_id 2
+Record aggiornato per athlete_id 23 e event_unit_id 2
+Record aggiornato per athlete_id 26 e event_unit_id 2
+Record aggiornato per athlete_id 27 e event_unit_id 2
+Record aggiornato per athlete_id 28 e event_unit_id 2
+Record aggiornato per athlete_id 29 e event_unit_id 2
+Record aggiornato per athlete_id 30 e event_unit_id 2
+Record aggiornato per athlete_id 32 e event_unit_id 2
+Record aggiornato per athlete_id 33 e event_unit_id 2
+Record aggiornato per athlete_id 34 e event_unit_id 2
+Record aggiornato per athlete_id 35 e event_unit_id 2
+Record aggiornato per athlete_id 36 e event_unit_id 2
+Record aggiornato per athlete_id 37 e event_unit_id 2
+Record aggiornato per athlete_id 1 e event_unit_id 1
+Record aggiornato per athlete_id 2 e event_unit_id 1
+Record aggiornato per athlete_id 3 e event_unit_id 1
+Record aggiornato per athlete_id 4 e event_unit_id 1
+Record aggiornato per athlete_id 5 e event_unit_id 1
+Record aggiornato per athlete_id 6 e event_unit_id 1
+Record aggiornato per athlete_id 7 e event_unit_id 1
+Record aggiornato per athlete_id 8 e event_unit_id 1
+Record aggiornato per athlete_id 9 e event_unit_id 1
+Record aggiornato per athlete_id 10 e event_unit_id 1
+Record aggiornato per athlete_id 11 e event_unit_id 1
+Record aggiornato per athlete_id 12 e event_unit_id 1
+Record aggiornato per athlete_id 13 e event_unit_id 1
+Record aggiornato per athlete_id 14 e event_unit_id 1
+Record aggiornato per athlete_id 15 e event_unit_id 1
+Record aggiornato per athlete_id 16 e event_unit_id 1
+Record aggiornato per athlete_id 17 e event_unit_id 1
+Record aggiornato per athlete_id 18 e event_unit_id 1
+Record aggiornato per athlete_id 19 e event_unit_id 1
+Record aggiornato per athlete_id 20 e event_unit_id 1
+Record aggiornato per athlete_id 21 e event_unit_id 1
+Record aggiornato per athlete_id 22 e event_unit_id 1
+Record aggiornato per athlete_id 23 e event_unit_id 1
+Record aggiornato per athlete_id 24 e event_unit_id 1
+Record aggiornato per athlete_id 25 e event_unit_id 1
+Record aggiornato per athlete_id 26 e event_unit_id 1
+Record aggiornato per athlete_id 27 e event_unit_id 1
+Record aggiornato per athlete_id 28 e event_unit_id 1
+Record aggiornato per athlete_id 29 e event_unit_id 1
+Record aggiornato per athlete_id 30 e event_unit_id 1
+Record aggiornato per athlete_id 31 e event_unit_id 1
+Record aggiornato per athlete_id 32 e event_unit_id 1
+Record aggiornato per athlete_id 33 e event_unit_id 1
+Record aggiornato per athlete_id 34 e event_unit_id 1
+Record aggiornato per athlete_id 35 e event_unit_id 1
+Record aggiornato per athlete_id 36 e event_unit_id 1
+Record aggiornato per athlete_id 37 e event_unit_id 1
+Totale atleti attivi trovati: 37
+Esempio di aep_id nei primi 5 atleti:
+Atleta 1: Shkodra Elektronike, aep_id: 38, athlete_id: 1
+Atleta 2: Parg, aep_id: 39, athlete_id: 2
+Atleta 3: Go-Jo, aep_id: 40, athlete_id: 3
+Atleta 4: JJ, aep_id: 41, athlete_id: 4
+Atleta 5: Mamagama, aep_id: 42, athlete_id: 5
+Atleti senza aep_id: 0 su 37 (0.00%)
+OWNER query - contest_id: 888, user: 284, event_unit: 1
+OPPONENT query - contest_id: 888, user: 276, event_unit: 1
+OWNER query - contest_id: 888, user: 284, event_unit: 1
+OPPONENT query - contest_id: 888, user: 276, event_unit: 1
+📥 Dati ricevuti dal client: {
+  "contestId": 888,
+  "userId": "276",
+  "owner_id": 284,
+  "opponent_id": 276,
+  "players": [
+    {
+      "athleteId": 2,
+      "eventUnitId": 2,
+      "event_unit_cost": 1,
+      "aep_id": 39
+    },
+    {
+      "athleteId": 10,
+      "eventUnitId": 2,
+      "event_unit_cost": 1,
+      "aep_id": 47
+    },
+    {
+      "athleteId": 16,
+      "eventUnitId": 2,
+      "event_unit_cost": 2.5,
+      "aep_id": 53
+    },
+    {
+      "athleteId": 12,
+      "eventUnitId": 2,
+      "event_unit_cost": 4,
+      "aep_id": 49
+    },
+    {
+      "athleteId": 18,
+      "eventUnitId": 2,
+      "event_unit_cost": 1,
+      "aep_id": 55
+    }
+  ],
+  "multiplier": 1,
+  "totalCost": 9.5
+}
+👤 Utente autenticato: {
+  userId: 276,
+  email: 'panoz4u@gmail.com',
+  username: 'Panoz 4U',
+  iat: 1747344358,
+  exp: 1747949158
+}
+Record aggiornato per athlete_id 1 e event_unit_id 2
+Record aggiornato per athlete_id 2 e event_unit_id 2
+Record aggiornato per athlete_id 4 e event_unit_id 2
+Record aggiornato per athlete_id 5 e event_unit_id 2
+Record aggiornato per athlete_id 6 e event_unit_id 2
+Record aggiornato per athlete_id 7 e event_unit_id 2
+Record aggiornato per athlete_id 8 e event_unit_id 2
+Record aggiornato per athlete_id 9 e event_unit_id 2
+Record aggiornato per athlete_id 10 e event_unit_id 2
+Record aggiornato per athlete_id 11 e event_unit_id 2
+Record aggiornato per athlete_id 12 e event_unit_id 2
+Record aggiornato per athlete_id 13 e event_unit_id 2
+Record aggiornato per athlete_id 15 e event_unit_id 2
+Record aggiornato per athlete_id 17 e event_unit_id 2
+Record aggiornato per athlete_id 18 e event_unit_id 2
+Record aggiornato per athlete_id 20 e event_unit_id 2
+Record aggiornato per athlete_id 21 e event_unit_id 2
+Record aggiornato per athlete_id 22 e event_unit_id 2
+Record aggiornato per athlete_id 23 e event_unit_id 2
+Record aggiornato per athlete_id 26 e event_unit_id 2
+Record aggiornato per athlete_id 27 e event_unit_id 2
+Record aggiornato per athlete_id 28 e event_unit_id 2
+Record aggiornato per athlete_id 29 e event_unit_id 2
+Record aggiornato per athlete_id 30 e event_unit_id 2
+Record aggiornato per athlete_id 32 e event_unit_id 2
+Record aggiornato per athlete_id 33 e event_unit_id 2
+Record aggiornato per athlete_id 34 e event_unit_id 2
+Record aggiornato per athlete_id 35 e event_unit_id 2
+Record aggiornato per athlete_id 36 e event_unit_id 2
+Record aggiornato per athlete_id 37 e event_unit_id 2
+Record aggiornato per athlete_id 1 e event_unit_id 1
+Record aggiornato per athlete_id 2 e event_unit_id 1
+Record aggiornato per athlete_id 3 e event_unit_id 1
+Record aggiornato per athlete_id 4 e event_unit_id 1
+Record aggiornato per athlete_id 5 e event_unit_id 1
+Record aggiornato per athlete_id 6 e event_unit_id 1
+Record aggiornato per athlete_id 7 e event_unit_id 1
+Record aggiornato per athlete_id 8 e event_unit_id 1
+Record aggiornato per athlete_id 9 e event_unit_id 1
+Record aggiornato per athlete_id 10 e event_unit_id 1
+Record aggiornato per athlete_id 11 e event_unit_id 1
+Record aggiornato per athlete_id 12 e event_unit_id 1
+Record aggiornato per athlete_id 13 e event_unit_id 1
+Record aggiornato per athlete_id 14 e event_unit_id 1
+Record aggiornato per athlete_id 15 e event_unit_id 1
+Record aggiornato per athlete_id 16 e event_unit_id 1
+Record aggiornato per athlete_id 17 e event_unit_id 1
+Record aggiornato per athlete_id 18 e event_unit_id 1
+Record aggiornato per athlete_id 19 e event_unit_id 1
+Record aggiornato per athlete_id 20 e event_unit_id 1
+Record aggiornato per athlete_id 21 e event_unit_id 1
+Record aggiornato per athlete_id 22 e event_unit_id 1
+Record aggiornato per athlete_id 23 e event_unit_id 1
+Record aggiornato per athlete_id 24 e event_unit_id 1
+Record aggiornato per athlete_id 25 e event_unit_id 1
+Record aggiornato per athlete_id 26 e event_unit_id 1
+Record aggiornato per athlete_id 27 e event_unit_id 1
+Record aggiornato per athlete_id 28 e event_unit_id 1
+Record aggiornato per athlete_id 29 e event_unit_id 1
+Record aggiornato per athlete_id 30 e event_unit_id 1
+Record aggiornato per athlete_id 31 e event_unit_id 1
+Record aggiornato per athlete_id 32 e event_unit_id 1
+Record aggiornato per athlete_id 33 e event_unit_id 1
+Record aggiornato per athlete_id 34 e event_unit_id 1
+Record aggiornato per athlete_id 35 e event_unit_id 1
+Record aggiornato per athlete_id 36 e event_unit_id 1
+Record aggiornato per athlete_id 37 e event_unit_id 1
+Record aggiornato per athlete_id 5 e event_unit_id 2
+Record aggiornato per athlete_id 3 e event_unit_id 2
+Record aggiornato per athlete_id 2 e event_unit_id 2
+Record aggiornato per athlete_id 6 e event_unit_id 2
+Record aggiornato per athlete_id 9 e event_unit_id 2
+Record aggiornato per athlete_id 10 e event_unit_id 2
+Record aggiornato per athlete_id 4 e event_unit_id 2
+Record aggiornato per athlete_id 1 e event_unit_id 2
+Record aggiornato per athlete_id 7 e event_unit_id 2
+Record aggiornato per athlete_id 8 e event_unit_id 2
+Record aggiornato per athlete_id 11 e event_unit_id 2
+Record aggiornato per athlete_id 12 e event_unit_id 2
+Record aggiornato per athlete_id 13 e event_unit_id 2
+Record aggiornato per athlete_id 15 e event_unit_id 2
+Record aggiornato per athlete_id 14 e event_unit_id 2
+Record aggiornato per athlete_id 16 e event_unit_id 2
+Record aggiornato per athlete_id 17 e event_unit_id 2
+Record aggiornato per athlete_id 19 e event_unit_id 2
+Record aggiornato per athlete_id 18 e event_unit_id 2
+Record aggiornato per athlete_id 20 e event_unit_id 2
+Record aggiornato per athlete_id 21 e event_unit_id 2
+Record aggiornato per athlete_id 22 e event_unit_id 2
+Record aggiornato per athlete_id 24 e event_unit_id 2
+Record aggiornato per athlete_id 23 e event_unit_id 2
+Record aggiornato per athlete_id 26 e event_unit_id 2
+Record aggiornato per athlete_id 25 e event_unit_id 2
+Record aggiornato per athlete_id 27 e event_unit_id 2
+Record aggiornato per athlete_id 28 e event_unit_id 2
+Record aggiornato per athlete_id 29 e event_unit_id 2
+Record aggiornato per athlete_id 30 e event_unit_id 2
+Record aggiornato per athlete_id 31 e event_unit_id 2
+Record aggiornato per athlete_id 33 e event_unit_id 2
+Record aggiornato per athlete_id 34 e event_unit_id 2
+Record aggiornato per athlete_id 35 e event_unit_id 2
+Record aggiornato per athlete_id 32 e event_unit_id 2
+Record aggiornato per athlete_id 36 e event_unit_id 2
+Record aggiornato per athlete_id 37 e event_unit_id 2
+Event unit IDs processati: [ 2 ]
+Verificando contest live per event_unit_id: 2
+Tutti i contest associati a event_unit_id 2: [
+  {
+    contest_id: 869,
+    status: 2,
+    owner_user_id: 282,
+    opponent_user_id: 281
+  },
+  {
+    contest_id: 870,
+    status: 2,
+    owner_user_id: 283,
+    opponent_user_id: 281
+  },
+  {
+    contest_id: 872,
+    status: 2,
+    owner_user_id: 283,
+    opponent_user_id: 282
+  },
+  {
+    contest_id: 873,
+    status: 2,
+    owner_user_id: 282,
+    opponent_user_id: 276
+  },
+  {
+    contest_id: 874,
+    status: 2,
+    owner_user_id: 276,
+    opponent_user_id: 281
+  },
+  {
+    contest_id: 875,
+    status: 2,
+    owner_user_id: 283,
+    opponent_user_id: 276
+  },
+  {
+    contest_id: 876,
+    status: 2,
+    owner_user_id: 283,
+    opponent_user_id: 280
+  },
+  {
+    contest_id: 877,
+    status: 2,
+    owner_user_id: 281,
+    opponent_user_id: 282
+  },
+  {
+    contest_id: 878,
+    status: 2,
+    owner_user_id: 281,
+    opponent_user_id: 283
+  },
+  {
+    contest_id: 879,
+    status: 2,
+    owner_user_id: 280,
+    opponent_user_id: 275
+  },
+  {
+    contest_id: 881,
+    status: 2,
+    owner_user_id: 279,
+    opponent_user_id: 276
+  },
+  {
+    contest_id: 882,
+    status: 2,
+    owner_user_id: 278,
+    opponent_user_id: 276
+  },
+  {
+    contest_id: 884,
+    status: 1,
+    owner_user_id: 276,
+    opponent_user_id: 277
+  },
+  {
+    contest_id: 886,
+    status: 1,
+    owner_user_id: 284,
+    opponent_user_id: 279
+  },
+  {
+    contest_id: 888,
+    status: 2,
+    owner_user_id: 284,
+    opponent_user_id: 276
+  }
+]
+Dettaglio atleti per contest (event_unit_id 2): [
+  {
+    contest_id: 869,
+    status: 2,
+    ended_athletes: '8',
+    total_athletes: 8
+  },
+  {
+    contest_id: 870,
+    status: 2,
+    ended_athletes: '7',
+    total_athletes: 7
+  },
+  {
+    contest_id: 872,
+    status: 2,
+    ended_athletes: '6',
+    total_athletes: 6
+  },
+  {
+    contest_id: 873,
+    status: 2,
+    ended_athletes: '8',
+    total_athletes: 8
+  },
+  {
+    contest_id: 874,
+    status: 2,
+    ended_athletes: '9',
+    total_athletes: 9
+  },
+  {
+    contest_id: 875,
+    status: 2,
+    ended_athletes: '7',
+    total_athletes: 7
+  },
+  {
+    contest_id: 876,
+    status: 2,
+    ended_athletes: '7',
+    total_athletes: 7
+  },
+  {
+    contest_id: 877,
+    status: 2,
+    ended_athletes: '10',
+    total_athletes: 10
+  },
+  {
+    contest_id: 878,
+    status: 2,
+    ended_athletes: '11',
+    total_athletes: 11
+  },
+  {
+    contest_id: 879,
+    status: 2,
+    ended_athletes: '7',
+    total_athletes: 7
+  },
+  {
+    contest_id: 881,
+    status: 2,
+    ended_athletes: '12',
+    total_athletes: 12
+  },
+  {
+    contest_id: 882,
+    status: 2,
+    ended_athletes: '7',
+    total_athletes: 7
+  },
+  {
+    contest_id: 884,
+    status: 1,
+    ended_athletes: '4',
+    total_athletes: 4
+  },
+  {
+    contest_id: 886,
+    status: 1,
+    ended_athletes: '2',
+    total_athletes: 2
+  },
+  {
+    contest_id: 888,
+    status: 2,
+    ended_athletes: '9',
+    total_athletes: 9
+  }
+]
+Live contests aggiornati per event_unit_id 2. Righe interessate: 13
+Verificando contest da chiudere per event_unit_id: 2
+Debug dettagliato dei contest per event_unit_id 2: [
+  {
+    contest_id: 869,
+    status: 4,
+    user_id: 281,
+    total_athletes: 5,
+    ended_athletes: '5',
+    athlete_details: '55:1,40:1,39:1,41:1,51:1'
+  },
+  {
+    contest_id: 869,
+    status: 4,
+    user_id: 282,
+    total_athletes: 3,
+    ended_athletes: '3',
+    athlete_details: '41:1,49:1,46:1'
+  },
+  {
+    contest_id: 870,
+    status: 4,
+    user_id: 281,
+    total_athletes: 4,
+    ended_athletes: '4',
+    athlete_details: '39:1,40:1,46:1,56:1'
+  },
+  {
+    contest_id: 870,
+    status: 4,
+    user_id: 283,
+    total_athletes: 3,
+    ended_athletes: '3',
+    athlete_details: '56:1,59:1,60:1'
+  },
+  {
+    contest_id: 872,
+    status: 4,
+    user_id: 282,
+    total_athletes: 3,
+    ended_athletes: '3',
+    athlete_details: '41:1,49:1,46:1'
+  },
+  {
+    contest_id: 872,
+    status: 4,
+    user_id: 283,
+    total_athletes: 3,
+    ended_athletes: '3',
+    athlete_details: '49:1,53:1,40:1'
+  },
+  {
+    contest_id: 873,
+    status: 4,
+    user_id: 276,
+    total_athletes: 5,
+    ended_athletes: '5',
+    athlete_details: '58:1,53:1,59:1,68:1,55:1'
+  },
+  {
+    contest_id: 873,
+    status: 4,
+    user_id: 282,
+    total_athletes: 3,
+    ended_athletes: '3',
+    athlete_details: '49:1,41:1,58:1'
+  },
+  {
+    contest_id: 874,
+    status: 4,
+    user_id: 276,
+    total_athletes: 4,
+    ended_athletes: '4',
+    athlete_details: '41:1,40:1,58:1,51:1'
+  },
+  {
+    contest_id: 874,
+    status: 4,
+    user_id: 281,
+    total_athletes: 5,
+    ended_athletes: '5',
+    athlete_details: '40:1,41:1,39:1,47:1,51:1'
+  },
+  {
+    contest_id: 875,
+    status: 4,
+    user_id: 276,
+    total_athletes: 4,
+    ended_athletes: '4',
+    athlete_details: '60:1,59:1,58:1,46:1'
+  },
+  {
+    contest_id: 875,
+    status: 4,
+    user_id: 283,
+    total_athletes: 3,
+    ended_athletes: '3',
+    athlete_details: '41:1,56:1,46:1'
+  },
+  {
+    contest_id: 876,
+    status: 4,
+    user_id: 280,
+    total_athletes: 4,
+    ended_athletes: '4',
+    athlete_details: '55:1,49:1,40:1,51:1'
+  },
+  {
+    contest_id: 876,
+    status: 4,
+    user_id: 283,
+    total_athletes: 3,
+    ended_athletes: '3',
+    athlete_details: '49:1,40:1,53:1'
+  },
+  {
+    contest_id: 877,
+    status: 4,
+    user_id: 281,
+    total_athletes: 7,
+    ended_athletes: '7',
+    athlete_details: '51:1,39:1,47:1,55:1,68:1,46:1,60:1'
+  },
+  {
+    contest_id: 877,
+    status: 4,
+    user_id: 282,
+    total_athletes: 3,
+    ended_athletes: '3',
+    athlete_details: '56:1,60:1,61:1'
+  },
+  {
+    contest_id: 878,
+    status: 4,
+    user_id: 281,
+    total_athletes: 8,
+    ended_athletes: '8',
+    athlete_details: '39:1,47:1,55:1,68:1,46:1,51:1,62:1,58:1'
+  },
+  {
+    contest_id: 878,
+    status: 4,
+    user_id: 283,
+    total_athletes: 3,
+    ended_athletes: '3',
+    athlete_details: '56:1,61:1,60:1'
+  },
+  {
+    contest_id: 879,
+    status: 4,
+    user_id: 275,
+    total_athletes: 4,
+    ended_athletes: '4',
+    athlete_details: '49:1,56:1,68:1,55:1'
+  },
+  {
+    contest_id: 879,
+    status: 4,
+    user_id: 280,
+    total_athletes: 3,
+    ended_athletes: '3',
+    athlete_details: '49:1,60:1,62:1'
+  },
+  {
+    contest_id: 881,
+    status: 4,
+    user_id: 276,
+    total_athletes: 4,
+    ended_athletes: '4',
+    athlete_details: '49:1,53:1,68:1,46:1'
+  },
+  {
+    contest_id: 881,
+    status: 4,
+    user_id: 279,
+    total_athletes: 8,
+    ended_athletes: '8',
+    athlete_details: '51:1,62:1,39:1,47:1,55:1,68:1,46:1,58:1'
+  },
+  {
+    contest_id: 882,
+    status: 4,
+    user_id: 276,
+    total_athletes: 4,
+    ended_athletes: '4',
+    athlete_details: '49:1,56:1,55:1,68:1'
+  },
+  {
+    contest_id: 882,
+    status: 4,
+    user_id: 278,
+    total_athletes: 3,
+    ended_athletes: '3',
+    athlete_details: '61:1,47:1,56:1'
+  },
+  {
+    contest_id: 888,
+    status: 4,
+    user_id: 276,
+    total_athletes: 5,
+    ended_athletes: '5',
+    athlete_details: '39:1,47:1,53:1,49:1,55:1'
+  },
+  {
+    contest_id: 888,
+    status: 4,
+    user_id: 284,
+    total_athletes: 4,
+    ended_athletes: '4',
+    athlete_details: '49:1,47:1,39:1,60:1'
+  }
+]
+Analisi contest per chiusura: {
+  '869': [
+    { user_id: 281, total: 5, ended: 5 },
+    { user_id: 282, total: 3, ended: 3 }
+  ],
+  '870': [
+    { user_id: 281, total: 4, ended: 4 },
+    { user_id: 283, total: 3, ended: 3 }
+  ],
+  '872': [
+    { user_id: 282, total: 3, ended: 3 },
+    { user_id: 283, total: 3, ended: 3 }
+  ],
+  '873': [
+    { user_id: 276, total: 5, ended: 5 },
+    { user_id: 282, total: 3, ended: 3 }
+  ],
+  '874': [
+    { user_id: 276, total: 4, ended: 4 },
+    { user_id: 281, total: 5, ended: 5 }
+  ],
+  '875': [
+    { user_id: 276, total: 4, ended: 4 },
+    { user_id: 283, total: 3, ended: 3 }
+  ],
+  '876': [
+    { user_id: 280, total: 4, ended: 4 },
+    { user_id: 283, total: 3, ended: 3 }
+  ],
+  '877': [
+    { user_id: 281, total: 7, ended: 7 },
+    { user_id: 282, total: 3, ended: 3 }
+  ],
+  '878': [
+    { user_id: 281, total: 8, ended: 8 },
+    { user_id: 283, total: 3, ended: 3 }
+  ],
+  '879': [
+    { user_id: 275, total: 4, ended: 4 },
+    { user_id: 280, total: 3, ended: 3 }
+  ],
+  '881': [
+    { user_id: 276, total: 4, ended: 4 },
+    { user_id: 279, total: 8, ended: 8 }
+  ],
+  '882': [
+    { user_id: 276, total: 4, ended: 4 },
+    { user_id: 278, total: 3, ended: 3 }
+  ],
+  '888': [
+    { user_id: 276, total: 5, ended: 5 },
+    { user_id: 284, total: 4, ended: 4 }
+  ]
+}
+Verifica contest 869: [
+  { user_id: 281, total: 5, ended: 5 },
+  { user_id: 282, total: 3, ended: 3 }
+]
+Contest 869 - Tipo di dati: [
+  'user 281: total (number: 5), ended (number: 5)',
+  'user 282: total (number: 3), ended (number: 3)'
+]
+Contest 869 - Dovrebbe essere chiuso!
+Verifica contest 870: [
+  { user_id: 281, total: 4, ended: 4 },
+  { user_id: 283, total: 3, ended: 3 }
+]
+Contest 870 - Tipo di dati: [
+  'user 281: total (number: 4), ended (number: 4)',
+  'user 283: total (number: 3), ended (number: 3)'
+]
+Contest 870 - Dovrebbe essere chiuso!
+Verifica contest 872: [
+  { user_id: 282, total: 3, ended: 3 },
+  { user_id: 283, total: 3, ended: 3 }
+]
+Contest 872 - Tipo di dati: [
+  'user 282: total (number: 3), ended (number: 3)',
+  'user 283: total (number: 3), ended (number: 3)'
+]
+Contest 872 - Dovrebbe essere chiuso!
+Verifica contest 873: [
+  { user_id: 276, total: 5, ended: 5 },
+  { user_id: 282, total: 3, ended: 3 }
+]
+Contest 873 - Tipo di dati: [
+  'user 276: total (number: 5), ended (number: 5)',
+  'user 282: total (number: 3), ended (number: 3)'
+]
+Contest 873 - Dovrebbe essere chiuso!
+Verifica contest 874: [
+  { user_id: 276, total: 4, ended: 4 },
+  { user_id: 281, total: 5, ended: 5 }
+]
+Contest 874 - Tipo di dati: [
+  'user 276: total (number: 4), ended (number: 4)',
+  'user 281: total (number: 5), ended (number: 5)'
+]
+Contest 874 - Dovrebbe essere chiuso!
+Verifica contest 875: [
+  { user_id: 276, total: 4, ended: 4 },
+  { user_id: 283, total: 3, ended: 3 }
+]
+Contest 875 - Tipo di dati: [
+  'user 276: total (number: 4), ended (number: 4)',
+  'user 283: total (number: 3), ended (number: 3)'
+]
+Contest 875 - Dovrebbe essere chiuso!
+Verifica contest 876: [
+  { user_id: 280, total: 4, ended: 4 },
+  { user_id: 283, total: 3, ended: 3 }
+]
+Contest 876 - Tipo di dati: [
+  'user 280: total (number: 4), ended (number: 4)',
+  'user 283: total (number: 3), ended (number: 3)'
+]
+Contest 876 - Dovrebbe essere chiuso!
+Verifica contest 877: [
+  { user_id: 281, total: 7, ended: 7 },
+  { user_id: 282, total: 3, ended: 3 }
+]
+Contest 877 - Tipo di dati: [
+  'user 281: total (number: 7), ended (number: 7)',
+  'user 282: total (number: 3), ended (number: 3)'
+]
+Contest 877 - Dovrebbe essere chiuso!
+Verifica contest 878: [
+  { user_id: 281, total: 8, ended: 8 },
+  { user_id: 283, total: 3, ended: 3 }
+]
+Contest 878 - Tipo di dati: [
+  'user 281: total (number: 8), ended (number: 8)',
+  'user 283: total (number: 3), ended (number: 3)'
+]
+Contest 878 - Dovrebbe essere chiuso!
+Verifica contest 879: [
+  { user_id: 275, total: 4, ended: 4 },
+  { user_id: 280, total: 3, ended: 3 }
+]
+Contest 879 - Tipo di dati: [
+  'user 275: total (number: 4), ended (number: 4)',
+  'user 280: total (number: 3), ended (number: 3)'
+]
+Contest 879 - Dovrebbe essere chiuso!
+Verifica contest 881: [
+  { user_id: 276, total: 4, ended: 4 },
+  { user_id: 279, total: 8, ended: 8 }
+]
+Contest 881 - Tipo di dati: [
+  'user 276: total (number: 4), ended (number: 4)',
+  'user 279: total (number: 8), ended (number: 8)'
+]
+Contest 881 - Dovrebbe essere chiuso!
+Verifica contest 882: [
+  { user_id: 276, total: 4, ended: 4 },
+  { user_id: 278, total: 3, ended: 3 }
+]
+Contest 882 - Tipo di dati: [
+  'user 276: total (number: 4), ended (number: 4)',
+  'user 278: total (number: 3), ended (number: 3)'
+]
+Contest 882 - Dovrebbe essere chiuso!
+Verifica contest 888: [
+  { user_id: 276, total: 5, ended: 5 },
+  { user_id: 284, total: 4, ended: 4 }
+]
+Contest 888 - Tipo di dati: [
+  'user 276: total (number: 5), ended (number: 5)',
+  'user 284: total (number: 4), ended (number: 4)'
+]
+Contest 888 - Dovrebbe essere chiuso!
+Contest che dovrebbero essere chiusi: 869, 870, 872, 873, 874, 875, 876, 877, 878, 879, 881, 882, 888
+Chiusura contest 873 con stake 20.00
+Chiusura contest 875 con stake 20.00
+Chiusura contest 874 con stake 100.00
+Chiusura contest 869 con stake 20.00
+Chiusura contest 870 con stake 20.00
+Chiusura contest 872 con stake 20.00
+Chiusura contest 876 con stake 95.00
+Chiusura contest 879 con stake 17.50
+Chiusura contest 877 con stake 200.00
+Chiusura contest 878 con stake 195.00
+Chiusura contest 881 con stake 195.00
+Chiusura contest 882 con stake 18.00
+Chiusura contest 888 con stake 18.50
+Risultati punti per contest 873: [
+  { user_id: 282, fantasy_team_id: 601, total_points: '7.50' },
+  { user_id: 276, fantasy_team_id: 609, total_points: '7.50' }
+]
+OWNER query - contest_id: 873, user: 282, event_unit: 2, points: 7.5
+OPPONENT query - contest_id: 873, user: 276, event_unit: 2, points: 7.5
+Risultati punti per contest 875: [
+  { user_id: 283, fantasy_team_id: 603, total_points: '5.00' },
+  { user_id: 276, fantasy_team_id: 607, total_points: '7.50' }
+]
+OWNER query - contest_id: 875, user: 283, event_unit: 2, points: 5
+OPPONENT query - contest_id: 875, user: 276, event_unit: 2, points: 7.5
+Risultati punti per contest 874: [
+  { user_id: 276, fantasy_team_id: 604, total_points: '5.00' },
+  { user_id: 281, fantasy_team_id: 611, total_points: '7.50' }
+]
+OWNER query - contest_id: 874, user: 276, event_unit: 2, points: 5
+OPPONENT query - contest_id: 874, user: 281, event_unit: 2, points: 7.5
+Risultati punti per contest 869: [
+  { user_id: 282, fantasy_team_id: 599, total_points: '5.00' },
+  { user_id: 281, fantasy_team_id: 608, total_points: '5.00' }
+]
+OWNER query - contest_id: 869, user: 282, event_unit: 2, points: 5
+OPPONENT query - contest_id: 869, user: 281, event_unit: 2, points: 5
+Risultati punti per contest 870: [
+  { user_id: 283, fantasy_team_id: 600, total_points: '7.50' },
+  { user_id: 281, fantasy_team_id: 610, total_points: '5.00' }
+]
+OWNER query - contest_id: 870, user: 283, event_unit: 2, points: 7.5
+OPPONENT query - contest_id: 870, user: 281, event_unit: 2, points: 5
+Risultati punti per contest 872: [
+  { user_id: 283, fantasy_team_id: 602, total_points: '5.00' },
+  { user_id: 282, fantasy_team_id: 605, total_points: '5.00' }
+]
+OWNER query - contest_id: 872, user: 283, event_unit: 2, points: 5
+OPPONENT query - contest_id: 872, user: 282, event_unit: 2, points: 5
+Risultati punti per contest 876: [
+  { user_id: 283, fantasy_team_id: 606, total_points: '5.00' },
+  { user_id: 280, fantasy_team_id: 617, total_points: '2.50' }
+]
+OWNER query - contest_id: 876, user: 283, event_unit: 2, points: 5
+OPPONENT query - contest_id: 876, user: 280, event_unit: 2, points: 2.5
+Risultati punti per contest 879: [
+  { user_id: 280, fantasy_team_id: 616, total_points: '5.00' },
+  { user_id: 275, fantasy_team_id: 621, total_points: '5.00' }
+]
+OWNER query - contest_id: 879, user: 280, event_unit: 2, points: 5
+OPPONENT query - contest_id: 879, user: 275, event_unit: 2, points: 5
+Risultati punti per contest 877: [
+  { user_id: 281, fantasy_team_id: 612, total_points: '7.50' },
+  { user_id: 282, fantasy_team_id: 614, total_points: '7.50' }
+]
+OWNER query - contest_id: 877, user: 281, event_unit: 2, points: 7.5
+OPPONENT query - contest_id: 877, user: 282, event_unit: 2, points: 7.5
+Risultati punti per contest 878: [
+  { user_id: 281, fantasy_team_id: 613, total_points: '7.50' },
+  { user_id: 283, fantasy_team_id: 615, total_points: '7.50' }
+]
+OWNER query - contest_id: 878, user: 281, event_unit: 2, points: 7.5
+OPPONENT query - contest_id: 878, user: 283, event_unit: 2, points: 7.5
+Risultati punti per contest 881: [
+  { user_id: 279, fantasy_team_id: 618, total_points: '7.50' },
+  { user_id: 276, fantasy_team_id: 619, total_points: '5.00' }
+]
+OWNER query - contest_id: 881, user: 279, event_unit: 2, points: 7.5
+OPPONENT query - contest_id: 881, user: 276, event_unit: 2, points: 5
+Risultati punti per contest 882: [
+  { user_id: 278, fantasy_team_id: 620, total_points: '7.50' },
+  { user_id: 276, fantasy_team_id: 622, total_points: '5.00' }
+]
+OWNER query - contest_id: 882, user: 278, event_unit: 2, points: 7.5
+OPPONENT query - contest_id: 882, user: 276, event_unit: 2, points: 5
+Risultati punti per contest 888: [
+  { user_id: 284, fantasy_team_id: 625, total_points: '10.00' },
+  { user_id: 276, fantasy_team_id: 626, total_points: '10.00' }
+]
+OWNER query - contest_id: 888, user: 284, event_unit: 2, points: 10
+OPPONENT query - contest_id: 888, user: 276, event_unit: 2, points: 10
+Contest 873 - multiply: 1
+Contest 873 - Owner teex won: 10, Opponent teex won: 10
+Contest 874 - multiply: 5
+Contest 874 - Owner teex won: 0, Opponent teex won: 100
+Contest 870 - multiply: 1
+Contest 870 - Owner teex won: 20, Opponent teex won: 0
+Contest 875 - multiply: 1
+Contest 875 - Owner teex won: 0, Opponent teex won: 20
+Contest 869 - multiply: 1
+Contest 869 - Owner teex won: 10, Opponent teex won: 10
+Contest 872 - multiply: 1
+Contest 872 - Owner teex won: 10, Opponent teex won: 10
+Contest 876 - multiply: 5
+Contest 876 - Owner teex won: 95, Opponent teex won: 0
+Contest 879 - multiply: 1
+Contest 879 - Owner teex won: 8.75, Opponent teex won: 8.75
+Contest 877 - multiply: 10
+Contest 877 - Owner teex won: 100, Opponent teex won: 100
+Contest 878 - multiply: 10
+Contest 878 - Owner teex won: 97.5, Opponent teex won: 97.5
+Contest 881 - multiply: 10
+Contest 881 - Owner teex won: 195, Opponent teex won: 0
+Contest 882 - multiply: 1
+Contest 882 - Owner teex won: 18, Opponent teex won: 0
+Contest chiuso con successo, contest_id: 873
+Contest chiuso con successo, contest_id: 874
+Contest 888 - multiply: 1
+Contest 888 - Owner teex won: 9.25, Opponent teex won: 9.25
+Contest chiuso con successo, contest_id: 870
+Contest chiuso con successo, contest_id: 875
+Contest chiuso con successo, contest_id: 869
+Contest chiuso con successo, contest_id: 872
+Contest chiuso con successo, contest_id: 876
+Contest chiuso con successo, contest_id: 879
+Contest chiuso con successo, contest_id: 877
+Contest chiuso con successo, contest_id: 878
+Contest chiuso con successo, contest_id: 881
+Contest chiuso con successo, contest_id: 882
+Contest chiuso con successo, contest_id: 888
+OWNER query - contest_id: 882, user: 278, event_unit: 1
+OPPONENT query - contest_id: 882, user: 276, event_unit: 1
+Chiamata GET /admin-api/contests ricevuta
+OWNER query - contest_id: 879, user: 280, event_unit: 1
+OPPONENT query - contest_id: 879, user: 275, event_unit: 1
+Chiamata GET /admin-api/contests ricevuta
+OWNER query - contest_id: 875, user: 283, event_unit: 1
+OPPONENT query - contest_id: 875, user: 276, event_unit: 1
+OWNER query - contest_id: 888, user: 284, event_unit: 1
+OPPONENT query - contest_id: 888, user: 276, event_unit: 1
+OWNER query - contest_id: 873, user: 282, event_unit: 1
+OPPONENT query - contest_id: 873, user: 276, event_unit: 1
+OWNER query - contest_id: 876, user: 283, event_unit: 1
+OPPONENT query - contest_id: 876, user: 280, event_unit: 1
+OWNER query - contest_id: 879, user: 280, event_unit: 1
+OPPONENT query - contest_id: 879, user: 275, event_unit: 1
+OWNER query - contest_id: 879, user: 280, event_unit: 1
+OPPONENT query - contest_id: 879, user: 275, event_unit: 1
+OWNER query - contest_id: 879, user: 280, event_unit: 1
+OPPONENT query - contest_id: 879, user: 275, event_unit: 1
+Record aggiornato per athlete_id 10 e event_unit_id 2
+Record aggiornato per athlete_id 8 e event_unit_id 2
+Record aggiornato per athlete_id 9 e event_unit_id 2
+Record aggiornato per athlete_id 2 e event_unit_id 2
+Record aggiornato per athlete_id 7 e event_unit_id 2
+Record aggiornato per athlete_id 6 e event_unit_id 2
+Record aggiornato per athlete_id 1 e event_unit_id 2
+Record aggiornato per athlete_id 3 e event_unit_id 2
+Record aggiornato per athlete_id 4 e event_unit_id 2
+Record aggiornato per athlete_id 5 e event_unit_id 2
+Record aggiornato per athlete_id 11 e event_unit_id 2
+Record aggiornato per athlete_id 12 e event_unit_id 2
+Record aggiornato per athlete_id 13 e event_unit_id 2
+Record aggiornato per athlete_id 16 e event_unit_id 2
+Record aggiornato per athlete_id 17 e event_unit_id 2
+Record aggiornato per athlete_id 15 e event_unit_id 2
+Record aggiornato per athlete_id 14 e event_unit_id 2
+Record aggiornato per athlete_id 18 e event_unit_id 2
+Record aggiornato per athlete_id 19 e event_unit_id 2
+Record aggiornato per athlete_id 20 e event_unit_id 2
+Record aggiornato per athlete_id 21 e event_unit_id 2
+Record aggiornato per athlete_id 23 e event_unit_id 2
+Record aggiornato per athlete_id 22 e event_unit_id 2
+Record aggiornato per athlete_id 24 e event_unit_id 2
+Record aggiornato per athlete_id 25 e event_unit_id 2
+Record aggiornato per athlete_id 27 e event_unit_id 2
+Record aggiornato per athlete_id 26 e event_unit_id 2
+Record aggiornato per athlete_id 28 e event_unit_id 2
+Record aggiornato per athlete_id 29 e event_unit_id 2
+Record aggiornato per athlete_id 30 e event_unit_id 2
+Record aggiornato per athlete_id 32 e event_unit_id 2
+Record aggiornato per athlete_id 31 e event_unit_id 2
+Record aggiornato per athlete_id 33 e event_unit_id 2
+Record aggiornato per athlete_id 34 e event_unit_id 2
+Record aggiornato per athlete_id 35 e event_unit_id 2
+Record aggiornato per athlete_id 36 e event_unit_id 2
+Record aggiornato per athlete_id 37 e event_unit_id 2
+Record aggiornato per athlete_id 1 e event_unit_id 1
+Record aggiornato per athlete_id 2 e event_unit_id 1
+Record aggiornato per athlete_id 3 e event_unit_id 1
+Record aggiornato per athlete_id 4 e event_unit_id 1
+Record aggiornato per athlete_id 5 e event_unit_id 1
+Record aggiornato per athlete_id 7 e event_unit_id 1
+Record aggiornato per athlete_id 6 e event_unit_id 1
+Record aggiornato per athlete_id 8 e event_unit_id 1
+Record aggiornato per athlete_id 9 e event_unit_id 1
+Record aggiornato per athlete_id 10 e event_unit_id 1
+Record aggiornato per athlete_id 11 e event_unit_id 1
+Record aggiornato per athlete_id 12 e event_unit_id 1
+Record aggiornato per athlete_id 13 e event_unit_id 1
+Record aggiornato per athlete_id 14 e event_unit_id 1
+Record aggiornato per athlete_id 15 e event_unit_id 1
+Record aggiornato per athlete_id 16 e event_unit_id 1
+Record aggiornato per athlete_id 17 e event_unit_id 1
+Record aggiornato per athlete_id 18 e event_unit_id 1
+Record aggiornato per athlete_id 19 e event_unit_id 1
+Record aggiornato per athlete_id 20 e event_unit_id 1
+Record aggiornato per athlete_id 21 e event_unit_id 1
+Record aggiornato per athlete_id 22 e event_unit_id 1
+Record aggiornato per athlete_id 23 e event_unit_id 1
+Record aggiornato per athlete_id 24 e event_unit_id 1
+Record aggiornato per athlete_id 25 e event_unit_id 1
+Record aggiornato per athlete_id 26 e event_unit_id 1
+Record aggiornato per athlete_id 27 e event_unit_id 1
+Record aggiornato per athlete_id 28 e event_unit_id 1
+Record aggiornato per athlete_id 29 e event_unit_id 1
+Record aggiornato per athlete_id 30 e event_unit_id 1
+Record aggiornato per athlete_id 31 e event_unit_id 1
+Record aggiornato per athlete_id 32 e event_unit_id 1
+Record aggiornato per athlete_id 34 e event_unit_id 1
+Record aggiornato per athlete_id 35 e event_unit_id 1
+Record aggiornato per athlete_id 36 e event_unit_id 1
+Record aggiornato per athlete_id 37 e event_unit_id 1
+Record aggiornato per athlete_id 33 e event_unit_id 1
+Event unit IDs processati: [ 2, 1 ]
+Verificando contest live per event_unit_id: 2
+Tutti i contest associati a event_unit_id 2: [
+  {
+    contest_id: 874,
+    status: 5,
+    owner_user_id: 276,
+    opponent_user_id: 281
+  },
+  {
+    contest_id: 882,
+    status: 5,
+    owner_user_id: 278,
+    opponent_user_id: 276
+  },
+  {
+    contest_id: 881,
+    status: 5,
+    owner_user_id: 279,
+    opponent_user_id: 276
+  },
+  {
+    contest_id: 879,
+    status: 5,
+    owner_user_id: 280,
+    opponent_user_id: 275
+  },
+  {
+    contest_id: 877,
+    status: 5,
+    owner_user_id: 281,
+    opponent_user_id: 282
+  },
+  {
+    contest_id: 878,
+    status: 5,
+    owner_user_id: 281,
+    opponent_user_id: 283
+  },
+  {
+    contest_id: 873,
+    status: 5,
+    owner_user_id: 282,
+    opponent_user_id: 276
+  },
+  {
+    contest_id: 869,
+    status: 5,
+    owner_user_id: 282,
+    opponent_user_id: 281
+  },
+  {
+    contest_id: 875,
+    status: 5,
+    owner_user_id: 283,
+    opponent_user_id: 276
+  },
+  {
+    contest_id: 876,
+    status: 5,
+    owner_user_id: 283,
+    opponent_user_id: 280
+  },
+  {
+    contest_id: 870,
+    status: 5,
+    owner_user_id: 283,
+    opponent_user_id: 281
+  },
+  {
+    contest_id: 872,
+    status: 5,
+    owner_user_id: 283,
+    opponent_user_id: 282
+  },
+  {
+    contest_id: 888,
+    status: 5,
+    owner_user_id: 284,
+    opponent_user_id: 276
+  }
+]
+Dettaglio atleti per contest (event_unit_id 2): [
+  {
+    contest_id: 869,
+    status: 5,
+    ended_athletes: '8',
+    total_athletes: 8
+  },
+  {
+    contest_id: 870,
+    status: 5,
+    ended_athletes: '7',
+    total_athletes: 7
+  },
+  {
+    contest_id: 872,
+    status: 5,
+    ended_athletes: '6',
+    total_athletes: 6
+  },
+  {
+    contest_id: 873,
+    status: 5,
+    ended_athletes: '8',
+    total_athletes: 8
+  },
+  {
+    contest_id: 874,
+    status: 5,
+    ended_athletes: '9',
+    total_athletes: 9
+  },
+  {
+    contest_id: 875,
+    status: 5,
+    ended_athletes: '7',
+    total_athletes: 7
+  },
+  {
+    contest_id: 876,
+    status: 5,
+    ended_athletes: '7',
+    total_athletes: 7
+  },
+  {
+    contest_id: 877,
+    status: 5,
+    ended_athletes: '10',
+    total_athletes: 10
+  },
+  {
+    contest_id: 878,
+    status: 5,
+    ended_athletes: '11',
+    total_athletes: 11
+  },
+  {
+    contest_id: 879,
+    status: 5,
+    ended_athletes: '7',
+    total_athletes: 7
+  },
+  {
+    contest_id: 881,
+    status: 5,
+    ended_athletes: '12',
+    total_athletes: 12
+  },
+  {
+    contest_id: 882,
+    status: 5,
+    ended_athletes: '7',
+    total_athletes: 7
+  },
+  {
+    contest_id: 888,
+    status: 5,
+    ended_athletes: '9',
+    total_athletes: 9
+  }
+]
+Live contests aggiornati per event_unit_id 2. Righe interessate: 0
+Verificando contest da chiudere per event_unit_id: 2
+Debug dettagliato dei contest per event_unit_id 2: []
+Analisi contest per chiusura: {}
+Contest che dovrebbero essere chiusi: 
+Nessun contest da chiudere per event_unit_id 2.
+Verificando contest live per event_unit_id: 1
+Tutti i contest associati a event_unit_id 1: []
+Dettaglio atleti per contest (event_unit_id 1): []
+Live contests aggiornati per event_unit_id 1. Righe interessate: 0
+Verificando contest da chiudere per event_unit_id: 1
+Debug dettagliato dei contest per event_unit_id 1: []
+Analisi contest per chiusura: {}
+Contest che dovrebbero essere chiusi: 
+Nessun contest da chiudere per event_unit_id 1.
+OWNER query - contest_id: 873, user: 282, event_unit: 1
+OPPONENT query - contest_id: 873, user: 276, event_unit: 1
+OWNER query - contest_id: 873, user: 282, event_unit: 1
+OPPONENT query - contest_id: 873, user: 276, event_unit: 1
+OWNER query - contest_id: 870, user: 283, event_unit: 1
+OPPONENT query - contest_id: 870, user: 281, event_unit: 1
+OWNER query - contest_id: 874, user: 276, event_unit: 1
+OPPONENT query - contest_id: 874, user: 281, event_unit: 1
+OWNER query - contest_id: 869, user: 282, event_unit: 1
+OPPONENT query - contest_id: 869, user: 281, event_unit: 1
+OWNER query - contest_id: 869, user: 282, event_unit: 1
+OPPONENT query - contest_id: 869, user: 281, event_unit: 1
+OWNER query - contest_id: 878, user: 281, event_unit: 1
+OPPONENT query - contest_id: 878, user: 283, event_unit: 1
