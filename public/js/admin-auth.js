@@ -53,7 +53,7 @@ async function initApp() {
     const logoutBtn = document.getElementById('logoutBtn');
     
     // Email dell'amministratore autorizzato
-    const adminEmail = 'admin@fantaeurovision25'; // Sostituisci con l'email dell'admin
+    const adminEmail = 'admin@fantaconclave.it'; // Sostituisci con l'email dell'admin
     
     // Funzione per verificare se un utente è l'amministratore
     function isAdmin(user) {
@@ -99,8 +99,10 @@ async function initApp() {
       loader.style.display = 'block';
       errorMessage.style.display = 'none';
       
-      firebase.auth().signInWithEmailAndPassword(email, password)
-        .catch(function(error) {
+
+       firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+         .then(() => firebase.auth().signInWithEmailAndPassword(email, password))
+          .catch(function(error) {
           // Gestione degli errori di login
           loader.style.display = 'none';
           errorMessage.textContent = 'Credenziali non valide. Riprova.';
