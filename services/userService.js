@@ -103,4 +103,24 @@ async function findByEmail(email) {
     return rows[0] || null;
   }
   
-  module.exports = { findAll, create, findById, update, remove, findByEmail };
+
+// Restituisce  dati per l'header della Landing . services/userService.js
+// services/userService.js
+
+async function getLandingInfo(userId) {
+  const [rows] = await pool.promise().query(
+    `SELECT
+       user_id       AS id,
+       username,
+       teex_balance  AS balance,
+       avatar,
+       color
+     FROM users
+     WHERE user_id = ?`,
+    [userId]
+  );
+  return rows[0] || null;
+}
+
+
+  module.exports = { findAll, create, findById, update, remove, findByEmail, getLandingInfo };

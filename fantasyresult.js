@@ -165,7 +165,7 @@ router.get('/fantasy-points', (req, res) => {
  * Endpoint per ottenere i punti di un contest
  * GET /contest-points?contest_id=X
  */
-router.get('/contest-points', (req, res) => {
+router.get('/fantasy/contest-points', (req, res) => {
   const contestId = req.query.contest_id;
   
   if (!contestId) {

@@ -1,29 +1,19 @@
+// middleware/auth.js
 const jwt = require('jsonwebtoken');
 
-// Chiave segreta per i JWT (meglio metterla in .env)
-const JWT_SECRET = process.env.JWT_SECRET || 'chiave_segreta_molto_sicura';
-
-// Middleware per verificare il token JWT
-const authenticateToken = (req, res, next) => {
-  // Ottieni il token dall'header Authorization
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
-  
-  if (!token) {
-    return res.status(401).json({ error: "Token di autenticazione mancante" });
+function authenticateToken(req, res, next) {
+  const authHeader = req.headers.authorization || '';
+  const [scheme, token] = authHeader.split(' ');
+  if (scheme !== 'Bearer' || !token) {
+    return res.status(401).json({ error: 'Token mancante o malformato' });
   }
-  
-  jwt.verify(token, JWT_SECRET, (err, user) => {
-    if (err) {
-      return res.status(403).json({ error: "Token non valido o scaduto" });
-    }
-    
-    req.user = user;
+  try {
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = { userId: payload.userId };
     next();
-  });
-};
+  } catch {
+    return res.status(403).json({ error: 'Token non valido o scaduto' });
+  }
+}
 
-module.exports = {
-  authenticateToken,
-  JWT_SECRET
-};
+module.exports = authenticateToken;

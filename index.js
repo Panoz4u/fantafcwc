@@ -18,6 +18,7 @@ const app  = express();
 const port = process.env.PORT || 3000;
 
 // 3) GLOBAL MIDDLEWARE
+app.use('/', require('./contests'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // se serve
 app.use(bodyParser.json());
@@ -26,12 +27,16 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // 5) ROUTES
-app.use('/api', firebaseConfigRoutes);
-app.use('/admin-api', adminContestRoutes);
-app.use(usersRoutes);
-app.use('/', adminRouter);
+
+app.use('/api/users', require('./routes/users'));
 app.use(authRoutes);
 app.use(usersRoutes);
+app.use('/', adminRouter);
+app.use('/api', firebaseConfigRoutes);
+app.use('/admin-api', adminContestRoutes);
+
+
+
 
 // 6) ROUTE AD HOC
 app.get('/gestione-sfide.html', (req, res) => {
@@ -111,8 +116,7 @@ sfideRouter.post('/contests/delete-expired', async (req, res) => {
 // Use the router for the API endpoints
 app.use('/api', sfideRouter);
 
-const contestsRouter = require('./contests');
-app.use('/contests', contestsRouter);
+
 
 
 // Funzioni di avatarUtils.js spostate qui

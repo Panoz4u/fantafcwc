@@ -43,6 +43,23 @@ async function getByEmail(req, res, next) {
     }
   } 
 
+
+/**
+ * GET /user-landing-info
+ * (protetto: deve venir chiamato con Authorization: Bearer <token>)
+ */
+async function landingInfo(req, res, next) {
+  try {
+    const user = await userService.getLandingInfo(req.user.userId);
+    if (!user) return res.status(404).json({ error: 'Utente non trovato' });
+    // Restituisco SOLO user
+    return res.json({ user });
+  } catch (err) {
+    next(err);
+  }
+}
+
+
 /**
  * POST /users
  * Crea un nuovo utente, risponde { id }
@@ -87,4 +104,13 @@ async function remove(req, res, next) {
   }
 
 
-  module.exports = { getAll, create, getById, update, remove, getByEmail };
+
+  module.exports = {
+    getAll,
+    getById,
+    getByEmail,
+    landingInfo,
+    create,
+    update,
+    remove
+  };
