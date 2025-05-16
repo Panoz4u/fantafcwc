@@ -31,6 +31,7 @@ app.use('/admin-api', adminContestRoutes);
 app.use(usersRoutes);
 app.use('/', adminRouter);
 app.use(authRoutes);
+app.use(usersRoutes);
 
 // 6) ROUTE AD HOC
 app.get('/gestione-sfide.html', (req, res) => {

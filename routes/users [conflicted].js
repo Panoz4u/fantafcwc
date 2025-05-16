@@ -12,6 +12,8 @@ router.get('/users', usersController.getAll);
 // GET /users/:id
 router.get('/users/:id', usersController.getById);
 
+// GET /user-by-email
+router.get('/user-by-email', usersController.getByEmail);
 
 // POST /users
 router.post('/users', create);
@@ -21,5 +23,6 @@ router.put('/users/:id', usersController.update);
 
 // DELETE /users/:id
 router.delete('/users/:id', usersController.remove);
+
 
 module.exports = router;
