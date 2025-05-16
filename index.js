@@ -1,28 +1,38 @@
+// 1) IMPORT e CONST
 require('dotenv').config();
-const path = require('path');
-const express = require("express");
-const app = express();
-const authRoutes = require('./routes/auth');
-const firebaseConfigRoutes = require('./server/routes/firebase-config');
-const port = process.env.PORT || 3000;
-const pool = require("./services/db");
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+const path    = require('path');
+const express = require('express');
 const bodyParser = require('body-parser');
-const adminRouter = require('./adminserver');
-const gestioneSfideRouter = express.Router();
-const adminContestRoutes = require('./server/routes/admincontest');
-const dbsfide = require('./dbsfide');
+const jwt     = require('jsonwebtoken');
+const bcrypt  = require('bcrypt');
+const pool    = require('./services/db');
 
+const authRoutes            = require('./routes/auth');
+const usersRoutes           = require('./routes/users');
+const firebaseConfigRoutes  = require('./server/routes/firebase-config');
+const adminContestRoutes    = require('./server/routes/admincontest');
+const adminRouter           = require('./adminserver');
+
+// 2) INIT
+const app  = express();
+const port = process.env.PORT || 3000;
+
+// 3) GLOBAL MIDDLEWARE
+app.use(express.json());
+app.use(express.urlencoded({ extended: true })); // se serve
+app.use(bodyParser.json());
+
+// 4) STATIC FILES
+app.use(express.static(path.join(__dirname, 'public')));
+
+// 5) ROUTES
 app.use('/api', firebaseConfigRoutes);
 app.use('/admin-api', adminContestRoutes);
-app.use('/api/auth', authRoutes);
-app.use(express.json());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static("public"));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(usersRoutes);
 app.use('/', adminRouter);
+app.use(authRoutes);
+
+// 6) ROUTE AD HOC
 app.get('/gestione-sfide.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'gestione-sfide.html'));
 });
@@ -30,17 +40,15 @@ app.get('/js/gestione-sfide.js', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'js', 'gestione-sfide.js'));
 });
 
+// 7) ERROR HANDLER
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({ error: err.message || 'Errore interno' });
+});
 
-// Serve dinamicamente solo la configurazione Firebase (presa da .env/Render)
-app.get('/api/firebase-config', (req, res) => {
-  res.json({
-    apiKey:     process.env.FIREBASE_API_KEY,
-    authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-    projectId:  process.env.FIREBASE_PROJECT_ID,
-    storageBucket:      process.env.FIREBASE_STORAGE_BUCKET,
-    messagingSenderId:  process.env.FIREBASE_MESSAGING_SENDER_ID,
-    appId:      process.env.FIREBASE_APP_ID
-  });
+// 8) START SERVER
+app.listen(port, () => {
+  console.log(`Server avviato su http://localhost:${port}`);
 });
 
 
@@ -262,78 +270,6 @@ app.get("/user-landing-info", authenticateToken, (req, res) => {
       res.json({ user: userData, active, completed });
     });
   });
-});
-
-/* 1) Nuovo endpoint per generare token JWT */
-app.post("/generate-token", (req, res) => {
-  const { email, userId } = req.body;
-  
-  if (!email && !userId) {
-    return res.status(400).json({ error: "È necessario fornire email o userId" });
-  }
-  
-  let query;
-  let params;
-  
-  if (email) {
-    query = "SELECT user_id, username, email, teex_balance, avatar, color FROM users WHERE email = ? AND is_active = 1";
-    params = [email];
-  } else {
-    query = "SELECT user_id, username, email, teex_balance, avatar, color FROM users WHERE user_id = ? AND is_active = 1";
-    params = [userId];
-  }
-  
-  pool.query(query, params, (err, results) => {
-    if (err) {
-      console.error("Errore nella query utente:", err);
-      return res.status(500).json({ error: "Errore nel database" });
-    }
-    
-    if (results.length === 0) {
-      return res.status(404).json({ error: "Utente non trovato" });
-    }
-    
-    const user = results[0];
-    
-    // Crea il token JWT
-    const token = jwt.sign(
-      { 
-        userId: user.user_id,
-        email: user.email,
-        username: user.username
-      }, 
-      JWT_SECRET, 
-      { expiresIn: '7d' } // Il token scade dopo 7 giorni
-    );
-    
-    res.json({ 
-      token,
-      user: {
-        userId: user.user_id,
-        username: user.username,
-        email: user.email,
-        teexBalance: user.teex_balance,
-        avatar: user.avatar,
-        color: user.color
-      }
-    });
-  });
-});
-
-/* 2) Endpoint per verificare token JWT */
-app.post("/verify-token", (req, res) => {
-  const { token, userId } = req.body;
-  if (!token || !userId) {
-    return res.status(400).json({ error: "Manca token o userId" });
-  }
-  try {
-    const payload = jwt.verify(token, JWT_SECRET);
-    // se il payload contiene lo stesso userId restituiamo true, altrimenti false
-    const valid = payload.userId.toString() === userId.toString();
-    return res.json({ valid });
-  } catch (err) {
-    return res.json({ valid: false });
-  }
 });
 
 

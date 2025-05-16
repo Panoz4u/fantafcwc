@@ -18,13 +18,17 @@ async function generateToken(req, res, next) {
  * Verifica che { token, userId } combacino.
  * POST /verify-token
  */
+
 async function verifyToken(req, res, next) {
   try {
-    const { valid } = await authService.verifyToken(req.body);
-    res.json({ valid });
+    // Chiamo il service che mi restituisce un booleano
+    const valid = await authService.verifyToken(req.body);
+    // Ora mando al client un oggetto con la proprietà valid
+    return res.json({ valid });
   } catch (err) {
     next(err);
   }
 }
 
 module.exports = { generateToken, verifyToken };
+
