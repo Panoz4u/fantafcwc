@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('../../db');
+const pool = require('../../services/db');
 
 /* GET /event-players?event=30 */
 router.get("/event-players", (req, res) => {

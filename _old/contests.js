@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('./db');
+const pool = require('./services/db');
 const { authenticateToken } = require('./middleware/auth');
 
 // Funzione di supporto per gestire i rollback delle transazioni

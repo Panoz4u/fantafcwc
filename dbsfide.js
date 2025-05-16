@@ -1,4 +1,4 @@
-const pool = require('./db');
+const pool = require('./services/db');
 
 // Funzione per ottenere tutte le sfide
 function getAllContests() {

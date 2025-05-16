@@ -4,7 +4,7 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const XLSX = require("xlsx");
-const pool = require("./db");
+const pool = require('./services/db');
 
 // Configurazione di Multer per salvare i file nella cartella "uploads"
 const storage = multer.diskStorage({
