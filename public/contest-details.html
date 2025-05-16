@@ -332,20 +332,20 @@
         myName = contestData.owner_name;
         myAvatar = contestData.owner_avatar;
         myColor = contestData.owner_color || "ff5500"; // Valore predefinito se non esiste
-        myCost = contestData.owner_cost || "-";
+        myCost = contestData.owner_cost ? parseFloat(contestData.owner_cost).toFixed(1) : "-";
         oppName = contestData.opponent_name;
         oppAvatar = contestData.opponent_avatar;
         oppColor = contestData.opponent_color || "ff5500"; // Valore predefinito se non esiste
-        oppCost = contestData.opponent_cost || "-";
+        oppCost = contestData.opponent_cost ? parseFloat(contestData.opponent_cost).toFixed(1) : "-";
       } else {
         myName = contestData.opponent_name;
         myAvatar = contestData.opponent_avatar;
         myColor = contestData.opponent_color || "ff5500"; // Valore predefinito se non esiste
-        myCost = contestData.opponent_cost || "-";
+        myCost = contestData.opponent_cost ? parseFloat(contestData.opponent_cost).toFixed(1) : "-";
         oppName = contestData.owner_name;
         oppAvatar = contestData.owner_avatar;
         oppColor = contestData.owner_color || "ff5500"; // Valore predefinito se non esiste
-        oppCost = contestData.owner_cost || "-";
+        oppCost = contestData.owner_cost ? parseFloat(contestData.owner_cost).toFixed(1) : "-";
       }
       
       // Crea la card del contest

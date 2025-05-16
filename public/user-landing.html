@@ -251,20 +251,20 @@
           myName = contest.owner_name;
           myAvatar = contest.owner_avatar;
           myColor = contest.owner_color;
-          myCost = contest.owner_cost || "-";
+          myCost = parseFloat(contest.owner_cost || 0).toFixed(1);
           oppName = contest.opponent_name;
           oppAvatar = contest.opponent_avatar;
           oppColor = contest.opponent_color;
-          oppCost = contest.opponent_cost || "-";
+          oppCost = parseFloat(contest.opponent_cost || 0).toFixed(1);
         } else {
           myName = contest.opponent_name;
           myAvatar = contest.opponent_avatar;
           myColor = contest.opponent_color;
-          myCost = contest.opponent_cost || "-";
+          myCost = parseFloat(contest.opponent_cost || 0).toFixed(1);
           oppName = contest.owner_name;
           oppAvatar = contest.owner_avatar;
           oppColor = contest.owner_color;
-          oppCost = contest.owner_cost || "-";
+          oppCost = parseFloat(contest.owner_cost || 0).toFixed(1);
         }
 
         // Truncate names to 19 characters and add "..." if longer
