@@ -2,6 +2,7 @@ require('dotenv').config();
 const path = require('path');
 const express = require("express");
 const app = express();
+const authRoutes = require('./routes/auth');
 const firebaseConfigRoutes = require('./server/routes/firebase-config');
 const port = process.env.PORT || 3000;
 const pool = require("./services/db");
@@ -11,22 +12,20 @@ const bodyParser = require('body-parser');
 const adminRouter = require('./adminserver');
 const gestioneSfideRouter = express.Router();
 const adminContestRoutes = require('./server/routes/admincontest');
+const dbsfide = require('./dbsfide');
 
 app.use('/api', firebaseConfigRoutes);
 app.use('/admin-api', adminContestRoutes);
-const dbsfide = require('./dbsfide');
+app.use('/api/auth', authRoutes);
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use(express.static(path.join(__dirname, 'public')));
-// Usa il router di amministrazione
 app.use('/', adminRouter);
-// Configura il router per gestione-sfide.js
 app.get('/gestione-sfide.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'gestione-sfide.html'));
 });
-// Servi il file JavaScript per la gestione delle sfide
 app.get('/js/gestione-sfide.js', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'js', 'gestione-sfide.js'));
 });
@@ -320,6 +319,23 @@ app.post("/generate-token", (req, res) => {
     });
   });
 });
+
+/* 2) Endpoint per verificare token JWT */
+app.post("/verify-token", (req, res) => {
+  const { token, userId } = req.body;
+  if (!token || !userId) {
+    return res.status(400).json({ error: "Manca token o userId" });
+  }
+  try {
+    const payload = jwt.verify(token, JWT_SECRET);
+    // se il payload contiene lo stesso userId restituiamo true, altrimenti false
+    const valid = payload.userId.toString() === userId.toString();
+    return res.json({ valid });
+  } catch (err) {
+    return res.json({ valid: false });
+  }
+});
+
 
 /* 2) Nuovo endpoint per ottenere informazioni utente dal token */
 app.get("/user-info", authenticateToken, (req, res) => {
