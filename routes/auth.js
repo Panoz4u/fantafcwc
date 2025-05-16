@@ -1,15 +1,15 @@
 // routes/auth.js
 const express = require('express');
-const router = express.Router();
+const router  = express.Router();
 const {
   generateToken,
-  verifyToken,
+  verifyToken
 } = require('../controllers/authController');
 
-// genera un token JWT da { userId }
+// POST /generate-token
 router.post('/generate-token', generateToken);
 
-// verifica che il token sia valido per { userId }
+// POST /verify-token
 router.post('/verify-token', verifyToken);
 
 module.exports = router;
