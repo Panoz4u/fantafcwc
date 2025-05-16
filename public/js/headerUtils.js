@@ -39,7 +39,9 @@ export function renderContestHeader(contestData) {
   const myCost = totalTeamCost.toFixed(1); // Usa il costo calcolato dai giocatori scelti
   const oppName = iAmOwner ? contestData.opponent_name : contestData.owner_name;
   const oppAvatar = iAmOwner ? contestData.opponent_avatar : contestData.owner_avatar;
-  const oppCost = iAmOwner ? (contestData.opponent_cost || "-") : (contestData.owner_cost || "-");
+  const oppCost = iAmOwner 
+    ? (contestData.opponent_cost ? parseFloat(contestData.opponent_cost).toFixed(1) : "-") 
+    : (contestData.owner_cost ? parseFloat(contestData.owner_cost).toFixed(1) : "-");
   
   // ricostruisci la card completa
   const statusBadges = {
