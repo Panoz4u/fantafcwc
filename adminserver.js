@@ -14,7 +14,7 @@ router.get('/gestione-sfide.html', (req, res) => {
 router.get('/api/firebase-config', (req, res) => {
   // Verifica se la richiesta proviene da un'origine autorizzata
   const origin = req.headers.origin || req.headers.referer;
-  if (!origin || (!origin.includes('FANTAEUROVISION25') && !origin.includes('localhost'))) {
+  if (!origin || (!origin.includes('FANTAFCWC') && !origin.includes('localhost'))) {
     return res.status(403).json({ error: 'Accesso non autorizzato' });
   }
 
@@ -27,7 +27,6 @@ router.get('/api/firebase-config', (req, res) => {
     messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
     appId: process.env.FIREBASE_APP_ID
   };
-
   res.json(firebaseConfig);
 });
 
@@ -41,7 +40,7 @@ router.post('/api/check-admin-auth', (req, res) => {
   
   // Qui dovresti verificare il token con Firebase Admin SDK
   // Per ora, facciamo un controllo semplice sull'email
-  const adminEmail = 'admin@fantaeurovision25';
+  const adminEmail = 'admin@FANTAFCWC';
   
   if (email === adminEmail) {
     return res.json({ isAdmin: true });

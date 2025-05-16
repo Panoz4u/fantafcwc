@@ -149,7 +149,7 @@ async function checkAdminAuth() {
       firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
           // Verifica se l'utente è l'amministratore
-          if (user.email === 'admin@fantaeurovision25') {
+          if (user.email === 'admin@FANTAFCWC') {
             resolve(true);
           } else {
             // Reindirizza alla pagina di login
