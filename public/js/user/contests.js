@@ -57,7 +57,7 @@ export async function loadUserLanding() {
   
     try {
       // 3) Chiamata al server
-      const resp = await fetch('/user-landing-info', {
+      const resp = await fetch('/api/user-contests', {
         headers: { 'Authorization': `Bearer ${authToken}` }
       });
       if (!resp.ok) {
@@ -68,13 +68,15 @@ export async function loadUserLanding() {
       }
   
       // 4) Leggo i dati JSON
-      const data = await resp.json();
-      console.log('Dati ricevuti:', data);
-    
+      const { contests } = await resp.json();
+      console.log('Risposta /api/user-contests →', contests);
+      console.log('Dati ricevuti:', contests);
+    // --- test nuovo endpoint /api/user-contests ---
+
+  // ---------------------------------------------
       // 6) Render delle due liste
-      renderContestList(data.active, document.getElementById('activeContainer'));
-      renderContestList(data.completed,document.getElementById('completedContainer'));
-  
+    renderContestList(contests.active,   document.getElementById('activeContainer'));
+    renderContestList(contests.completed, document.getElementById('completedContainer'));
     } catch (err) {
       console.error('Errore in loadUserLanding:', err);
     }

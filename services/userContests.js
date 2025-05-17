@@ -4,7 +4,9 @@ const pool = require('./db');  // import della connessione MySQL
 
 async function getUserContests(userId) {
     // 1) dati base utente
-    const [u] = await pool.query(
+    const [u] = await pool
+    .promise()
+    .query(
       `SELECT user_id, username, teex_balance, avatar, color
        FROM users WHERE user_id = ?`, [userId]
     );
@@ -16,27 +18,33 @@ async function getUserContests(userId) {
       avatar:   u[0].avatar,
       color:    u[0].color
     };
-  
+    console.log('DEBUG getUserContests user row:', u);
     // 2) tutte le contest dove è owner o opponent
-    const [rows] = await pool.query(`
-      SELECT
-        c.contest_id, c.owner_user_id, c.opponent_user_id,
-        c.status, c.stake, c.event_unit_id, c.multiply,
-        u1.username AS owner_name, u1.avatar AS owner_avatar, u1.color AS owner_color,
-        u2.username AS opponent_name, u2.avatar AS opponent_avatar, u2.color AS opponent_color,
-        ft.user_id    AS ft_user_id,
-        ft.total_cost AS ft_cost,
-        ft.total_points, ft.ft_teex_won, ft.ft_result
-      FROM contests c
-        JOIN users u1 ON c.owner_user_id    = u1.user_id
-        JOIN users u2 ON c.opponent_user_id = u2.user_id
-        LEFT JOIN fantasy_teams ft
-          ON ft.contest_id = c.contest_id
-          AND ft.user_id   = ?
-      WHERE c.owner_user_id = ? OR c.opponent_user_id = ?
-      ORDER BY c.created_at DESC
-    `, [userId, userId, userId]);
-  
+
+    const [rows] = await pool
+  .promise()                // <-- qui usi il wrapper promise
+  .query (`
+    SELECT
+      c.contest_id, c.owner_user_id, c.opponent_user_id,
+      c.status, c.stake, c.event_unit_id, c.multiply,
+      u1.username AS owner_name, u1.avatar AS owner_avatar, u1.color AS owner_color,
+      u2.username AS opponent_name, u2.avatar AS opponent_avatar, u2.color AS opponent_color,
+      ft.user_id    AS ft_user_id,
+      ft.total_cost AS ft_cost,
+      ft.total_points, ft.ft_teex_won, ft.ft_result
+    FROM contests c
+      JOIN users u1 ON c.owner_user_id    = u1.user_id
+      JOIN users u2 ON c.opponent_user_id = u2.user_id
+      LEFT JOIN fantasy_teams ft
+        ON ft.contest_id = c.contest_id
+        AND ft.user_id   = ?
+    WHERE c.owner_user_id = ? OR c.opponent_user_id = ?
+    ORDER BY c.created_at DESC
+  `, [userId, userId, userId]);
+
+console.log('DEBUG getUserContests rows:', rows);
+    
+   
     // 3) raggruppa fantasy_teams per contest
     const map = {};
     for (const r of rows) {
