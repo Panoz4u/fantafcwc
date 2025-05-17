@@ -58,11 +58,6 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: err.message || 'Errore interno' });
 });
 
-// 8) START SERVER
-app.listen(port, () => {
-  console.log(`Server avviato su http://localhost:${port}`);
-});
-
 
 
 // Create a router for the API endpoints
