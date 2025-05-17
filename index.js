@@ -12,6 +12,9 @@ const usersRoutes           = require('./routes/users');
 const firebaseConfigRoutes  = require('./server/routes/firebase-config');
 const adminContestRoutes    = require('./server/routes/admincontest');
 const adminRouter           = require('./adminserver');
+const userContestsRoutes    = require('./routes/userContests');
+
+
 
 // 2) INIT
 const app  = express();
@@ -28,13 +31,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // 5) ROUTES
 
-app.use('/api/users', require('./routes/users'));
+app.use('/api/users',        require('./routes/users'));
+app.use('/api/user-contests', require('./routes/userContests')); 
 app.use(authRoutes);
 app.use(usersRoutes);
 app.use('/', adminRouter);
 app.use('/api', firebaseConfigRoutes);
 app.use('/admin-api', adminContestRoutes);
-
+app.use('/api', userContestsRoutes);
 
 
 
