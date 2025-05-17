@@ -123,4 +123,7 @@ async function getLandingInfo(userId) {
 }
 
 
+
+
+
   module.exports = { findAll, create, findById, update, remove, findByEmail, getLandingInfo };

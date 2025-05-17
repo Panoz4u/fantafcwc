@@ -345,7 +345,7 @@
     font-size: 20px;
     text-transform: uppercase;
     border-radius: 50px;
-    padding: 8px 10px;  /* Reduced from 12px to 8px (about 30% less height) */
+    padding: 0px 20px;  /* Reduced from 12px to 8px (about 30% less height) */
     border: none;
     cursor: pointer;
     text-align: center;
@@ -354,11 +354,48 @@
     line-height: 1;  /* Added to further reduce height */
     background-color: #ed2224;
     color: #ffffff;
-    position: relative;
-    z-index: 101;
     height:28px;
+    position: fixed; 
+    bottom: 96px; 
+    left: 50%; 
+    transform: translateX(-50%); 
+  
+  }
+
+  .fab_button_container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
   }
   
+  .fab_button_img_wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Puoi personalizzare questi margini */
+    margin-right: 8px;
+  }
+  
+  .fab_button_text_wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Puoi personalizzare questi margini */
+    margin-left: 8px;
+  }
+  .fab_button_text {
+    font-family: 'Barlow Condensed', sans-serif;
+  }
+
+  .fab_button_img {
+    margin-top: 00px;
+    width:24px;
+    height:24px;
+    margin-right:0px;
+  } 
+
   .fab_button::before {
     content: '';
     position: absolute;

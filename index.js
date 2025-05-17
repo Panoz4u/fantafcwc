@@ -20,14 +20,16 @@ const userContestsRoutes    = require('./routes/userContests');
 const app  = express();
 const port = process.env.PORT || 3000;
 
+// 4) STATIC FILES
+app.use(express.static(path.join(__dirname, 'public')));
+
+
 // 3) GLOBAL MIDDLEWARE
 app.use('/', require('./contests'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // se serve
 app.use(bodyParser.json());
 
-// 4) STATIC FILES
-app.use(express.static(path.join(__dirname, 'public')));
 
 // 5) ROUTES
 

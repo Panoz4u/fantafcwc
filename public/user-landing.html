@@ -23,7 +23,6 @@
       overflow: hidden;
     }
 
-  
   </style>
 </head>
 <body>
@@ -46,45 +45,54 @@
       <div id="tabCompleted" class="tab"><span class="tab_off">COMPLETED</span></div>
     </div>
 
-    <!-- Aggiungi questi container se non esistono già -->
-    <div id="activeContainer" class="contests-container"></div>
+<!-- Aggiungi questi container se non esistono già -->
+<div id="activeContainer" class="contests-container"></div>
     <div id="completedContainer" class="contests-container" style="display: none;"></div>
   </div>
 
 
-  <!-- Pulsante FAB “New Game” -->
-  <div id="playButton"
-      class="fab_button"
-      style="position: fixed; bottom: 96px; left: 50%; transform: translateX(-50%); z-index:101;">
-    <img src="icons/add.png" alt="New Game" style="width:24px;height:24px;margin-right:8px;">
-    <span style="color:#fff;">NEW GAME</span>
+  <!-- Pulsante FAB "New Game" -->
+  <div id="playButton" class="fab_button">
+    <div class="fab_button_container">
+      <div class="fab_button_img_wrapper">
+        <img class="fab_button_img" src="icons/add.png" alt="New Game">
+      </div>
+      <div class="fab_button_text_wrapper">
+        <span class="fab_button_text">NEW GAME</span>
+      </div>
+    </div>
   </div>
 
-  <!-- Modali statici (rules, privacy, terms) -->
-  <div id="rulesModal" class="modal">…</div>
-  <div id="privacyModal" class="modal">…</div>
-  <div id="termsModal" class="modal">…</div>
 
   <!-- Footer nav -->
-  <footer class="footer-nav">
-    <div class="footer-item" data-modal="rulesModal">…Rules…</div>
-    <div class="footer-item" data-modal="privacyModal">…Privacy…</div>
-    <div class="footer-item" data-modal="termsModal">…Terms&Cond…</div>
-    <div id="signOutBtn" class="footer-item">…Sign Out…</div>
-  </footer>
+  <!-- Generic modal dinamico, nascosto di default -->
+  <div id="modal" class="hidden">
+    <div class="modal-overlay"></div>
+    
+    <!-- close button spostato qui, fuori dalla finestra -->
+    <button id="modal-close" aria-label="Chiudi modal">
+      <img src="/icons/delete.png" alt="Chiudi" width="28" height="28">
+    </button>
+    
+    <div class="modal-window">
+      <div id="modal-content"></div>
+    </div>
+  </div>
 
- <!-- user-landing.html -->
-<script type="module" src="js/user/landing.js"></script>
-<script type="module" src="js/user/contests.js"></script>
-<script type="module">
-  import { loadUserHeader } from './js/user/landing.js';
-  import { loadUserLanding } from './js/user/contests.js';
-  document.addEventListener('DOMContentLoaded', () => {
-    loadUserHeader();
-    loadUserLanding();
-  });
-</script>
+  <!-- Punto dove verrà caricato il footer -->
+  <div id="footer"></div>
+  <script src="/js/user/footer.js"></script>
 
-  
+  <!-- I tuoi script dell’app -->
+  <script type="module" src="js/user/landing.js"></script>
+  <script type="module" src="js/user/contests.js"></script>
+  <script type="module">
+    import { loadUserHeader } from './js/user/landing.js';
+    import { loadUserLanding } from './js/user/contests.js';
+    document.addEventListener('DOMContentLoaded', () => {
+      loadUserHeader();
+      loadUserLanding();
+    });
+  </script>
 </body>
 </html>
