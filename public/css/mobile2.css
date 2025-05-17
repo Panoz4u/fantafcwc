@@ -780,78 +780,63 @@
     }    /* Fixed header styles */
 
 
-    
-/* -------------------------------- */
-/* Generic modal container + overlay */
+  /* overlay e container flex */
 #modal {
-  /* di default nascosto */  
-  display: none;
   position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  /* centriamo la finestra */
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  top: 0; left: 0; width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.5);
   z-index: 1000;
 }
-/* quando imposto hidden via JS */
 #modal.hidden {
   display: none;
 }
-/* overlay scuro */
-.modal-overlay {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
-  z-index: 1000;
-}
 
-/* -------------------------------- */
-/* La finestra bianca “modal-window” (era .modal-content) */
+/* finestra bianca: layout a colonna */
 .modal-window {
-  position: relative;
-  background-color: #fff;
-  /* margin 10% top/bottom per replicare il tuo 10% auto */
-  margin: 10% auto;
-  width: 90%;
-  max-width: 600px;
-  /* altezza massima 80% viewport + scroll interno */
-  max-height: 80vh;
-  overflow-y: auto;
+  background: #fff;
+  width: 90%; max-width: 600px;
+  max-height: 80vh;        /* non più di 80% altura viewport */
+  display: flex;
+  flex-direction: column;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  padding: 20px;
-  z-index: 1001;
+  overflow: hidden;        /* scroll solo in .modal-body */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
-/* -------------------------------- */
-/* Il pulsante di chiusura “×” (era .close-button) */
-#modal-close {
-  position: absolute;
-  top: 90px;
-  right: 16px;
-  width: 30px;
-  height: 30px;
-  background-color: #ed2224;
-  color: white;
-  border: none;
-  border-radius: 50%;
+/* HEADER FISSO */
+.modal-header {
+  flex: 0 0 auto;          /* altezza fissa */
+  height: 48px;            /* scegli tu */
   display: flex;
   align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  cursor: pointer;
+  justify-content: flex-end;
+  padding: 0 12px;
+  background: #fff;
+  border-bottom: 1px solid #ddd; /* linea di separazione */
+  position: relative;      /* riferimento per il close */
   z-index: 1002;
 }
-
-/* (opzionale) se iniettassi un iframe dentro modal-content */
-/*
-.modal-iframe {
-  width: 100%;
-  height: 100%;
-  border: none;
-  min-height: 500px;
+.modal-header-spacer {
+  flex: 1;                 /* ti permette di tenere X a destra */
 }
-*/
+
+/* BODY SCROLLABILE */
+.modal-body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+/* BOTTONE CLOSE CERCHIO ROSSO */
+#modal-close {
+  width: 28px; height: 28px;
+  background: #ed2224;
+  border: none; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+#modal-close img {
+  width: 16px; height: 16px; display: block;
+}

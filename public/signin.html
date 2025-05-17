@@ -234,23 +234,7 @@
     return true;
   }
 
-  // Chiama debugLogin all'avvio della pagina
-  document.addEventListener('DOMContentLoaded', function() {
-    console.log("Pagina index.html caricata");
-    debugLogin();
-    
-    // Verifica se l'utente è già autenticato
-    if (checkAuthentication()) {
-      console.log("Utente già autenticato, reindirizzamento a user-landing.html");
-      window.location.href = 'user-landing.html';
-    }
-    
-    // Aggiungi gli event listener
-    const loginForm = document.getElementById('emailLoginForm');
-    if (loginForm) {
-      loginForm.addEventListener('submit', handleEmailLogin);
-    }
-  });
+
   </script>
 </body>
 </html>

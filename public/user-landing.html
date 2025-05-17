@@ -64,18 +64,21 @@
   </div>
 
 
-  <!-- Footer nav -->
-  <!-- Generic modal dinamico, nascosto di default -->
   <div id="modal" class="hidden">
     <div class="modal-overlay"></div>
-    
-    <!-- close button spostato qui, fuori dalla finestra -->
-    <button id="modal-close" aria-label="Chiudi modal">
-      <img src="/icons/delete.png" alt="Chiudi" width="28" height="28">
-    </button>
-    
     <div class="modal-window">
-      <div id="modal-content"></div>
+      
+      <!-- HEADER FISSO -->
+      <div class="modal-header">
+        <!-- qui potresti mettere anche un titolo, oppure lasci vuoto -->
+        <div class="modal-header-spacer"></div>
+        <button id="modal-close" aria-label="Chiudi modal">
+          <img src="/icons/delete.png" alt="Chiudi" width="28" height="28">
+        </button>
+      </div>
+      
+      <!-- BLOCK SCROLLABILE -->
+      <div id="modal-content" class="modal-body"></div>
     </div>
   </div>
 
