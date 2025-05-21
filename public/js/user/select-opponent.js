@@ -24,39 +24,60 @@ async function fetchUsers(page = 1, search = '') {
   isLoading = true;
 
   const listEl = document.getElementById('opponentList');
-  if (page === 1) {
-    listEl.innerHTML = `<p class="loading">Caricamento…</p>`;
-  } else {
+
     if (!document.getElementById('loadingIndicator')) {
       const loader = document.createElement('div');
       loader.id = 'loadingIndicator';
       loader.innerHTML = `<p class="loading">Caricamento…</p>`;
       listEl.append(loader);
     }
-  }
+
 
   try {
-    let url = `/api/users/except?page=${page}&limit=${pageSize}`;
-    url += `&sort=${currentSort.field}&order=${currentSort.direction}`;
-    if (search) url += `&search=${encodeURIComponent(search)}`;
+    let url = `/api/users/except`;
 
     const resp = await fetch(url, {
-      headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
     });
     if (!resp.ok) throw new Error(await resp.text());
 
-    const data      = await resp.json();
-    const usersArray= Array.isArray(data) ? data : data.users || [];
-    totalPages      = data.pages || 1;
-    const list      = usersArray;    // <-- niente più .filter(...)
-    return list;
+       // 1) prendo il JSON
+       const data = await resp.json();
+       const usersArray = Array.isArray(data) ? data : (data.users || []);
     
+       // 2) filtro la ricerca su username (case-insensitive)
+       const filtered = search
+         ? usersArray.filter(u => u.username.toLowerCase().includes(search.toLowerCase()))
+         : usersArray;
+    
+       // 3) ordino secondo currentSort
+       filtered.sort((a, b) => {
+         if (currentSort.field === 'username') {
+           return currentSort.direction === 'asc'
+             ? a.username.localeCompare(b.username)
+             : b.username.localeCompare(a.username);
+         } else {
+           // balance numeric
+           return currentSort.direction === 'asc'
+             ? a.balance - b.balance
+             : b.balance - a.balance;
+         }
+       });
+    
+       // 4) aggiorno il numero totale di pagine
+       totalPages = Math.ceil(filtered.length / pageSize);
+    
+       // 5) estraggo la “fetta” corrispondente alla pagina
+       const start = (page - 1) * pageSize;
+       const paginated = filtered.slice(start, start + pageSize);
+       return paginated;
+
   } catch (e) {
     console.error('Errore fetchUsers:', e);
     if (page === 1) document.getElementById('opponentList').innerHTML =
       `<p class="error">Errore nel caricamento. Riprova.</p>`;
     return [];
-  } finally {
+} finally {
     isLoading = false;
     const loader = document.getElementById('loadingIndicator');
     if (loader) loader.remove();
@@ -67,8 +88,18 @@ async function fetchUsers(page = 1, search = '') {
 // Rendering
 // =======================
 function renderOpponentList(list, append = false) {
-  const listEl = document.getElementById('opponentList');
-  if (!append) listEl.innerHTML = '';
+    const listEl = document.getElementById('opponentList');
+    // Rimuove eventuali <p class="loading"> rimasti
+    const leftover = listEl.querySelector('p.loading');
+    if (leftover) leftover.remove();
+  
+    if (!append) {
+      listEl.innerHTML = '';
+    } else {
+      // rimuovi il pulsante “Carica altri” precedente
+      const oldBtn = document.getElementById('loadMoreBtn');
+      if (oldBtn) oldBtn.remove();
+    }
 
   if (list.length === 0 && currentPage === 1) {
     listEl.innerHTML = `<p class="empty">Nessun utente trovato</p>`;
@@ -78,7 +109,7 @@ function renderOpponentList(list, append = false) {
   list.forEach(u => {
     const item = document.createElement('div');
     item.className = 'opponent-item';
-    item.setAttribute('data-id', u.user_id);
+    item.setAttribute('data-id', u.id);
 
     item.innerHTML = `
       <div class="opponent-info">
@@ -87,19 +118,16 @@ function renderOpponentList(list, append = false) {
           <h3 class="opponent-name">${u.username}</h3>
           <div class="ppc-value">
             <img src="icons/sh.png" class="ppc-icon" alt="PPC">
-            ${parseFloat(u.teex_balance||0).toFixed(1)}
+            ${parseFloat(u.balance || 0).toFixed(1)}
           </div>
         </div>
       </div>
       <button class="play-contest-button">PLAY</button>
     `;
-    // click sia sul div che sul pulsante
-    item.querySelector('.play-contest-button').addEventListener('click', e => {
-      e.stopPropagation();
-      createContest(u.user_id);
-    });
-    item.addEventListener('click', () => createContest(u.user_id));
 
+    item.addEventListener('click', () => {
+        createContest(u.id);
+      });
     listEl.append(item);
   });
 
@@ -148,10 +176,19 @@ async function createContest(opponentId) {
 // Caricamento + render
 // =======================
 async function loadAndRender(reset = true) {
-  if (reset) currentPage = 1;
-  const list = await fetchUsers(currentPage, document.getElementById('searchInput').value.trim());
-  renderOpponentList(list, !reset);
-  if (!reset) currentPage++;
+
+      // 1) Decido quale pagina caricare
+      if (reset) {
+       currentPage = 1;               // primo caricamento
+      } else {
+        currentPage += 1;              // click “Carica altri” → pagina successiva
+      }
+      // 2) Chiamo l’API con il numero di pagina corretto
+      const list = await fetchUsers(
+        currentPage,
+        document.getElementById('searchInput').value.trim()
+      );  renderOpponentList(list, !reset);
+
 }
 
 // =======================

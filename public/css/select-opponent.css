@@ -70,4 +70,10 @@
 
       }
 
-
+      .opponent-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px;
+        cursor: pointer;    /* confermiamo il puntatore mano */
+      }

@@ -26,6 +26,6 @@ export async function loadUserHeader() {
   
     // Teex balance
     document.getElementById('teexBalance')
-      .textContent = parseFloat(user.balance).toFixed(1);
+    .textContent = parseFloat(user.teex_balance || 0).toFixed(1);
   }
   
