@@ -14,8 +14,12 @@ export async function loadUserHeader() {
     avatarEl.src = user.avatar && !user.avatar.startsWith('http')
       ? `avatars/${user.avatar}`
       : decodeURIComponent(user.avatar || '');
-    avatarEl.onerror = () => { avatarEl.src = 'images/silouette.jpg'; };
-  
+      avatarEl.onerror = () => {
+        avatarEl.src = '../pictures/silouette.jpg';
+        avatarEl.onerror = null; 
+        avatarEl.src = '../pictures/silouette.jpg';
+      }
+   
     // Username
     document.getElementById('userName')
       .textContent = user.username.toUpperCase();

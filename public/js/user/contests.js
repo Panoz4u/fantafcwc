@@ -5,155 +5,165 @@
  *  - caricare i dati utente e le sfide (loadUserLanding)
  *  - disegnare la lista delle sfide (renderContestList)
  *  - gestire aperture/chiusure di modali e tab
- *
- * Ogni funzione è spiegata passo-passo per facilitare la comprensione.
  */
 
+import { renderWelcome, renderNoCompleted } from './welcomeNoContests.js';
+import { createContestCard } from './contestCard.js';
 
 // --------------------------
 // 3) Caricamento della pagina utente e delle sfide
 // --------------------------
-
-/**
- * Carica i dati header utente e le liste delle sfide
- * - Prende userId e authToken da localStorage
- * - Chiama l'API /api/user-contests
- * - Se OK, ottiene { contests: { active, completed } }
- * - Passa le liste a renderContestList
- */
-import { createContestCard } from './contestCard.js';
 export async function loadUserLanding() {
-    // 1) Prendo userId e authToken
-    const userId = localStorage.getItem('userId');
-    console.log('[loadUserLanding] userId from localStorage:', userId); // LOG AGGIUNTO
+  const userId = localStorage.getItem('userId');
+  console.log('[loadUserLanding] userId from localStorage:', userId);
 
-    // Visualizza userId nell'HTML per debug
-    const debugUserIdEl = document.getElementById('debugUserId');
-    if (debugUserIdEl) {
-        debugUserIdEl.textContent = `User ID: ${userId || 'Non Trovato in localStorage'}`;
-    }
+  const debugUserIdEl = document.getElementById('debugUserId');
+  if (debugUserIdEl) {
+    debugUserIdEl.textContent = `User ID: ${userId || 'Non Trovato in localStorage'}`;
+  }
 
-    const authToken = localStorage.getItem('authToken');
-  
-    // 2) Se manca uno dei due, torno al login
-    if (!userId || !authToken) {
-      window.location.href = 'signin.html';
+  const authToken = localStorage.getItem('authToken');
+  if (!userId || !authToken) {
+    window.location.href = 'signin.html';
+    return;
+  }
+
+  try {
+    const resp = await fetch('/api/user-contests', {
+      headers: { 'Authorization': `Bearer ${authToken}` }
+    });
+    if (!resp.ok) {
+      const errorText = await resp.text();
+      console.error('Errore backend:', resp.status, errorText);
+      alert('Errore nel caricamento utente.');
       return;
     }
-  
-    try {
-      // 3) Chiamata al server
-      const resp = await fetch('/api/user-contests', {
-        headers: { 'Authorization': `Bearer ${authToken}` }
-      });
-      if (!resp.ok) {
-        const errorText = await resp.text();
-        console.error('Errore backend:', resp.status, errorText);
-        alert('Errore nel caricamento utente.');
-        return;
-      }
-  
-      // 4) Leggo i dati JSON
-      const { contests } = await resp.json();
-      console.log('Risposta /api/user-contests →', contests);
-      console.log('Dati ricevuti:', contests);
-    // --- test nuovo endpoint /api/user-contests ---
 
-  // ---------------------------------------------
-      // 6) Render delle due liste
-      renderContestList(contests.active,   document.getElementById('activeContainer'),   userId);
-      renderContestList(contests.completed, document.getElementById('completedContainer'), userId);
-         } catch (err) {
-      console.error('Errore in loadUserLanding:', err);
+    const { contests } = await resp.json();
+
+    // Se non ci sono sfide né active né completed, mostro welcome
+    if (
+      Array.isArray(contests.active) && contests.active.length === 0 &&
+      Array.isArray(contests.completed) && contests.completed.length === 0
+    ) {
+      const activeContainer = document.getElementById('activeContainer');
+      const completedContainer = document.getElementById('completedContainer');
+      
+       if (activeContainer) {
+         activeContainer.innerHTML = '';
+         activeContainer.appendChild(renderWelcome());
+      }
+
+       if (completedContainer) {
+         completedContainer.innerHTML = '';
+         completedContainer.appendChild(renderNoCompleted());
+       }
+
+       // Imposto di default il tab ACTIVE visibile
+       showActive();
+      return;
     }
-    }
-  
+
+    // Render delle due liste
+    renderContestList(contests.active,   document.getElementById('activeContainer'),   userId);
+    renderContestList(contests.completed, document.getElementById('completedContainer'), userId);
+
+  } catch (err) {
+    console.error('Errore in loadUserLanding:', err);
+  }
+}
+
 // --------------------------
 // 4) Render delle liste di sfide
 // --------------------------
-
-/**
- * Disegna le cards dei contest in un container
- * - Filtra status === 0 (creati) se non vogliamo mostrarli
- * - Per ogni contest, ricava i dati di owner vs opponent
- * - Costruisce dinamicamente il markup HTML
- * @param {Array} list - array di oggetti contest
- * @param {HTMLElement} container - div dove appendere le cards
- */
-
 export function renderContestList(list, container, userId) {
-  console.log('[renderContestList] Received userId parameter:', userId); // LOG AGGIUNTO
-  // 1) validazione: voglio sempre un array
+  console.log('[renderContestList] Received userId parameter:', userId);
   if (!Array.isArray(list)) {
     console.error('renderContestList: list non è un array', list);
     return;
   }
- 
-  // 2) svuoto il container
+
   container.innerHTML = '';
-  
-  // 3) se la lista è vuota, mostro un messaggio
+
   if (list.length === 0) {
-    container.innerHTML = '<div class="empty-list">Nessuna sfida disponibile</div>';
+    container.innerHTML = '';
+    container.appendChild(renderNoCompleted());
     return;
   }
-  
-  // 4) per ogni contest, creo una card
+
   list.forEach(contest => {
-    // Assicurati che userId sia definito prima di passarlo
-    const userIdToPass = userId || localStorage.getItem('userId'); // Questo fallback è una sicurezza
-    console.log('[renderContestList] For contest_id:', contest.contest_id, 'Passing userIdToPass to createContestCard:', userIdToPass); // LOG AGGIUNTO
+    const userIdToPass = userId || localStorage.getItem('userId');
+    console.log(
+      '[renderContestList] For contest_id:', contest.contest_id,
+      'Passing userIdToPass to createContestCard:', userIdToPass
+    );
     const contestCard = createContestCard(contest, userIdToPass);
-    if (contestCard) {
-      container.appendChild(contestCard);
-    }
+    if (contestCard) container.appendChild(contestCard);
   });
 }
 
-  export function showActive() {
-    document.getElementById("tabActive").innerHTML = '<span class="tab_on">ACTIVE</span>';
-    document.getElementById("tabCompleted").innerHTML = '<span class="tab_off">COMPLETED</span>';
-    document.getElementById("activeContainer").style.display = "block";
-    document.getElementById("completedContainer").style.display = "none";
-  }
-  
-  export function showCompleted() {
-    document.getElementById("tabActive").innerHTML = '<span class="tab_off">ACTIVE</span>';
-    document.getElementById("tabCompleted").innerHTML = '<span class="tab_on">COMPLETED</span>';
-    document.getElementById("activeContainer").style.display = "none";
-    document.getElementById("completedContainer").style.display = "block";
-  }
+// --------------------------
+// Funzioni di UI per i tab
+// --------------------------
+export function showActive() {
+  const tabA = document.getElementById("tabActive");
+  const tabC = document.getElementById("tabCompleted");
+  if (tabA) tabA.innerHTML = '<span class="tab_on">ACTIVE</span>';
+  if (tabC) tabC.innerHTML = '<span class="tab_off">COMPLETED</span>';
+  const activeCont = document.getElementById("activeContainer");
+  const compCont   = document.getElementById("completedContainer");
+  if (activeCont) activeCont.style.display = "block";
+  if (compCont)   compCont.style.display = "none";
+}
 
-  // Carica i dati dell'utente quando la pagina è pronta
-  document.addEventListener("DOMContentLoaded", function() {
-    loadUserLanding();
-    
-    // Aggiungi event listener al pulsante NEW GAME
-    document.getElementById("playButton").addEventListener("click", function() {
+export function showCompleted() {
+  const tabA = document.getElementById("tabActive");
+  const tabC = document.getElementById("tabCompleted");
+  if (tabA) tabA.innerHTML = '<span class="tab_off">ACTIVE</span>';
+  if (tabC) tabC.innerHTML = '<span class="tab_on">COMPLETED</span>';
+  const activeCont = document.getElementById("activeContainer");
+  const compCont   = document.getElementById("completedContainer");
+  if (activeCont) activeCont.style.display = "none";
+  if (compCont)   compCont.style.display = "block";
+}
+
+// --------------------------
+// 5) Event listener protetti
+// --------------------------
+document.addEventListener("DOMContentLoaded", function() {
+  loadUserLanding();
+
+  // 1) Play Button
+  const playBtn = document.getElementById("playButton");
+  if (playBtn) {
+    playBtn.addEventListener("click", function() {
       window.location.href = "scegli-opponent.html";
     });
-    
-    // Aggiungi event listener ai tab
-    document.getElementById("tabActive").addEventListener("click", function() {
-      document.getElementById("activeContainer").style.display = "block";
-      document.getElementById("completedContainer").style.display = "none";
-      document.getElementById("tabActive").querySelector("span").className = "tab_on";
-      document.getElementById("tabCompleted").querySelector("span").className = "tab_off";
+  }
+
+  // 2) Tab Active
+  const tabA = document.getElementById("tabActive");
+  if (tabA) {
+    tabA.addEventListener("click", function() {
+      showActive();
     });
-    
-    document.getElementById("tabCompleted").addEventListener("click", function() {
-      document.getElementById("activeContainer").style.display = "none";
-      document.getElementById("completedContainer").style.display = "block";
-      document.getElementById("tabActive").querySelector("span").className = "tab_off";
-      document.getElementById("tabCompleted").querySelector("span").className = "tab_on";
+  }
+
+  // 3) Tab Completed
+  const tabC = document.getElementById("tabCompleted");
+  if (tabC) {
+    tabC.addEventListener("click", function() {
+      showCompleted();
     });
-    
-    // Aggiungi event listener al pulsante Sign Out
-    document.getElementById("signOutBtn").addEventListener("click", function() {
-      // Rimuovi i dati di autenticazione dal localStorage
+  }
+
+  // 4) Sign Out
+  const signOutBtn = document.getElementById("signOutBtn");
+  if (signOutBtn) {
+    signOutBtn.addEventListener("click", function() {
       localStorage.removeItem('userId');
       localStorage.removeItem('authToken');
-      // Reindirizza alla pagina di login
       window.location.href = "/signin.html";
     });
-  });
+  }
+});
