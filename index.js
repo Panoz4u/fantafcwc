@@ -36,7 +36,6 @@ app.use(bodyParser.json());
 app.use('/api/users',        require('./routes/users'));
 app.use('/api/user-contests', require('./routes/userContests')); 
 app.use(authRoutes);
-app.use(usersRoutes);
 app.use('/', adminRouter);
 app.use('/api', firebaseConfigRoutes);
 app.use('/admin-api', adminContestRoutes);

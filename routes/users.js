@@ -7,24 +7,27 @@ const authenticateToken = require('../middleware/auth');
 const usersController   = require('../controllers/usersController');
 
 // → GET /users
-router.get('/users', authenticateToken, usersController.getAll);
+router.get('/', authenticateToken, usersController.getAll);
+
+// → GET /users/except
+router.get('/except', authenticateToken, usersController.getAllExceptCurrent);
 
 // → GET /users/:id
-router.get('/users/:id', usersController.getById);
+router.get('/:id', usersController.getById);
 
 // → GET /user-by-email
-router.get('/user-by-email', usersController.getByEmail);
+router.get('/by-email', usersController.getByEmail);
 
 // → GET /user-landing-info (protetta)
- router.get('/user-landing-info', authenticateToken, usersController.landingInfo);
+router.get('/landing-info', authenticateToken, usersController.landingInfo);
 
 // → POST /users
-router.post('/users', usersController.create);   
+router.post('/', usersController.create);   
        // ← usa usersController.create, non “create”!
 // → PUT /users/:id
-router.put('/users/:id', usersController.update);
+router.put('/:id', usersController.update);
 // → DELETE /users/:id
-router.delete('/users/:id', usersController.remove);
+router.delete('/:id', usersController.remove);
 
 
 

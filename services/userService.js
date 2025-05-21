@@ -26,6 +26,31 @@ async function findAll() {
 }
 
 /**
+ * Restituisce tutti gli utenti attivi tranne currentUserId.
+ */
+async function findAllExcept(currentUserId) {
+  const sql = `
+    SELECT
+      user_id    AS id,
+      username,
+      uniquename,
+      email,
+      teex_balance AS balance,
+      is_active    AS active,
+      updated_at   AS updatedAt,
+      avatar,
+      color,
+      google_id    AS googleId
+    FROM users
+    WHERE is_active = 1
+      AND user_id <> ?
+  `;
+  const [rows] = await pool.promise().query(sql, [currentUserId]);
+  return rows;
+}
+
+
+/**
  * Restituisce un singolo utente o null
  */
 async function findById(id) {
@@ -122,8 +147,13 @@ async function getLandingInfo(userId) {
   return rows[0] || null;
 }
 
-
-
-
-
-  module.exports = { findAll, create, findById, update, remove, findByEmail, getLandingInfo };
+module.exports = {
+  findAll,
+  findAllExcept,
+  findById,
+  update,
+  remove,
+  findByEmail,
+  getLandingInfo,
+  create
+};

@@ -8,9 +8,31 @@ const userService = require('../services/userService');
 async function getAll(req, res, next) {
   try {
     const users = await userService.findAll();
-    res.json(users);
+    res.json({
+      users: users,
+      total: users.length,
+      pages: 1
+    });
   } catch (err) {
     next(err);  // passerà al middleware di errore in index.js
+  }
+}
+
+/**
+ * GET /users/except
+ * Invia al client la lista di utenti tranne chi è loggato.
+ */
+async function getAllExceptCurrent(req, res, next) {
+  try {
+    // req.user.userId proviene dal tuo auth middleware
+    const users = await userService.findAllExcept(req.user.userId);
+    res.json({
+      users,
+      total: users.length,
+      pages: 1
+    });
+  } catch (err) {
+    next(err);
   }
 }
 
@@ -103,10 +125,9 @@ async function remove(req, res, next) {
     }
   }
 
-
-
   module.exports = {
     getAll,
+    getAllExceptCurrent,
     getById,
     getByEmail,
     landingInfo,
