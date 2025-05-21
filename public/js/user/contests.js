@@ -9,11 +9,14 @@
 
 import { renderWelcome, renderNoCompleted } from './welcomeNoContests.js';
 import { createContestCard } from './contestCard.js';
+import { initGameTypeModal, showGameTypeModal } from './gameTypeModal.js';
+
 
 // --------------------------
 // 3) Caricamento della pagina utente e delle sfide
 // --------------------------
 export async function loadUserLanding() {
+
   const userId = localStorage.getItem('userId');
   console.log('[loadUserLanding] userId from localStorage:', userId);
 
@@ -132,12 +135,13 @@ export function showCompleted() {
 // --------------------------
 document.addEventListener("DOMContentLoaded", function() {
   loadUserLanding();
-
+  initGameTypeModal();          // ← Aggiungi qui
+  
   // 1) Play Button
   const playBtn = document.getElementById("playButton");
   if (playBtn) {
     playBtn.addEventListener("click", function() {
-      window.location.href = "scegli-opponent.html";
+      showGameTypeModal();
     });
   }
 
