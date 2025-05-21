@@ -1,20 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('./services/db');
+const { confirmSquadController } = require('./controllers/contestController');
 
 const authenticateToken = require('./middleware/auth');
 
-// Funzione di supporto per gestire i rollback delle transazioni
-function rollbackTransaction(connection, err, res, message, statusCode = 500) {
-  connection.rollback(() => {
-    connection.release();
-    console.error('❌ Rollback causa errore:', message);
-    if (err) {
-      console.error('Dettagli errore:', err);
-    }
-    return res.status(statusCode).json({ error: message });
-  });
-}
+router.post(
+  '/confirm-squad',
+  authenticateToken,
+  confirmSquadController
+);
+
 
 
 /* POST /contests (creare una nuova sfida) */
@@ -398,204 +394,6 @@ router.post("/contest-details", authenticateToken, (req, res) => {
   });
 });
 
-/* POST /confirm-squad - Modificato per usare autenticazione JWT */
-router.post("/confirm-squad", authenticateToken, (req, res) => {
-
-console.log('📥 Dati ricevuti dal client:', JSON.stringify(req.body, null, 2));
-console.log('👤 Utente autenticato:', req.user);
-
-  const { contestId, userId, players, multiplier, totalCost } = req.body;
-  
-  // Verifica che i dati necessari siano presenti
-  if (!contestId || !userId || !Array.isArray(players) || players.length === 0) {
-    return res.status(400).json({ error: "Dati mancanti o invalidi" });
-  }
-  
-  // Calcola il costo totale della squadra
-  let squadCost = parseFloat(totalCost || 0);
-  
-  // Verifica che l'utente autenticato corrisponda all'utente della richiesta
-  if (req.user.userId != userId) {
-    return res.status(403).json({ error: "Non sei autorizzato a confermare questa squadra" });
-  }
-  
-  // Inizia una transazione per garantire l'integrità dei dati
-  pool.getConnection((err, connection) => {
-    if (err) {
-      console.error("Errore nella connessione al database:", err);
-      return res.status(500).json({ error: "Errore di connessione al database" });
-    }
-    
-    connection.beginTransaction(err => {
-      if (err) {
-        connection.release();
-        console.error("Errore nell'avvio della transazione:", err);
-        return res.status(500).json({ error: "Errore nell'avvio della transazione" });
-      }
-  
-      // Ottieni lo stato attuale del contest
-      const sqlGetContest = "SELECT status, stake, owner_user_id, opponent_user_id FROM contests WHERE contest_id = ?";
-      connection.query(sqlGetContest, [contestId], (err, contestResults) => {
-        if (err) {
-          return rollbackTransaction(connection, err, res, "Errore nella lettura del contest");
-        }
-        
-        if (contestResults.length === 0) {
-          return rollbackTransaction(connection, null, res, "Contest non trovato", 404);
-        }
-        
-        const contest = contestResults[0];
-        let newStatus = contest.status;
-        
-        // Aggiorna lo stato del contest in base a chi sta confermando la squadra
-        if (newStatus === 0 && parseInt(userId) === contest.owner_user_id) {
-          newStatus = 1; // Owner ha confermato
-        } else if (newStatus === 1 && parseInt(userId) === contest.opponent_user_id) {
-          newStatus = 2; // Opponent ha confermato
-        } else if (newStatus !== 0 && newStatus !== 1) {
-          return rollbackTransaction(connection, null, res, "Stato del contest non valido per la conferma", 400);
-        }
-        
-        // Verifica se l'utente ha già una squadra per questo contest
-        const sqlCheckTeam = "SELECT fantasy_team_id FROM fantasy_teams WHERE contest_id = ? AND user_id = ?";
-        connection.query(sqlCheckTeam, [contestId, userId], (err, teamResults) => {
-          if (err) {
-            return rollbackTransaction(connection, err, res, "Errore nella verifica della squadra esistente");
-          }
-          
-          if (teamResults.length > 0) {
-            return rollbackTransaction(connection, null, res, "Hai già confermato una squadra per questo contest", 400);
-          }
-          
-          // Verifica il saldo dell'utente
-          const sqlGetUser = "SELECT teex_balance FROM users WHERE user_id = ?";
-          connection.query(sqlGetUser, [userId], (err, userResults) => {
-            if (err) {
-              return rollbackTransaction(connection, err, res, "Errore nella lettura del saldo utente");
-            }
-            
-            if (userResults.length === 0) {
-              return rollbackTransaction(connection, null, res, "Utente non trovato", 404);
-            }
-            
-            const userBalance = parseFloat(userResults[0].teex_balance);
-            
-            // Calcola il costo effettivo con il moltiplicatore
-            const effectiveMultiply = parseFloat(multiplier) || 1;
-            const multipliedCost = squadCost * effectiveMultiply;
-            
-            // Verifica che l'utente abbia abbastanza Teex
-            if (userBalance < multipliedCost) {
-              return rollbackTransaction(connection, null, res, "Saldo Teex insufficiente", 400);
-            }
-            
-            // Crea la nuova squadra
-            const sqlCreateTeam = "INSERT INTO fantasy_teams (user_id, contest_id, total_cost) VALUES (?, ?, ?)";
-            connection.query(sqlCreateTeam, [userId, contestId, squadCost], (err, teamResult) => {
-              if (err) {
-                return rollbackTransaction(connection, err, res, "Errore nella creazione della squadra");
-              }
-              
-              const teamId = teamResult.insertId;
-              
-              // Prepara i valori per l'inserimento degli atleti
-              // Inserisci tutti i giocatori
-              const playerValues = players.map(p => [
-                teamId, 
-                p.athleteId, 
-                p.event_unit_cost || 0,
-                p.aep_id || null  // Aggiungi aep_id come quarto valore
-              ]);
-              
-              if (playerValues.length === 0) {
-                return rollbackTransaction(connection, null, res, "Nessun atleta fornito", 400);
-              }
-              
-              // Inserisci gli atleti nella squadra
-              const placeholders = playerValues.map(() => "(?, ?, ?, ?)").join(", ");
-              const flatValues = playerValues.flat();
-              
-              const sqlInsertPlayers = `INSERT INTO fantasy_team_entities (fantasy_team_id, athlete_id, cost, aep_id) VALUES ${placeholders}`;
-              connection.query(sqlInsertPlayers, flatValues, (err) => {
-                if (err) {
-                  return rollbackTransaction(connection, err, res, "Errore nell'aggiunta degli atleti");
-                }
-                
-                // Aggiorna lo stato del contest e il moltiplicatore
-                let updateFields = {};
-                
-                const isOwner = parseInt(userId) === contest.owner_user_id;
-                
-                if (isOwner) {
-                  // Se l'owner conferma, imposta lo stake iniziale a baseTeamCost * multiply
-                  updateFields = {
-                    status: newStatus,
-                    multiply: effectiveMultiply,
-                    stake: squadCost * effectiveMultiply
-                  };
-                } else {
-                  // Se l'opponent conferma, aggiungi il suo costo moltiplicato allo stake esistente
-                  updateFields = {
-                    status: newStatus
-                  };
-                  
-                  // Aggiorna il moltiplicatore solo se è la prima conferma (status 0)
-                  if (contest.status === 0) {
-                    updateFields.multiply = effectiveMultiply;
-                  }
-                  
-                  // Se questa è la seconda conferma (status 1), aggiungi il costo moltiplicato dell'opponent allo stake
-                  if (contest.status === 1) {
-                    const currentStake = parseFloat(contest.stake || 0);
-                    const additionalStake = squadCost * effectiveMultiply;
-                    updateFields.stake = currentStake + additionalStake;
-                  }
-                }
-                
-                // Costruisci la query di aggiornamento del contest
-                const updateSql = "UPDATE contests SET " + 
-                  Object.keys(updateFields).map(k => `${k} = ?`).join(", ") +
-                  " WHERE contest_id = ?";
-                
-                const updateParams = [...Object.values(updateFields), contestId];
-                
-                connection.query(updateSql, updateParams, (err) => {
-                  if (err) {
-                    return rollbackTransaction(connection, err, res, "Errore nell'aggiornamento del contest");
-                  }
-                  
-                  // Sottrai il costo moltiplicato dal saldo dell'utente
-                  const sqlUpdateBalance = "UPDATE users SET teex_balance = teex_balance - ? WHERE user_id = ?";
-                  connection.query(sqlUpdateBalance, [multipliedCost, userId], (err) => {
-                    if (err) {
-                      return rollbackTransaction(connection, err, res, "Errore nell'aggiornamento del saldo");
-                    }
-                    
-                    // Commit della transazione
-                    connection.commit(err => {
-                      if (err) {
-                        return rollbackTransaction(connection, err, res, "Errore nel commit della transazione");
-                      }
-                      
-                      connection.release();
-                      
-                      res.json({
-                        message: "Squadra confermata con successo",
-                        multiply: effectiveMultiply,
-                        baseTeamCost: squadCost,
-                        multipliedCost: multipliedCost
-                      });
-                    });
-                  });
-                });
-              });
-            });
-          });
-        });
-      });
-    });
-  });
-});
 
 module.exports = router;
 

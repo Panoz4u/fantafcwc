@@ -265,7 +265,7 @@ async function initApp() {
         localStorage.setItem('addPlayerData', JSON.stringify(addPlayerData));
         
         // Naviga alla pagina senza parametri in URL
-        window.location.href = '/aggiungi-giocatore.html';
+        window.location.href = '/add-members.html';
       });
     }
     

@@ -434,7 +434,7 @@ document.addEventListener("DOMContentLoaded", function() {
       const opponentId = params.get("opponent");
       
       // Reindirizza alla pagina di aggiunta giocatori
-      window.location.href = `/aggiungi-giocatore.html?contest=${contestId}&user=${userId}&owner=${ownerId}&opponent=${opponentId}`;
+      window.location.href = `/add-members.html?contest=${contestId}&user=${userId}&owner=${ownerId}&opponent=${opponentId}`;
     });
   }
     // Carica i dati utente e renderizza la lista dei giocatori
@@ -473,6 +473,6 @@ function navigateToAddPlayer() {
   localStorage.setItem('addPlayerData', JSON.stringify(addPlayerData));
   
   // Naviga alla pagina senza parametri in URL
-  window.location.href = '/aggiungi-giocatore.html';
+  window.location.href = '/add-members.html';
 }
 

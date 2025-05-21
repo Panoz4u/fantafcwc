@@ -11,150 +11,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,800;1,800&family=Barlow+Condensed:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/mobile.css">
   <link rel="stylesheet" href="css/mobile2.css">
+  <link rel="stylesheet" href="css/contest-creation.css">
   
-  <!-- Rimuovi il riferimento a auth.js qui -->
-  <script src="/js/avatar-functions.js"></script>
-<script>
-    // Script per recuperare i dati dal localStorage o dall'URL
-    document.addEventListener("DOMContentLoaded", () => {
-      try {
-        // Verifica se ci sono parametri nell'URL
-        const params = new URLSearchParams(window.location.search);
-        const contestId = params.get("contest");
-        const opponentId = params.get("opponent");
-        const ownerId = params.get("owner");
-        const userId = params.get("user");
-        const aepId = params.get("aep_id"); // Aggiungi il parametro aep_id
-        
-        // Se ci sono parametri nell'URL, salvali nel localStorage e reindirizza alla pagina senza parametri
-        if (contestId || opponentId || ownerId || userId || aepId) {
-          // Salva i parametri nel localStorage
-          const contestData = {
-            contestId: contestId || "",  // Usa stringa vuota invece di null
-            opponentId: opponentId || "",
-            ownerId: ownerId || "",
-            userId: userId || "",
-            aepId: aepId || "",  // Salva aep_id nel localStorage
-            timestamp: new Date().getTime()
-          };
-          localStorage.setItem('contestData', JSON.stringify(contestData));
-          
-          // Reindirizza alla pagina senza parametri
-          window.history.replaceState({}, document.title, '/riassunto.html');
-          
-          // Imposta i dati come variabili globali solo se non sono null
-          if (contestId) window.contestId = contestId;
-          if (opponentId) window.opponentId = opponentId;
-          if (ownerId) window.ownerId = ownerId;
-          if (userId) window.userId = userId;
-          if (aepId) window.aepId = aepId; // Imposta aep_id come variabile globale
-          
-          // Imposta il flag contestDataReady a true
-          window.contestDataReady = true;
-          
-          return; // Esci dalla funzione
-        }
-        
-        // Recupera i dati dal localStorage
-        const contestDataStr = localStorage.getItem('contestData');
-        
-        // Se abbiamo dati nel localStorage, usiamo quelli
-        if (contestDataStr) {
-          const contestData = JSON.parse(contestDataStr);
-          
-          // Verifica che i dati non siano troppo vecchi (opzionale, per sicurezza)
-          const now = new Date().getTime();
-          const dataAge = now - contestData.timestamp;
-          const maxAge = 5 * 60 * 1000; // 5 minuti in millisecondi
-          
-          if (dataAge > maxAge) {
-            localStorage.removeItem('contestData'); // Pulisci i dati scaduti
-            window.location.href = '/user-landing.html';
-            return;
-          } else {
-            // Imposta i dati come variabili globali per essere utilizzati dal modulo riassunto.js
-            window.contestId = contestData.contestId;
-            window.eventUnitId = contestData.event_unit_id || contestData.eventUnitId;
-            window.opponentId = contestData.opponentId;
-            window.ownerId = contestData.ownerId;
-            window.userId = contestData.userId;
-            window.aepId = contestData.aepId; // Imposta aep_id come variabile globale
-            
-            // Imposta il flag contestDataReady a true
-            window.contestDataReady = true;
-            
-            return; // Esci dalla funzione se abbiamo recuperato i dati dal localStorage
-          }
-        } else {
-          // Se non abbiamo dati né nell'URL né nel localStorage, non mostrare errori
-          // ma reindirizza silenziosamente alla pagina user-landing
-          window.location.href = '/user-landing.html';
-        }
-      } catch (e) {
-        window.location.href = '/user-landing.html';
-      }
-    });
-    
-    // Funzione per salvare l'aep_id quando si conferma la squadra
-    function salvaAepId() {
-      try {
-        // Recupera i giocatori scelti
-        const chosenPlayers = JSON.parse(localStorage.getItem('chosenPlayers') || '[]');
-        
-        // Recupera l'aep_id globale
-        const aepId = window.aepId;
-        
-        // Recupera i dati dal localStorage
-        const contestDataStr = localStorage.getItem('contestData');
-        
-        if (contestDataStr) {
-          const contestData = JSON.parse(contestDataStr);
-          
-          // Verifica se abbiamo un aep_id nei dati del contest
-          if (contestData.aepId) {
-            // Aggiungi l'aep_id a tutti i giocatori che non lo hanno già
-            const playersConAepId = chosenPlayers.map(player => {
-              if (player.aep_id) {
-                return player;
-              }
-              return { ...player, aep_id: contestData.aepId };
-            });
-            
-            // Salva i giocatori aggiornati
-            localStorage.setItem('chosenPlayers', JSON.stringify(playersConAepId));
-            return true;
-          }
-        }
-        
-        // Se non abbiamo trovato un aep_id nei dati del contest, usiamo quello globale
-        if (aepId) {
-          // Aggiungi l'aep_id a tutti i giocatori che non lo hanno già
-          const playersConAepId = chosenPlayers.map(player => {
-            if (player.aep_id) {
-              return player;
-            }
-            return { ...player, aep_id: aepId };
-          });
-          
-          // Salva i giocatori aggiornati
-          localStorage.setItem('chosenPlayers', JSON.stringify(playersConAepId));
-          return true;
-        }
-        
-        return false;
-      } catch (e) {
-        return false;
-      }
-    }
-  </script>
-    
-    <!-- Aggiungi gli script di Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    
-    <!-- Carica auth.js DOPO aver caricato Firebase -->
-    <script type="module" src="js/auth/index.js"></script>
 </head>
 <body>
   <header class="header">
@@ -197,21 +55,8 @@
   </footer>
 
   <!-- Carica il modulo riassunto.js DOPO aver impostato le variabili globali -->
-  <script type="module" src="./js/riassunto.js"></script>
-  
-  <!-- Aggiungi questo script per collegare la funzione salvaAepId al pulsante di conferma -->
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const confirmBtn = document.getElementById('confirmFooterBtn');
-      if (confirmBtn) {
-        confirmBtn.addEventListener('click', function() {
-          // Chiama la funzione per salvare l'aep_id prima di confermare la squadra
-          salvaAepId();
-        });
-      }
-    });
-  </script>
-  
+  <script type="module" src="js/user/contestCreation/index.js"></script>
+
   <!-- Add this right before the closing </body> tag -->
   <div id="multiplyOverlay" class="multiply-overlay" style="display: none;">
     <div class="multiply-container" style="padding-bottom: 96px;">
