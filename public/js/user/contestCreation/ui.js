@@ -7,22 +7,81 @@ import {
     getAvatarSrc
   } from './utils.js';
   
- export function renderContestHeader({ owner_name, owner_avatar, opponent_name, opponent_avatar, owner_cost, opponent_cost, status, multiply }) {
+  export function renderContestHeader(contest, userId) {
+    const {
+      owner_name, owner_avatar,
+      opponent_name, opponent_avatar,
+      owner_cost, opponent_cost,
+      status, multiply,
+      fantasy_teams = [],
+      owner_fantasy_team, opponent_fantasy_team
+    } = contest;
     const container = document.getElementById("contestHeaderContainer");
-    container.innerHTML = `
-      <div class="contest-container cc-header">
-        <div class="contest-bar">
-          <img src="${getAvatarSrc(owner_avatar)}" class="player-avatar-contest left-avatar">
-          <div class="triletter_contest left-name">${owner_name.slice(0,3)}</div>
-          <div class="result_bold">VS</div>
-          <div class="triletter_contest right-name">${opponent_name.slice(0,3)}</div>
-          <img src="${getAvatarSrc(opponent_avatar)}" class="player-avatar-contest right-avatar">
-          <div class="teex_spent left-teex" id="currentUserScore">${getTotalCost().toFixed(1)}</div>
-          <div class="teex_spent right-teex">${opponent_cost?parseFloat(opponent_cost).toFixed(1):"-"}</div>
-        </div>
-        <div class="status-badge-base status-badge">${["CREATED","PENDING","READY","LIVE","COMPLETED"][status]}</div>
-        ${ multiply>1? `<div class="multiply-contest-mini">${multiply}</div>` : ""}
-      </div>`;
+
+// Calcola currentUserId: se la API l’ha già messo in contest.current_user_id usalo,
+// altrimenti usa il userId passato.
+const currentUserId = contest.current_user_id || userId;
+
+// Determina se sei owner
+const isCurrentOwner = String(currentUserId) === String(contest.owner_user_id);
+
+// Dati “my” e “opp” (come in createContestCard caso 1)
+const my = {
+  name:   isCurrentOwner ? owner_name    : opponent_name,
+  avatar: isCurrentOwner ? owner_avatar  : opponent_avatar,
+  cost:   (() => {
+    if (status === 1) {
+      // stato INVITED/PENDING: prendi da fantasy_teams
+      const t = fantasy_teams.find(t => String(t.user_id) === String(currentUserId));
+      return t ? parseFloat(t.total_cost).toFixed(1) : '-';
+    }
+    // altri status: fallback su owner_cost/opponent_cost
+    return parseFloat(isCurrentOwner ? owner_cost : opponent_cost || 0).toFixed(1);
+  })()
+};
+const opp = {
+  name:   isCurrentOwner ? opponent_name : owner_name,
+  avatar: isCurrentOwner ? opponent_avatar : owner_avatar,
+    cost: (() => {
+      // 1) status=0: nessun avversario schierato → trattino
+        if (status === 0) {
+          return '-';
+        }
+        // 2) status=1 & non-owner: mostra costo squadra owner
+        if (status === 1 && !isCurrentOwner && owner_fantasy_team) {
+          return parseFloat(owner_fantasy_team.total_cost).toFixed(1);
+        }
+        // 3) fallback generale (READY, LIVE, COMPLETED)
+        return parseFloat(
+          isCurrentOwner
+            ? opponent_cost  // se sei owner, opponent_cost già in contest
+            : owner_cost     // se sei invitato, owner_cost come fallback
+          || 0
+        ).toFixed(1);
+      })()
+
+};
+
+// Scegli l’etichetta di stato
+const statusLabels = ['CREATED','PENDING','READY','LIVE','COMPLETED'];
+const badgeClass   = ['status-badge-created','status-badge-pending','status-badge-ready','status-badge-live','status-badge-completed'][status];
+
+container.innerHTML = `
+  <div class="contest-container cc-header">
+    <div class="contest-bar">
+      <img src="${getAvatarSrc(my.avatar)}" class="player-avatar-contest left-avatar">
+      <div class="triletter_contest left-name">${my.name.slice(0,3)}</div>
+      <div class="result_bold">VS</div>
+      <div class="triletter_contest right-name">${opp.name.slice(0,3)}</div>
+      <img src="${getAvatarSrc(opp.avatar)}" class="player-avatar-contest right-avatar">
+      <div class="teex_spent left-teex" id="currentUserScore">${my.cost}</div>
+      <div class="teex_spent right-teex">${opp.cost}</div>
+    </div>
+    <div class="status-badge-base ${badgeClass}">
+      ${statusLabels[status]}
+    </div>
+    ${multiply > 1 ? `<div class="multiply-contest-mini">${Math.floor(multiply)}</div>` : ''}
+  </div>`;
 
   }
 
@@ -84,9 +143,6 @@ import {
       <span class="teex-left-text-cyan">${getAvailableBudget().toFixed(1)}</span>
       <span class="teex-left-text-white">SwissHearts left</span>`;
   
-    // 2) balance header (alto destra)
-    const bal = parseFloat(localStorage.getItem('userTeexBalance') || '0');
-    document.getElementById('teexBalance').textContent = bal.toFixed(1);
   
     // 3) costo header (sotto avatar sinistro)
     const headerCostEl = document.getElementById('currentUserScore');

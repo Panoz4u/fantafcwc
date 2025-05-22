@@ -13,7 +13,7 @@ const firebaseConfigRoutes  = require('./server/routes/firebase-config');
 const adminContestRoutes    = require('./server/routes/admincontest');
 const adminRouter           = require('./adminserver');
 const userContestsRoutes    = require('./routes/userContests');
-
+const athleteRoutes = require('./routes/athletes');
 
 
 // 2) INIT
@@ -40,7 +40,7 @@ app.use('/', adminRouter);
 app.use('/api', firebaseConfigRoutes);
 app.use('/admin-api', adminContestRoutes);
 app.use('/api', userContestsRoutes);
-
+app.use('/api', athleteRoutes);
 
 
 // 6) ROUTE AD HOC

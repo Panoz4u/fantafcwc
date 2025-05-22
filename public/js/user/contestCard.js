@@ -7,6 +7,7 @@
  */
 import { getAvatarSrc } from './utils/avatar.js';
 import { getCurrentUserId, isCurrentUserOwner } from './utils/user.js';
+import { setupEventListeners } from "../user/contestCreation/events.js";
 
 export function createContestCard(contest, userId) {
   // Skip status=0
@@ -97,9 +98,12 @@ export function createContestCard(contest, userId) {
             <div class="teex_spent left-teex">${myCost}</div>
             <div class="teex_spent right-teex">${oppCost}</div>
           </div>
-          <div class="status-badge-base status-badge-${isCurrentOwner ? 'pending' : 'invited'}">
+      <div class="status-badge-base status-badge-${isCurrentOwner ? 'pending' : 'invited'}">
             ${isCurrentOwner ? 'PENDING' : 'INVITED'}
           </div>
+          ${contest.multiply > 1 
+            ? `<div class="multiply-contest-mini">${Math.floor(contest.multiply)}</div>` 
+            : ''}
         </div>
       `;
       break;
@@ -138,6 +142,9 @@ export function createContestCard(contest, userId) {
             <div class="teex_spent right-teex">${oppCost2}</div>
           </div>
           <div class="status-badge-base status-badge-ready">READY</div>
+          ${contest.multiply > 1 
+            ? `<div class="multiply-contest-mini">${Math.floor(contest.multiply)}</div>` 
+            : ''}
         </div>
       `;
       break;
@@ -300,18 +307,41 @@ export function createContestCard(contest, userId) {
       `;
   }
 
-  // Click handler
-  card.addEventListener('click', () => {
-    localStorage.setItem('contestId', contest.contest_id);
-    localStorage.setItem('userId', currentUserId);
-    localStorage.setItem('ownerId', contest.owner_id);
-    localStorage.setItem('opponentId', contest.opponent_id);
-    
-    window.location.href =
-      (contest.status === 1 && !isCurrentOwner)
-        ? 'riassunto.html'
-        : 'contest-details.html';
-  });
+// Click handler
+card.addEventListener('click', () => {
+  // Se è status=1 e non sei owner → vai a creare / completare la tua squadra
+  if (contest.status === 1 && !isCurrentOwner) {
+    // 1) Rimuovi eventuali dati vecchi
+    localStorage.removeItem('contestData');
+
+    // 2) Prepara l’oggetto da passare in contest-creation.html
+    const contestData = {
+      contestId:    contest.contest_id,
+      ownerId:      contest.owner_user_id,
+      opponentId:   contest.opponent_user_id,
+      userId:       currentUserId,
+      fantasyTeams: contest.fantasy_teams || [],
+      multiply:     contest.multiply,
+      stake:        contest.stake
+      // aggiungi qui altri campi se ti servono
+    };
+
+    // 3) Salva in un unico JSON
+    localStorage.setItem('contestData', JSON.stringify(contestData));
+
+    // 4) Vai alla pagina di creazione/completamento
+    window.location.href = '/contest-creation.html';
+    return;  // esci qui, non eseguire altro
+  }
+
+  // Altrimenti (owner o altri status) → dettagli
+  const detailData = {
+    contestId: contest.contest_id,
+    userId:    currentUserId
+  };
+  localStorage.setItem('contestDetailData', JSON.stringify(detailData));
+  window.location.href = '/contest-details.html';
+});
 
   return card;
 }
