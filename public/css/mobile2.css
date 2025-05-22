@@ -494,6 +494,8 @@
   background-color: rgba(75, 75, 75, 0.2);
   border: 2px solid #0f7173;
   color: white;
+  pointer-events: none; 
+  opacity: 0.5;
 }
 
 .big-cost {

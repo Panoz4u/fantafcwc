@@ -26,8 +26,12 @@ export function setupEventListeners(contestId, userId) {
 
   // PLAY → moltiplicatore
   document.getElementById('confirmFooterBtn').addEventListener('click', () => {
-    showMultiplyOverlay(getTotalCost, async (multiplier) => {
-      // callback invocata al confirm del moltiplicatore
+  // 1) Prendi i dati della sfida
+  const contestData = JSON.parse(localStorage.getItem('contestData') || '{}');
+  const amInvited   = contestData.userId !== contestData.ownerId;
+  const lockedMul   = amInvited ? contestData.multiply : null;
+  
+    showMultiplyOverlay(getTotalCost, async (multiplier) => {     // callback invocata al confirm del moltiplicatore
       const squadData = {
         contestId,
         userId,
@@ -49,7 +53,7 @@ export function setupEventListeners(contestId, userId) {
       } catch (err) {
         alert('Errore nella conferma: ' + (err.error||err));
       }
-    });
+    }, lockedMul);
   });
 
   // Rimozione giocatore (delegata da ui.js)
@@ -63,23 +67,3 @@ export function setupEventListeners(contestId, userId) {
   });
 }
 
-export function bindUI() {
-    document.getElementById("backArrow").onclick = () => window.history.back();
-    document.getElementById("addPlayerBtn").onclick = () => {
-      // salva addPlayerData e fai location.href = "/add-members.html";
-    };
-    document.getElementById("resetTeamBtn").onclick = () => {
-      localStorage.removeItem("chosenPlayers");
-      renderPlayerList();
-    };
-    document.getElementById("confirmFooterBtn").onclick = () => {
-      showMultiplyOverlay(getTotalCost);
-    };
-    document.getElementById("cancelMultiply").onclick = hideOverlay;
-    document.getElementById("confirmMultiply").onclick = async () => {
-      const payload = buildPayload();      // ricostruisci i dati
-      const token   = localStorage.getItem("authToken");
-      await confirmSquadApi(payload, token);
-      window.location.href = "/user-landing.html";
-    };
-  }
