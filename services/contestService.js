@@ -170,7 +170,6 @@ function confirmSquad({ contestId, userId, players, multiplier = 1, totalCost })
   });
 }
 
-module.exports = { confirmSquad };
 
 
 /**
@@ -263,5 +262,7 @@ SELECT
     opponentTeam: oppRows
   };
 }
-
-module.exports = { getContestDetails };
+module.exports = {
+  confirmSquad,
+  getContestDetails
+};

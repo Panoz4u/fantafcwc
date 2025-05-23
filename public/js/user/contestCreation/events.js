@@ -2,6 +2,7 @@
 import { getContestDetails } from './api.js';
 import { renderContestHeader, renderPlayerList, updateBudgetUI, showMultiplyOverlay, hideOverlay } from './ui.js';
 import { loadChosenPlayers, saveChosenPlayers, getTotalCost } from './utils.js';
+import { confirmSquad } from './api.js';
 
 export function setupEventListeners(contestId, userId) {
   // Back
