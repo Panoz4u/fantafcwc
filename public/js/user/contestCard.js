@@ -320,6 +320,7 @@ card.addEventListener('click', () => {
       ownerId:      contest.owner_user_id,
       opponentId:   contest.opponent_user_id,
       userId:       currentUserId,
+      status:       contest.status,
       fantasyTeams: contest.fantasy_teams || [],
       multiply:     contest.multiply,
       stake:        contest.stake

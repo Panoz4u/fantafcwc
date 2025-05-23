@@ -85,12 +85,31 @@ container.innerHTML = `
 
   }
 
+
+  function welcomeTemplate() {
+    return `
+      <div class="welcome-container">
+        <div class="welcome-text">
+          <div class="welcome-to">START ADDING</div>
+          <div class="fanteex-title">ARTISTS</div>
+          <div class="start-game">TO YOUR TEAM</div>
+        </div>
+        <div class="animated-arrows">
+          <img src="icons/arrow-down.png" alt="Arrow" class="arrow arrow1">
+          <img src="icons/arrow-down.png" alt="Arrow" class="arrow arrow2">
+          <img src="icons/arrow-down.png" alt="Arrow" class="arrow arrow3">
+        </div>
+      </div>
+    `;
+  }
+
+
   export async function renderPlayerList() {
     let players = await enrichPlayerData(loadChosenPlayers());
     const list = document.getElementById("playersList");
     list.innerHTML = "";
     if (players.length === 0) {
-      list.innerHTML = `<div class="welcome-container">…</div>`;
+      list.innerHTML = welcomeTemplate();
       return;
     }
     players.forEach((p, i) => {
@@ -168,63 +187,91 @@ container.innerHTML = `
   
   export function showMultiplyOverlay(getTotalCostFn, onConfirm, lockedMultiply = null) {
     const overlay = document.getElementById("multiplyOverlay");
-   
-      // —— ASSICURO CHE CANCEL E CONFIRM SIANO SEMPRE COLLEGATI ——
-      const btnCancel  = document.getElementById("cancelMultiply");
-      const btnConfirm = document.getElementById("confirmMultiply");
-      btnCancel.onclick  = () => { overlay.style.display = "none"; };
-      btnConfirm.onclick = () => { overlay.style.display = "none"; onConfirm(selectedMultiplier); };
-    
-   
     const circles = overlay.querySelectorAll(".multiply-circle");
   
-    // 1) convertiamo lockedMultiply in numero, se esiste; altrimenti default 1
-    const selectedMultiplier = lockedMultiply != null
-      ? parseInt(lockedMultiply, 10)
-      : 1;
-    console.log("🔔 selectedMultiplier (num) =", selectedMultiplier);
-  
-    // 2) pulizia classi + listener
-    circles.forEach(c => {
-      c.classList.remove("mc-on", "mc-off");
-      c.onclick = null;
-    });
-  
-    // 3) assegno mc-on / mc-off
-    circles.forEach(c => {
-      const m = parseInt(c.dataset.multiply, 10);
-      c.classList.toggle("mc-on", m === selectedMultiplier);
-      c.classList.toggle("mc-off", m !== selectedMultiplier);
-    });
-  
-    // 4) aggiorno subito il costo sotto
+    // 1) CALCOLA prima il moltiplicatore selezionato (numero, non stringa)
+      let selectedMultiplier = lockedMultiply != null
+        ? parseInt(lockedMultiply, 10)
+        : 1;
+
+        // 2) PULIZIA classi e listener da tutti i cerchi
+       circles.forEach(c => {
+          c.classList.remove("mc-on", "mc-off");
+          c.onclick = null;
+        });
+      
+        // 3) RIGENERO gli stati:
+          if (lockedMultiply != null) {
+              // — INVITATO: mc-on al selezionato, mc-off a tutti gli altri e nessun click —
+              circles.forEach(c => {
+                const m = parseInt(c.dataset.multiply, 10);
+                c.classList.toggle("mc-on", m === selectedMultiplier);
+                c.classList.toggle("mc-locked", m !== selectedMultiplier);
+                // onclick già rimosso prima
+              });
+            } else {
+              // — NUOVA SFIDA: mc-on al selezionato, mc-off a tutti gli altri, e click sempre attivo —
+              circles.forEach(c => {
+                const m = parseInt(c.dataset.multiply, 10);
+                // imposta la classe di default
+                c.classList.toggle("mc-on", m === selectedMultiplier);
+                c.classList.toggle("mc-off", m !== selectedMultiplier);
+                // assegna (o ri-assegna) il listener SEMPRE
+                c.onclick = () => {
+                  // aggiorna visivo di tutti
+                  circles.forEach(x => {
+                    const mm = parseInt(x.dataset.multiply, 10);
+                    x.classList.toggle("mc-on", mm === m);
+                    x.classList.toggle("mc-off", mm !== m);
+                  });
+                  // aggiorna costo
+                  document.getElementById("multipliedCost")
+                    .textContent = (getTotalCostFn() * m).toFixed(1);
+                  // **CORREZIONE**: aggiorno la variabile selectedMultiplier nel contesto esterno
+                  selectedMultiplier = m;
+                };
+              });
+            }
+        // 4) AGGIORNA il costo visualizzato
     const costEl = document.getElementById("multipliedCost");
     costEl.textContent = (getTotalCostFn() * selectedMultiplier).toFixed(1);
   
-    // 5) se siamo invitato (locked), blocco del tutto i click e ESCO
+    // 5) COLLEGA SEMPRE CANCEL e CONFIRM
+    const btnCancel  = document.getElementById("cancelMultiply");
+    const btnConfirm = document.getElementById("confirmMultiply");
+    btnCancel.onclick  = () => overlay.style.display = "none";
+    btnConfirm.onclick = () => {
+      overlay.style.display = "none";
+      console.log("DEBUG: confermo multiplier =", selectedMultiplier);
+      onConfirm(selectedMultiplier);
+    };
+    
+    // 6) SE INVITATO: blocca i cerchi (nessun onclick)
     if (lockedMultiply != null) {
       overlay.style.display = "flex";
       return;
     }
   
-    // 6) altrimenti (nuova sfida), riassegno i click per cambiare il moltiplicatore
-    circles.forEach(c => {
-      c.onclick = () => {
-        const m = parseInt(c.dataset.multiply, 10);
-        // aggiorno classi
-        circles.forEach(x => {
-          const mm = parseInt(x.dataset.multiply, 10);
-          x.classList.toggle("mc-on", mm === m);
-          x.classList.toggle("mc-off", mm !== m);
-        });
-        // aggiorno costo
-        costEl.textContent = (getTotalCostFn() * m).toFixed(1);
-      };
-    });
+    // 7) ALTRIMENTI (nuova sfida): collega onclick per cambiare moltiplicatore
+    // **RIMUOVO QUESTA SEZIONE PERCHÉ DUPLICA I LISTENER E CAUSA IL PROBLEMA**
+    // circles.forEach(c => {
+    //   c.onclick = () => {
+    //     const m = parseInt(c.dataset.multiply, 10);
+    //     // aggiorna classi su tutti
+    //     circles.forEach(x => {
+    //       const mm = parseInt(x.dataset.multiply, 10);
+    //       x.classList.toggle("mc-on", mm === m);
+    //       x.classList.toggle("mc-off", mm !== m);
+    //     });
+    //     // aggiorna costo
+    //     costEl.textContent = (getTotalCostFn() * m).toFixed(1);
+    //   };
+    // });
   
-    // 7) mostro l'overlay
+    // 8) MOSTRA l'overlay
     overlay.style.display = "flex";
   }
+  
 // at the bottom of public/js/user/contestCreation/ui.js
 export function hideOverlay() {
     const overlay = document.getElementById("multiplyOverlay");

@@ -490,7 +490,7 @@
   color: white;
 }
 
-.mc-off {
+.mc-locked {
   background-color: rgba(75, 75, 75, 0.2);
   border: 2px solid #0f7173;
   color: white;
@@ -498,6 +498,11 @@
   opacity: 0.5;
 }
 
+.mc-off {
+  background-color: rgba(75, 75, 75, 0.2);
+  border: 2px solid #0f7173;
+  color: white;
+}
 .big-cost {
   width: 120px;
   height: 46px;

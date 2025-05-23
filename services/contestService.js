@@ -111,23 +111,29 @@ function confirmSquad({ contestId, userId, players, multiplier = 1, totalCost })
                   // 7) Aggiorna il contest (status, multiply, stake)
                   const isOwner = userId === contest.owner_user_id;
                   const updateFields = {};
-                  if (isOwner) {
-                    updateFields.status   = newStatus;
-                    updateFields.multiply = effectiveMul;
-                    updateFields.stake    = totalCost * effectiveMul;
-                  } else {
-                    updateFields.status = newStatus;
-                    if (contest.status === 0) updateFields.multiply = effectiveMul;
-                    if (contest.status === 1) {
-                      updateFields.stake = parseFloat(contest.stake || 0) + (totalCost * effectiveMul);
-                    }
-                  }
+                   // in ogni caso cambio stato...
+                   updateFields.status = newStatus;
+                  
+                   // 1) Se è la PRIMA conferma (status 0→1), scrivo sempre il moltiplicatore
+                   if (contest.status === 0) {
+                     updateFields.multiply = effectiveMul;
+                   }
+                  
+                   // 2) Se è l’owner al primo confirm o l’invited (status 1→2), gestisco lo stake
+                   if (isOwner) {
+                     // owner paga tutto subito
+                     updateFields.stake = totalCost * effectiveMul;
+                   } else if (contest.status === 1) {
+                     // invited aggiunge il suo costo
+                     updateFields.stake = parseFloat(contest.stake || 0) + (totalCost * effectiveMul);
+                   }
 
                   const setClause = Object.keys(updateFields)
-                    .map(k => `${k} = ?`)
-                    .join(', ');
-                  const params = [ ...Object.values(updateFields), contestId ];
-                  const sqlUpdateContest = `UPDATE contests SET ${setClause} WHERE contest_id = ?`;
+                   .map(k => `${k} = ?`)
+                   .join(', ');
+                 // CORRETTO:
+                 const params = [...Object.values(updateFields), contestId];
+                 const sqlUpdateContest = `UPDATE contests SET ${setClause} WHERE contest_id = ?`;
 
                   connection.query(sqlUpdateContest, params, (err) => {
                     if (err) return rollbackTransaction(connection, err, reject, 'Errore nell\'aggiornamento del contest');
