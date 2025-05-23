@@ -87,15 +87,7 @@
   <script src="/js/user/footer.js"></script>
 
   <!-- I tuoi script dell’app -->
-  <script type="module" src="js/user/landing.js"></script>
-  <script type="module" src="js/user/contests.js"></script>
-  <script type="module">
-    import { loadUserHeader } from './js/user/landing.js';
-    import { loadUserLanding } from './js/user/contests.js';
-    document.addEventListener('DOMContentLoaded', () => {
-      loadUserHeader();
-      loadUserLanding();
-    });
-  </script>
+  <script type="module" src="js/user/userLanding/index.js"></script>
+
 </body>
 </html>

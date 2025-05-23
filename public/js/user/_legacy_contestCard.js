@@ -52,6 +52,17 @@ export function createContestCard(contest, userId) {
   card.className = 'contest-cell clickable';
   card.dataset.contestId = contest.contest_id;
 
+  // Quando clicco sulla card, salvo i parametri e vado al dettaglio
+  card.addEventListener('click', () => {
+  localStorage.setItem('contestId',    contest.contest_id);
+  localStorage.setItem('ownerId',      contest.owner_user_id);
+  localStorage.setItem('opponentId',   contest.opponent_user_id);
+  localStorage.setItem('eventUnitId',  contest.event_unit_id);
+  // (opzionale) se ti serve il currentUserId in contest-details, salvalo anche:
+  // localStorage.setItem('userId', currentUserId);
+  window.location.href = '/contest-details.html';
+});
+
   // Switch sui vari status, usando ALWAYS my (left) e opp (right)
   switch (contest.status) {
     case 1:
@@ -317,8 +328,8 @@ card.addEventListener('click', () => {
     // 2) Prepara l’oggetto da passare in contest-creation.html
     const contestData = {
       contestId:    contest.contest_id,
-      ownerId:      contest.owner_user_id,
-      opponentId:   contest.opponent_user_id,
+      ownerId:      contest.owner_id,
+      opponentId:   contest.opponent_id,
       userId:       currentUserId,
       status:       contest.status,
       fantasyTeams: contest.fantasy_teams || [],
@@ -336,11 +347,12 @@ card.addEventListener('click', () => {
   }
 
   // Altrimenti (owner o altri status) → dettagli
-  const detailData = {
-    contestId: contest.contest_id,
-    userId:    currentUserId
-  };
-  localStorage.setItem('contestDetailData', JSON.stringify(detailData));
+   // Salvo i singoli valori
+ localStorage.setItem('contestId',    contest.contest_id);
+ localStorage.setItem('ownerId',      contest.owner_id);
+ localStorage.setItem('opponentId',   contest.opponent_id);
+ localStorage.setItem('eventUnitId',  contest.event_unit_id);
+ localStorage.setItem('userId',       currentUserId);
   window.location.href = '/contest-details.html';
 });
 

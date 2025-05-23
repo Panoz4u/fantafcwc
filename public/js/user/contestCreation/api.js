@@ -2,15 +2,6 @@
 const BASE = '/api';
 const JSON_HEADERS = { 'Content-Type': 'application/json' };
 
-export async function fetchContestDetails(contestId, userId) {
-  const token = localStorage.getItem('authToken');
-  const resp = await fetch(
-    `${BASE}/contests/contest-details?contest=${contestId}&user=${userId}`,
-    { headers: { 'Authorization': `Bearer ${token}` } }
-  );
-  if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-  return resp.json();
-}
 
 export async function postConfirmSquad(squadData) {
   const token = localStorage.getItem('authToken');
@@ -37,14 +28,37 @@ export async function fetchCurrentEventUnit() {
     return json.event_unit_id;
   }
 
-export async function getContestDetails(contestId, userId, token) {
-    const resp = await fetch(`/contests/contest-details?contest=${contestId}&user=${userId}`, {
-      headers: { "Authorization": `Bearer ${token}` }
+
+  /**
+ * Chiede al server i dettagli completi di un contest
+ * @param {number} contestId
+ * @param {number} ownerId
+ * @param {number} opponentId
+ * @param {number} eventUnitId
+ * @param {string} authToken
+ */
+
+  export async function getContestDetails(contestId, ownerId, opponentId, eventUnitId, authToken) {
+    const body = {
+      contest_id:    parseInt(contestId,    10),
+      owner_id:      parseInt(ownerId,      10),
+      opponent_id:   parseInt(opponentId,   10),
+      event_unit_id: parseInt(eventUnitId,  10)
+    };
+    const resp = await fetch('/contests/contest-details', {
+      method: 'POST',
+      headers: {
+        'Content-Type':  'application/json',
+        'Authorization': `Bearer ${authToken}`
+      },
+      body: JSON.stringify(body)
     });
-    if (!resp.ok) throw new Error(`Contest-details ${resp.status}`);
+    if (!resp.ok) {
+      const text = await resp.text();
+      throw new Error(`Contest-details ${resp.status}: ${text}`);
+    }
     return resp.json();
   }
-  
 
 export async function getUserInfo(token) {
     const resp = await fetch("/user-info", { headers: { "Authorization": `Bearer ${token}` } });

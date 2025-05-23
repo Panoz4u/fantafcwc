@@ -1,5 +1,5 @@
 // public/js/user/contestCreation/events.js
-import { fetchUsers, fetchUserLandingInfo, fetchContestDetails, confirmSquad } from './api.js';
+import { getContestDetails } from './api.js';
 import { renderContestHeader, renderPlayerList, updateBudgetUI, showMultiplyOverlay, hideOverlay } from './ui.js';
 import { loadChosenPlayers, saveChosenPlayers, getTotalCost } from './utils.js';
 

@@ -18,16 +18,19 @@ const athleteRoutes = require('./routes/athletes');
 
 // 2) INIT
 const app  = express();
+app.use(express.json());
+const contestsRouter = require('./routes/contests');
+app.use('/contests', contestsRouter);
+
+app.use(express.urlencoded({ extended: true })); // se serve
 const port = process.env.PORT || 3000;
+
 
 // 4) STATIC FILES
 app.use(express.static(path.join(__dirname, 'public')));
 
 
 // 3) GLOBAL MIDDLEWARE
-app.use('/', require('./contests'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true })); // se serve
 app.use(bodyParser.json());
 
 
@@ -218,13 +221,11 @@ const uploadResultsRoute = require("./uploadResults"); // Assicurati che il perc
 app.use("/uploadResults", uploadResultsRoute);
 
 const athletesRoutes = require("./server/routes/athletes");
-const contestsRoutes = require("./contests"); 
 const fantasyResultRoutes = require("./fantasyresult"); // Aggiungi questa riga
 
 // Usa le routes
 app.use("/uploadResults", uploadResultsRoute);
 app.use("/", athletesRoutes);
-app.use("/contests", contestsRoutes);
 app.use("/fantasy", fantasyResultRoutes); // Aggiungi questa riga
 
 // Keep the direct route handler for /user-landing-info if needed,

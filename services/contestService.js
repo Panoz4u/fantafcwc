@@ -171,3 +171,97 @@ function confirmSquad({ contestId, userId, players, multiplier = 1, totalCost })
 }
 
 module.exports = { confirmSquad };
+
+
+/**
+ * Restituisce contest + ownerTeam + opponentTeam
+ */
+async function getContestDetails({ contestId, currentUserId, eventUnitId }) {
+  // 1) Prendo i dati basilari del contest
+  const sqlContest = `
+    SELECT c.contest_id, c.status, cs.status_name, c.stake,
+           c.owner_user_id AS owner_id, ow.username AS owner_name, ow.avatar AS owner_avatar, ow.color AS owner_color,
+           ft_o.total_cost AS owner_cost, ft_o.fantasy_team_id AS owner_team_id,
+           ft_o.total_points AS owner_points, ft_o.ft_teex_won AS owner_teex_won,
+           c.opponent_user_id AS opponent_id, op.username AS opponent_name, op.avatar AS opponent_avatar, op.color AS opponent_color,
+           ft_p.total_cost AS opponent_cost, ft_p.fantasy_team_id AS opponent_team_id,
+           ft_p.total_points AS opponent_points, ft_p.ft_teex_won AS opponent_teex_won,
+           c.event_unit_id, c.multiply
+    FROM contests c
+    JOIN contests_status cs ON c.status = cs.status_id
+    JOIN users ow ON c.owner_user_id = ow.user_id
+    JOIN users op ON c.opponent_user_id = op.user_id
+    LEFT JOIN fantasy_teams ft_o ON (ft_o.contest_id = c.contest_id AND ft_o.user_id = c.owner_user_id)
+    LEFT JOIN fantasy_teams ft_p ON (ft_p.contest_id = c.contest_id AND ft_p.user_id = c.opponent_user_id)
+    WHERE c.contest_id = ?
+  `;
+  const [rows] = await pool.promise().query(sqlContest, [contestId]);
+  if (!rows.length) throw new Error('Contest non trovato');
+  const contestData = rows[0];
+
+  // 2) Carico le righe della squadra owner e opponent
+  const sqlTeam = `
+SELECT 
+    fte.athlete_id,
+    fte.fantasy_team_id,
+    fte.aep_id,
+    fte.cost AS cost,
+    a.athlete_shortname,
+    a.picture,
+    a.position,
+    a.team_id,
+    aep.event_unit_id   AS event_unit_id,
+    aep.is_ended,
+    COALESCE(ROUND(aep.athlete_unit_points, 1), 0) AS athlete_points,
+    m.home_team,
+    m.away_team,
+    ht.team_3letter     AS home_team_code,
+    at.team_3letter     AS away_team_code,
+    ht.team_name        AS home_team_name,
+    at.team_name        AS away_team_name,
+    t.team_3letter      AS player_team_code,
+    t.team_name         AS player_team_name
+  FROM fantasy_team_entities fte
+  JOIN fantasy_teams ft 
+    ON fte.fantasy_team_id = ft.fantasy_team_id
+  JOIN athletes a 
+    ON fte.athlete_id = a.athlete_id
+  JOIN teams t 
+    ON a.team_id = t.team_id
+  LEFT JOIN athlete_eventunit_participation aep 
+    ON a.athlete_id = aep.athlete_id 
+   AND aep.event_unit_id = ?
+  LEFT JOIN matches m 
+    ON aep.event_unit_id = m.event_unit_id 
+   AND (m.home_team = a.team_id OR m.away_team = a.team_id)
+  LEFT JOIN teams ht 
+    ON m.home_team = ht.team_id
+  LEFT JOIN teams at 
+    ON m.away_team = at.team_id
+  WHERE ft.contest_id = ? 
+    AND ft.user_id = ?
+`;
+  // promise interface per non nidificare callback
+  const [[ownerRows], [oppRows]] = await Promise.all([
+    pool.promise().query(sqlTeam, [eventUnitId, contestId, contestData.owner_id]),
+    pool.promise().query(sqlTeam, [eventUnitId, contestId, contestData.opponent_id])  ]);
+
+  // 3) Se qualche atleta è finito, calcolo result e status_display
+  const ended = ownerRows.concat(oppRows).some(r => r.is_ended);
+  if (ended) {
+    const sumOwner    = ownerRows.reduce((s,r) => s + (r.athlete_points||0), 0);
+    const sumOpponent = oppRows   .reduce((s,r) => s + (r.athlete_points||0), 0);
+    contestData.result = (parseInt(currentUserId)===contestData.owner_id)
+      ? `${sumOwner.toFixed(1)}-${sumOpponent.toFixed(1)}`
+      : `${sumOpponent.toFixed(1)}-${sumOwner.toFixed(1)}`;
+  }
+  contestData.status_display = ended ? contestData.result : contestData.status_name;
+
+  return {
+    contest: contestData,
+    ownerTeam: ownerRows,
+    opponentTeam: oppRows
+  };
+}
+
+module.exports = { getContestDetails };

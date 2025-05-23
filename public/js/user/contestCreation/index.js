@@ -1,6 +1,6 @@
 // public/js/user/contestCreation/index.js
- import { getContestDetails, getUserInfo } from "./api.js";
- import { setupEventListeners } from "./events.js";
+import { getContestDetails, getUserInfo } from "./api.js";
+import { setupEventListeners } from "./events.js";
 import { renderContestHeader, renderPlayerList, updateBudgetUI } from "./ui.js";
 
 async function init() {
@@ -13,6 +13,7 @@ async function init() {
     userId,
     ownerId,
     opponentId,
+    eventUnitId,
     fantasyTeams = [],  // squadre create in precedenza (solo per l’owner)
     multiply = 1,
     stake = 0
@@ -36,7 +37,14 @@ if (Array.isArray(existing) && existing.length > 0) {
   const userInfo = await getUserInfo(token);
   document.getElementById("teexBalance").textContent = parseFloat(userInfo.teexBalance).toFixed(1);
    // 4) Prendi i dettagli completi del contest (inclusi ownerTeam/opponentTeam se li mandi)
-  const { contest } = await getContestDetails(contestId, userId, token);
+  
+   const { contest, ownerTeam, opponentTeam } = await getContestDetails(
+        contestId,
+       ownerId,
+       opponentId,
+       eventUnitId,
+       token
+     );
 
  // 5) Se l’API ti ha restituito ownerTeam/opponentTeam, sovrascrivi
  if (userId === ownerId && ownerTeam?.length) {
