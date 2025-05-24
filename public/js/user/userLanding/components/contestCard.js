@@ -321,6 +321,7 @@ card.addEventListener('click', () => {
      contestId:    contest.contest_id,
      ownerId:      contest.owner_id,
      opponentId:   contest.opponent_id,
+     eventUnitId:  contest.event_unit_id,  
      userId:       currentUserId,
      status:       contest.status,
      fantasyTeams: contest.fantasy_teams || [],

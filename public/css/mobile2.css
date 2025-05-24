@@ -85,7 +85,11 @@
   padding-left: 10px;
 }
 
+.sort-item.right-align {
+  margin-left: auto; 
+  margin-right: 8px; 
 
+}
 
 
 .sort-item.active {
