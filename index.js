@@ -9,7 +9,7 @@ const pool    = require('./services/db');
 
 const authRoutes            = require('./routes/auth');
 const usersRoutes           = require('./routes/users');
-const firebaseConfigRoutes  = require('./server/routes/firebase-config');
+const firebaseConfigRoutes  = require('./routes/firebase-config');
 const adminContestRoutes    = require('./server/routes/admincontest');
 const adminRouter           = require('./adminserver');
 const userContestsRoutes    = require('./routes/userContests');

@@ -1,6 +1,8 @@
 // public/js/auth/firebase-init.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
+import { firebaseConfig } from '../firebase-config.js';
+
 
 let _auth = null;
 
