@@ -12,18 +12,7 @@
   <link rel="stylesheet" href="css/mobile.css">
   <link rel="stylesheet" href="css/mobile2.css">
   
-  <style>
-    /* Fixed header styles */
-    body {
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-      overflow: hidden;
-    }
 
-  </style>
 </head>
 <body>
   <!-- Aggiungo il div sticky-header -->
@@ -50,19 +39,11 @@
     <div id="completedContainer" class="contests-container" style="display: none;"></div>
 
 
-
-  <!-- Pulsante FAB "New Game" -->
-  <div id="playButton" class="fab_button">
-    <div class="fab_button_container">
-      <div class="fab_button_img_wrapper">
-        <img class="fab_button_img" src="icons/add.png" alt="New Game">
-      </div>
-      <div class="fab_button_text_wrapper">
-        <span class="fab_button_text">NEW GAME</span>
-      </div>
+    <div class="fab-background"></div>
+    <div id="playButton" class="fab_button">
+      <img src="icons/add.png" alt="New Game" style="width: 24px; height: 24px; margin-right: 8px;">
+      <span style="color: #ffffff;">NEW GAME</span>
     </div>
-  </div>
-
 
   <div id="modal" class="hidden">
     <div class="modal-overlay"></div>
