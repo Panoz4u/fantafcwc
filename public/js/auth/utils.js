@@ -23,3 +23,29 @@ export function generateRandomColor() {
     return username + randomNum;
   }
   
+  /** Decode base64 JWT (solo per debug in client) */
+export function verifyToken(token) {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .join('')
+    );
+    return JSON.parse(jsonPayload);
+  } catch {
+    return null;
+  }
+}
+
+/** Logga in localStorage e token per debug */
+export function debugLogin() {
+  console.log("=== DEBUG LOGIN ===");
+  console.log("authToken:", localStorage.getItem('authToken'));
+  console.log("userId:", localStorage.getItem('userId'));
+  console.log("userEmail:", localStorage.getItem('userEmail'));
+  const token = localStorage.getItem('authToken');
+  if (token) console.log("decoded:", verifyToken(token));
+}

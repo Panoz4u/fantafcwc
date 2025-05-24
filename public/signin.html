@@ -84,7 +84,7 @@
   </style>
 </head>
 <body>
-  <div class="logo-text">FANTA</div>
+  <div class="logo-text">FANTA2</div>
   <div class="logo-image">
     <img src="images/logo.png" alt="Logo FANTAFCWC" style="display: block; max-width: 200px; margin: 0 auto 20px auto;">
   </div>
@@ -118,123 +118,7 @@
     <br><br>© 2025 FANTAFCWC All rights reserved. <a href="mailto:FANTAFCWC@gmail.com">FANTAFCWC@gmail.com</a>
 </div>
   
-  <!-- Includi il file auth.js, che contiene la configurazione Firebase -->
-<script src="/api/firebase-config" type="module"></script>
-<script type="module" src="js/auth/index.js"></script>
 
-  <script>
-  // Chiave segreta per i JWT (meglio metterla in .env)
-  const JWT_SECRET = 'chiave_segreta_molto_sicura';
-
-  // Funzione per verificare il token JWT
-  function verifyToken(token) {
-    try {
-      // In un ambiente client, non possiamo verificare il token in modo sicuro
-      // Questa è una simulazione, in produzione la verifica dovrebbe avvenire lato server
-      const base64Url = token.split('.')[1];
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-      }).join(''));
-      
-      return JSON.parse(jsonPayload);
-    } catch (error) {
-      console.error("Errore nella verifica del token:", error);
-      return null;
-    }
-  }
-
-  // Aggiungi funzione di debug
-  function debugLogin() {
-    console.log("=== DEBUG LOGIN ===");
-    console.log("LocalStorage attuale:");
-    console.log("authToken:", localStorage.getItem('authToken'));
-    console.log("userId:", localStorage.getItem('userId'));
-    console.log("userEmail:", localStorage.getItem('userEmail'));
-    
-    // Verifica il token se presente
-    const token = localStorage.getItem('authToken');
-    if (token) {
-      const decoded = verifyToken(token);
-      console.log("Token decodificato:", decoded);
-    }
-  }
-
-  // Modifica la funzione di login per aggiungere debug
-  async function handleEmailLogin(event) {
-    event.preventDefault();
-    console.log("Tentativo di login con email");
-    
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    
-    if (!email || !password) {
-      alert("Inserisci email e password");
-      return;
-    }
-    
-    try {
-      console.log("Invio richiesta login al server:", { email });
-      
-      const response = await fetch('/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, password })
-      });
-      
-      console.log("Risposta server status:", response.status);
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error("Errore login:", response.status, errorText);
-        alert("Errore durante il login: " + errorText);
-        return;
-      }
-      
-      const data = await response.json();
-      console.log("Dati ricevuti dal server:", data);
-      
-      // Salva i dati nel localStorage
-      localStorage.setItem('authToken', data.token);
-      localStorage.setItem('userId', data.user.user_id);
-      localStorage.setItem('userEmail', data.user.email);
-      
-      console.log("Dati salvati in localStorage:");
-      debugLogin();
-      
-      // Reindirizza alla pagina user-landing.html
-      console.log("Reindirizzamento a user-landing.html");
-      window.location.href = 'user-landing.html';
-    } catch (error) {
-      console.error("Errore durante il login:", error);
-      alert("Errore durante il login: " + error.message);
-    }
-  }
-
-  // Funzione per verificare l'autenticazione dell'utente
-  function checkAuthentication() {
-    const token = localStorage.getItem('authToken');
-    if (!token) {
-      console.log("Utente non autenticato");
-      return false;
-    }
-    
-    const user = verifyToken(token);
-    if (!user) {
-      console.log("Token non valido");
-      localStorage.removeItem('authToken');
-      localStorage.removeItem('userId');
-      localStorage.removeItem('userEmail');
-      return false;
-    }
-    
-    console.log("Utente autenticato:", user);
-    return true;
-  }
-
-
-  </script>
+  <script type="module" src="js/auth/index.js"></script>
 </body>
 </html>

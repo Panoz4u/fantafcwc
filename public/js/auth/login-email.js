@@ -1,49 +1,45 @@
 // public/js/auth/login-email.js
 import { initFirebase } from './firebase-init.js';
+import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
 console.log('✅ login-email.js caricato, form id=', document.getElementById('loginForm'));
 
 async function handleLogin(e) {
-  console.log('📝 submitting login…');
   e.preventDefault();
+  console.log("Tentativo di login con email");
+  
   const auth = await initFirebase();
   const email = document.getElementById('loginEmail').value;
   const password = document.getElementById('loginPassword').value;
+  
+  if (!email || !password) {
+    alert("Inserisci email e password");
+    return;
+  }
 
   try {
-    const { user } = await auth.signInWithEmailAndPassword(email, password);
-    // Recupera il record utente dal server
-    const dbUser = await fetch(
-      `/user-by-email?email=${encodeURIComponent(user.email)}`
-    ).then(r => {
-      if (!r.ok) throw new Error(`Utente non trovato (${r.status})`);
-      return r.json();
-    });
+    const { user } = await signInWithEmailAndPassword(auth, email, password);
 
-    // Estrai l'ID reale, qualunque sia la chiave del JSON
+    // Recupera dati utente e salva userId
+    const dbUser = await fetch(`/user-by-email?email=${encodeURIComponent(user.email)}`)
+      .then(r => { if (!r.ok) throw new Error(`Utente non trovato (${r.status})`); return r.json(); });
     const id = dbUser.user_id ?? dbUser.userId ?? dbUser.id;
-    if (!id) throw new Error('userId mancante nella risposta');
-
-    // Salva in localStorage
     localStorage.setItem('userId', id);
-    console.log('→ localStorage.userId =', localStorage.getItem('userId'));
 
-// Genera il token passando l’ID corretto
-const tok = await fetch('/generate-token', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ userId: id })
-})
-  .then(r => {
-    if (!r.ok) throw new Error(`Impossibile generare token (${r.status})`);
-    return r.json();
-  });
-localStorage.setItem('authToken', tok.token);
-console.log('→ localStorage.authToken =', localStorage.getItem('authToken'));
+    // Genera token da server e salva in localStorage
+    const tok = await fetch('/generate-token', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify({ userId: id })
+    }).then(r => { if (!r.ok) throw new Error(`Impossibile generare token (${r.status})`); return r.json(); });
+    localStorage.setItem('authToken', tok.token);
 
+    // Per debug (opzionale)
+    // import { debugLogin } from './utils.js';
+    // debugLogin();
 
     window.location.href = 'user-landing.html';
   } catch (err) {
-    console.error('Errore durante il login:', err);
+    console.error("Errore durante il login:", err);
     alert(err.message);
   }
 }

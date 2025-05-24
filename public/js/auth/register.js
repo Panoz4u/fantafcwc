@@ -1,5 +1,6 @@
 // public/js/auth/register.js
 import { initFirebase } from './firebase-init.js';
+import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
 import { generateRandomColor, generateUniqueUsername } from './utils.js';
 
 async function handleRegister(e) {
@@ -12,9 +13,9 @@ async function handleRegister(e) {
   try {
     const uniquename = await generateUniqueUsername(username);
     const color = generateRandomColor();
-    const avatarNum = String(Math.floor(Math.random()*27)+1).padStart(2,'0') + '.png';
+    const avatarNum = String(Math.floor(Math.random() * 27) + 1).padStart(2, '0') + '.png';
 
-    const { user } = await auth.createUserWithEmailAndPassword(email, password);
+    const { user } = await createUserWithEmailAndPassword(auth, email, password);
     const res = await fetch('/users', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -23,12 +24,11 @@ async function handleRegister(e) {
     const data = await res.json();
     localStorage.setItem('userId', data.userId);
 
-    // genera e salva il token
-    const tok = await (await fetch('/generate-token', {
+    const tok = await fetch('/generate-token', {
       method: 'POST',
-      headers:{'Content-Type':'application/json'},
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId: data.userId })
-    })).json();
+    }).then(r => r.json());
     localStorage.setItem('authToken', tok.token);
 
     window.location.href = 'user-landing.html';
@@ -38,6 +38,5 @@ async function handleRegister(e) {
   }
 }
 
-// Collegamento al form
 const form = document.getElementById('registerForm');
 if (form) form.addEventListener('submit', handleRegister);
