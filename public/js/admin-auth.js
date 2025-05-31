@@ -53,7 +53,7 @@ async function initApp() {
     const logoutBtn = document.getElementById('logoutBtn');
     
     // Email dell'amministratore autorizzato
-    const adminEmail = 'admin@fantaconclave.it'; // Sostituisci con l'email dell'admin
+    const adminEmail = 'admin@fantafcwc.it'; // Sostituisci con l'email dell'admin
     
     // Funzione per verificare se un utente è l'amministratore
     function isAdmin(user) {

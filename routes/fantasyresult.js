@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('./services/db');
+const pool = require('../services/db.js');
 
 /**
  * Calcola il punteggio totale di un fantasy team
@@ -165,7 +165,7 @@ router.get('/fantasy-points', (req, res) => {
  * Endpoint per ottenere i punti di un contest
  * GET /contest-points?contest_id=X
  */
-router.get('/fantasy/contest-points', (req, res) => {
+router.get('/contest-points',        (req, res) => {
   const contestId = req.query.contest_id;
   
   if (!contestId) {

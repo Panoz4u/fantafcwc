@@ -27,14 +27,23 @@ export function createContestCard(contest, userId) {
    name:   isCurrentOwner ? contest.owner_name    : contest.opponent_name,
    avatar: isCurrentOwner ? contest.owner_avatar  : contest.opponent_avatar,
    color:  isCurrentOwner ? contest.owner_color   : contest.opponent_color,
-   cost:   parseFloat(isCurrentOwner ? contest.owner_cost : contest.opponent_cost || 0).toFixed(1)
- };
+    cost:   parseFloat(
+               isCurrentOwner 
+                  ? (contest.owner_cost    || 0) 
+                  : (contest.opponent_cost || 0)
+              ).toFixed(1)
+   };
  const opp = {
    name:   isCurrentOwner ? contest.opponent_name : contest.owner_name,
    avatar: isCurrentOwner ? contest.opponent_avatar : contest.owner_avatar,
    color:  isCurrentOwner ? contest.opponent_color : contest.owner_color,
-   cost:   parseFloat(isCurrentOwner ? contest.opponent_cost : contest.owner_cost || 0).toFixed(1)
- };
+    cost:   parseFloat(
+                isCurrentOwner 
+                  ? (contest.opponent_cost || 0) 
+                  : (contest.owner_cost    || 0)
+              ).toFixed(1)
+    
+  };
 
  console.log('Dati my (sinistra):', my);
  console.log('Dati opp (destra):', opp);
@@ -110,186 +119,294 @@ export function createContestCard(contest, userId) {
      `;
      break;
 
-   case 2:
-     // Determino i costi corretti per il caso 2
-     let myCost2 = "-";
-     let oppCost2 = "-";
-     
-     // Se sono l'owner, uso owner_fantasy_team, altrimenti opponent_fantasy_team
-     if (isCurrentOwner && contest.owner_fantasy_team) {
-       myCost2 = parseFloat(contest.owner_fantasy_team.total_cost || 0).toFixed(1);
-     } else if (!isCurrentOwner && contest.opponent_fantasy_team) {
-       myCost2 = parseFloat(contest.opponent_fantasy_team.total_cost || 0).toFixed(1);
-     }
-     
-     // Per lo sfidante, faccio l'opposto
-     if (isCurrentOwner && contest.opponent_fantasy_team) {
-       oppCost2 = parseFloat(contest.opponent_fantasy_team.total_cost || 0).toFixed(1);
-     } else if (!isCurrentOwner && contest.owner_fantasy_team) {
-       oppCost2 = parseFloat(contest.owner_fantasy_team.total_cost || 0).toFixed(1);
-     }
+     case 2:
+      // Determino i costi corretti per il caso 2
+      let myCost2 = "-";
+      let oppCost2 = "-";
+      
+      // Se sono l'owner, uso owner_fantasy_team, altrimenti opponent_fantasy_team
+      if (isCurrentOwner && contest.owner_fantasy_team) {
+        myCost2 = parseFloat(contest.owner_fantasy_team.total_cost || 0).toFixed(1);
+      } else if (!isCurrentOwner && contest.opponent_fantasy_team) {
+        myCost2 = parseFloat(contest.opponent_fantasy_team.total_cost || 0).toFixed(1);
+      }
+      
+      // Per lo sfidante, faccio l'opposto
+      if (isCurrentOwner && contest.opponent_fantasy_team) {
+        oppCost2 = parseFloat(contest.opponent_fantasy_team.total_cost || 0).toFixed(1);
+      } else if (!isCurrentOwner && contest.owner_fantasy_team) {
+        oppCost2 = parseFloat(contest.owner_fantasy_team.total_cost || 0).toFixed(1);
+      }
+    
+      // → Qui sostituisci "READY" con il valore di contest.stake
+      card.innerHTML = `
+        <div class="contest-container cc-list">
+          <div class="contest-bar">
+            <img src="${getAvatarSrc(my.avatar)}" alt="${my.name}" class="player-avatar-contest left-avatar">
+            <div class="triletter_contest left-name">${my.name.substring(0,3)}</div>
+    
+            <div class="result_bold">VS</div>
+    
+            <div class="triletter_contest right-name">${opp.name.substring(0,3)}</div>
+            <img src="${getAvatarSrc(opp.avatar)}" alt="${opp.name}" class="player-avatar-contest right-avatar">
+    
+            <div class="teex_spent left-teex">${myCost2}</div>
+            <div class="teex_spent right-teex">${oppCost2}</div>
+          </div>
+    
+          <!-- Invece di “READY”, mostro lo stake -->
+          <div class="status-badge-base status-badge-ready">
+            ${ typeof contest.stake !== "undefined" ? contest.stake : "-" }
+          </div>
+    
+          ${contest.multiply > 1 
+            ? `<div class="multiply-contest-mini">${Math.floor(contest.multiply)}</div>` 
+            : ''}
+    
+        </div>
+      `;
+      break;
 
-     card.innerHTML = `
-       <div class="contest-container cc-list">
-         <div class="contest-bar">
-           <img src="${getAvatarSrc(my.avatar)}" alt="${my.name}" class="player-avatar-contest left-avatar">
-           <div class="triletter_contest left-name">${my.name.substring(0,3)}</div>
+      case 4:
+        // Svuoto il contenitore e poi vado a cercare i punti “live”
+        card.innerHTML = '';
+        fetch(`/fantasy/contest-points?contest_id=${contest.contest_id}`)
+          .then(r => {
+            if (!r.ok) {
+              // Se ricevo 404, 500, ecc. => vado sul catch
+              throw new Error(`Impossibile caricare i punti (HTTP ${r.status})`);
+            }
+            return r.json();
+          })
+          .then(data => {
+            // Estraggo i punti in base a chi è “my” (sinistra) e “opp” (destra)
+            const myPts  = isCurrentOwner ? data.owner_points   : data.opponent_points;
+            const oppPts = isCurrentOwner ? data.opponent_points : data.owner_points;
+            const [myI, myD] = parseFloat(myPts || 0).toFixed(1).split('.');
+            const [opI, opD] = parseFloat(oppPts || 0).toFixed(1).split('.');
+      
+            // Calcolo di myCost / oppCost come al solito (fallback a “0.0” se assente)
+            let myCost = '-';
+            let oppCost = '-';
+            if (isCurrentOwner && contest.owner_fantasy_team) {
+              myCost = parseFloat(contest.owner_fantasy_team.total_cost || 0).toFixed(1);
+            } else if (!isCurrentOwner && contest.opponent_fantasy_team) {
+              myCost = parseFloat(contest.opponent_fantasy_team.total_cost || 0).toFixed(1);
+            }
+            if (isCurrentOwner && contest.opponent_fantasy_team) {
+              oppCost = parseFloat(contest.opponent_fantasy_team.total_cost || 0).toFixed(1);
+            } else if (!isCurrentOwner && contest.owner_fantasy_team) {
+              oppCost = parseFloat(contest.owner_fantasy_team.total_cost || 0).toFixed(1);
+            }
+      
+            // Qui costruisco l’HTML finale con il blocco “result-bignum”
+            card.innerHTML = `
+              <div class="contest-container cc-list">
+                <div class="contest-bar">
+                  <!-- Avatar e nome a sinistra -->
+                  <img src="${getAvatarSrc(my.avatar)}"
+                       alt="${my.name}"
+                       class="player-avatar-contest left-avatar">
+                  <div class="triletter_contest left-name">${my.name.substring(0,3)}</div>
+      
+                  <!-- Blocco risultato con due “result_block” -->
+                  <div class="result-bignum">
+                    <div class="result_block left_block">
+                      <span class="result_bold left">${myI}</span>
+                      <span class="win_index_perc left">.${myD}</span>
+                    </div>
+                    <span class="vs-separator"> </span>
+                    <div class="result_block right_block${Number(opI) < 10 ? ' onedigit' : ''}">
+                      <span class="result_bold right">${opI}</span>
+                      <span class="win_index_perc right">.${opD}</span>
+                    </div>
+                  </div>
+      
+                  <!-- Avatar e nome a destra -->
+                  <div class="triletter_contest right-name">${opp.name.substring(0,3)}</div>
+                  <img src="${getAvatarSrc(opp.avatar)}"
+                       alt="${opp.name}"
+                       class="player-avatar-contest right-avatar">
+      
+                  <!-- Costi del fantasy team -->
+                  <div class="teex_spent left-teex">${myCost}</div>
+                  <div class="teex_spent right-teex">${oppCost}</div>
+                </div>
+      
+                <!-- Badge “LIVE” (uso contest.stake come dentro case 4) -->
+                <div class="status-badge-base status-badge-live">
+                  ${contest.stake || ''}
+                </div>
+      
+                ${contest.multiply > 1 
+                  ? `<div class="multiply-contest-mini">${Math.floor(contest.multiply)}</div>` 
+                  : ''}
+              </div>
+            `;
+          })
+          .catch(err => {
+            console.error(`Errore punti contest ${contest.contest_id}:`, err);
+            // Se fallisce il fetch, uso contest.status_display → es. “12.5-8.0”
+            const display = contest.status_display || '0-0';
+            const [m, o] = display
+              .split('-')
+              .map(n => parseFloat(n).toFixed(1).split('.'));
+            const mInt = m[0], mDec = m[1] || '0';
+            const oInt = o[0], oDec = o[1] || '0';
+      
+            // Ricalcolo myCost / oppCost in fallback
+            let myCost = '-';
+            let oppCost = '-';
+            if (isCurrentOwner && contest.owner_fantasy_team) {
+              myCost = parseFloat(contest.owner_fantasy_team.total_cost || 0).toFixed(1);
+            } else if (!isCurrentOwner && contest.opponent_fantasy_team) {
+              myCost = parseFloat(contest.opponent_fantasy_team.total_cost || 0).toFixed(1);
+            }
+            if (isCurrentOwner && contest.opponent_fantasy_team) {
+              oppCost = parseFloat(contest.opponent_fantasy_team.total_cost || 0).toFixed(1);
+            } else if (!isCurrentOwner && contest.owner_fantasy_team) {
+              oppCost = parseFloat(contest.owner_fantasy_team.total_cost || 0).toFixed(1);
+            }
+      
+            // Markup fallback (utilizzando gli stessi blocchi con onedigit)
+            card.innerHTML = `
+              <div class="contest-container cc-list">
+                <div class="contest-bar">
+                  <img src="${getAvatarSrc(my.avatar)}"
+                       alt="${my.name}"
+                       class="player-avatar-contest left-avatar">
+                  <div class="triletter_contest left-name">${my.name.substring(0,3)}</div>
+      
+                  <div class="result-bignum">
+                    <div class="result_block left_block">
+                      <span class="result_bold left">${mInt}</span>
+                      <span class="win_index_perc left">.${mDec}</span>
+                    </div>
+                    <span class="vs-separator"> </span>
+                    <div class="result_block right_block${Number(oInt) < 10 ? ' onedigit' : ''}">
+                      <span class="result_bold right">${oInt}</span>
+                      <span class="win_index_perc right">.${oDec}</span>
+                    </div>
+                  </div>
+      
+                  <div class="triletter_contest right-name">${opp.name.substring(0,3)}</div>
+                  <img src="${getAvatarSrc(opp.avatar)}"
+                       alt="${opp.name}"
+                       class="player-avatar-contest right-avatar">
+                  <div class="teex_spent left-teex">${myCost}</div>
+                  <div class="teex_spent right-teex">${oppCost}</div>
+                </div>
+      
+                <div class="status-badge-base status-badge-live">
+                  ${contest.stake || ''}
+                </div>
+      
+                ${contest.multiply > 1 
+                  ? `<div class="multiply-contest-mini">${Math.floor(contest.multiply)}</div>` 
+                  : ''}
+              </div>
+            `;
+          });
+        break;
+      
 
-           <div class="result_bold">VS</div>
-
-           <div class="triletter_contest right-name">${opp.name.substring(0,3)}</div>
-           <img src="${getAvatarSrc(opp.avatar)}" alt="${opp.name}" class="player-avatar-contest right-avatar">
-
-           <div class="teex_spent left-teex">${myCost2}</div>
-           <div class="teex_spent right-teex">${oppCost2}</div>
-         </div>
-         <div class="status-badge-base status-badge-ready">READY</div>
-         ${contest.multiply > 1 
-           ? `<div class="multiply-contest-mini">${Math.floor(contest.multiply)}</div>` 
-           : ''}
-       </div>
-     `;
-     break;
-
-   case 4:
-     card.innerHTML =  ''; // svuoto il contenuto per poi riempirlo asincronamente
-     fetch(`/fantasy/contest-points?contest_id=${contest.contest_id}`)
-       .then(r => r.json())
-       .then(data => {
-         // Determino punteggi basandomi su chi sono io, non su chi è owner
-         const myPts  = isCurrentOwner ? data.owner_points   : data.opponent_points;
-         const oppPts = isCurrentOwner ? data.opponent_points : data.owner_points;
-         const [myI, myD] = parseFloat(myPts||0).toFixed(1).split('.');
-         const [opI, opD] = parseFloat(oppPts||0).toFixed(1).split('.');
-         
-         // Determino i costi corretti per il caso 4
-         let myCost = "-";
-         let oppCost = "-";
-         
-         // Se sono l'owner, uso owner_fantasy_team, altrimenti opponent_fantasy_team
-         if (isCurrentOwner && contest.owner_fantasy_team) {
-           myCost = parseFloat(contest.owner_fantasy_team.total_cost || 0).toFixed(1);
-         } else if (!isCurrentOwner && contest.opponent_fantasy_team) {
-           myCost = parseFloat(contest.opponent_fantasy_team.total_cost || 0).toFixed(1);
-         }
-         
-         // Per lo sfidante, faccio l'opposto
-         if (isCurrentOwner && contest.opponent_fantasy_team) {
-           oppCost = parseFloat(contest.opponent_fantasy_team.total_cost || 0).toFixed(1);
-         } else if (!isCurrentOwner && contest.owner_fantasy_team) {
-           oppCost = parseFloat(contest.owner_fantasy_team.total_cost || 0).toFixed(1);
-         }
- 
-         card.innerHTML = `
-           <div class="contest-container cc-list">
-             <div class="contest-bar">
-               <img src="${getAvatarSrc(my.avatar)}" alt="${my.name}" class="player-avatar-contest left-avatar">
-               <div class="triletter_contest left-name">${my.name.substring(0,3)}</div>
-               <div class="result-bignum">
-                 <span class="result_bold">${myI}</span><span class="win_index_perc">.${myD}</span>
-                 <span class="vs-separator"> </span>
-                 <span class="result_bold">${opI}</span><span class="win_index_perc">.${opD}</span>
-               </div>
-               <div class="triletter_contest right-name">${opp.name.substring(0,3)}</div>
-               <img src="${getAvatarSrc(opp.avatar)}" alt="${opp.name}" class="player-avatar-contest right-avatar">
-               <div class="teex_spent left-teex">${myCost}</div>
-               <div class="teex_spent right-teex">${oppCost}</div>
-             </div>
-             <div class="status-badge-base status-badge-live">${contest.stake||''}</div>
-             ${contest.multiply > 1 ? `<div class="multiply-contest-mini">${Math.floor(contest.multiply)}</div>` : ''}
-           </div>
-         `;
-       })
-       .catch(err => {
-         console.error(`Errore punti contest ${contest.contest_id}:`, err);
-         // In fallback uso contest.status_display o 0.0
-         const display = contest.status_display || '0-0';
-         const [m, o] = display.split('-').map(n => parseFloat(n).toFixed(1).split('.'));
-         card.innerHTML = `
-           <div class="contest-container cc-list">
-             <div class="contest-bar">
-               <img src="${getAvatarSrc(my.avatar)}" alt="${my.name}" class="player-avatar-contest left-avatar">
-               <div class="triletter_contest left-name">${my.name.substring(0,3)}</div>
-               <div class="result-bignum">
-                 <span class="result_bold">${m[0]}</span><span class="win_index_perc">.${m[1]||0}</span>
-                 <span class="vs-separator"> </span>
-                 <span class="result_bold">${o[0]}</span><span class="win_index_perc">.${o[1]||0}</span>
-               </div>
-               <div class="triletter_contest right-name">${opp.name.substring(0,3)}</div>
-               <img src="${getAvatarSrc(opp.avatar)}" alt="${opp.name}" class="player-avatar-contest right-avatar">
-               <div class="teex_spent left-teex">${my.cost}</div>
-               <div class="teex_spent right-teex">${opp.cost}</div>
-             </div>
-             <div class="status-badge-base status-badge-live">${contest.stake||''}</div>
-             ${contest.multiply > 1 ? `<div class="multiply-contest-mini">${Math.floor(contest.multiply)}</div>` : ''}
-           </div>
-         `;
-       });
-     break;
-
-   case 5:
-       let myPts = 0, oppPts = 0, myRes = 0, myTeex = 0;
-       if (contest.fantasy_teams?.length) {
-         contest.fantasy_teams.forEach(t => {
-           if (t.user_id == userId) {
-             myPts  = parseFloat(t.total_points  || 0);
-             myRes  = parseFloat(t.ft_result      || 0);
-             myTeex = parseFloat(t.ft_teex_won    || 0);
-           } else {
-             oppPts = parseFloat(t.total_points    || 0);
-           }
-         });
-       } else {
-         // fallback sui campi owner_/opponent_
-         if (isCurrentOwner) {
-           myPts  = parseFloat(contest.owner_points   || 0);
-           myRes  = parseFloat(contest.owner_result   || 0);
-           myTeex = parseFloat(contest.owner_teex_won || 0);
-           oppPts = parseFloat(contest.opponent_points|| 0);
-         } else {
-           myPts  = parseFloat(contest.opponent_points   || 0);
-           myRes  = parseFloat(contest.opponent_result   || 0);
-           myTeex = parseFloat(contest.opponent_teex_won || 0);
-           oppPts = parseFloat(contest.owner_points      || 0);
-         }
-       }
-       // calcolo finale teex vinti/perduti
-       const stake    = parseFloat(contest.stake      || 0);
-       const cost     = parseFloat(isCurrentOwner ? contest.owner_cost : contest.opponent_cost|| 0);
-       const mult     = parseFloat(contest.multiply   || 1);
-       if (myRes === 1)      myTeex = stake - (cost * mult);
-       else if (myRes === -1) myTeex = -(cost * mult);
-       else                   myTeex = (stake/2) - (cost * mult);
-   
-       // split punti per visualizzazione
-       const [mInt,mDec] = myPts.toFixed(1).split('.');
-       const [oInt,oDec] = oppPts.toFixed(1).split('.');
-       const badgeClass  = myTeex>0 ? 'status-badge-win'
-                         : myTeex<0 ? 'status-badge-loss'
-                                    : 'status-badge-draw';
-       const badgeText   = (myTeex>0? '+' : '') + myTeex.toFixed(1);
-   
-       card.innerHTML = `
-         <div class="contest-container cc-list">
-           <div class="contest-bar">
-             <img src="${getAvatarSrc(my.avatar)}" alt="${my.name}" class="player-avatar-contest left-avatar">
-             <div class="triletter_contest left-name">${my.name.substring(0,3)}</div>
-             <div class="result-bignum">
-               <span class="result_bold">${mInt}</span><span class="win_index_perc">.${mDec}</span>
-               <span class="vs-separator"> </span>
-               <span class="result_bold">${oInt}</span><span class="win_index_perc">.${oDec}</span>
-             </div>
-             <div class="triletter_contest right-name">${opp.name.substring(0,3)}</div>
-             <img src="${getAvatarSrc(opp.avatar)}" alt="${opp.name}" class="player-avatar-contest right-avatar">
-             <div class="teex_spent left-teex">${my.cost}</div>
-             <div class="teex_spent right-teex">${opp.cost}</div>
-           </div>
-           <div class="status-badge-base ${badgeClass}">${badgeText}</div>
-           ${contest.multiply > 1 ? `<div class="multiply-contest-mini">${Math.floor(contest.multiply)}</div>` : ''}
-         </div>
-       `;
-       break;
-
+        case 5:
+          // Calcolo myPts / oppPts / risultato finale di teex
+          let myPts = 0, oppPts = 0, myRes = 0, myTeex = 0;
+          if (contest.fantasy_teams?.length) {
+            contest.fantasy_teams.forEach(t => {
+              if (String(t.user_id) === String(currentUserId)) {
+                myPts  = parseFloat(t.total_points  || 0);
+                myRes  = parseFloat(t.ft_result      || 0);
+                myTeex = parseFloat(t.ft_teex_won    || 0);
+              } else {
+                oppPts = parseFloat(t.total_points    || 0);
+              }
+            });
+          } else {
+            // fallback se non ci sono ancora fantasy_teams
+            if (isCurrentOwner) {
+              myPts  = parseFloat(contest.owner_points   || 0);
+              myRes  = parseFloat(contest.owner_result   || 0);
+              myTeex = parseFloat(contest.owner_teex_won || 0);
+              oppPts = parseFloat(contest.opponent_points|| 0);
+            } else {
+              myPts  = parseFloat(contest.opponent_points   || 0);
+              myRes  = parseFloat(contest.opponent_result   || 0);
+              myTeex = parseFloat(contest.opponent_teex_won || 0);
+              oppPts = parseFloat(contest.owner_points      || 0);
+            }
+          }
+        
+          // Calcolo finale dei teex vinti o persi in base a myRes
+          const stake = parseFloat(contest.stake   || 0);
+          const cost  = parseFloat(
+            isCurrentOwner 
+              ? (contest.owner_cost    || 0) 
+              : (contest.opponent_cost || 0)
+          );
+          const mult  = parseFloat(contest.multiply || 1);
+          if      (myRes === 1)      myTeex = stake - (cost * mult);
+          else if (myRes === -1)     myTeex = -(cost * mult);
+          else                       myTeex = (stake/2) - (cost * mult);
+        
+          // Splitting dei punti per il markup
+          const [mInt, mDec] = myPts.toFixed(1).split('.');
+          const [oInt, oDec] = oppPts.toFixed(1).split('.');
+          // Scelta della classe badge: win / loss / draw
+          const badgeClass = myTeex > 0 
+            ? 'status-badge-win'
+            : myTeex < 0 
+              ? 'status-badge-loss'
+              : 'status-badge-draw';
+          const badgeText  = (myTeex > 0 ? '+' : '') + myTeex.toFixed(1);
+        
+          // Costi (già calcolati in alto in “const my = { cost: … }” e “const opp = { cost: … }”)
+        
+          // Ora faccio il markup “result-bignum” con “left_block / right_block”
+          card.innerHTML = `
+            <div class="contest-container cc-list">
+              <div class="contest-bar">
+                <!-- Avatar e nome sinistra -->
+                <img src="${getAvatarSrc(my.avatar)}"
+                     alt="${my.name}"
+                     class="player-avatar-contest left-avatar">
+                <div class="triletter_contest left-name">${my.name.substring(0,3)}</div>
+        
+                <!-- Blocco risultato come da indicazione -->
+                <div class="result-bignum">
+                  <div class="result_block left_block">
+                    <span class="result_bold left">${mInt}</span>
+                    <span class="win_index_perc left">.${mDec}</span>
+                  </div>
+                  <span class="vs-separator"> </span>
+                  <div class="result_block right_block${Number(oInt) < 10 ? ' onedigit' : ''}">
+                    <span class="result_bold right">${oInt}</span>
+                    <span class="win_index_perc right">.${oDec}</span>
+                  </div>
+                </div>
+        
+                <!-- Avatar e nome destra -->
+                <div class="triletter_contest right-name">${opp.name.substring(0,3)}</div>
+                <img src="${getAvatarSrc(opp.avatar)}"
+                     alt="${opp.name}"
+                     class="player-avatar-contest right-avatar">
+        
+                <!-- Costi -->
+                <div class="teex_spent left-teex">${my.cost}</div>
+                <div class="teex_spent right-teex">${opp.cost}</div>
+              </div>
+        
+              <!-- Badge “Vinto / Perso / Pareggiato” -->
+              <div class="status-badge-base ${badgeClass}">${badgeText}</div>
+        
+              ${contest.multiply > 1 
+                ? `<div class="multiply-contest-mini">${Math.floor(contest.multiply)}</div>` 
+                : ''}
+            </div>
+          `;
+          break;
+        
    default:
      // Layout di fallback
      card.innerHTML = `

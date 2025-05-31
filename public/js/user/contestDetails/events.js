@@ -12,68 +12,120 @@ export async function initContestDetails() {
   const contestIdStr   = localStorage.getItem("contestId");
   const ownerIdStr     = localStorage.getItem("ownerId");
   const opponentIdStr  = localStorage.getItem("opponentId");
-  let eventUnitIdStr = localStorage.getItem("eventUnitId"); // <<< MODIFIED: Make it let
+  let eventUnitIdStr   = localStorage.getItem("eventUnitId");
   const authToken      = localStorage.getItem("authToken");
   const currentUserId  = localStorage.getItem("userId");
 
-  // Converti e controlla gli ID
-  const contestId = parseInt(contestIdStr, 10);
-  const ownerId = parseInt(ownerIdStr, 10); 
-  const opponentId = opponentIdStr ? parseInt(opponentIdStr, 10) : null; 
-  
-  // --- BEGIN MODIFICATION ---
-  // Handle cases where eventUnitIdStr might be null, undefined, or "null"
-  if (eventUnitIdStr === null || eventUnitIdStr === undefined || eventUnitIdStr.toLowerCase() === "null" || eventUnitIdStr.trim() === "") {
-    console.warn('eventUnitIdStr from localStorage is null, undefined, or empty. Attempting to use a default or signal error.');
-    // At this point, you might want to fetch a current/default event_unit_id
-    // For now, we'll let it proceed to isNaN check, which will fail if it's not a number.
-    // Or, you could explicitly set it to a value that causes a controlled error or fetches a default.
-    // Forcing an error for now if it's not resolvable to a number:
-    eventUnitIdStr = "INVALID"; // This will ensure isNaN check below fails clearly if not overridden by a fetch
-  }
+  // Conversione base e check sui parametri
+  const contestId  = parseInt(contestIdStr, 10);
+  const ownerId    = parseInt(ownerIdStr, 10);
+  const opponentId = opponentIdStr ? parseInt(opponentIdStr, 10) : null;
 
+  // Gestione eventUnitId (evito NaN silenziosi)
+  if (
+    eventUnitIdStr === null ||
+    eventUnitIdStr === undefined ||
+    eventUnitIdStr.trim() === "" ||
+    eventUnitIdStr.toLowerCase() === "null"
+  ) {
+    console.warn(
+      'eventUnitId mancante o vuoto in localStorage; forzo valore non numerico per triggerare l’errore più tardi'
+    );
+    eventUnitIdStr = "INVALID";
+  }
   const eventUnitId = parseInt(eventUnitIdStr, 10);
-  // --- END MODIFICATION ---
 
-  // Verifica che gli ID necessari siano numeri validi
-  if (isNaN(contestId) || isNaN(ownerId)) { // <<< MODIFIED: Removed eventUnitId from this initial check as it's handled more specifically
-    console.error('Uno o più ID fondamentali (contestId, ownerId) non sono validi:', 
-                  { contestIdStr, ownerIdStr });
-    showError('Errore: Dati del contest mancanti o corrotti. (ID fondamentali mancanti)');
+  // Verifica contestId e ownerId (irreversibili)
+  if (isNaN(contestId) || isNaN(ownerId)) {
+    console.error(
+      'ID fondamentali mancanti o non validi:',
+      { contestIdStr, ownerIdStr }
+    );
+    showError(
+      'Errore: impossibile caricare i dettagli. Parametri fondamentali mancanti nel contest.'
+    );
     return;
   }
 
-  // Specific check for eventUnitId after attempting to parse
+  // Verifica specifica di eventUnitId
   if (isNaN(eventUnitId)) {
-    console.error('eventUnitId non è valido dopo il parsing:', { eventUnitIdStr, parsedEventUnitId: eventUnitId });
-    showError('Errore: ID dell\'evento mancante o corrotto per la creazione della squadra. (eventUnitId mancante)');
-    // Potresti voler reindirizzare o mostrare un messaggio più specifico qui
-    // Ad esempio, se è contest-creation.html, potrebbe significare che l'evento non è selezionato.
+    console.error(
+      'eventUnitId non valido dopo il parsing:',
+      { eventUnitIdStr, parsedEventUnitId: eventUnitId }
+    );
+    showError(
+      "Errore: ID dell'evento mancante o non valido per la visualizzazione del contest."
+    );
     return;
   }
-  
-  // Per contest-creation, l'opponentId potrebbe non essere rilevante o essere l'ID dell'owner originale
-  // se l'utente corrente è l'invitato. La logica del backend dovrebbe gestire questo.
-  // Il problema 'NaN' in 'on clause' suggerisce che un ID usato in un JOIN è NaN.
-  // Assicuriamoci che opponentId sia null se non è un numero valido, piuttosto che NaN.
-  const validOpponentId = (opponentId !== null && !isNaN(opponentId)) ? opponentId : null;
+
+  // Se opponentId non è un numero valido, lo pongo a null
+  const validOpponentId =
+    opponentId !== null && !isNaN(opponentId) ? opponentId : null;
 
   try {
-    console.log('Parametri richiesti per fetchContestDetails:', { contestId, ownerId, opponentId: validOpponentId, eventUnitId });
+    console.log(
+      'Parametri fetchContestDetails:',
+      { contestId, ownerId, opponentId: validOpponentId, eventUnitId }
+    );
     const [data, balance] = await Promise.all([
       fetchContestDetails(contestId, ownerId, validOpponentId, eventUnitId, authToken),
       fetchTeexBalance(authToken)
     ]);
 
+       // —–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
+       // Loggo per vedere in dettaglio la struttura dei team:
+       console.log("🏷️ ownerTeam raw data:", data.ownerTeam);
+       console.log("🏷️ opponentTeam raw data:", data.opponentTeam);
+       // —
+
+
+    // 1) Mostro bilancio
     renderTeexBalance(balance);
-    renderContestHeader(data.contest, currentUserId);
-    renderTeamLists(data.ownerTeam, data.opponentTeam, data.contest, currentUserId);
+
+    // 2) Calcolo “sono owner?” una sola volta
+    const contest   = data.contest;
+    const iAmOwner  = Number(currentUserId) === Number(contest.owner_id);
+
+    // 3) Passo iAmOwner a tutte le funzioni di rendering
+    renderContestHeader(contest, currentUserId, iAmOwner);
+    renderTeamLists(
+      data.ownerTeam,
+      data.opponentTeam,
+      contest,
+      currentUserId,
+      iAmOwner
+    );
+
+    // 4) Popolo il blocco dei nomi utente
+    {
+      const leftEl  = document.getElementById("leftUserName");
+      const rightEl = document.getElementById("rightUserName");
+
+      if (leftEl) {
+        leftEl.textContent = iAmOwner
+          ? contest.owner_name
+          : contest.opponent_name;
+      }
+      if (rightEl) {
+        rightEl.textContent = iAmOwner
+          ? contest.opponent_name
+          : contest.owner_name;
+      }
+    }
 
   } catch (error) {
     console.error('Errore caricamento contest details:', error);
-    showError(error.message || 'Errore caricamento contest details');
+    showError(
+      error.message || 'Errore durante il caricamento dei dettagli del contest.'
+    );
   }
 
-  document.getElementById("backArrow")
-    .addEventListener("click", () => window.location.href = "/user-landing.html");
+  // “Back” arrow: torna alla landing page
+  const backArrow = document.getElementById("backArrow");
+  if (backArrow) {
+    backArrow.addEventListener("click", () => {
+      window.location.href = "/user-landing.html";
+    });
+  }
 }

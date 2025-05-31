@@ -10,7 +10,7 @@ const pool    = require('./services/db');
 const authRoutes            = require('./routes/auth');
 const usersRoutes           = require('./routes/users');
 const firebaseConfigRoutes  = require('./routes/firebase-config');
-const adminContestRoutes    = require('./server/routes/admincontest');
+const adminContestRoutes    = require('./routes/admincontest');
 const adminRouter           = require('./adminserver');
 const userContestsRoutes    = require('./routes/userContests');
 const athleteRoutes = require('./routes/athletes');
@@ -220,13 +220,12 @@ const authenticateToken = (req, res, next) => {
 const uploadResultsRoute = require("./uploadResults"); // Assicurati che il percorso sia corretto
 app.use("/uploadResults", uploadResultsRoute);
 
-const athletesRoutes = require("./server/routes/athletes");
-const fantasyResultRoutes = require("./fantasyresult"); // Aggiungi questa riga
+// Registriamo ora il router fantasyresult.js nella cartella “routes/”
+const fantasyResultRoutes = require('./routes/fantasyresult');
+app.use('/fantasy', fantasyResultRoutes);
 
 // Usa le routes
 app.use("/uploadResults", uploadResultsRoute);
-app.use("/", athletesRoutes);
-app.use("/fantasy", fantasyResultRoutes); // Aggiungi questa riga
 
 // Keep the direct route handler for /user-landing-info if needed,
 // or move it into contests.js under the path /user-landing-info
