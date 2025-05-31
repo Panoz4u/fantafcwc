@@ -37,7 +37,7 @@ export function renderPlayers(list, onToggle) {
     // 2) Imposta classe principale
     li.className = `player-card ${(isAffordable || isSelected) ? 'clickable' : 'disabled'}`;
     // evidenzia selezione
-    if (isSelected) li.style.backgroundColor = "#0f7173";
+    if (isSelected) li.style.backgroundColor = "#9A6D19";
 
     // 3) Markup legacy
     li.innerHTML = `

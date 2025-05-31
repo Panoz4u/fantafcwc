@@ -54,7 +54,7 @@
   display: flex;
   justify-content: flex-start;
   padding: 10px 16px;
-  background-color: #131313;
+  background-color: #282727;
   height: 40px;
   box-sizing: border-box;
 }
@@ -68,7 +68,7 @@
   display: flex;
   justify-content: flex-start;
   padding: 10px 16px;
-  background-color: #131313;
+  background-color: #282727;
   height: 40px;
   box-sizing: border-box;
 }
@@ -109,12 +109,12 @@
 }
 
 .sort-triangle.asc {
-  border-bottom: 5px solid #ed2224;
+  border-bottom: 5px solid #F1BE48;
   border-top: none;
 }
 
 .sort-triangle.desc {
-  border-top: 5px solid #ed2224;
+  border-top: 5px solid #F1BE48;
   border-bottom: none;
 }
 
@@ -152,7 +152,7 @@
   height: 50px;
   border-radius: 50%;
   overflow: hidden;
-  background-color: #ed2224;
+  background-color: #F1BE48;
 }
 
 .player-icon img {
@@ -226,7 +226,7 @@
 
 /* Player Cost Styles */
 .player-cost {
-  background-color: #0bdad7;
+  background-color: #F1BE48;
   border-radius: 12px;
   padding: 4px 10px;
   font-family: 'Montserrat', sans-serif;
@@ -248,7 +248,7 @@
 .multiply-contest-mini {
   width: 20px;
   height: 20px;
-  background-color: #0f7173;
+  background-color: #9A6D19;
   border-radius: 50%;
   display: flex;
   justify-content: center;
@@ -390,7 +390,7 @@
 .progress-bar-fill {
   height: 100%;
   width: 35%;
-  background: linear-gradient(to right, #ed2224, #ED33B9);
+  background: linear-gradient(to right, #F1BE48, #ED33B9);
   border-radius: 3px;
 }
 
@@ -403,7 +403,7 @@
 /* Small Button Main Style */
 .small-button-main {
   background-color: #0A0034;
-  border: 2px solid #ed2224;
+  border: 2px solid #F1BE48;
   border-radius: 20px;
   padding: 6px 16px;
   font-family: 'Barlow Condensed', sans-serif;
@@ -421,7 +421,7 @@
 
 .play-contest-button {
   background-color: #2a2b2a;
-  border: 2px solid #ed2224;
+  border: 2px solid #F1BE48;
   border-radius: 20px;
   padding: 6px 16px;
   font-family: 'Barlow Condensed', sans-serif;
@@ -454,7 +454,7 @@
 }
 
 .multiply-container {
-  background: #131313;
+  background: #282727;
   border-radius: 24px 24px 0 0;
   padding: 24px;
 }
@@ -490,13 +490,13 @@
 }
 
 .mc-on {
-  background-color: #0f7173;
+  background-color: #9A6D19;
   color: white;
 }
 
 .mc-locked {
   background-color: rgba(75, 75, 75, 0.2);
-  border: 2px solid #0f7173;
+  border: 2px solid #9A6D19;
   color: white;
   pointer-events: none; 
   opacity: 0.5;
@@ -504,13 +504,13 @@
 
 .mc-off {
   background-color: rgba(75, 75, 75, 0.2);
-  border: 2px solid #0f7173;
+  border: 2px solid #9A6D19;
   color: white;
 }
 .big-cost {
   width: 120px;
   height: 46px;
-  background-color: #0bdad7;
+  background-color: #F1BE48;
   border-radius: 23px;
   display: flex;
   justify-content: center;
@@ -547,7 +547,7 @@
 }
 
 .multiply-confirm {
-  background-color: #ed2224;
+  background-color: #F1BE48;
   color: white;
 }
 
@@ -605,7 +605,7 @@
   font-family: 'Barlow Condensed', sans-serif;
   font-size: 18px;
   text-transform: uppercase;
-  background-color: #0bdad7;
+  background-color: #F1BE48;
   color: #333;
 }
 
@@ -614,8 +614,8 @@
   font-size: 18px;
   background-color: transparent;
   text-transform: uppercase;
-  color: #0bdad7;
-  border: 2px solid #0bdad7;
+  color: #F1BE48;
+  border: 2px solid #F1BE48;
 }
 
 .divider {
@@ -675,7 +675,7 @@
       font-weight: 800;
       font-size: 48px;
       margin-bottom: 0px;
-      color: #0bdad7;
+      color: #F1BE48;
     }
     
     .start-game {
@@ -733,8 +733,8 @@
     }
 
     .status-badge-invited {
-      background-color: #ed2224;
-      color: #ffffff;
+      background-color: #F1BE48;
+      color: #000000;
     }
 
     .status-badge-pending {
@@ -747,11 +747,11 @@
       color: #ffffff;
     }
     .status-badge-ready {
-      background-color: #0bdad7;
+      background-color: #F1BE48;
     }
 
     .status-badge-live {
-      background-color: #0bdad7;
+      background-color: #F1BE48;
     }
 
     .status-badge-win {
@@ -772,7 +772,7 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      background-color: #131313;
+      background-color: #282727;
       width: 100%;
     }
     
@@ -846,7 +846,7 @@
 /* BOTTONE CLOSE CERCHIO ROSSO */
 #modal-close {
   width: 28px; height: 28px;
-  background: #ed2224;
+  background: #F1BE48;
   border: none; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   cursor: pointer;
@@ -883,7 +883,7 @@
 
 /* Box interno della modale */
 .modal-game-type-content {
-  background: #131313;
+  background: #282727;
   padding: 1.5rem;
   border-radius: 0.75rem;
   width: 90%;

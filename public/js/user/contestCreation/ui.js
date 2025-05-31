@@ -91,7 +91,7 @@ container.innerHTML = `
       <div class="welcome-container">
         <div class="welcome-text">
           <div class="welcome-to">START ADDING</div>
-          <div class="fanteex-title">ARTISTS</div>
+          <div class="fanteex-title">PLAYERS</div>
           <div class="start-game">TO YOUR TEAM</div>
         </div>
         <div class="animated-arrows">
@@ -160,7 +160,7 @@ container.innerHTML = `
     const teexLeftEl = document.getElementById('teexLeft');
     teexLeftEl.innerHTML = `
       <span class="teex-left-text-cyan">${getAvailableBudget().toFixed(1)}</span>
-      <span class="teex-left-text-white">SwissHearts left</span>`;
+      <span class="teex-left-text-white">Clubby left</span>`;
   
   
     // 3) costo header (sotto avatar sinistro)

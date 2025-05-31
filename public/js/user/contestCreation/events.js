@@ -8,7 +8,7 @@ export function setupEventListeners(contestId, userId) {
   // Back
   document.getElementById('backArrow').addEventListener('click', () => window.history.back());
 
-  // Add Artists
+  // Add PLAYERS
   document.getElementById('addPlayerBtn').addEventListener('click', () => {
     localStorage.setItem('addPlayerData',
       JSON.stringify({ owner: userId, opponent: null, contest: contestId, user: userId, timestamp: Date.now() })
