@@ -132,7 +132,28 @@ container.innerHTML = `
       </div>
       <div class="player-info">
         <div class="athlete_shortname">${p.athlete_shortname}</div>
-        <div class="match_3letter-team-bold">${p.player_team_code}</div>
+          <!-- vecchio: mostrava soltanto il codice 3-letter del team “di default” dell’atleta -->
+         <!-- <div class="match_3letter-team-bold">${p.player_team_code}</div> -->
+         <!-- nuovo: mostra il match (home_team_code – away_team_code) -->
+         ${(() => {
+           // determina quale delle due span ha la classe “bold” in base a player_team_code
+           const homeClass = (p.player_team_code === p.home_team_code)
+                             ? 'match_3letter-team-bold'
+                             : 'player-match';
+           const awayClass = (p.player_team_code === p.away_team_code)
+                             ? 'match_3letter-team-bold'
+                             : 'player-match';
+           return `
+             <div class="player-match">
+               <span class="${homeClass}">${p.home_team_code || ''}</span>
+               -
+               <span class="${awayClass}">${p.away_team_code || ''}</span>
+             </div>
+           `;
+         })()}
+ 
+ 
+ 
       </div>
       <div class="athlete_cost ac-long">${parseFloat(p.event_unit_cost).toFixed(1)}</div>
       <div class="remove-player-btn">
@@ -252,21 +273,6 @@ container.innerHTML = `
       return;
     }
   
-    // 7) ALTRIMENTI (nuova sfida): collega onclick per cambiare moltiplicatore
-    // **RIMUOVO QUESTA SEZIONE PERCHÉ DUPLICA I LISTENER E CAUSA IL PROBLEMA**
-    // circles.forEach(c => {
-    //   c.onclick = () => {
-    //     const m = parseInt(c.dataset.multiply, 10);
-    //     // aggiorna classi su tutti
-    //     circles.forEach(x => {
-    //       const mm = parseInt(x.dataset.multiply, 10);
-    //       x.classList.toggle("mc-on", mm === m);
-    //       x.classList.toggle("mc-off", mm !== m);
-    //     });
-    //     // aggiorna costo
-    //     costEl.textContent = (getTotalCostFn() * m).toFixed(1);
-    //   };
-    // });
   
     // 8) MOSTRA l'overlay
     overlay.style.display = "flex";

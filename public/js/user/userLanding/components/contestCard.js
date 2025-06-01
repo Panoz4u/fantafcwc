@@ -309,10 +309,13 @@ export function createContestCard(contest, userId) {
           });
         break;
       
-
         case 5:
-          // Calcolo myPts / oppPts / risultato finale di teex
-          let myPts = 0, oppPts = 0, myRes = 0, myTeex = 0;
+          // 1) Calcolo punti e risultato (come già facevi)
+          let myPts = 0,
+              oppPts = 0,
+              myRes = 0,
+              myTeex = 0;
+    
           if (contest.fantasy_teams?.length) {
             contest.fantasy_teams.forEach(t => {
               if (String(t.user_id) === String(currentUserId)) {
@@ -337,33 +340,51 @@ export function createContestCard(contest, userId) {
               oppPts = parseFloat(contest.owner_points      || 0);
             }
           }
-        
-          // Calcolo finale dei teex vinti o persi in base a myRes
+    
+          // 2) Calcolo finale dei teex vinti o persi in base a myRes
           const stake = parseFloat(contest.stake   || 0);
-          const cost  = parseFloat(
-            isCurrentOwner 
-              ? (contest.owner_cost    || 0) 
-              : (contest.opponent_cost || 0)
+          // *** qui recupero i costi dai fantasy_teams, non da contest.owner_cost ***
+          let myCost5 = '-', oppCost5 = '-';
+    
+          if (isCurrentOwner && contest.owner_fantasy_team) {
+            myCost5 = parseFloat(contest.owner_fantasy_team.total_cost || 0).toFixed(1);
+          } else if (!isCurrentOwner && contest.opponent_fantasy_team) {
+            myCost5 = parseFloat(contest.opponent_fantasy_team.total_cost || 0).toFixed(1);
+          }
+          if (isCurrentOwner && contest.opponent_fantasy_team) {
+            oppCost5 = parseFloat(contest.opponent_fantasy_team.total_cost || 0).toFixed(1);
+          } else if (!isCurrentOwner && contest.owner_fantasy_team) {
+            oppCost5 = parseFloat(contest.owner_fantasy_team.total_cost || 0).toFixed(1);
+          }
+    
+          // Adesso calcolo myTeex definitivo
+          // Nota: "cost" qui deve corrispondere al costo che ho preso sopra per myCost5/oppCost5,
+          //       quindi lo ricalcolo ancora in forma numerica (non stringa) per i calcoli.
+          const costNumeric = parseFloat(
+            isCurrentOwner
+              ? (contest.owner_fantasy_team?.total_cost || 0)
+              : (contest.opponent_fantasy_team?.total_cost || 0)
           );
           const mult  = parseFloat(contest.multiply || 1);
-          if      (myRes === 1)      myTeex = stake - (cost * mult);
-          else if (myRes === -1)     myTeex = -(cost * mult);
-          else                       myTeex = (stake/2) - (cost * mult);
-        
-          // Splitting dei punti per il markup
+          if      (myRes === 1)   myTeex = stake - (costNumeric * mult);
+          else if (myRes === -1)  myTeex = -(costNumeric * mult);
+          else                    myTeex = (stake / 2) - (costNumeric * mult);
+    
+          // 3) Splitting dei punti per il markup
           const [mInt, mDec] = myPts.toFixed(1).split('.');
           const [oInt, oDec] = oppPts.toFixed(1).split('.');
-          // Scelta della classe badge: win / loss / draw
-          const badgeClass = myTeex > 0 
+    
+          // 4) Scelgo classe e testo badge finale (Win/Loss/Draw)
+          const badgeClass5 = myTeex > 0 
             ? 'status-badge-win'
             : myTeex < 0 
               ? 'status-badge-loss'
               : 'status-badge-draw';
-          const badgeText  = (myTeex > 0 ? '+' : '') + myTeex.toFixed(1);
-        
-          // Costi (già calcolati in alto in “const my = { cost: … }” e “const opp = { cost: … }”)
-        
-          // Ora faccio il markup “result-bignum” con “left_block / right_block”
+          const badgeText5  = (myTeex > 0 ? '+' : '') + myTeex.toFixed(1);
+    
+          // 5) Costi (usiamo myCost5 e oppCost5 che abbiamo già calcolato)
+          // E infine il markup vero e proprio:
+    
           card.innerHTML = `
             <div class="contest-container cc-list">
               <div class="contest-bar">
@@ -371,9 +392,11 @@ export function createContestCard(contest, userId) {
                 <img src="${getAvatarSrc(my.avatar)}"
                      alt="${my.name}"
                      class="player-avatar-contest left-avatar">
-                <div class="triletter_contest left-name">${my.name.substring(0,3)}</div>
-        
-                <!-- Blocco risultato come da indicazione -->
+                <div class="triletter_contest left-name">
+                  ${my.name.substring(0,3)}
+                </div>
+    
+                <!-- Blocco risultato -->
                 <div class="result-bignum">
                   <div class="result_block left_block">
                     <span class="result_bold left">${mInt}</span>
@@ -385,27 +408,34 @@ export function createContestCard(contest, userId) {
                     <span class="win_index_perc right">.${oDec}</span>
                   </div>
                 </div>
-        
+    
                 <!-- Avatar e nome destra -->
-                <div class="triletter_contest right-name">${opp.name.substring(0,3)}</div>
+                <div class="triletter_contest right-name">
+                  ${opp.name.substring(0,3)}
+                </div>
                 <img src="${getAvatarSrc(opp.avatar)}"
                      alt="${opp.name}"
                      class="player-avatar-contest right-avatar">
-        
-                <!-- Costi -->
-                <div class="teex_spent left-teex">${my.cost}</div>
-                <div class="teex_spent right-teex">${opp.cost}</div>
+    
+                <!-- Costi del fantasy team -->
+                <div class="teex_spent left-teex">${myCost5}</div>
+                <div class="teex_spent right-teex">${oppCost5}</div>
               </div>
-        
+    
               <!-- Badge “Vinto / Perso / Pareggiato” -->
-              <div class="status-badge-base ${badgeClass}">${badgeText}</div>
-        
-              ${contest.multiply > 1 
-                ? `<div class="multiply-contest-mini">${Math.floor(contest.multiply)}</div>` 
+              <div class="status-badge-base ${badgeClass5}">
+                ${badgeText5}
+              </div>
+    
+              ${contest.multiply > 1
+                ? `<div class="multiply-contest-mini">
+                     ${Math.floor(contest.multiply)}
+                   </div>`
                 : ''}
             </div>
           `;
           break;
+    
         
    default:
      // Layout di fallback

@@ -3,14 +3,29 @@
 import { getAvatarSrc, generateColoredInitialsAvatar } from './utils.js';
 
 /**
- * Crea una riga "player-row" con avatar, info e punti/costo
+ * Crea una riga "player-row" con:
+ *  - avatar (player.picture oppure placeholder)
+ *  - athlete_shortname
+ *  - match (home_team_code – away_team_code) con le classi condizionali
+ *  - punti (player.athlete_unit_points)
+ *  - costo (player.event_unit_cost)
+ *  - styling “ended” se player.is_ended === 1
+ */
+/**
+ * Crea una riga "player-row" con:
+ *  - avatar (player.picture oppure placeholder)
+ *  - athlete_shortname
+ *  - match (home_team_code-away_team_code) con le classi condizionali
+ *  - punti (player.athlete_unit_points)
+ *  - costo (player.event_unit_cost)
+ *  - styling “ended” se player.is_ended === 1
  */
 export function createPlayerRow(player, side) {
   const wrapper = document.createElement("div");
   const row = document.createElement("div");
   row.classList.add("player-row");
-  
-  // Avatar block
+
+  // ─── Avatar block ───
   const avatarBlock = document.createElement("div");
   avatarBlock.classList.add("avatar-block");
   avatarBlock.style.position = "relative";
@@ -18,38 +33,78 @@ export function createPlayerRow(player, side) {
   const avatarContainer = document.createElement("div");
   avatarContainer.classList.add("atheleteAvatar");
   const iconImg = document.createElement("img");
-  iconImg.src = player.picture 
-    ? `pictures/${player.picture}` 
+  iconImg.src = player.picture
+    ? `pictures/${player.picture}`
     : `pictures/player_placeholder.png`;
-  iconImg.onerror = () => iconImg.src = 'pictures/player_placeholder.png';
+  iconImg.onerror = () => (iconImg.src = "pictures/player_placeholder.png");
   avatarContainer.appendChild(iconImg);
   avatarBlock.appendChild(avatarContainer);
 
-  // Info block
+  // ─── Info block ───
   const infoBlock = document.createElement("div");
   infoBlock.classList.add("player-info");
+
+  // Athlete shortname (es. "R. Nadal")
   const nameSpan = document.createElement("div");
   nameSpan.classList.add("athlete_shortname");
-  nameSpan.textContent = player.athlete_shortname;
-  const matchSpan = document.createElement("div");
-  matchSpan.classList.add("match_3letter");
-  matchSpan.innerHTML = `<span style="font-weight:800">${player.player_team_code||""}</span>`;
-  infoBlock.append(nameSpan, matchSpan);
+  nameSpan.textContent = player.athlete_shortname || "";
 
-  // Points & cost
+  // ─── Nuovo: mostriamo il match (home_team_code-away_team_code) ───
+  // Prendiamo il codice 3‐letter dal JSON: player.player_team_code
+  // Confrontiamo in uppercase per sicurezza (case‐insensitive)
+  const playerCode = (player.player_team_code || "").toUpperCase();
+  const homeCode   = (player.home_team_code   || "").toUpperCase();
+  const awayCode   = (player.away_team_code   || "").toUpperCase();
+
+  // Assegniamo "match_3letter-team-bold" se corrisponde, altrimenti "player-match"
+  const homeClass = playerCode === homeCode
+    ? "match_3letter-team-bold"
+    : "player-match";
+  const awayClass = playerCode === awayCode
+    ? "match_3letter-team-bold"
+    : "player-match";
+
+  // Creiamo il contenitore <div class="player-match">
+  const matchContainer = document.createElement("div");
+  matchContainer.classList.add("player-match");
+
+  // Span per la squadra di casa
+  const homeSpan = document.createElement("span");
+  homeSpan.classList.add(homeClass);
+  homeSpan.textContent = player.home_team_code || "";
+
+  // Separatore “-” (senza spazi)
+  const separator = document.createTextNode("-");
+
+  // Span per la squadra ospite
+  const awaySpan = document.createElement("span");
+  awaySpan.classList.add(awayClass);
+  awaySpan.textContent = player.away_team_code || "";
+
+  matchContainer.append(homeSpan, separator, awaySpan);
+
+  // Infine appendiamo nome + matchContainer
+  infoBlock.append(nameSpan, matchContainer);
+
+  // ─── Points & cost block ───
   const pointsCostBlock = document.createElement("div");
   pointsCostBlock.classList.add("points-cost-block");
+
   const pointsContainer = document.createElement("div");
   pointsContainer.classList.add("points-container");
-  updatePointsDisplay(player.athlete_points, player.is_ended, pointsContainer);
+  updatePointsDisplay(
+    player.athlete_unit_points,
+    player.is_ended === 1,
+    pointsContainer
+  );
 
   const costSpan = document.createElement("div");
   costSpan.classList.add("athlete_cost");
-  costSpan.textContent = parseFloat(player.cost || 0).toFixed(1);
+  costSpan.textContent = parseFloat(player.event_unit_cost || 0).toFixed(1);
 
   pointsCostBlock.append(pointsContainer, costSpan);
 
-  // Monta riga in base al lato
+  // ─── Assemblaggio finale della riga ───
   if (side === "left") {
     row.append(avatarBlock, infoBlock, pointsCostBlock);
   } else {
@@ -63,7 +118,6 @@ export function createPlayerRow(player, side) {
 
   return wrapper;
 }
-
 /**
  * Mostra un messaggio di errore in cima alla pagina (contest details)
  */
@@ -250,87 +304,130 @@ export function renderContestHeader(contest, currentUserId, iAmOwner) {
       }
       break;
     
-
-    case 5: // COMPLETED (risultato definitivo + badge Win/Loss/Draw)
+      case 5: // COMPLETED (risultato definitivo + badge Win/Loss/Draw)
       {
-        // 1) Estraggo leftScore e rightScore dai fantasy_teams (o fallback)
-        let leftScore = 0, rightScore = 0, ftTeexWon = 0;
-        if (Array.isArray(contest.fantasy_teams) && contest.fantasy_teams.length) {
-          contest.fantasy_teams.forEach(team => {
-            if (
-               (iAmOwner && String(team.user_id) === String(contest.owner_id)) ||
-               (!iAmOwner && String(team.user_id) === String(contest.opponent_id))
-            ) {
-              leftScore  = parseFloat(team.total_points  || 0);
-              ftTeexWon = parseFloat(team.ft_teex_won    || 0);
+        // 1) Calcolo punti e risultato
+        let myPts  = 0,
+            oppPts = 0,
+            myRes  = 0,
+            myTeex = 0;
+    
+        if (contest.fantasy_teams?.length) {
+          contest.fantasy_teams.forEach(t => {
+            if (String(t.user_id) === String(currentUserId)) {
+              myPts  = parseFloat(t.total_points  || 0);
+              myRes  = parseFloat(t.ft_result      || 0);
+              myTeex = parseFloat(t.ft_teex_won    || 0);
             } else {
-              rightScore = parseFloat(team.total_points || 0);
+              oppPts = parseFloat(t.total_points    || 0);
             }
           });
         } else {
-          // Fallback: prendo direttamente contest.owner_points / contest.opponent_points
+          // Fallback se non ci sono ancora fantasy_teams
           if (iAmOwner) {
-            leftScore  = parseFloat(contest.owner_points    || 0);
-            ftTeexWon = parseFloat(contest.owner_teex_won  || 0);
-            rightScore = parseFloat(contest.opponent_points|| 0);
+            myPts  = parseFloat(contest.owner_points   || 0);
+            myRes  = parseFloat(contest.owner_result   || 0);
+            myTeex = parseFloat(contest.owner_teex_won || 0);
+            oppPts = parseFloat(contest.opponent_points|| 0);
           } else {
-            leftScore  = parseFloat(contest.opponent_points   || 0);
-            ftTeexWon = parseFloat(contest.opponent_teex_won || 0);
-            rightScore = parseFloat(contest.owner_points      || 0);
+            myPts  = parseFloat(contest.opponent_points   || 0);
+            myRes  = parseFloat(contest.opponent_result   || 0);
+            myTeex = parseFloat(contest.opponent_teex_won || 0);
+            oppPts = parseFloat(contest.owner_points      || 0);
           }
         }
+        
+        // Determina il risultato in base ai punteggi
+        // Questo assicura che myRes rifletta il risultato reale
+        if (myPts > oppPts) {
+          myRes = 1; // Vittoria
+        } else if (myPts < oppPts) {
+          myRes = -1; // Sconfitta
+        } else {
+          myRes = 0; // Pareggio
+        }
 
-        // 2) Calcolo il guadagno/perdita finale di teex
-        const stake = parseFloat(contest.stake   || 0);
-        const cost  = parseFloat(
-          iAmOwner 
-            ? (contest.owner_cost    || 0)
-            : (contest.opponent_cost || 0)
-        );
-        const mult  = parseFloat(contest.multiply || 1);
-        let myTeex  = 0;
-        if      (ftTeexWon === 1)   myTeex = stake - (cost * mult);
-        else if (ftTeexWon === -1)  myTeex = -(cost * mult);
-        else                        myTeex = (stake / 2) - (cost * mult);
-
-        // 3) Splitting dei punteggi per parte intera e decimale
-        const [liInt, liDec] = leftScore .toFixed(1).split('.');
-        const [riInt, riDec] = rightScore.toFixed(1).split('.');
-
-        // 4) Scelgo classe e testo badge finale (Win/Loss/Draw)
-        const badgeClass = myTeex > 0 
-          ? "status-badge-win"
-          : myTeex < 0 
-            ? "status-badge-loss"
-            : "status-badge-draw";
-        const badgeText  = (myTeex > 0 ? "+" : "") + myTeex.toFixed(1);
-
-        // 5) Costi già calcolati in "my.cost" e "opp.cost"
-
-        // 6) Markup finale con “result-bignum”
+        // 2) Calcolo myTeex (vincita/perdita) usando total_cost, come in contestCard.js
+        const stake = parseFloat(contest.stake || 0);
+        
+        // Assicuriamoci di ottenere il costo corretto
+        let costNumeric = 0;
+        if (iAmOwner) {
+          // Se sono owner, uso il mio costo (owner_cost)
+          costNumeric = parseFloat(contest.owner_fantasy_team?.total_cost || contest.owner_cost || 0);
+        } else {
+          // Se sono opponent, uso il mio costo (opponent_cost)
+          costNumeric = parseFloat(contest.opponent_fantasy_team?.total_cost || contest.opponent_cost || 0);
+        }
+        
+        const mult = parseFloat(contest.multiply || 1);
+    
+        // Calcolo corretto del valore di vincita/perdita
+        if (myRes === 1) {
+          // Vittoria
+          myTeex = stake - (costNumeric * mult);
+        } else if (myRes === -1) {
+          // Sconfitta
+          myTeex = -(costNumeric * mult);
+        } else {
+          // Pareggio
+          myTeex = (stake / 2) - (costNumeric * mult);
+        }
+    
+        // 3) Splitting dei punti per il markup
+        const [mInt, mDec] = myPts.toFixed(1).split('.');
+        const [oInt, oDec] = oppPts.toFixed(1).split('.');
+    
+        // 4) Classe e testo badge Win/Loss/Draw
+        const badgeClass5 = myTeex > 0
+          ? 'status-badge-win'
+          : myTeex < 0
+            ? 'status-badge-loss'
+            : 'status-badge-draw';
+        const badgeText5 = (myTeex > 0 ? '+' : '') + myTeex.toFixed(1);
+    
+        // 5) Costruisco il blocco "result-bignum"
         const scoreHTML = `
           <div class="result-bignum">
             <div class="result_block left_block">
-              <span class="result_bold left">${liInt}</span>
-              <span class="win_index_perc left">.${liDec}</span>
+              <span class="result_bold left">${mInt}</span>
+              <span class="win_index_perc left">.${mDec}</span>
             </div>
             <span class="vs-separator"> </span>
-            <div class="result_block right_block${Number(riInt) < 10 ? ' onedigit' : ''}">
-              <span class="result_bold right">${riInt}</span>
-              <span class="win_index_perc right">.${riDec}</span>
+            <div class="result_block right_block${Number(oInt) < 10 ? ' onedigit' : ''}">
+              <span class="result_bold right">${oInt}</span>
+              <span class="win_index_perc right">.${oDec}</span>
             </div>
           </div>
         `;
-
+        
+        // 6) Utilizziamo i costi originali my.cost e opp.cost per la visualizzazione
+        // ma assicuriamoci che siano valori validi
+        const leftCost = my.cost !== "-" ? my.cost : 
+                        (iAmOwner && contest.owner_fantasy_team?.total_cost ? 
+                         parseFloat(contest.owner_fantasy_team.total_cost).toFixed(1) : 
+                         (!iAmOwner && contest.opponent_fantasy_team?.total_cost ? 
+                          parseFloat(contest.opponent_fantasy_team.total_cost).toFixed(1) : 
+                          "0.0"));
+                          
+        const rightCost = opp.cost !== "-" ? opp.cost : 
+                         (iAmOwner && contest.opponent_fantasy_team?.total_cost ? 
+                          parseFloat(contest.opponent_fantasy_team.total_cost).toFixed(1) : 
+                          (!iAmOwner && contest.owner_fantasy_team?.total_cost ? 
+                           parseFloat(contest.owner_fantasy_team.total_cost).toFixed(1) : 
+                           "0.0"));
+    
+        // 7) Chiamo baseMarkup passando i costi corretti
         container.innerHTML = baseMarkup(
-          my.cost,
-          opp.cost,
-          badgeClass,
-          badgeText,
+          leftCost,
+          rightCost,
+          badgeClass5,
+          badgeText5,
           scoreHTML
         );
       }
       break;
+    
 
     default: // UNKNOWN
       container.innerHTML = `

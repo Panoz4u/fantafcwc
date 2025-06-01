@@ -6,19 +6,18 @@ export function updateHeaderStats() {
   document.getElementById('playersCount').textContent = players.length;
   document.getElementById('totalCost').textContent = getTotalCost().toFixed(1);
   document.getElementById('teexLeft').textContent = getAvailableBudget().toFixed(1);
- // —— GESTIONE UPDATE TEAM BUTTON —— 
- const addBtn = document.getElementById('addToTeamBtn');
- const selectedCount = loadChosenPlayers().length;
- if (selectedCount > 0) {
-   addBtn.disabled = false;
-   addBtn.classList.add('footer_button_orange');
-   addBtn.classList.remove('fb_unable_orange');
- } else {
-   addBtn.disabled = true;
-   addBtn.classList.add('fb_unable_orange');
-   addBtn.classList.remove('footer_button_orange');
- }
-
+  // —— GESTIONE UPDATE TEAM BUTTON —— 
+  const addBtn = document.getElementById('addToTeamBtn');
+  const selectedCount = loadChosenPlayers().length;
+  if (selectedCount > 0) {
+    addBtn.disabled = false;
+    addBtn.classList.add('footer_button_orange');
+    addBtn.classList.remove('fb_unable_orange');
+  } else {
+    addBtn.disabled = true;
+    addBtn.classList.add('fb_unable_orange');
+    addBtn.classList.remove('footer_button_orange');
+  }
 }
 
 export function renderPlayers(list, onToggle) {
@@ -39,7 +38,16 @@ export function renderPlayers(list, onToggle) {
     // evidenzia selezione
     if (isSelected) li.style.backgroundColor = "#9A6D19";
 
-    // 3) Markup legacy
+    // 3) Markup con match home vs away
+    //    - Se player.aep_team_id === home_team, uso 'match_3letter-team-bold' su home
+    //    - Altrimenti lo uso su away
+    const homeClass = (player.aep_team_id === player.home_team)
+                      ? 'match_3letter-team-bold'
+                      : 'player-match';
+    const awayClass = (player.aep_team_id === player.away_team)
+                      ? 'match_3letter-team-bold'
+                      : 'player-match';
+
     li.innerHTML = `
       <div class="player-icon-container">
         <div class="player-icon">
@@ -52,8 +60,19 @@ export function renderPlayers(list, onToggle) {
       </div>
       <div class="player-info-container">
         <div class="player-name">${player.athlete_shortname}</div>
+
+        <!-- Righe precedenti commentate: codice originario per mostrare solo il team_3letter da athlete -->
+        <!--
         <div class="player-match">
           <span>${player.player_team_code || ''}</span>
+        </div>
+        -->
+
+        <!-- Nuovo markup: home_team_code – away_team_code con classi condizionali -->
+        <div class="player-match">
+          <span class="${homeClass}">${player.home_team_code || ''}</span>
+          -
+          <span class="${awayClass}">${player.away_team_code || ''}</span>
         </div>
       </div>
       <div class="player-cost">${parseFloat(player.event_unit_cost).toFixed(1)}</div>

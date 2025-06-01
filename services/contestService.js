@@ -198,52 +198,79 @@ async function getContestDetails({ contestId, currentUserId, eventUnitId }) {
   if (!rows.length) throw new Error('Contest non trovato');
   const contestData = rows[0];
 
-  // 2) Carico le righe della squadra owner e opponent
-  const sqlTeam = `
-SELECT 
-    fte.athlete_id,
-    fte.fantasy_team_id,
-    fte.aep_id,
-    fte.cost AS cost,
-    a.athlete_shortname,
-    a.picture,
-    a.position,
-    a.team_id,
-    aep.event_unit_id   AS event_unit_id,
-    aep.is_ended,
-    COALESCE(ROUND(aep.athlete_unit_points, 1), 0) AS athlete_points,
-    m.home_team,
-    m.away_team,
-    ht.team_3letter     AS home_team_code,
-    at.team_3letter     AS away_team_code,
-    ht.team_name        AS home_team_name,
-    at.team_name        AS away_team_name,
-    t.team_3letter      AS player_team_code,
-    t.team_name         AS player_team_name
-  FROM fantasy_team_entities fte
-  JOIN fantasy_teams ft 
-    ON fte.fantasy_team_id = ft.fantasy_team_id
-  JOIN athletes a 
-    ON fte.athlete_id = a.athlete_id
-  JOIN teams t 
-    ON a.team_id = t.team_id
-  LEFT JOIN athlete_eventunit_participation aep 
-    ON a.athlete_id = aep.athlete_id 
-   AND aep.event_unit_id = ?
-  LEFT JOIN matches m 
-    ON aep.event_unit_id = m.event_unit_id 
-   AND (m.home_team = a.team_id OR m.away_team = a.team_id)
-  LEFT JOIN teams ht 
-    ON m.home_team = ht.team_id
-  LEFT JOIN teams at 
-    ON m.away_team = at.team_id
-  WHERE ft.contest_id = ? 
-    AND ft.user_id = ?
-`;
-  // promise interface per non nidificare callback
-  const [[ownerRows], [oppRows]] = await Promise.all([
-    pool.promise().query(sqlTeam, [eventUnitId, contestId, contestData.owner_id]),
-    pool.promise().query(sqlTeam, [eventUnitId, contestId, contestData.opponent_id])  ]);
+   // 2) Carico le righe della squadra owner e opponent unendo direttamente su fte.aep_id:
+    //    in questo modo pescano correttamente i punti anche se eventUnitId venisse sbagliato o nullo.
+    const sqlTeamByAep = `
+    SELECT
+      fte.athlete_id,
+      aep.event_unit_id                  AS event_unit_id,
+      COALESCE(ROUND(aep.athlete_unit_points, 1), 0) AS athlete_unit_points,
+      aep.is_ended                       AS is_ended,
+      aep.event_unit_cost                AS event_unit_cost,
+      aep.status                         AS status,
+      a.athlete_name                     AS athlete_name,
+      a.athlete_shortname                AS athlete_shortname,
+      a.position                         AS position,
+      a.picture                          AS picture,
+  
+      -- Qui prende il team “effettivo” scelto in quell’AEP:
+      aep.team_id                        AS aep_team_id,
+  
+      -- Dalla tabella teams t (collegata a aep.team_id) prendo il codice 3‐letter e il nome
+      t.team_name                        AS player_team_name,
+      t.team_3letter                     AS player_team_code,
+      t.team_logo                        AS player_team_logo,
+      t.team_kit                         AS player_team_kit,
+  
+      -- Ora unisco con matches per recuperare il match corrispondente:
+      m.match_id,
+      m.home_team                        AS match_home_id,
+      m.away_team                        AS match_away_id,
+      m.match_date,
+      m.status                           AS match_status,
+  
+      -- E ottengo i codici 3‐letter delle due squadre del match:
+      ht.team_3letter                    AS home_team_code,
+      at.team_3letter                    AS away_team_code,
+      ht.team_name                       AS home_team_name,
+      at.team_name                       AS away_team_name
+  
+    FROM fantasy_team_entities fte
+  
+    LEFT JOIN athlete_eventunit_participation aep
+      ON fte.aep_id = aep.aep_id
+  
+    JOIN athletes a
+      ON fte.athlete_id = a.athlete_id
+  
+    -- Prendo il codice 3‐letter del team “di quell’AEP”:
+    LEFT JOIN teams t
+      ON aep.team_id = t.team_id
+  
+    /* 
+     * A questo punto unisco matches in base a:
+     *   1) stessa event_unit_id
+     *   2) aep.team_id corrisponde a home_team OPPURE away_team
+     */
+    LEFT JOIN matches m
+      ON aep.event_unit_id = m.event_unit_id
+     AND (m.home_team = aep.team_id OR m.away_team = aep.team_id)
+  
+    /* Per ogni riga di “matches” ricavo i codici 3‐letter di home e away: */
+    LEFT JOIN teams ht
+      ON m.home_team = ht.team_id
+    LEFT JOIN teams at
+      ON m.away_team = at.team_id
+  
+    WHERE fte.fantasy_team_id = ?
+  `;
+    // Eseguo due query con i due fantasy_team_id già presenti in contestData:
+    const [ownerRows] = await pool.promise().query(sqlTeamByAep, [
+      contestData.owner_team_id
+    ]);
+    const [oppRows] = await pool.promise().query(sqlTeamByAep, [
+      contestData.opponent_team_id
+    ]);
 
   // 3) Se qualche atleta è finito, calcolo result e status_display
   const ended = ownerRows.concat(oppRows).some(r => r.is_ended);
