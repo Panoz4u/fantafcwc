@@ -15,16 +15,22 @@ async function init() {
     contestId    = 0,
     userId       = 0,
     ownerId      = 0,
-    opponentId   = 0,   // → se arriva da H2H, qui ci sarà l’ID numerico. Altrimenti 0.
-    eventUnitId  = 0,   // → se arriva da H2H, qui ci sarà l’ID numerico. Altrimenti 0.
+    opponentId   = 0,
+    eventUnitId  = 0,
     fantasyTeams = [],
     multiply     = 1,
     stake        = 0
   } = contestData;
   
-  // Convertiamo “0” in null per la Private League, altrimenti lasciamo il numero
-  const opponentIdClean  = opponentId   > 0 ? opponentId   : null;
-  const eventUnitIdClean = eventUnitId  > 0 ? eventUnitId  : null;
+// Per ora riprendiamo i valori così come sono
+const opponentIdClean  = opponentId;
+const eventUnitIdClean = eventUnitId;
+
+console.log("⚙️ [DEBUG] contestData: ", contestData);
+console.log("⚙️ [DEBUG] contestId =", contestId,
+            "ownerId =", ownerId,
+            "opponentIdClean =", opponentIdClean,
+            "eventUnitIdClean =", eventUnitIdClean);
 
   // 2) Gestione chosenPlayers
   const existing = JSON.parse(localStorage.getItem("chosenPlayers") || "[]");
@@ -43,13 +49,13 @@ async function init() {
 
   // 4) Chiamata a getContestDetails → ora passiamo sempre un opponentId numerico
   //    (0 significa “nessun avversario” per la Private League)
-   const { contest, ownerTeam, opponentTeam } = await getContestDetails(
-       contestId,
-       ownerId,
-       opponentIdClean,
-       eventUnitIdClean,
-       token
-     );
+  const { contest, ownerTeam, opponentTeam } = await getContestDetails(
+    contestId,
+    ownerId,
+    opponentIdClean,
+    eventUnitIdClean,
+    token
+  );
 
   // 5) Se il server ha restituito ownerTeam/opponentTeam, li usiamo per popolare chosenPlayers
   if (userId === ownerId && Array.isArray(ownerTeam) && ownerTeam.length) {

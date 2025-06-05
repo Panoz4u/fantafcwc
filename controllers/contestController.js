@@ -12,20 +12,15 @@ async function contestDetailsController(req, res) {
   }
     const currentUserId = req.user.userId;
 
-    const parsedEventUnitId = parseInt(event_unit_id, 10);
-
-    if (isNaN(parsedEventUnitId)) {
-      console.error('Errore in contestDetailsController: event_unit_id is not a valid number', event_unit_id);
-      return res.status(400).json({ error: 'Invalid event_unit_id provided.' });
-    }
-
-    const data = await getContestDetails({
-      contestId:     parseInt(contest_id,    10),
-      ownerId:       parseInt(owner_id,      10),
-      opponentId:    parseInt(opponent_id,   10),
-      eventUnitId:   parsedEventUnitId, // Use the validated and parsed event_unit_id
-      currentUserId
-    });
+      // Non servono più validazioni stringenti, perché sappiamo che
+      // select-competitors ha già passato opponent_id e event_unit_id ≥ 1
+      const data = await getContestDetails({
+        contestId:     parseInt(contest_id,    10),
+        ownerId:       parseInt(owner_id,      10),
+        opponentId:    parseInt(opponent_id,   10),
+        eventUnitId: null,   // non facciamo più “WHERE event_unit_id = ?”
+        currentUserId
+      });
 
     return res.json(data);
   } catch (err) {
