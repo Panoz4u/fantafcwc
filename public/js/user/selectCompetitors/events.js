@@ -195,6 +195,7 @@ export async function initPage() {
   });
 
   // 4f) Click su “CREATE TEAM”
+  // Nel gestore del click su "CREATE TEAM"
   document.getElementById('createTeamBtn').addEventListener('click', async function() {
     const leagueName = document.getElementById('leagueNameInput').value.trim();
     if (!leagueName) {
@@ -207,35 +208,34 @@ export async function initPage() {
     }
     // Preparo array di competitorIds
     const competitorIds = Array.from(selectedSet);
-
+  
     try {
-            updateCreateButton(false); // blocco multi‐click
-            const res = await createLeagueRequest(leagueName, competitorIds);
-            // Dentro l'handler di click su “CREATE TEAM”:
-            const newContestId = res.leagueId || res.contestId;
-
-            // Preparo l’oggetto contestData in localStorage, MA
-            // per ora fingiamo che sia Head-to-Head contro sé stessi:
-            //   - opponentId = ownerUserId
-            //   - eventUnitId = 1 (un ID di unità evento “semplice” che sia sempre valido)
-            const ownerUserId = Number(localStorage.getItem('userId')); 
-            const contestDataObj = {
-              contestId:   newContestId,
-              userId:      ownerUserId,
-              ownerId:     ownerUserId,
-              opponentId:  ownerUserId,  // **da modificare**: mettiamo l’owner come “avversario”
-              eventUnitId: 1,            // **da modificare**: scegli un event_unit_id esistente (es. “1”)
-              status:      0,
-              multiply:    1
-            };
-            localStorage.setItem('contestData', JSON.stringify(contestDataObj));
-
-            // Salvo invitati e nome lega
-            localStorage.setItem('invitedCount', selectedSet.size);
-            localStorage.setItem('leagueName', leagueName);
-
-            // Redirect
-            window.location.href = 'contest-creation.html';
+      updateCreateButton(false); // blocco multi‐click
+      const res = await createLeagueRequest(leagueName, competitorIds);
+      // Dentro l'handler di click su "CREATE TEAM":
+      const newContestId = res.contestId;
+  
+      // Preparo l'oggetto contestData in localStorage
+      const ownerUserId = Number(localStorage.getItem('userId')); 
+      const contestDataObj = {
+        contestId:   newContestId,
+        userId:      ownerUserId,
+        ownerId:     ownerUserId,
+        opponentId:  ownerUserId,  // Manteniamo l'owner come "avversario" per compatibilità
+        eventUnitId: 1,            // Usiamo un event_unit_id esistente (es. "1")
+        status:      0,
+        multiply:    1,
+        contest_type: 2,           // Aggiungiamo contest_type = 2 per indicare che è una lega
+        contest_name: leagueName   // Aggiungiamo il nome della lega
+      };
+      localStorage.setItem('contestData', JSON.stringify(contestDataObj));
+  
+      // Salvo invitati e nome lega
+      localStorage.setItem('invitedCount', selectedSet.size);
+      localStorage.setItem('leagueName', leagueName);
+  
+      // Redirect
+      window.location.href = 'contest-creation.html';
     } catch (err) {
       console.error('Errore createLeague:', err);
       alert('Errore creazione lega: ' + err.message);

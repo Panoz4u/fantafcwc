@@ -37,7 +37,7 @@ function confirmSquad({ contestId, userId, players, multiplier = 1, totalCost })
 
         // 1) Leggi lo stato corrente del contest
         const sqlGetContest = `
-          SELECT status, stake, owner_user_id, opponent_user_id
+          SELECT status, stake, owner_user_id, opponent_user_id, contest_type
           FROM contests WHERE contest_id = ?
         `;
         connection.query(sqlGetContest, [contestId], (err, contestRows) => {
@@ -46,25 +46,46 @@ function confirmSquad({ contestId, userId, players, multiplier = 1, totalCost })
 
           const contest = contestRows[0];
           let newStatus = contest.status;
+          const isLeague = contest.contest_type === 2;
 
-          // 2) Determina il nuovo status in base a chi conferma
-          if (newStatus === 0 && userId === contest.owner_user_id) {
-            newStatus = 1;  // owner ha confermato
-          } else if (newStatus === 1 && userId === contest.opponent_user_id) {
-            newStatus = 2;  // opponent ha confermato
+          // 2) Determina il nuovo status in base a chi conferma e al tipo di contest
+          if (isLeague) {
+            // Per i contest di tipo league, aggiorniamo sempre lo stato a 1
+            newStatus = 1;
           } else {
-            return rollbackTransaction(connection, null, reject, 'Stato contest non valido per la conferma');
+            // Per i contest head-to-head, manteniamo la logica esistente
+            if (newStatus === 0 && userId === contest.owner_user_id) {
+              newStatus = 1;  // owner ha confermato
+            } else if (newStatus === 1 && userId === contest.opponent_user_id) {
+              newStatus = 2;  // opponent ha confermato
+            } else {
+              return rollbackTransaction(connection, null, reject, 'Stato contest non valido per la conferma');
+            }
           }
 
-          // 3) Controlla che non abbia già una squadra
+          // 3) Controlla se l'utente ha già una squadra
           const sqlCheckTeam = `
-            SELECT fantasy_team_id
+            SELECT fantasy_team_id, ft_status
             FROM fantasy_teams
             WHERE contest_id = ? AND user_id = ?
           `;
           connection.query(sqlCheckTeam, [contestId, userId], (err, teamRows) => {
             if (err) return rollbackTransaction(connection, err, reject, 'Errore nella verifica della squadra esistente');
-            if (teamRows.length) return rollbackTransaction(connection, null, reject, 'Hai già confermato una squadra per questo contest');
+            
+            // Per i contest di tipo league, l'utente potrebbe già avere un record in fantasy_teams
+            const hasExistingTeam = teamRows.length > 0;
+            const existingTeamId = hasExistingTeam ? teamRows[0].fantasy_team_id : null;
+            const existingStatus = hasExistingTeam ? teamRows[0].ft_status : null;
+            
+            // Se non è una lega e ha già una squadra, restituisci errore
+            if (!isLeague && hasExistingTeam) {
+              return rollbackTransaction(connection, null, reject, 'Hai già confermato una squadra per questo contest');
+            }
+            
+            // Se è una lega e ha già confermato (ft_status > 0), restituisci errore
+            if (isLeague && hasExistingTeam && existingStatus > 0) {
+              return rollbackTransaction(connection, null, reject, 'Hai già confermato una squadra per questo contest');
+            }
 
             // 4) Leggi il saldo utente
             const sqlGetUser = `SELECT teex_balance FROM users WHERE user_id = ?`;
@@ -80,87 +101,143 @@ function confirmSquad({ contestId, userId, players, multiplier = 1, totalCost })
                 return rollbackTransaction(connection, null, reject, 'Saldo Teex insufficiente');
               }
 
-              // 5) Crea il fantasy team
-              const sqlCreateTeam = `
-                INSERT INTO fantasy_teams (user_id, contest_id, total_cost)
-                VALUES (?, ?, ?)
-              `;
-              connection.query(sqlCreateTeam, [userId, contestId, totalCost], (err, result) => {
-                if (err) return rollbackTransaction(connection, err, reject, 'Errore nella creazione della squadra');
-
-                const teamId = result.insertId;
-
-                // 6) Inserisci i giocatori scelti
-                const values = players.map(p => [
-                  teamId,
-                  p.athleteId,
-                  p.event_unit_cost || 0,
-                  p.aep_id || null
-                ]);
-                const placeholders = values.map(() => '(?, ?, ?, ?)').join(', ');
-                const flat = values.flat();
-
-                const sqlInsertPlayers = `
-                  INSERT INTO fantasy_team_entities
-                    (fantasy_team_id, athlete_id, cost, aep_id)
-                  VALUES ${placeholders}
+              // 5) Crea o aggiorna il fantasy team
+              let teamId;
+              let teamOperation;
+              
+              if (isLeague && hasExistingTeam) {
+                // Aggiorna il fantasy team esistente per la lega
+                const sqlUpdateTeam = `
+                  UPDATE fantasy_teams
+                  SET total_cost = ?, ft_status = ?, updated_at = NOW()
+                  WHERE fantasy_team_id = ?
                 `;
-                connection.query(sqlInsertPlayers, flat, (err) => {
-                  if (err) return rollbackTransaction(connection, err, reject, 'Errore nell\'inserimento degli atleti');
-
-                  // 7) Aggiorna il contest (status, multiply, stake)
-                  const isOwner = userId === contest.owner_user_id;
-                  const updateFields = {};
-                   // in ogni caso cambio stato...
-                   updateFields.status = newStatus;
+                const ftStatus = userId === contest.owner_user_id ? 2 : 1; // 2 per owner, 1 per altri
+                teamOperation = new Promise((resolve, reject) => {
+                  connection.query(sqlUpdateTeam, [totalCost, ftStatus, existingTeamId], (err, result) => {
+                    if (err) return reject(err);
+                    teamId = existingTeamId;
+                    resolve();
+                  });
+                });
+              } else {
+                // Crea un nuovo fantasy team (per head-to-head o per lega se non esiste)
+                const sqlCreateTeam = `
+                  INSERT INTO fantasy_teams (user_id, contest_id, total_cost, ft_status, updated_at)
+                  VALUES (?, ?, ?, ?, NOW())
+                `;
+                const ftStatus = isLeague && userId === contest.owner_user_id ? 2 : 0;
+                teamOperation = new Promise((resolve, reject) => {
+                  connection.query(sqlCreateTeam, [userId, contestId, totalCost, ftStatus], (err, result) => {
+                    if (err) return reject(err);
+                    teamId = result.insertId;
+                    resolve();
+                  });
+                });
+              }
+              
+              teamOperation.then(() => {
+                // 6) Rimuovi eventuali giocatori esistenti per questo team
+                const sqlDeletePlayers = `
+                  DELETE FROM fantasy_team_entities
+                  WHERE fantasy_team_id = ?
+                `;
+                connection.query(sqlDeletePlayers, [teamId], (err) => {
+                  if (err) return rollbackTransaction(connection, err, reject, 'Errore nella rimozione degli atleti esistenti');
                   
-                   // 1) Se è la PRIMA conferma (status 0→1), scrivo sempre il moltiplicatore
-                   if (contest.status === 0) {
-                     updateFields.multiply = effectiveMul;
-                   }
-                  
-                   // 2) Se è l’owner al primo confirm o l’invited (status 1→2), gestisco lo stake
-                   if (isOwner) {
-                     // owner paga tutto subito
-                     updateFields.stake = totalCost * effectiveMul;
-                   } else if (contest.status === 1) {
-                     // invited aggiunge il suo costo
-                     updateFields.stake = parseFloat(contest.stake || 0) + (totalCost * effectiveMul);
-                   }
+                  // 7) Inserisci i giocatori scelti
+                  const values = players.map(p => [
+                    teamId,
+                    p.athleteId,
+                    p.event_unit_cost || 0,
+                    p.aep_id || null
+                  ]);
+                  const placeholders = values.map(() => '(?, ?, ?, ?)').join(', ');
+                  const flat = values.flat();
 
-                  const setClause = Object.keys(updateFields)
-                   .map(k => `${k} = ?`)
-                   .join(', ');
-                 // CORRETTO:
-                 const params = [...Object.values(updateFields), contestId];
-                 const sqlUpdateContest = `UPDATE contests SET ${setClause} WHERE contest_id = ?`;
+                  const sqlInsertPlayers = `
+                    INSERT INTO fantasy_team_entities
+                      (fantasy_team_id, athlete_id, cost, aep_id)
+                    VALUES ${placeholders}
+                  `;
+                  connection.query(sqlInsertPlayers, flat, (err) => {
+                    if (err) return rollbackTransaction(connection, err, reject, 'Errore nell\'inserimento degli atleti');
 
-                  connection.query(sqlUpdateContest, params, (err) => {
-                    if (err) return rollbackTransaction(connection, err, reject, 'Errore nell\'aggiornamento del contest');
+                    // 8) Aggiorna il contest (status, multiply, stake)
+                    const isOwner = userId === contest.owner_user_id;
+                    const updateFields = {};
+                    // in ogni caso cambio stato...
+                    updateFields.status = newStatus;
+                    
+                    // 1) Se è la PRIMA conferma (status 0→1), scrivo sempre il moltiplicatore
+                    if (contest.status === 0) {
+                      updateFields.multiply = effectiveMul;
+                    }
+                    
+                    // 2) Se è l'owner al primo confirm o l'invited (status 1→2), gestisco lo stake
+                    if (isOwner) {
+                      // owner paga tutto subito
+                      updateFields.stake = totalCost * effectiveMul;
+                    } else if (contest.status === 1) {
+                      // invited aggiunge il suo costo
+                      updateFields.stake = parseFloat(contest.stake || 0) + (totalCost * effectiveMul);
+                    }
 
-                    // 8) Sottrai il costo dal saldo utente
-                    const sqlUpdateBalance = `
-                      UPDATE users
-                      SET teex_balance = teex_balance - ?
-                      WHERE user_id = ?
-                    `;
-                    connection.query(sqlUpdateBalance, [multipliedCost, userId], (err) => {
-                      if (err) return rollbackTransaction(connection, err, reject, 'Errore nell\'aggiornamento del saldo');
+                    const setClause = Object.keys(updateFields)
+                      .map(k => `${k} = ?`)
+                      .join(', ');
+                    const params = [...Object.values(updateFields), contestId];
+                    const sqlUpdateContest = `UPDATE contests SET ${setClause} WHERE contest_id = ?`;
 
-                      // 9) Commit e fine
-                      connection.commit(err => {
-                        if (err) return rollbackTransaction(connection, err, reject, 'Errore nel commit della transazione');
-                        connection.release();
-                        resolve({
-                          message: 'Squadra confermata con successo',
-                          multiply: effectiveMul,
-                          baseTeamCost: totalCost,
-                          multipliedCost
+                    connection.query(sqlUpdateContest, params, (err) => {
+                      if (err) return rollbackTransaction(connection, err, reject, 'Errore nell\'aggiornamento del contest');
+
+                      // Per i contest di tipo league, aggiorniamo lo stato dei fantasy teams
+                      if (isLeague && isOwner) {
+                        const sqlUpdateFantasyTeams = `
+                          UPDATE fantasy_teams
+                          SET ft_status = 1
+                          WHERE contest_id = ? AND ft_status = 0 AND user_id != ?
+                        `;
+                        connection.query(sqlUpdateFantasyTeams, [contestId, userId], (err) => {
+                          if (err) return rollbackTransaction(connection, err, reject, 'Errore nell\'aggiornamento dei fantasy teams');
+                          
+                          // Continua con l'aggiornamento del saldo utente
+                          updateUserBalance();
                         });
-                      });
+                      } else {
+                        // Per i contest head-to-head, continua con l'aggiornamento del saldo utente
+                        updateUserBalance();
+                      }
+
+                      function updateUserBalance() {
+                        // 9) Sottrai il costo dal saldo utente
+                        const sqlUpdateBalance = `
+                          UPDATE users
+                          SET teex_balance = teex_balance - ?
+                          WHERE user_id = ?
+                        `;
+                        connection.query(sqlUpdateBalance, [multipliedCost, userId], (err) => {
+                          if (err) return rollbackTransaction(connection, err, reject, 'Errore nell\'aggiornamento del saldo');
+
+                          // 10) Commit e fine
+                          connection.commit(err => {
+                            if (err) return rollbackTransaction(connection, err, reject, 'Errore nel commit della transazione');
+                            connection.release();
+                            resolve({
+                              message: 'Squadra confermata con successo',
+                              multiply: effectiveMul,
+                              baseTeamCost: totalCost,
+                              multipliedCost
+                            });
+                          });
+                        });
+                      }
                     });
                   });
                 });
+              }).catch(err => {
+                return rollbackTransaction(connection, err, reject, 'Errore nell\'operazione sul fantasy team');
               });
             });
           });
@@ -178,18 +255,19 @@ function confirmSquad({ contestId, userId, players, multiplier = 1, totalCost })
 async function getContestDetails({ contestId, currentUserId, eventUnitId }) {
   // 1) Prendo i dati basilari del contest
   const sqlContest = `
-    SELECT c.contest_id, c.status, cs.status_name, c.stake,
+    SELECT c.contest_id, c.status, cs.status_name, c.stake, c.contest_type, c.contest_name,
            c.owner_user_id AS owner_id, ow.username AS owner_name, ow.avatar AS owner_avatar, ow.color AS owner_color,
            ft_o.total_cost AS owner_cost, ft_o.fantasy_team_id AS owner_team_id,
            ft_o.total_points AS owner_points, ft_o.ft_teex_won AS owner_teex_won,
            c.opponent_user_id AS opponent_id, op.username AS opponent_name, op.avatar AS opponent_avatar, op.color AS opponent_color,
            ft_p.total_cost AS opponent_cost, ft_p.fantasy_team_id AS opponent_team_id,
            ft_p.total_points AS opponent_points, ft_p.ft_teex_won AS opponent_teex_won,
-           c.event_unit_id, c.multiply
+           c.event_unit_id, c.multiply,
+           (SELECT COUNT(*) FROM fantasy_teams WHERE contest_id = c.contest_id) AS invited_count
     FROM contests c
     JOIN contests_status cs ON c.status = cs.status_id
     JOIN users ow ON c.owner_user_id = ow.user_id
-    JOIN users op ON c.opponent_user_id = op.user_id
+    LEFT JOIN users op ON c.opponent_user_id = op.user_id
     LEFT JOIN fantasy_teams ft_o ON (ft_o.contest_id = c.contest_id AND ft_o.user_id = c.owner_user_id)
     LEFT JOIN fantasy_teams ft_p ON (ft_p.contest_id = c.contest_id AND ft_p.user_id = c.opponent_user_id)
     WHERE c.contest_id = ?
@@ -197,7 +275,10 @@ async function getContestDetails({ contestId, currentUserId, eventUnitId }) {
   const [rows] = await pool.promise().query(sqlContest, [contestId]);
   if (!rows.length) throw new Error('Contest non trovato');
   const contestData = rows[0];
-
+  
+  // Aggiungiamo current_user_id per facilitare la logica nel frontend
+  contestData.current_user_id = currentUserId;
+  
    // 2) Carico le righe della squadra owner e opponent unendo direttamente su fte.aep_id:
     //    in questo modo pescano correttamente i punti anche se eventUnitId venisse sbagliato o nullo.
     const sqlTeamByAep = `

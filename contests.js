@@ -24,7 +24,7 @@ router.post("/", (req, res) => {
   // Updated query to insert multiply field
   const sql = `
     INSERT INTO contests (owner_user_id, opponent_user_id, contest_type, stake, status, created_at, updated_at, event_unit_id, multiply)
-    VALUES (?, ?, 'head_to_head', 0, 0, NOW(), NOW(), ?, ?)
+    VALUES (?, ?, 1, 0, 0, NOW(), NOW(), ?, ?)
   `;
   
   pool.query(sql, [owner, opponent, event_unit_id, multiplyValue], (er, rs) => {

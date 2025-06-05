@@ -22,7 +22,7 @@ router.post(
       `;
       // default multiply = 1
       const mult = multiply || 1;
-      pool.query(sql, [owner, opponent, 'head_to_head', 0, event_unit_id, mult], (er, rs) => {
+      pool.query(sql, [owner, opponent, 1, 0, event_unit_id, mult], (er, rs) => {
         if (er) {
           console.error("Error creating contest", er);
           return res.status(500).json({ error:"DB error creating contest" });

@@ -12,38 +12,56 @@ import {
       owner_name, owner_avatar,
       opponent_name, opponent_avatar,
       owner_cost, opponent_cost,
-      status, multiply,
+      status, multiply, contest_type,
+      contest_name, invited_count,
       fantasy_teams = [],
       owner_fantasy_team, opponent_fantasy_team
     } = contest;
     const container = document.getElementById("contestHeaderContainer");
 
-// Calcola currentUserId: se la API l’ha già messo in contest.current_user_id usalo,
-// altrimenti usa il userId passato.
-const currentUserId = contest.current_user_id || userId;
+    // Calcola currentUserId: se la API l'ha già messo in contest.current_user_id usalo,
+    // altrimenti usa il userId passato.
+    const currentUserId = contest.current_user_id || userId;
 
-// Determina se sei owner
-const isCurrentOwner = String(currentUserId) === String(contest.owner_user_id);
+    // Determina se sei owner
+    const isCurrentOwner = String(currentUserId) === String(contest.owner_user_id);
 
-// Dati “my” e “opp” (come in createContestCard caso 1)
-const my = {
-  name:   isCurrentOwner ? owner_name    : opponent_name,
-  avatar: isCurrentOwner ? owner_avatar  : opponent_avatar,
-  cost:   (() => {
-    if (status === 1) {
-      // stato INVITED/PENDING: prendi da fantasy_teams
-      const t = fantasy_teams.find(t => String(t.user_id) === String(currentUserId));
-      return t ? parseFloat(t.total_cost).toFixed(1) : '-';
-    }
-    // altri status: fallback su owner_cost/opponent_cost
-    return parseFloat(isCurrentOwner ? owner_cost : opponent_cost || 0).toFixed(1);
-  })()
-};
-const opp = {
-  name:   isCurrentOwner ? opponent_name : owner_name,
-  avatar: isCurrentOwner ? opponent_avatar : owner_avatar,
-    cost: (() => {
-      // 1) status=0: nessun avversario schierato → trattino
+    // Dati "my" e "opp" (come in createContestCard caso 1)
+    const my = {
+      name:   isCurrentOwner ? owner_name    : opponent_name,
+      avatar: isCurrentOwner ? owner_avatar  : opponent_avatar,
+      cost:   (() => {
+        if (status === 1) {
+          // stato INVITED/PENDING: prendi da fantasy_teams
+          const t = fantasy_teams.find(t => String(t.user_id) === String(currentUserId));
+          return t ? parseFloat(t.total_cost).toFixed(1) : '-';
+        }
+        // altri status: fallback su owner_cost/opponent_cost
+        return parseFloat(isCurrentOwner ? owner_cost : opponent_cost || 0).toFixed(1);
+      })()
+    };
+    
+    // Per contest di tipo league (2), usiamo il nome della lega e il numero di invitati
+    // invece delle informazioni dell'avversario
+    const isLeague = contest_type === 2;
+    
+    // Recupera il numero di invitati dal localStorage se non è presente nei dati del contest
+    const invitedCount = invited_count -1 || parseInt(localStorage.getItem('invitedCount') || '0', 10);
+    
+    // Recupera il nome della lega dal localStorage se non è presente nei dati del contest
+    const leagueName = contest_name || localStorage.getItem('leagueName') || 'LEAGUE';
+    
+    const opp = isLeague ? {
+      // Per le leghe, usiamo il nome della lega e un cerchio giallo con il numero di invitati
+      name: leagueName,
+      avatar: 'league', // Useremo questo per mostrare un cerchio giallo invece dell'avatar
+      cost: '-' // Non mostriamo il costo per le leghe
+    } : {
+      // Per head-to-head, usiamo le informazioni dell'avversario come prima
+      name:   isCurrentOwner ? opponent_name : owner_name,
+      avatar: isCurrentOwner ? opponent_avatar : owner_avatar,
+      cost: (() => {
+        // 1) status=0: nessun avversario schierato → trattino
         if (status === 0) {
           return '-';
         }
@@ -59,29 +77,40 @@ const opp = {
           || 0
         ).toFixed(1);
       })()
+    };
 
-};
+    // Scegli l'etichetta di stato
+    const statusLabels = ['CREATED','PENDING','READY','LIVE','COMPLETED'];
+    const badgeClass   = ['status-badge-created','status-badge-pending','status-badge-ready','status-badge-live','status-badge-completed'][status];
 
-// Scegli l’etichetta di stato
-const statusLabels = ['CREATED','PENDING','READY','LIVE','COMPLETED'];
-const badgeClass   = ['status-badge-created','status-badge-pending','status-badge-ready','status-badge-live','status-badge-completed'][status];
+    container.innerHTML = `
+      <div class="contest-container cc-header">
+        <div class="contest-bar">
+          <img src="${getAvatarSrc(my.avatar)}" class="player-avatar-contest left-avatar">
+          <div class="triletter_contest left-name">${my.name.slice(0,3)}</div>
+          <div class="result_bold">VS</div>
+          ${isLeague ? `
+            <div class="triletter_contest right-name">${opp.name.slice(0,3)}</div>
 
-container.innerHTML = `
-  <div class="contest-container cc-header">
-    <div class="contest-bar">
-      <img src="${getAvatarSrc(my.avatar)}" class="player-avatar-contest left-avatar">
-      <div class="triletter_contest left-name">${my.name.slice(0,3)}</div>
-      <div class="result_bold">VS</div>
-      <div class="triletter_contest right-name">${opp.name.slice(0,3)}</div>
-      <img src="${getAvatarSrc(opp.avatar)}" class="player-avatar-contest right-avatar">
-      <div class="teex_spent left-teex" id="currentUserScore">${my.cost}</div>
-      <div class="teex_spent right-teex">${opp.cost}</div>
-    </div>
-    <div class="status-badge-base ${badgeClass}">
-      ${statusLabels[status]}
-    </div>
-    ${multiply > 1 ? `<div class="multiply-contest-mini">${Math.floor(multiply)}</div>` : ''}
-  </div>`;
+                  <div class="player-avatar-contest right-avatar league-avatar">
+                    <span class="MainNumber">0</span>
+                    <span class="SmallNumber">/${invitedCount}</span>
+                  </div>
+
+          ` : `
+            <div class="triletter_contest right-name">${opp.name.slice(0,3)}</div>
+            <img src="${getAvatarSrc(opp.avatar)}" class="player-avatar-contest right-avatar">
+          `}
+          <div class="teex_spent left-teex" id="currentUserScore">${my.cost}</div>
+          <div class="teex_spent right-teex">${opp.cost}</div>
+        </div>
+        <div class="status-badge-base ${badgeClass}">
+          ${statusLabels[status]}
+        </div>
+        ${multiply > 1 ? `<div class="multiply-contest-mini">${Math.floor(multiply)}</div>` : ''}
+      </div>`;
+
+    // Aggiungiamo stile CSS per il cerchio giallo con il numero di invitati
 
   }
 

@@ -79,14 +79,25 @@ async function createPrivateLeague(ownerId, leagueName, competitorIds = []) {
     await conn.beginTransaction();
 
     // 1) Inserisco in contests
-    const insertContestSQL = `
-      INSERT INTO contests
-        (contest_name, owner_user_id, opponent_user_id, contest_type, stake, status, created_at, updated_at, multiply)
-      VALUES
-        (?, ?, NULL, 2, NULL, 0, NOW(), NOW(), 1)
-    `;
-    const [contestResult] = await conn.query(insertContestSQL, [leagueName, ownerId]);
-    const newContestId = contestResult.insertId;
+        // Inserisco owner_user_id, MA anche opponent_user_id = ownerId (test H2H vs se stessi)
+        // e forzo event_unit_id = 1 (ID di unità evento “fittizia”)
+        const insertContestSQL = `
+          INSERT INTO contests
+            (owner_user_id,
+             opponent_user_id,
+             contest_name,
+             contest_type,
+             status,
+             created_at,
+             updated_at,
+             event_unit_id,
+             multiply)
+          VALUES
+            (?,      ?,              ?,            2,       0,      NOW(),       NOW(),       1,            1.00)
+        `;
+        // I parametri: [ownerId, ownerId, leagueName]
+        const [contestResult] = await conn.query(insertContestSQL, [ownerId, ownerId, leagueName]);
+        const newContestId = contestResult.insertId;
 
      // 2) Inserisco l’owner in fantasy_teams (ft_status = 0, come richiesto)
      const insertOwnerFTSQL = `
