@@ -72,48 +72,42 @@ async function getPossibleCompetitors(ownerUserId) {
  * @returns {Promise<Number>} newContestId
  */
 async function createPrivateLeague(ownerId, leagueName, competitorIds = []) {
-  // Usiamo pool.promise() per lavorare con le Promise
   const promisePool = pool.promise();
   const conn = await promisePool.getConnection();
 
   try {
     await conn.beginTransaction();
 
-    // 1) Inserisci in contests (contest_type = 2)
+    // 1) Inserisco in contests
     const insertContestSQL = `
-      INSERT INTO contests 
-        (contest_name, owner_user_id, opponent_user_id, contest_type, stake, status, created_at) 
-      VALUES 
-        (?, ?, NULL, 2, NULL, 0, NOW())
+      INSERT INTO contests
+        (contest_name, owner_user_id, opponent_user_id, contest_type, stake, status, created_at, updated_at, multiply)
+      VALUES
+        (?, ?, NULL, 2, NULL, 0, NOW(), NOW(), 1)
     `;
-    // Mettiamo opponent_user_id = NULL perché qui non serve (è una lega)
-    // stake e gli altri valori possono rimanere a default. status = 0 (per esempio “aperto”)
     const [contestResult] = await conn.query(insertContestSQL, [leagueName, ownerId]);
     const newContestId = contestResult.insertId;
 
-    // 2) Inserisci l’owner come prima riga in fantasy_teams
-    const insertOwnerFTSQL = `
-      INSERT INTO fantasy_teams 
-        (contest_id, user_id, total_cost, ft_status, total_points, ft_teex_won, ft_result) 
-      VALUES 
-        (?, ?, 0, 1, 0, 0, 0)
-    `;
-    // ft_status=1 -> “confirmed” di default per l’owner
-    await conn.query(insertOwnerFTSQL, [newContestId, ownerId]);
+     // 2) Inserisco l’owner in fantasy_teams (ft_status = 0, come richiesto)
+     const insertOwnerFTSQL = `
+       INSERT INTO fantasy_teams
+         (contest_id, user_id, total_cost, ft_status, total_points, ft_teex_won, ft_result, updated_at)
+       VALUES
+         (?, ?, 0, 0, 0, 0, 0, NOW())
+     `;
+     await conn.query(insertOwnerFTSQL, [newContestId, ownerId]);
 
-    // 3) Inserisci ciascun invitato (competitorIds) come “invited”
+    // 3) Inserisco ciascun competitor (status = 0 “invited”)
     const insertInviteFTSQL = `
-      INSERT INTO fantasy_teams 
-        (contest_id, user_id, total_cost, ft_status, total_points, ft_teex_won, ft_result) 
-      VALUES 
-        (?, ?, 0, 0, 0, 0, 0)
+      INSERT INTO fantasy_teams
+        (contest_id, user_id, total_cost, ft_status, total_points, ft_teex_won, ft_result, updated_at)
+      VALUES
+        (?, ?, 0, 0, 0, 0, 0, NOW())
     `;
-    // ft_status=0 -> “invited” o “pending”
     for (const uid of competitorIds) {
       await conn.query(insertInviteFTSQL, [newContestId, uid]);
     }
 
-    // 4) Commit e ritorna l’ID del contest creato
     await conn.commit();
     return newContestId;
 

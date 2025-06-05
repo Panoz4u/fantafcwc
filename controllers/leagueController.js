@@ -1,72 +1,113 @@
 // controllers/leagueController.js
 
-const jwt = require('jsonwebtoken');
+const jwt                        = require('jsonwebtoken');
 const { getPossibleCompetitors, createPrivateLeague } = require('../services/leagueService');
-const { JWT_SECRET } = process.env;
+const { JWT_SECRET }             = process.env;
 
 /**
  * Estrae l'userId dal token JWT (o lancia errore se non valido).
+ * Si assume che il payload contenga `{ userId: <numero> }`.
  */
 function extractUserIdFromToken(req) {
   const authHeader = req.headers['authorization'] || '';
-  const token = authHeader.startsWith('Bearer ') ? authHeader.split(' ')[1] : null;
-  if (!token) throw new Error('Token mancante');
-  const payload = jwt.verify(token, JWT_SECRET);
-  return payload.userId; // assumiamo che il payload contenga esattamente “userId”
+  if (!authHeader.startsWith('Bearer ')) {
+    const err = new Error('Token mancante o non valido');
+    err.name = 'TokenError';
+    throw err;
+  }
+  const token = authHeader.split(' ')[1];
+  try {
+    const payload = jwt.verify(token, JWT_SECRET);
+    if (!payload.userId) {
+      const err = new Error('Payload token privo di userId');
+      err.name = 'TokenError';
+      throw err;
+    }
+    return payload.userId;
+  } catch (error) {
+    // Rilancio l’errore per essere gestito in catch delle funzioni chiamanti
+    error.name = 'TokenError';
+    throw error;
+  }
 }
 
 /**
  * GET /api/leagues/competitors
- * Restituisce la lista dei possibili competitor (tutti gli utenti eccetto l’owner).
+ * → Restituisce la lista di possibili competitor (tutti gli utenti eccetto owner).
  */
 async function getCompetitors(req, res) {
   try {
-    const userId = extractUserIdFromToken(req);
-    const users = await getPossibleCompetitors(userId);
-    res.json({ users });
+    // 1) Estrae ownerId dal token
+    const ownerId = extractUserIdFromToken(req);
+
+    // 2) Chiamo il service per ottenere gli user (esclude l’owner)
+    const users = await getPossibleCompetitors(ownerId);
+    // Restituisco un oggetto { users: [...] }
+    return res.status(200).json({ users });
   } catch (err) {
     console.error('leagueController.getCompetitors error:', err);
-    if (err.name === 'JsonWebTokenError') {
-      return res.status(401).json({ error: 'Token non valido' });
+
+    if (err.name === 'TokenError' || err.name === 'JsonWebTokenError' || err.name === 'TokenExpiredError') {
+      return res.status(401).json({ error: 'Token non valido o scaduto' });
     }
-    res.status(500).json({ error: 'Errore interno: ' + err.message });
+    return res.status(500).json({ error: 'Errore interno: ' + err.message });
   }
 }
 
 /**
  * POST /api/leagues
- * Body: { leagueName: string, competitorIds: number[] }
+ * Body JSON expected: {
+ *   leagueName: string,
+ *   competitorIds: number[]
+ * }
  *
- * Crea un nuovo contest di tipo “Private League” e inserisce owner + competitorIds
- * nella tabella fantasy_teams. Restituisce { contestId: … }.
+ * → Crea un nuovo contest di tipo “Private League” (contest_type = 2),
+ *    quindi inserisce owner + competitorIds in `fantasy_teams`.
+ *    Restituisce JSON { contestId: <nuovoId> }.
  */
 async function createLeague(req, res) {
   try {
-    const userId = extractUserIdFromToken(req);
+    // 1) Estrae ownerId dal token
+    const ownerId = extractUserIdFromToken(req);
+
+    // 2) Prendo i dati dal body
     const { leagueName, competitorIds } = req.body;
 
-    if (!leagueName || typeof leagueName !== 'string') {
-      return res.status(400).json({ error: 'League name is required' });
+    // 3) Validazione di base
+    if (!leagueName || typeof leagueName !== 'string' || leagueName.trim().length === 0) {
+      return res.status(400).json({ error: 'League name è obbligatorio e deve essere una stringa non vuota.' });
     }
-    if (!Array.isArray(competitorIds) || competitorIds.length === 0) {
-      return res.status(400).json({ error: 'At least one competitor is required' });
+    if (!Array.isArray(competitorIds)) {
+      return res.status(400).json({ error: 'competitorIds è obbligatorio e deve essere un array di ID (numeri).' });
+    }
+    if (competitorIds.length === 0) {
+      return res.status(400).json({ error: 'Devi selezionare almeno un competitor.' });
     }
     if (competitorIds.length > 9) {
-      return res.status(400).json({ error: 'Maximum 9 competitors allowed' });
+      return res.status(400).json({ error: 'Non puoi invitare più di 9 competitor.' });
     }
 
-    // Creazione contest + inserimento in fantasy_teams
-    const newContestId = await createPrivateLeague(userId, leagueName, competitorIds);
+    // 4) Escludo duplicati e tolgo l’owner dall’elenco dei competitor (se presente)
+    const uniqueIds = Array.from(
+      new Set(
+        competitorIds
+          .map(id => Number(id))
+          .filter(id => id !== ownerId && !isNaN(id))
+      )
+    );
 
-    // Ritorniamo solo contestId, perché non esiste più “leagueId”
-    res.status(201).json({ contestId: newContestId });
+    // 5) Chiamo il service per creare la party league (contests + fantasy_teams)
+    const newContestId = await createPrivateLeague(ownerId, leagueName.trim(), uniqueIds);
 
+    // 6) Restituisco al client solo { contestId: … }
+    return res.status(201).json({ contestId: newContestId });
   } catch (err) {
     console.error('leagueController.createLeague error:', err);
-    if (err.name === 'JsonWebTokenError' || err.name === 'TokenExpiredError') {
-      return res.status(401).json({ error: 'Invalid or expired token' });
+
+    if (err.name === 'TokenError' || err.name === 'JsonWebTokenError' || err.name === 'TokenExpiredError') {
+      return res.status(401).json({ error: 'Token non valido o scaduto' });
     }
-    res.status(500).json({ error: 'Errore interno: ' + err.message });
+    return res.status(500).json({ error: 'Errore interno: ' + err.message });
   }
 }
 

@@ -21,11 +21,11 @@
   <!-- ================================
        HEADER con Back e contatori
        ================================ -->
-       <header class="header">
+       <header class="header small">
         <div class="user-profile">
           <img src="icons/freccia.png" alt="Indietro" id="backArrow" class="back-arrow">
           <div class="user-info">
-            <h1 class="user-name">SFIDA AMICO</h1>
+            <h1 class="user-name">COMPETITORS</h1>
           </div>
         </div>
        <div class="header-stats">
@@ -55,12 +55,7 @@
         >
       </div>
     </div>
-  <!-- ================================
-       Titolo “SELECT COMPETITORS”
-       ================================ -->
-  <div class="title-section">
-    <h2>SELECT COMPETITORS</h2>
-  </div>
+
 
   <!-- ================================
        BARRA DI RICERCA            (events.js la usa)
@@ -71,7 +66,7 @@
     <div class="search-container sc-select-cmp">
       <span class="search-icon">🔍</span>
       <input type="text" id="searchInput" class="search-box" placeholder="Search name or team…">
-      <span class="clear-search" id="clearSearch" style="display: none;">X</span>
+      <span class="clear-search" id="clearSearch" style="display: none;"></span>
     </div>
   
 
@@ -80,32 +75,44 @@
        ================================ -->
 
 
-    <!-- Sort header -->
-    <div class="sort-header-user league">
-      <!-- 1) Aggiungo il sort-triangle dentro USERNAME -->
-      <div class="sort-item" data-sort="username">
-        USERNAME
-        <div class="sort-triangle"></div>
-      </div>
-    
-      <!-- 2) Anche SWISSHEARTS ha il suo sort-triangle -->
-      <div class="sort-item active" data-sort="balance">
-        <img src="icons/sh.png" alt="PPC" class="sort-ppc-icon">
-        SWISSHEARTS
-        <div class="sort-triangle desc"></div>
-      </div>
+
+<!-- Sort header -->
+<div class="sort-header-user league">
+
+
+  <!-- 2) USERNAME rimane in mezzo -->
+  <div class="sort-item" data-sort="username">
+    USERNAME
+    <div class="sort-triangle"></div>
+  </div>
+
+  <!-- 3) BALANCE come era, parte “active” con desc (▼) -->
+  <div class="sort-item active" data-sort="balance">
+    <img src="icons/sh.png" alt="PPC" class="sort-ppc-icon">
+    Clubby
+    <div class="sort-triangle desc"></div>
+  </div>
+
+    <!-- 1) “Selected” come terzo parametro di Sort -->
+    <div class="sort-item" data-sort="selected">
+      SELECTED
+      <div class="sort-triangle"></div>
     </div>
+</div>
   <!-- ================================
        CONTAINER per la lista utenti  (ui.js → renderCompetitorList)
        ================================ -->
-  <div id="opponentList"></div>
+  <div id="opponentList" class="opponent-list cmp"></div>
 
   <!-- ================================
        BOTTONE “CREATE TEAM” in fondo
        (inizialmente disabilitato; abilitato da JS)
        ================================ -->
-  <button id="createTeamBtn">CREATE TEAM</button>
 
+  <!-- Footer bar with ADD TO TEAM button -->
+  <footer class="footer-nav" style="justify-content: center;">
+    <button id="createTeamBtn" class="footer_button fb_unable_orange" disabled>CREATE TEAM</button>
+  </footer>
 
   <!-- ================================
        SCRIPT “Back” (semplice) e il modulo JS di SelectCompetitors

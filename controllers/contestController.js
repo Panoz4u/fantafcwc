@@ -4,7 +4,12 @@ const { getContestDetails, confirmSquad } = require('../services/contestService'
 
 async function contestDetailsController(req, res) {
   try {
-    const { contest_id, owner_id, opponent_id, event_unit_id } = req.body;
+    let { contest_id, owner_id, opponent_id, event_unit_id } = req.body;
+   // Se opponent_id è 0, traduciamolo in null per non rompere le query JOIN
+     opponent_id = parseInt(opponent_id, 10);
+  if (isNaN(opponent_id)) {
+    opponent_id = null;
+  }
     const currentUserId = req.user.userId;
 
     const parsedEventUnitId = parseInt(event_unit_id, 10);

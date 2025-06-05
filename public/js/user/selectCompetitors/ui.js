@@ -75,16 +75,13 @@ export function showLoading() {
     const listEl = document.getElementById('opponentList');
     if (!listEl) return;
   
-    // Rimuovo eventuale loading/error precedente
+    // Rimuovo loading/error del passato
     const leftover = listEl.querySelector('p.loading, p.error');
     if (leftover) leftover.remove();
   
     if (!append) {
-      // se stiamo facendo un “reset” pag. 1 o nuova ricerca,
-      // svuoto del tutto la lista
       listEl.innerHTML = '';
     } else {
-      // rimuovo il bottone “Carica altri” precedente
       const oldBtn = document.getElementById('loadMoreBtn');
       if (oldBtn) oldBtn.remove();
     }
@@ -94,17 +91,17 @@ export function showLoading() {
       return;
     }
   
-    // Per ogni utente, costruisco un div come in select-opponent
     list.forEach(u => {
       const item = document.createElement('div');
       item.className = 'opponent-item';
       item.setAttribute('data-id', u.id);
   
-      // Se l’utente è già selezionato, aggiungo classe .selected
+      // se l’utente è già selezionato, aggiungo classe .selected
       if (selectedSet.has(u.id)) {
         item.classList.add('selected');
       }
   
+      // Costruisco l’HTML base
       item.innerHTML = `
         <div class="opponent-info">
           <img
@@ -123,38 +120,43 @@ export function showLoading() {
           </div>
         </div>
         <div>
-          <input
-            type="checkbox"
-            class="select-checkbox"
-            ${selectedSet.has(u.id) ? 'checked' : ''}
-          />
+          <!-- Bottone che di default mostra "SELECT" a meno che selectedSet.has(u.id) -->
+          <button class="play-contest-button ${selectedSet.has(u.id) ? 'on' : ''}">
+            ${selectedSet.has(u.id) ? 'REMOVE' : 'SELECT'}
+          </button>
         </div>
       `;
   
-      // Non assegniamo qui il click; lo faremo in events.js
       listEl.append(item);
     });
-    
-    // Pulsante “Carica altri” (se si usa paginazione lato client)
+  
+    // “Carica altri” (se serve)
     const loadMoreBtn = document.createElement('button');
     loadMoreBtn.id = 'loadMoreBtn';
     loadMoreBtn.className = 'load-more-button';
     loadMoreBtn.textContent = 'CARICA ALTRI';
-    loadMoreBtn.style.display = 'none'; // di default nascosto; lo mostriamo se serve
+    loadMoreBtn.style.display = 'none';
     listEl.appendChild(loadMoreBtn);
   }
   
-  /**
-   * Abilita o disabilita il bottone “CREATE TEAM” in basso
-   * @param {Boolean} enabled
-   */
-  export function updateCreateButton(enabled = false) {
-    const btn = document.getElementById('createTeamBtn');
-    if (!btn) return;
-    if (enabled) {
-      btn.classList.add('enabled');
-    } else {
-      btn.classList.remove('enabled');
-    }
-  }
   
+/**
+ * Abilita o disabilita il bottone “CREATE TEAM”.
+ * @param {Boolean} enabled  → true = abilita, false = disabilita
+ */
+export function updateCreateButton(enabled = false) {
+  const btn = document.getElementById('createTeamBtn');
+  if (!btn) return;
+
+  if (enabled) {
+    btn.disabled = false;
+    // rimuovo eventuale classe di “disabled” e metto quella di “attivo”
+    btn.classList.remove('footer_button', 'fb_unable_orange');
+    btn.classList.add('footer_button', 'footer_button_orange');
+  } else {
+    btn.disabled = true;
+    // rimuovo classe “attivo” e metto quelle di “base + disabled”
+    btn.classList.remove('footer_button', 'footer_button_orange');
+    btn.classList.add('footer_button', 'fb_unable_orange');
+  }
+}

@@ -1,17 +1,7 @@
 // public/js/user/selectCompetitors/events.js
-// —————————————————————————————————————————————————————————————————————————
-// Qui mettiamo tutta la logica che lega UI ↔ API:
-//  - initPage(): all’DOMContentLoaded, controlla token + userId,
-//                  recupera lista competitors, mostra loading, li renderizza.
-//  - toggleSelect(userId): aggiunge/toglie l’utente dal Set di selezionati  
-//  - handleSearchInput / clearSearch  
-//  - handleSortClick  
-//  - handleLoadMore (se serve paginazione)  
-//  - handleCreateTeamClick(): invia POST /api/leagues  
-// —————————————————————————————————————————————————————————————————————————
 
 import { fetchCompetitors, createLeagueRequest } from './api.js';
-import { 
+import {
   showLoading,
   hideLoading,
   showError,
@@ -21,22 +11,22 @@ import {
   updateCreateButton
 } from './ui.js';
 
-let allUsers       = [];           // array di tutti gli utenti recuperati da API
-let filteredUsers  = [];           // array dopo ricerca + ordinamento
-let currentPage    = 1;            // se implementi paginazione lato client
-const pageSize     = 30;           // same as select-opponent
+let allUsers       = [];       // lista completa da backend
+let filteredUsers  = [];       // lista filtrata da ricerca+sort
+let currentPage    = 1;        // per paginazione lato client (se serve)
+const pageSize     = 30;       // se fai “Carica altri”
 let totalPages     = 1;
 let isLoading      = false;
 
-// Questo Set contiene gli userId di chi è “selezionato” come competitor
+// Set di userId selezionati
 const selectedSet = new Set();
+
+// Variabile di ordinamento attuale
+// Init: vogliamo partire su “balance desc”
+let currentSort = { field: 'balance', direction: 'desc' };
 
 /**
  * Inizializza la pagina. Viene eseguito all’evento DOMContentLoaded.
- *  1) Controllo che esistano localStorage authToken + userId → se no, redirect a signin.html
- *  2) Recupero lista competitors da API → showLoading() + fetchCompetitors()
- *  3) Filtro/ordino/pagino → renderCompetitorList()
- *  4) Inizializzo Event Listeners: ricerca, sort, selezione, createTeam
  */
 export async function initPage() {
   const token  = localStorage.getItem('authToken');
@@ -45,23 +35,25 @@ export async function initPage() {
     return window.location.href = 'signin.html';
   }
 
-  // 1) Aggiorna i contatori iniziali
-  updateStats(0, 0, 1); // owner è “confermato” (1), invited = 0, refused = 0
+  // 1) Contatori iniziali: “owner” è sempre confermato (1), invited=0, refused=0
+  updateStats(0, 0, 1);
 
   // 2) Show loading + chiamata API
   showLoading();
   try {
-    allUsers = await fetchCompetitors(); // restituisce TUTTI gli utenti (eccetto owner)
-    // ordino di default per “username” (ascendente)
-    filteredUsers = allUsers.slice().sort((a, b) => 
-      a.username.localeCompare(b.username)
-    );
+    allUsers = await fetchCompetitors(); // restituisce array di { id, username, avatar, balance, … }
+    // 2a) Filtriamo per ricerca vuota e ordiniamo di default su “balance desc”
+    filteredUsers = allUsers.slice();
+    applySort(); // definita più sotto
+
     totalPages = Math.ceil(filteredUsers.length / pageSize);
     currentPage = 1;
 
     // 3) Render della prima pagina
     const toRender = filteredUsers.slice(0, pageSize);
     renderCompetitorList(toRender, selectedSet, false);
+
+    // 3b) Mostriamo “Carica altri” solo se serve
     if (currentPage < totalPages) {
       document.getElementById('loadMoreBtn').style.display = 'block';
     }
@@ -72,15 +64,16 @@ export async function initPage() {
     hideLoading();
   }
 
-  // 4) Inizializzo Event Listeners
-  //    a) Ricerca + Clear
+  // 4) Event Listeners
+
+  // 4a) Ricerca + Clear
   const inp = document.getElementById('searchInput');
   const clr = document.getElementById('clearSearch');
   let searchTimeout = null;
   inp.addEventListener('input', () => {
     clr.style.display = inp.value ? 'block' : 'none';
     clearTimeout(searchTimeout);
-    searchTimeout = setTimeout(() => {
+    searchTimeout = setTimeout(function() {
       handleSearch(inp.value.trim());
     }, 300);
   });
@@ -90,53 +83,64 @@ export async function initPage() {
     handleSearch('');
   });
 
-  //    b) Ordinamento
-  document.querySelectorAll('.sort-item').forEach(el => {
-    el.addEventListener('click', () => {
-      const field = el.dataset.sort; // 'username' o 'balance'
-      const allSortBtns = document.querySelectorAll('.sort-item');
-      // rimuovo “active” da tutte
-      allSortBtns.forEach(x => x.classList.remove('active'));
-      // aggiungo a quella cliccata
-      el.classList.add('active');
+  // 4b) Ordinamento (tutti e tre i campi: selected, username, balance)
+  document.querySelectorAll('.sort-item').forEach(function(el) {
+    el.addEventListener('click', function() {
+      const field = el.dataset.sort; // 'selected' | 'username' | 'balance'
 
-      // determino direzione: se era active, inverto
-      const tri = el.querySelector('.sort-triangle');
-      let direction = tri.classList.contains('desc') ? 'asc' : 'desc';
-      // rimuovo classi da tutti i triangoli
-      allSortBtns.forEach(x => {
-        const t = x.querySelector('.sort-triangle');
-        if (t) t.classList.remove('desc');
-      });
-      // assegno alla riga cliccata la direz desc se serve
-      if (direction === 'desc') tri.classList.add('desc');
+      // 4b.1) Determina nuova direzione
+      if (currentSort.field === field) {
+        // se riclicco stesso campo, inverto
+        currentSort.direction = (currentSort.direction === 'asc') ? 'desc' : 'asc';
+      } else {
+        // campo diverso: imposto “asc” di default
+        currentSort.field = field;
+        currentSort.direction = 'asc';
+      }
 
-      // applico il sort a filteredUsers
-      filteredUsers.sort((a, b) => {
-        if (field === 'username') {
-          return direction === 'asc'
-            ? a.username.localeCompare(b.username)
-            : b.username.localeCompare(a.username);
-        } else {
-          return direction === 'asc'
-            ? a.balance - b.balance
-            : b.balance - a.balance;
+      // 4b.2) Rimuovo ‘active’ da tutti i sort-item e tolgo asc/desc da ciascun triangolino
+      document.querySelectorAll('.sort-item').forEach(function(x) {
+        x.classList.remove('active');
+        const triX = x.querySelector('.sort-triangle');
+        if (triX) {
+          triX.classList.remove('asc');
+          triX.classList.remove('desc');
         }
       });
 
-      // dopo aver ordinato, rendo di nuovo paginazione
+      // 4b.3) Aggiungo ‘active’ solo all’elemento cliccato
+      el.classList.add('active');
+
+      // 4b.4) Aggiungo al triangolino la classe corrispondente
+      const tri = el.querySelector('.sort-triangle');
+      if (tri) {
+        if (currentSort.direction === 'asc') {
+          tri.classList.add('asc');
+        } else {
+          tri.classList.add('desc');
+        }
+      }
+
+      // 4b.5) Applico il sort a filteredUsers
+      applySort();
+
+      // 4b.6) Ricarico la prima pagina (paginazione lato client)
       currentPage = 1;
       const slice = filteredUsers.slice(0, pageSize);
       clearList();
       renderCompetitorList(slice, selectedSet, false);
+
+      // 4b.7) Mostro “Carica altri” se serve
       if (currentPage < totalPages) {
         document.getElementById('loadMoreBtn').style.display = 'block';
+      } else {
+        document.getElementById('loadMoreBtn').style.display = 'none';
       }
     });
   });
 
-  //    c) Carica altri (paginazione)
-  document.getElementById('loadMoreBtn').addEventListener('click', () => {
+  // 4c) “Carica altri” (paginazione client)
+  document.getElementById('loadMoreBtn').addEventListener('click', function() {
     if (isLoading) return;
     currentPage += 1;
     if (currentPage > totalPages) return;
@@ -148,19 +152,22 @@ export async function initPage() {
     }
   });
 
-  //    d) Selezione / Deselezione utente
-  //       (delegation: ogni `.opponent-item` ha `data-id`)
-  document.getElementById('opponentList').addEventListener('click', (ev) => {
-    // se sto cliccando su un checkbox o su un’intera card, recupero data-id
+  // 4d) Selezione / Deselezione utente (click su riga intera)
+  document.getElementById('opponentList').addEventListener('click', function(ev) {
     const card = ev.target.closest('.opponent-item');
     if (!card) return;
     const uid = Number(card.dataset.id);
     if (!uid) return;
 
-    // toggle nel Set
+    const btn = card.querySelector('.play-contest-button');
+    // Toggle nel Set
     if (selectedSet.has(uid)) {
       selectedSet.delete(uid);
       card.classList.remove('selected');
+      if (btn) {
+        btn.textContent = 'SELECT';
+        btn.classList.remove('on');
+      }
     } else {
       if (selectedSet.size >= 9) {
         alert('Puoi invitare al massimo 9 user oltre a te.');
@@ -168,46 +175,64 @@ export async function initPage() {
       }
       selectedSet.add(uid);
       card.classList.add('selected');
+      if (btn) {
+        btn.textContent = 'REMOVE';
+        btn.classList.add('on');
+      }
     }
 
-    // Aggiorno contatori: invited = selectedSet.size, 
-    //                    refused = 0 (per ora), 
-    //                    confirmed = 1 (owner)
+    // Aggiorno i contatori: invited = selectedSet.size, refused=0, confirmed=1
     updateStats(selectedSet.size, 0, 1);
 
-    // Abilito il bottone “CREATE TEAM” solo se almeno 1 selezionato
-    // e il campo “leagueNameInput” non è vuoto
-    const leagueName = document.getElementById('leagueNameInput').value.trim();
-    updateCreateButton(selectedSet.size > 0 && leagueName.length > 0);
+       // Abilito/disabilito “CREATE TEAM” non appena ho almeno 1 utente selezionato
+       updateCreateButton(selectedSet.size > 0);
   });
 
-  //    e) Gestione input “leagueNameInput” (per abilitare bottone)
-  document.getElementById('leagueNameInput').addEventListener('input', () => {
-    const leagueName = document.getElementById('leagueNameInput').value.trim();
-    updateCreateButton(selectedSet.size > 0 && leagueName.length > 0);
+  // 4e) Show/hide “CREATE TEAM” in base al nome della lega
+  document.getElementById('leagueNameInput').addEventListener('input', function() {
+       // Se c’è almeno 1 utente selezionato, il pulsante resta abilitato
+       updateCreateButton(selectedSet.size > 0);
   });
 
-  //    f) Click su “CREATE TEAM”
-  document.getElementById('createTeamBtn').addEventListener('click', async () => {
-        const leagueName = document.getElementById('leagueNameInput').value.trim();
-        if (!leagueName) {
-          alert('ENTER LEAGUE NAME is required');
-          return;
-        }
+  // 4f) Click su “CREATE TEAM”
+  document.getElementById('createTeamBtn').addEventListener('click', async function() {
+    const leagueName = document.getElementById('leagueNameInput').value.trim();
+    if (!leagueName) {
+      alert('ENTER LEAGUE NAME is required');
+      return;
+    }
     if (selectedSet.size === 0) {
       alert('Seleziona almeno un competitor');
       return;
     }
-    try {
-      // blocco multi‐click
-      updateCreateButton(false);
+    // Preparo array di competitorIds
+    const competitorIds = Array.from(selectedSet);
 
+    try {
+            updateCreateButton(false); // blocco multi‐click
             const res = await createLeagueRequest(leagueName, competitorIds);
-            const newContestId = res.contestId;
+            const newContestId = res.leagueId || res.contestId;
+             // 1) Costruiamo l’oggetto contestData esattamente come lo si aspettava prima
+             const ownerUserId = Number(localStorage.getItem('userId')); // o prendi direttamente il valore da dove lo hai salvato
+             const contestDataObj = {
+               contestId:   newContestId,
+               userId:      ownerUserId,
+               ownerId:     ownerUserId,
+               opponentId:  null,          // su Private League non c’è un singolo "opponent"
+               eventUnitId: null,          // oppure prendi il valore che ti serve (se ne hai uno),
+               status:      0,             // 0 = CREATED
+               multiply:    1               // moltiplicatore iniziale
+             };
+             localStorage.setItem('contestData', JSON.stringify(contestDataObj));
+            
+            // Salvo in localStorage: contestId, invitedCount e leagueName (opzionale)
             localStorage.setItem('contestId', newContestId);
-            // Redirect ora passa contest_id nella query
-            window.location.href = `league-details.html?contest_id=${newContestId}`;
-        } catch (err) {
+            localStorage.setItem('invitedCount', selectedSet.size);
+            localStorage.setItem('leagueName', leagueName);
+      
+             // Redirect a contest-creation.html
+             window.location.href = 'contest-creation.html';
+    } catch (err) {
       console.error('Errore createLeague:', err);
       alert('Errore creazione lega: ' + err.message);
       updateCreateButton(true);
@@ -215,3 +240,79 @@ export async function initPage() {
   });
 }
 
+/**
+ * Funzione che applica il sorting a filteredUsers in base a currentSort
+ * e aggiorna totalPages.
+ */
+function applySort() {
+  const field = currentSort.field;
+  const dir = currentSort.direction;
+
+  if (field === 'selected') {
+    // ----> Before: selected “in cima” (asc), poi gli altri; 
+    //           After: non‐selected “in cima” (asc), poi selected
+    filteredUsers.sort(function(a, b) {
+      const aSel = selectedSet.has(a.id) ? 1 : 0;
+      const bSel = selectedSet.has(b.id) ? 1 : 0;
+      if (dir === 'asc') {
+        // salta prima i selezionati (1) → vogliamo ordine 1→0
+        if (aSel !== bSel) {
+          return bSel - aSel; // se aSel=1, bSel=0 => -1 → a prima
+        }
+      } else {
+        // salta prima i non selezionati (0) → ordine 0→1
+        if (aSel !== bSel) {
+          return aSel - bSel; // se aSel=0, bSel=1 => -1 → a prima
+        }
+      }
+      // se entrambi hanno aSel==bSel, ordina alfabeticamente per username
+      return a.username.localeCompare(b.username);
+    });
+
+  } else if (field === 'username') {
+    filteredUsers.sort(function(a, b) {
+      return dir === 'asc'
+        ? a.username.localeCompare(b.username)
+        : b.username.localeCompare(a.username);
+    });
+
+  } else if (field === 'balance') {
+    filteredUsers.sort(function(a, b) {
+      return dir === 'asc'
+        ? a.balance - b.balance
+        : b.balance - a.balance;
+    });
+  }
+
+  totalPages = Math.ceil(filteredUsers.length / pageSize);
+}
+
+/**
+ * Funzione di ricerca invocata al debounce (300ms)
+ * @param {String} query 
+ */
+function handleSearch(query) {
+  const lower = query.toLowerCase();
+  filteredUsers = allUsers.filter(function(u) {
+    return u.username.toLowerCase().includes(lower);
+    // OPPURE, se hai un campo team: 
+    // || u.teamName.toLowerCase().includes(lower)
+  });
+
+  // Applico nuovamente il sorting attuale (su filteredUsers)
+  applySort();
+
+  // Reset paginazione e render
+  currentPage = 1;
+  totalPages = Math.ceil(filteredUsers.length / pageSize);
+  clearList();
+  const slice = filteredUsers.slice(0, pageSize);
+  renderCompetitorList(slice, selectedSet, false);
+
+  // Mostra o nascondi “Carica altri”
+  if (currentPage < totalPages) {
+    document.getElementById('loadMoreBtn').style.display = 'block';
+  } else {
+    document.getElementById('loadMoreBtn').style.display = 'none';
+  }
+}

@@ -5,56 +5,61 @@ import { renderContestHeader, renderPlayerList, updateBudgetUI } from "./ui.js";
 
 async function init() {
   const token = localStorage.getItem("authToken");
- 
-  // 1) Leggi i dati da localStorage
-  const contestData = JSON.parse(localStorage.getItem("contestData") || "{}");
-  const {
-    contestId,
-    userId,
-    ownerId,
-    opponentId,
-    eventUnitId,
-    fantasyTeams = [],  // squadre create in precedenza (solo per l’owner)
-    multiply = 1,
-    stake = 0
-  } = contestData;
 
-// 2) Se ho già dei chosenPlayers (arrivati da add-members), li rispetto e NON li tocco.
-//    Altrimenti, se sono owner con squadra esistente, li popolo; altrimenti svuoto.
-const existing = JSON.parse(localStorage.getItem("chosenPlayers") || "[]");
-if (Array.isArray(existing) && existing.length > 0) {
-  // ho già una selezione, la tengo così com’è
-  console.log('Keeping existing chosenPlayers:', existing);
-} else if (userId === ownerId && Array.isArray(fantasyTeams) && fantasyTeams.length) {
-  // sono owner e ho una squadra preesistente
-  localStorage.setItem("chosenPlayers", JSON.stringify(fantasyTeams));
-} else {
-  // nessuna selezione, svuoto per partire da zero
-  localStorage.removeItem("chosenPlayers");
-}
- 
-  // 3) Carica header utente
-  const userInfo = await getUserInfo(token);
-  document.getElementById("teexBalance").textContent = parseFloat(userInfo.teexBalance).toFixed(1);
-   // 4) Prendi i dettagli completi del contest (inclusi ownerTeam/opponentTeam se li mandi)
+  // 1) Leggi i dati da localStorage
+  //    Se non c’è nulla in localStorage, prendo "{}" di default
+  const contestData = JSON.parse(localStorage.getItem("contestData") || "{}");
+
+  // Destrutturiamo con un "fallback" esplicito su opponentId: se non esiste, lo mettiamo a 0
+  const {
+    contestId    = 0,
+    userId       = 0,
+    ownerId      = 0,
+    opponentId   = 0,   // → se arriva da H2H, qui ci sarà l’ID numerico. Altrimenti 0.
+    eventUnitId  = 0,   // → se arriva da H2H, qui ci sarà l’ID numerico. Altrimenti 0.
+    fantasyTeams = [],
+    multiply     = 1,
+    stake        = 0
+  } = contestData;
   
+  // Convertiamo “0” in null per la Private League, altrimenti lasciamo il numero
+  const opponentIdClean  = opponentId   > 0 ? opponentId   : null;
+  const eventUnitIdClean = eventUnitId  > 0 ? eventUnitId  : null;
+
+  // 2) Gestione chosenPlayers
+  const existing = JSON.parse(localStorage.getItem("chosenPlayers") || "[]");
+  if (Array.isArray(existing) && existing.length > 0) {
+    console.log('Keeping existing chosenPlayers:', existing);
+  } else if (userId === ownerId && Array.isArray(fantasyTeams) && fantasyTeams.length) {
+    localStorage.setItem("chosenPlayers", JSON.stringify(fantasyTeams));
+  } else {
+    localStorage.removeItem("chosenPlayers");
+  }
+
+  // 3) Carica header utente (saldo teex)
+  const userInfo = await getUserInfo(token);
+  document.getElementById("teexBalance").textContent =
+    parseFloat(userInfo.teexBalance).toFixed(1);
+
+  // 4) Chiamata a getContestDetails → ora passiamo sempre un opponentId numerico
+  //    (0 significa “nessun avversario” per la Private League)
    const { contest, ownerTeam, opponentTeam } = await getContestDetails(
-        contestId,
+       contestId,
        ownerId,
-       opponentId,
-       eventUnitId,
+       opponentIdClean,
+       eventUnitIdClean,
        token
      );
 
- // 5) Se l’API ti ha restituito ownerTeam/opponentTeam, sovrascrivi
- if (userId === ownerId && ownerTeam?.length) {
-   localStorage.setItem("chosenPlayers", JSON.stringify(ownerTeam));
- } else if (userId === opponentId && opponentTeam?.length) {
-   localStorage.setItem("chosenPlayers", JSON.stringify(opponentTeam));
- }
+  // 5) Se il server ha restituito ownerTeam/opponentTeam, li usiamo per popolare chosenPlayers
+  if (userId === ownerId && Array.isArray(ownerTeam) && ownerTeam.length) {
+    localStorage.setItem("chosenPlayers", JSON.stringify(ownerTeam));
+  } else if (userId === opponentId && Array.isArray(opponentTeam) && opponentTeam.length) {
+    localStorage.setItem("chosenPlayers", JSON.stringify(opponentTeam));
+  }
 
- renderContestHeader(contest, userId);
-  // 3) bind events e render lista
+  // 6) Renderizzo header e lista giocatori (vuota o pre‐popolata)
+  renderContestHeader(contest, userId);
   setupEventListeners(contestId, userId);
   await renderPlayerList();
   updateBudgetUI();

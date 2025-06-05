@@ -10,7 +10,7 @@
   align-items: center;
   justify-content: center;
   padding: 8px 16px;
-  height: 80px;
+  height: 60px;
   box-sizing: border-box;
 }
 
@@ -22,7 +22,7 @@
 }
 
 .sc-select-cmp {
-  top: 160px;
+  top: 114px;
 }
 .search-box {
   width: calc(100% - 16px);
@@ -65,7 +65,7 @@
 
 .sort-header-user {
   position: fixed;
-  top: 140px;
+  top: 120px;
   left: 0;
   right: 0;
   z-index: 100;
@@ -78,8 +78,9 @@
 }
 
 .sort-header-user.league {
-  top: 230px;
-  justify-content: flex-start
+  top: 164px;
+  justify-content: flex-start;
+  background-color: #2a2b2a;
 }
 
 .sort-item {
@@ -300,6 +301,8 @@
 }
 
 
+
+
 /* Budget Bar - Make it sticky but position it correctly */
 .budget-bar {
   position: sticky;
@@ -340,12 +343,15 @@
 /* Opponent List Styles */
 .opponent-list {
   list-style: none;
-  padding-top: 130px; /* Add top padding to account for fixed headers */
+  padding-top: 110px; /* Add top padding to account for fixed headers */
   padding-bottom: 80px;
   margin: 0 16px;
 }
 
+.opponent-list.cmp {
+  padding-top: 160px; /* Add top padding to account for fixed headers */
 
+}
 
 .opponent-item {
   display: flex;
@@ -446,8 +452,11 @@
   transition: background-color 0.2s;
 }
 
-.play-contest-button:hover {
-  background-color: rgba(254, 66, 8, 0.2);
+
+.play-contest-button.on {
+  background-color: #F1BE48;
+  color: #000000;
+  border: 2px solid #2a2b2a;
 }
 
 
@@ -796,12 +805,6 @@
       padding-bottom: 96px; /* Space for the footer */
     }
     
-    .footer-nav {
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-      z-index: 100;
-    }
     
     /* Ensure the FAB stays above the scrollable content */
     #playButton {

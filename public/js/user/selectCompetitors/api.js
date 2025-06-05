@@ -47,10 +47,8 @@ export async function fetchCompetitors(page = 1, search = '', sortField = 'usern
       body: JSON.stringify({ leagueName, competitorIds })
     });
     if (!resp.ok) {
-      // Riportiamo esattamente il testo di errore
       const text = await resp.text();
       throw new Error(text || 'Errore creazione lega');
     }
     return resp.json(); // { leagueId: … }
   }
-  
