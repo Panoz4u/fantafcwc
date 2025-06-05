@@ -18,7 +18,7 @@ dialog.innerHTML = `
       <span class="modal-game-type-option-icon">👑</span>
       <span class="modal-game-type-option-label">HEAD 2 HEAD</span>
     </div>
-    <div id="optPrivate" class="modal-game-type-option disabled">
+    <div id="optPrivate" class="modal-game-type-option">
       <span class="modal-game-type-option-icon">🔒</span>
       <span class="modal-game-type-option-label">PRIVATE LEAGUE</span>
     </div>
@@ -42,8 +42,11 @@ document.getElementById('optHead2Head')
     window.location.href = 'select-opponent.html';
   });
 
-// 5) PRIVATE LEAGUE resta disabilitata (no listener)
-
+// 5) Selezione PRIVATE LEAGUE
+document.getElementById('optPrivate')
+  .addEventListener('click', () => {
+    window.location.href = 'select-competitors.html';
+  });
   }
   
   export function showGameTypeModal() {
