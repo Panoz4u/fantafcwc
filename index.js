@@ -16,7 +16,7 @@ const userContestsRoutes    = require('./routes/userContests');
 const athleteRoutes = require('./routes/athletes');
 const { getAvatarUrl, getAvatarSrc } = require("./utils/avatarUtils");
 const matchController = require("./controllers/matchController");
-
+const leagueRoutes = require('./routes/leagueRoutes');
 // 2) INIT
 const app  = express();
 app.use(express.json());
@@ -49,7 +49,7 @@ app.use('/api', firebaseConfigRoutes);
 app.use('/admin-api', adminContestRoutes);
 app.use('/api', userContestsRoutes);
 app.use('/api', athleteRoutes);
-
+app.use('/api/leagues', leagueRoutes);
 
 // 6) ROUTE AD HOC
 app.get('/gestione-sfide.html', (req, res) => {

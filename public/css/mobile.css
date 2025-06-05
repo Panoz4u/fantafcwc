@@ -104,6 +104,19 @@
     max-width: 200px; /* Same as progress bar width */
   }
  
+
+  .league-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 18px;
+    font-weight: 400;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px; /* Same as progress bar width */
+    color: gray;
+  }
+ 
   .un-landing {
     margin-bottom: 10px;
   }

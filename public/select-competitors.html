@@ -1,38 +1,115 @@
 <!DOCTYPE html>
-<html>
+<html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Select Competitors - FANTAFCWC</title>
-  <link rel="icon" href="favicon-32x32.png" sizes="32x32" type="image/png">
-  <link rel="icon" href="favicon-16x16.png" sizes="16x16" type="image/png">
-  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-  <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,800;1,800&family=Barlow+Condensed:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/mobile.css">
-  <link rel="stylesheet" href="css/mobile2.css">
-  <style>
-    body {
-      font-family: 'Montserrat', sans-serif;
-      background: #3f3f35;
-      color: #fff;
-      text-align: center;
-      padding: 20px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Select Opponent - FANTAFCWC</title>
+    <!-- Favicon -->
+    <link rel="icon" href="favicon-32x32.png" sizes="32x32" type="image/png">
+    <link rel="icon" href="favicon-16x16.png" sizes="16x16" type="image/png">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+   <!-- Google Fonts -->
+   <link rel="preconnect" href="https://fonts.gstatic.com">
+   <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,800;1,800&family=Barlow+Condensed:wght@400;700&display=swap" rel="stylesheet">
+    <!-- CSS di base e specifico -->
+    <link rel="stylesheet" href="css/mobile.css">
+    <link rel="stylesheet" href="css/mobile2.css">
+    <link rel="stylesheet" href="css/select-competitors.css">
 </head>
+
 <body>
-  <header class="header">
-    <div class="user-profile">
-      <img src="icons/freccia.png" alt="Back" id="backArrow" class="back-arrow">
-      <div class="user-info">
-        <h1 class="user-name">PRIVATE LEAGUE</h1>
+  <!-- ================================
+       HEADER con Back e contatori
+       ================================ -->
+       <header class="header">
+        <div class="user-profile">
+          <img src="icons/freccia.png" alt="Indietro" id="backArrow" class="back-arrow">
+          <div class="user-info">
+            <h1 class="user-name">SFIDA AMICO</h1>
+          </div>
+        </div>
+       <div class="header-stats">
+        <div class="stats-row">
+          <div class="label_m_small">Invited</div>
+          <div class="label_m_small">Rejected</div>
+          <div class="label_m_small">Confirmed</div>
+        </div>
+        <div class="stats-values">
+          <div class="square_cont_color scc_petrolio" id="countInvited">0</div>
+          <div class="square_cont_color scc_cyan" id="countRefused">0</div>
+          <div class="square_cont_color scc_porpora" id="countConfirmed">1</div>
+        </div>
       </div>
+      </header>
+
+  <!-- ================================
+       Campo “Nome della lega”
+       ================================ -->
+  <div class="league-name-input">
+    <input
+      type="text"
+      id="leagueNameInput"
+      placeholder="Inserisci il nome della tua lega"
+    >
+  </div>
+
+  <!-- ================================
+       Titolo “SELECT COMPETITORS”
+       ================================ -->
+  <div class="title-section">
+    <h2>SELECT COMPETITORS</h2>
+  </div>
+
+  <!-- ================================
+       BARRA DI RICERCA            (events.js la usa)
+       ================================ -->
+  <div class="search-container sc-select-fr">
+    <input
+      type="text"
+      id="searchInput"
+      class="search-box"
+      placeholder="Search by name"
+    >
+    <span id="clearSearch" class="clear-search">✕</span>
+    <span class="search-icon">🔍</span>
+  </div>
+
+  <!-- ================================
+       SORT HEADER (USERNAME / BALANCE)
+       ================================ -->
+  <div class="sort-header-user">
+    <div class="sort-item active" data-sort="username">
+      USERNAME
+      <span class="sort-triangle desc"></span>
     </div>
-  </header>
-  <p style="margin-top:40px;">Coming soon: here you will choose your competitors.</p>
+    <div class="sort-item" data-sort="balance">
+      <img src="icons/sh.png" alt="PPC" class="ppc-icon">
+      SWISSHEARTS
+      <span class="sort-triangle"></span>
+    </div>
+  </div>
+
+  <!-- ================================
+       CONTAINER per la lista utenti  (ui.js → renderCompetitorList)
+       ================================ -->
+  <div id="opponentList"></div>
+
+  <!-- ================================
+       BOTTONE “CREATE TEAM” in fondo
+       (inizialmente disabilitato; abilitato da JS)
+       ================================ -->
+  <button id="createTeamBtn">CREATE TEAM</button>
+
+
+  <!-- ================================
+       SCRIPT “Back” (semplice) e il modulo JS di SelectCompetitors
+       ================================ -->
   <script>
-    document.getElementById('backArrow').addEventListener('click', () => history.back());
+    document.getElementById('backArrow').addEventListener('click', () => {
+      history.back();
+    });
   </script>
+
+  <script type="module" src="js/user/selectCompetitors/index.js"></script>
 </body>
 </html>

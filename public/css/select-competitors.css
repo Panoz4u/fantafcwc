@@ -1,0 +1,244 @@
+    /* Piccoli override rapidi: (puoi spostarli in select-competitors.css) */
+    body {
+        font-family: 'Montserrat', sans-serif;
+        background: #3f3f35;
+        color: #fff;
+        text-align: center;
+        padding: 0;
+        margin: 0;
+      }
+
+      .header .user-profile {
+        display: flex;
+        align-items: center;
+      }
+      .header .user-profile .back-arrow {
+        width: 28px;
+        height: 28px;
+        cursor: pointer;
+        margin-right: 12px;
+      }
+
+      .header .league‐stats {
+        display: flex;
+        gap: 16px;
+        font-size: 14px;
+      }
+      .header .league‐stats div {
+        text-align: center;
+      }
+      .header .league‐stats div span.value {
+        display: block;
+        font-size: 18px;
+        font-weight: bold;
+      }
+  
+      /* Campo input per il nome della lega */
+      .league-name-input {
+        margin: 16px auto;
+        width: 80%;
+        max-width: 320px;
+        position: relative;
+      }
+      .league‐name‐input input {
+        width: 100%;
+        padding: 12px 16px;
+        border-radius: 8px;
+        border: none;
+        font-size: 16px;
+        background: #2c2c28;
+        color: #fff;
+      }
+      .league‐name‐input label {
+        display: block;
+        text-align: left;
+        margin-bottom: 4px;
+        font-size: 14px;
+        font-weight: 600;
+      }
+  
+      /* Titolo “SELECT COMPETITORS” */
+      .title‐section {
+        margin-top: 12px;
+        margin-bottom: 8px;
+      }
+      .title‐section h2 {
+        font-size: 18px;
+        letter-spacing: 1px;
+        font-weight: 800;
+        color: #f1be48;
+        margin: 0;
+      }
+  
+      /* Barra di ricerca (riuso lo stile di select-opponent.css) */
+      .search-container.sc-select-fr {
+        margin: 12px auto;
+        max-width: 360px;
+        position: relative;
+      }
+      .search‐container input.search‐box {
+        width: 100%;
+        padding: 10px 36px 10px 12px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        background: #2c2c28;
+        color: #fff;
+      }
+      .search‐container .search‐icon {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 18px;
+        color: #888;
+        pointer-events: none;
+      }
+      .search‐container .clear‐search {
+        position: absolute;
+        right: 36px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 16px;
+        color: #f1be48;
+        cursor: pointer;
+        display: none;
+      }
+  
+      /* Sort header: “USERNAME” / “SWISSHEARTS” (riuso da select-opponent.css) */
+      .sort-header-user {
+        display: flex;
+        justify-content: center;
+        gap: 24px;
+        margin: 8px 0;
+      }
+      .sort-item {
+        position: relative;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 700;
+        color: #aaa;
+        text-transform: uppercase;
+      }
+      .sort-item.active {
+        color: #fff;
+      }
+      .sort-item.active .sort-triangle {
+        display: inline-block;
+      }
+      .sort-triangle {
+        display: none;
+        width: 0;
+        height: 0;
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+        border-top: 6px solid #f1be48;
+        margin-left: 4px;
+        vertical-align: middle;
+      }
+      .sort-triangle.desc {
+        transform: rotate(180deg);
+      }
+  
+      /* Lista utenti */
+      #opponentList {
+        margin: 12px auto 80px; /* spazio in basso per bottone “CREATE TEAM” */
+        max-width: 360px;
+      }
+      .opponent-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #2c2c28;
+        padding: 10px 12px;
+        margin-bottom: 10px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background 0.2s ease;
+      }
+      .opponent-item.selected {
+        border: 2px solid #f1be48;
+      }
+      .opponent-info {
+        display: flex;
+        align-items: center;
+      }
+      .opponent-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin-right: 12px;
+      }
+      .opponent-data {
+        text-align: left;
+      }
+      .opponent-name {
+        font-size: 16px;
+        margin: 0;
+        font-weight: 600;
+        color: #fff;
+      }
+      .ppc-value {
+        display: flex;
+        align-items: center;
+        font-size: 14px;
+        color: #ccc;
+        margin-top: 4px;
+      }
+      .ppc-value .ppc-icon {
+        width: 14px;
+        height: 14px;
+        margin-right: 4px;
+      }
+  
+      /* Pulsante “Load more” */
+      .load-more-button {
+        background: #f1be48;
+        border: none;
+        border-radius: 6px;
+        padding: 8px 16px;
+        font-size: 14px;
+        font-weight: 700;
+        color: #000;
+        cursor: pointer;
+        margin-top: 8px;
+      }
+  
+      /* Indicatori di caricamento / errori */
+      .loading {
+        color: #f1be48;
+        font-style: italic;
+        margin: 12px 0;
+      }
+      .empty {
+        color: #aaa;
+        margin: 12px 0;
+      }
+      .error {
+        color: #e45757;
+        margin: 12px 0;
+      }
+  
+      /* BOTTONE “CREATE TEAM” in fondo */
+      #createTeamBtn {
+        position: fixed;
+        bottom: 16px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #f1be48;
+        border: none;
+        border-radius: 50px;
+        padding: 14px 28px;
+        font-size: 16px;
+        font-weight: 700;
+        color: #000;
+        cursor: pointer;
+        opacity: 0.5;
+        pointer-events: none;
+        transition: opacity 0.2s ease;
+        z-index: 100;
+      }
+      #createTeamBtn.enabled {
+        opacity: 1;
+        pointer-events: auto;
+      }
