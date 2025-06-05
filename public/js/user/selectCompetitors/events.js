@@ -189,11 +189,11 @@ export async function initPage() {
 
   //    f) Click su “CREATE TEAM”
   document.getElementById('createTeamBtn').addEventListener('click', async () => {
-    const leagueName = document.getElementById('leagueNameInput').value.trim();
-    if (!leagueName) {
-      alert('Inserisci il nome della lega');
-      return;
-    }
+        const leagueName = document.getElementById('leagueNameInput').value.trim();
+        if (!leagueName) {
+          alert('ENTER LEAGUE NAME is required');
+          return;
+        }
     if (selectedSet.size === 0) {
       alert('Seleziona almeno un competitor');
       return;
@@ -202,15 +202,12 @@ export async function initPage() {
       // blocco multi‐click
       updateCreateButton(false);
 
-      const competitorIds = Array.from(selectedSet);
-      const res = await createLeagueRequest(leagueName, competitorIds);
-      const newLeagueId = res.leagueId;
-      // Salviamo in localStorage dati utili per la pagina successiva (es: leagueId)
-      localStorage.setItem('leagueId', newLeagueId);
-
-      // Reindirizzo alla pagina di gestione della Private League (es: league-details.html)
-      window.location.href = `league-details.html?league_id=${newLeagueId}`;
-    } catch (err) {
+            const res = await createLeagueRequest(leagueName, competitorIds);
+            const newContestId = res.contestId;
+            localStorage.setItem('contestId', newContestId);
+            // Redirect ora passa contest_id nella query
+            window.location.href = `league-details.html?contest_id=${newContestId}`;
+        } catch (err) {
       console.error('Errore createLeague:', err);
       alert('Errore creazione lega: ' + err.message);
       updateCreateButton(true);

@@ -1,31 +1,23 @@
 // controllers/leagueController.js
-// —————————————————————————————————————————————————————————————————————————
-// Questo controller espone due funzioni principali:
-//  1) getCompetitors: ritorna tutti gli utenti tranne chi chiama
-//  2) createLeague: crea effettivamente una “private league”
-// —————————————————————————————————————————————————————————————————————————
 
 const jwt = require('jsonwebtoken');
 const { getPossibleCompetitors, createPrivateLeague } = require('../services/leagueService');
-const { JWT_SECRET } = process.env; // o da config
+const { JWT_SECRET } = process.env;
 
 /**
- * Middleware di utilità per leggere il token e ottenere il userId.
- * (Puoi anche riusare authenticateToken già presente, ma
- * per scrivere meno, verifichiamo il Bearer token qui.)
+ * Estrae l'userId dal token JWT (o lancia errore se non valido).
  */
 function extractUserIdFromToken(req) {
   const authHeader = req.headers['authorization'] || '';
   const token = authHeader.startsWith('Bearer ') ? authHeader.split(' ')[1] : null;
   if (!token) throw new Error('Token mancante');
   const payload = jwt.verify(token, JWT_SECRET);
-  return payload.userId; // supponiamo che payload contenga “userId”
+  return payload.userId; // assumiamo che il payload contenga esattamente “userId”
 }
 
 /**
  * GET /api/leagues/competitors
- * Restituisce la lista di possibili competitor per la Private League,
- * quindi semplicemente “getPossibleCompetitors(ownerUserId)”
+ * Restituisce la lista dei possibili competitor (tutti gli utenti eccetto l’owner).
  */
 async function getCompetitors(req, res) {
   try {
@@ -34,7 +26,10 @@ async function getCompetitors(req, res) {
     res.json({ users });
   } catch (err) {
     console.error('leagueController.getCompetitors error:', err);
-    res.status(401).json({ error: err.message || 'Non autorizzato' });
+    if (err.name === 'JsonWebTokenError') {
+      return res.status(401).json({ error: 'Token non valido' });
+    }
+    res.status(500).json({ error: 'Errore interno: ' + err.message });
   }
 }
 
@@ -42,8 +37,8 @@ async function getCompetitors(req, res) {
  * POST /api/leagues
  * Body: { leagueName: string, competitorIds: number[] }
  *
- * Crea la nuova private league e inserisce owner + competitorIds.
- * Restituisce { leagueId: … }.
+ * Crea un nuovo contest di tipo “Private League” e inserisce owner + competitorIds
+ * nella tabella fantasy_teams. Restituisce { contestId: … }.
  */
 async function createLeague(req, res) {
   try {
@@ -51,24 +46,27 @@ async function createLeague(req, res) {
     const { leagueName, competitorIds } = req.body;
 
     if (!leagueName || typeof leagueName !== 'string') {
-      return res.status(400).json({ error: 'Nome lega mancante o non valido' });
+      return res.status(400).json({ error: 'League name is required' });
     }
     if (!Array.isArray(competitorIds) || competitorIds.length === 0) {
-      return res.status(400).json({ error: 'Devi selezionare almeno un competitor' });
+      return res.status(400).json({ error: 'At least one competitor is required' });
     }
     if (competitorIds.length > 9) {
-      return res.status(400).json({ error: 'Puoi invitare al massimo 9 competitor' });
+      return res.status(400).json({ error: 'Maximum 9 competitors allowed' });
     }
 
-    // Creazione effettiva della private league
-    const leagueId = await createPrivateLeague(userId, leagueName, competitorIds);
-    res.status(201).json({ leagueId });
+    // Creazione contest + inserimento in fantasy_teams
+    const newContestId = await createPrivateLeague(userId, leagueName, competitorIds);
+
+    // Ritorniamo solo contestId, perché non esiste più “leagueId”
+    res.status(201).json({ contestId: newContestId });
+
   } catch (err) {
     console.error('leagueController.createLeague error:', err);
     if (err.name === 'JsonWebTokenError' || err.name === 'TokenExpiredError') {
-      return res.status(401).json({ error: 'Token non valido o scaduto' });
+      return res.status(401).json({ error: 'Invalid or expired token' });
     }
-    res.status(500).json({ error: 'Errore interno del server: ' + err.message });
+    res.status(500).json({ error: 'Errore interno: ' + err.message });
   }
 }
 

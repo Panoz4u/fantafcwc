@@ -20,6 +20,10 @@
 .sc-select-fr {
   top: 60px;
 }
+
+.sc-select-cmp {
+  top: 160px;
+}
 .search-box {
   width: calc(100% - 16px);
   max-width: 100%;
@@ -73,6 +77,10 @@
   box-sizing: border-box;
 }
 
+.sort-header-user.league {
+  top: 230px;
+  justify-content: flex-start
+}
 
 .sort-item {
   font-family: 'Barlow Condensed', sans-serif;
@@ -106,17 +114,22 @@
   height: 0;
   border-left: 5px solid transparent;
   border-right: 5px solid transparent;
+  top: 8px;
 }
 
 .sort-triangle.asc {
   border-bottom: 5px solid #F1BE48;
   border-top: none;
+  transform: rotate(180deg);
 }
 
 .sort-triangle.desc {
   border-top: 5px solid #F1BE48;
   border-bottom: none;
+  transform: rotate(180deg);
 }
+
+
 
 
 .player-card {

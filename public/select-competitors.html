@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="css/mobile.css">
     <link rel="stylesheet" href="css/mobile2.css">
     <link rel="stylesheet" href="css/select-competitors.css">
-</head>
+    <link rel="stylesheet" href="css/select-opponent.css"></head>
 
 <body>
   <!-- ================================
@@ -45,14 +45,16 @@
   <!-- ================================
        Campo “Nome della lega”
        ================================ -->
-  <div class="league-name-input">
-    <input
-      type="text"
-      id="leagueNameInput"
-      placeholder="Inserisci il nome della tua lega"
-    >
-  </div>
-
+    <div class="leaguename-container ">
+       <div class="league-name-input">
+        <input
+          type="text"
+          id="leagueNameInput"
+          class="league-name"
+          placeholder="ENTER LEAGUE NAME"
+        >
+      </div>
+    </div>
   <!-- ================================
        Titolo “SELECT COMPETITORS”
        ================================ -->
@@ -63,32 +65,36 @@
   <!-- ================================
        BARRA DI RICERCA            (events.js la usa)
        ================================ -->
-  <div class="search-container sc-select-fr">
-    <input
-      type="text"
-      id="searchInput"
-      class="search-box"
-      placeholder="Search by name"
-    >
-    <span id="clearSearch" class="clear-search">✕</span>
-    <span class="search-icon">🔍</span>
-  </div>
+
+
+    <!-- Search box -->
+    <div class="search-container sc-select-cmp">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" class="search-box" placeholder="Search name or team…">
+      <span class="clear-search" id="clearSearch" style="display: none;">X</span>
+    </div>
+  
 
   <!-- ================================
        SORT HEADER (USERNAME / BALANCE)
        ================================ -->
-  <div class="sort-header-user">
-    <div class="sort-item active" data-sort="username">
-      USERNAME
-      <span class="sort-triangle desc"></span>
-    </div>
-    <div class="sort-item" data-sort="balance">
-      <img src="icons/sh.png" alt="PPC" class="ppc-icon">
-      SWISSHEARTS
-      <span class="sort-triangle"></span>
-    </div>
-  </div>
 
+
+    <!-- Sort header -->
+    <div class="sort-header-user league">
+      <!-- 1) Aggiungo il sort-triangle dentro USERNAME -->
+      <div class="sort-item" data-sort="username">
+        USERNAME
+        <div class="sort-triangle"></div>
+      </div>
+    
+      <!-- 2) Anche SWISSHEARTS ha il suo sort-triangle -->
+      <div class="sort-item active" data-sort="balance">
+        <img src="icons/sh.png" alt="PPC" class="sort-ppc-icon">
+        SWISSHEARTS
+        <div class="sort-triangle desc"></div>
+      </div>
+    </div>
   <!-- ================================
        CONTAINER per la lista utenti  (ui.js → renderCompetitorList)
        ================================ -->
