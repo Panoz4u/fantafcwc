@@ -14,7 +14,8 @@ const adminContestRoutes    = require('./routes/admincontest');
 const adminRouter           = require('./adminserver');
 const userContestsRoutes    = require('./routes/userContests');
 const athleteRoutes = require('./routes/athletes');
-
+const { getAvatarUrl, getAvatarSrc } = require("./utils/avatarUtils");
+const matchController = require("./controllers/matchController");
 
 // 2) INIT
 const app  = express();
@@ -28,7 +29,11 @@ const port = process.env.PORT || 3000;
 
 // 4) STATIC FILES
 app.use(express.static(path.join(__dirname, 'public')));
-
+global.getAvatarUrl = getAvatarUrl;
+global.getAvatarSrc = getAvatarSrc;
+app.get('/js/avatar-functions.js', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/js/avatar-functions.js'));
+});
 
 // 3) GLOBAL MIDDLEWARE
 app.use(bodyParser.json());
@@ -122,76 +127,6 @@ app.use('/api', sfideRouter);
 
 
 
-// Funzioni di avatarUtils.js spostate qui
-// Definisci le funzioni per la gestione degli avatar
-const getAvatarUrl = (avatarPath) => {
-  if (!avatarPath) return "avatars/avatar.jpg";
-  if (avatarPath.startsWith("http://") || avatarPath.startsWith("https://")) return avatarPath;
-  return `avatars/${avatarPath}`;
-};
-
-const getAvatarSrc = (avatar, name, color) => {
-  if (!avatar) {
-    // Se non c'è avatar, genera un avatar basato sul nome o usa default
-    if (name) {
-      return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=${color || 'random'}&color=fff`;
-    }
-    return "avatars/default.png";
-  }
-  
-  // Se l'avatar è un URL completo, usalo direttamente
-  if (avatar.startsWith("http")) {
-    // Gestisci il caso specifico di Google
-    return avatar.includes("googleusercontent.com")
-      ? decodeURIComponent(avatar)
-      : avatar;
-  }
-  
-  // Altrimenti, considera l'avatar come un nome file nella cartella avatars
-  return `avatars/${avatar}`;
-};
-
-// Esponi le funzioni come parte dell'oggetto globale
-global.getAvatarUrl = getAvatarUrl;
-global.getAvatarSrc = getAvatarSrc;
-
-// Aggiungi uno script che espone queste funzioni al client
-app.get('/js/avatar-functions.js', (req, res) => {
-  res.setHeader('Content-Type', 'application/javascript');
-  res.send(`
-    // Funzioni per la gestione degli avatar
-    function getAvatarUrl(avatarPath) {
-      if (!avatarPath) return "avatars/avatar.jpg";
-      if (avatarPath.startsWith("http://") || avatarPath.startsWith("https://")) return avatarPath;
-      return \`avatars/\${avatarPath}\`;
-    }
-
-    function getAvatarSrc(avatar, name, color) {
-      if (!avatar) {
-        // Se non c'è avatar, genera un avatar basato sul nome o usa default
-        if (name) {
-          return \`https://ui-avatars.com/api/?name=\${encodeURIComponent(name)}&background=\${color || 'random'}&color=fff\`;
-        }
-        return "avatars/default.png";
-      }
-      
-      // Se l'avatar è un URL completo, usalo direttamente
-      if (avatar.startsWith("http")) {
-        // Gestisci il caso specifico di Google
-        return avatar.includes("googleusercontent.com")
-          ? decodeURIComponent(avatar)
-          : avatar;
-      }
-      
-      // Altrimenti, considera l'avatar come un nome file nella cartella avatars
-      return \`avatars/\${avatar}\`;
-    }
-
-    // Esponi le funzioni globalmente
-    window.getAvatarUrl = getAvatarUrl;
-    window.getAvatarSrc = getAvatarSrc;
-  `);
-});
 
 // Chiave segreta per i JWT (meglio metterla in .env)
 const JWT_SECRET = process.env.JWT_SECRET || 'chiave_segreta_molto_sicura';
@@ -540,6 +475,8 @@ app.get("/athlete-details", (req, res) => {
 // Aggiungi questa riga dopo la dichiarazione di uploadResultsRoute
 const uploadLineupsRoute = require("./uploadLineups");
 // Aggiungi questa riga dopo app.use("/uploadResults", uploadResultsRoute);
+app.post("/api/matches/upload", matchController.uploadMatches);
+app.post("/api/matches/update-past", matchController.updatePastMatches);
 app.use("/uploadLineups", uploadLineupsRoute);
 
 // Start the server
@@ -554,174 +491,3 @@ app.listen(port, '0.0.0.0', () => {
   }
 });
 
-// Endpoint per gestire l'upload dei match
-app.post('/api/matches/upload', async (req, res) => {
-  const { matches } = req.body;
-  
-  if (!matches || !Array.isArray(matches)) {
-    return res.status(400).json({ message: 'Formato dati non valido.' });
-  }
-  
-  const result = {
-    created: 0,
-    updated: 0,
-    errors: []
-  };
-  
-  try {
-    for (const match of matches) {
-      try {
-        if (match.match_id) {
-          // Aggiorna un match esistente
-          const updateFields = {};
-          const allowedFields = [
-            'event_unit_id', 'home_team', 'away_team', 
-            'home_score', 'away_score', 'status', 'match_date', 
-            'updated_at'
-          ];
-          
-          allowedFields.forEach(field => {
-            if (match[field] !== undefined) {
-              updateFields[field] = match[field];
-            }
-          });
-          
-          if (Object.keys(updateFields).length > 0) {
-            const updateQuery = `
-              UPDATE matches 
-              SET ${Object.keys(updateFields).map(field => `${field} = ?`).join(', ')}
-              WHERE match_id = ?
-            `;
-            
-            const updateValues = [...Object.values(updateFields), match.match_id];
-            
-            await new Promise((resolve, reject) => {
-              pool.query(updateQuery, updateValues, function(err, queryResult) {
-                if (err) {
-                  reject(err);
-                } else {
-                  if (queryResult.affectedRows > 0) {
-                    result.updated++;
-                    resolve();
-                  } else {
-                    // Il match_id non esiste, quindi lo creiamo come nuovo
-                    createNewMatch(match)
-                      .then(() => {
-                        result.created++;
-                        resolve();
-                      })
-                      .catch(reject);
-                  }
-                }
-              });
-            });
-          }
-        } else {
-          // Crea un nuovo match
-          await createNewMatch(match);
-          result.created++;
-        }
-      } catch (matchError) {
-        console.error("Error processing match:", matchError);
-        result.errors.push(`Errore per il match ${match.match_id || 'nuovo'}: ${matchError.message}`);
-      }
-    }
-    
-    res.json(result);
-  } catch (error) {
-    console.error('Errore durante l\'elaborazione dell\'upload:', error);
-    res.status(500).json({ message: 'Errore durante l\'elaborazione dell\'upload.', errors: [error.message] });
-  }
-});
-
-// Funzione per creare un nuovo match
-async function createNewMatch(match) {
-  const fields = Object.keys(match).filter(key => match[key] !== undefined);
-  const placeholders = fields.map(() => '?').join(', ');
-  const values = fields.map(field => match[field]);
-  
-  const insertQuery = `
-    INSERT INTO matches (${fields.join(', ')})
-    VALUES (${placeholders})
-  `;
-  
-  return new Promise((resolve, reject) => {
-    pool.query(insertQuery, values, function(err, queryResult) {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(queryResult.insertId);
-      }
-    });
-  });
-}
-
-// Add this endpoint after your existing /api/matches/upload endpoint
-
-// Endpoint per aggiornare i match passati
-app.post('/api/matches/update-past', async (req, res) => {
-  try {
-    // Query per trovare e aggiornare i match con date passate e status < 4
-    const updateQuery = `
-      UPDATE matches 
-      SET status = 4, updated_at = NOW() 
-      WHERE match_date < NOW() AND status < 4
-    `;
-    
-    pool.query(updateQuery, (err, result) => {
-      if (err) {
-        console.error("Errore nell'aggiornamento dei match passati:", err);
-        return res.status(500).json({ error: "DB error updating past matches" });
-      }
-      
-      res.json({ 
-        message: "Past matches updated successfully", 
-        updatedCount: result.affectedRows 
-      });
-    });
-  } catch (error) {
-    console.error('Errore durante l\'aggiornamento dei match passati:', error);
-    res.status(500).json({ 
-      message: 'Errore durante l\'aggiornamento dei match passati.', 
-      error: error.message 
-    });
-  }
-});
-
-
-// Funzione per aggiornare il saldo Teex dell'utente
-function updateUserBalance(connection, userId, totalCost, multiplier, callback) {
-  // Calcola il costo finale moltiplicato
-  const finalCost = parseFloat(totalCost) * parseFloat(multiplier);
-  
-  // Verifica che finalCost sia un numero valido
-  if (isNaN(finalCost)) {
-    console.error("Errore: finalCost non è un numero valido.", { totalCost, multiplier });
-    return callback(new Error("Costo finale non valido"));
-  }
-  
-  console.log(`Aggiornamento Teex per userId: ${userId}, costo base: ${totalCost}, moltiplicatore: ${multiplier}, costo finale: ${finalCost}`);
-  
-  const sqlUser = `
-    UPDATE users
-    SET teex_balance = teex_balance - ?
-    WHERE user_id = ? AND teex_balance >= ?
-  `;
-  
-  // Esegui l'aggiornamento all'interno della transazione esistente
-  connection.query(sqlUser, [finalCost, userId, finalCost], (err, result) => {
-    if (err) {
-      console.error("Errore DB nell'aggiornamento del saldo Teex:", err);
-      return callback(err); // Passa l'errore alla callback
-    }
-    
-    // Verifica se l'aggiornamento ha avuto effetto (se l'utente aveva abbastanza Teex)
-    if (result.affectedRows === 0) {
-      console.error(`Saldo Teex insufficiente per userId: ${userId} o utente non trovato.`);
-      return callback(new Error("Saldo Teex insufficiente o utente non trovato"));
-    }
-    
-    console.log(`Saldo Teex aggiornato con successo per userId: ${userId}`);
-    callback(null); // Nessun errore
-  });
-}
