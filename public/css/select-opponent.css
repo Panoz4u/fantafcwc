@@ -1,20 +1,5 @@
     /* Stile per il valore PPC */
-    .ppc-value {
-        font-family: 'Montserrat', sans-serif;
-        font-weight: 800;
-        color: #F1BE48;
-        font-size: 14px;
-        display: flex;
-        align-items: center;
-        margin-top: 4px;
-      }
-      
-      .ppc-icon {
-        width: 16px;
-        height: 16px;
-        margin-right: 4px;
-      }
-      
+
       /* Stile per il pulsante "Carica altri" */
       .load-more-button {
         display: block;
@@ -62,13 +47,6 @@
 
       }
 
-      .sort-ppc-icon {
-        width: 16px; 
-        height: 16px; 
-        margin-right: 4px; 
-        vertical-align: middle;
-
-      }
 
       .opponent-item {
         display: flex;

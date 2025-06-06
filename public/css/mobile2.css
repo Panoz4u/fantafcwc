@@ -333,13 +333,6 @@
   padding-top: 0; /* Remove the extra padding */
 }
 
-
-/* Player row styles to ensure proper spacing */
-.player-row {
-  margin-top: 10px;
-}
-
-
 /* Opponent List Styles */
 .opponent-list {
   list-style: none;

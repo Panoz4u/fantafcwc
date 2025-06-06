@@ -1,7 +1,7 @@
 // public/js/user/leagueDetails/index.js
 
 import { fetchLeagueDetails } from './api.js';
-import { renderLeagueHeader, initLeagueDetails } from './ui.js';
+import { initLeagueDetails } from './ui.js';
 import { bindLeagueEvents   } from './events.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -20,15 +20,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 2) Chiamata API per ottenere i dati
     const data = await fetchLeagueDetails(contestId, userId);
 
-    // 3) Renderizza l'header del contest utilizzando renderLeagueHeader
-    renderLeagueHeader(data.contest, data.fantasyTeams, userId);
+    // 3) Rimuovo la chiamata a renderLeagueHeader che viene sovrascritta da initLeagueDetails
 
     // 4) Inizializzo la pagina passando direttamente i dati raccolti
     //    initLeagueDetails si occuperà di creare header + lista fantasy teams + accordions
-    initLeagueDetails({
-      contest:      data.contest,
-      fantasyTeams: data.fantasyTeams
-    });
+        initLeagueDetails(
+            { contest: data.contest, fantasyTeams: data.fantasyTeams },
+            userId
+          );
 
     // 5) registro eventuali altri eventi (per esempio l'accordion)
     bindLeagueEvents();

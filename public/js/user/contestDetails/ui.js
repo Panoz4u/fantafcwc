@@ -462,3 +462,5 @@ export function renderTeamLists(ownerTeam, opponentTeam, contest, currentUserId,
   firstList.forEach(player => leftList.appendChild(createPlayerRow(player, "left")));
   secondList.forEach(player => rightList.appendChild(createPlayerRow(player, "right")));
 }
+
+
