@@ -26,30 +26,31 @@ export function initLeagueRecap({ contestName, fantasyTeams, currentUserId }) {
 
   fantasyTeams.forEach(ft => {
     const row = document.createElement('div');
-    row.className = 'contest-row'; // oppure la classe che preferisci
+    row.className = 'opponent-item'; // oppure la classe che preferisci
 
     // Se ft_status === -1 => “REJECTED” in rosso
     if (ft.ft_status === -1) {
       row.innerHTML = `
-        <div class="user-card">
-          <img src="${getAvatarSrc(ft.avatar, ft.username)}" class="avatar-small" />
-          <div class="user-info">
-            <div class="user-name">${ft.username}</div>
-            <div class="user-sub">REJECTED</div>
+        <div class="opponent-info">
+          <img src="${getAvatarSrc(ft.avatar, ft.username)}" class="opponent-avatar" />
+          <div class="opponent-data">
+            <div class="opponent-name">${ft.username}</div>
           </div>
+
         </div>
+       <div class="league-status rej">REJECTED</div>
       `;
     }
     // Se ft_status === 1 => “INVITED” in giallo
     else if (ft.ft_status === 1) {
       row.innerHTML = `
-        <div class="user-card">
-          <img src="${getAvatarSrc(ft.avatar, ft.username)}" class="avatar-small" />
-          <div class="user-info">
-            <div class="user-name">${ft.username}</div>
-            <div class="user-sub">INVITED</div>
+        <div class="opponent-info">
+          <img src="${getAvatarSrc(ft.avatar, ft.username)}" class="opponent-avatar" />
+          <div class="opponent-data">
+            <div class="opponent-name">${ft.username}</div>
           </div>
         </div>
+        <div class="league-status inv">INVITED</div>
       `;
     }
     // Se ft_status > 1 => “CONFIRMED” (o Creator se è il creator)
@@ -61,13 +62,13 @@ export function initLeagueRecap({ contestName, fantasyTeams, currentUserId }) {
                       ? 'CREATOR'
                       : 'CONFIRMED';
       row.innerHTML = `
-        <div class="user-card">
-          <img src="${getAvatarSrc(ft.avatar, ft.username)}" class="avatar-small" />
-          <div class="user-info">
-            <div class="user-name">${ft.username}</div>
-            <div class="user-sub">${label}</div>
-          </div>
+        <div class="opponent-info">
+          <img src="${getAvatarSrc(ft.avatar, ft.username)}" class="opponent-avatar" />
+          <div class="opponent-data">
+            <div class="opponent-name">${ft.username}</div>
+           </div>
         </div>
+       <div class="league-status">${label}</div>
       `;
     }
 

@@ -1168,5 +1168,7 @@
   .league-status.rej{
     color: #ff0000;
   }
-
+  .league-status.cnf{
+    color: #1fd899;
+  }
 
