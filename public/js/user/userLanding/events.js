@@ -19,6 +19,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       fetchUserContests(token)
     ]);
     renderUserHeader(user);
+    // Salvo il mio avatar e il mio nome in localStorage, così PrivateLeagueCard lo troverà sempre
+    localStorage.setItem('currentUserAvatar', user.avatar);
+    localStorage.setItem('currentUserName',   user.username);
     renderContestLists(contests, userId);
   } catch (e) {
     console.error(e);

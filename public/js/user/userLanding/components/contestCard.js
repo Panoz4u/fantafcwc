@@ -1,5 +1,7 @@
 import { getAvatarSrc }        from '../../utils/avatar.js';
 import { isCurrentUserOwner }  from '../../utils/user.js';
+import { renderPrivateLeagueCard } from './privateLeagueCard.js';
+
 export function createContestCard(contest, userId) {
  // Skip status=0
  if (contest.status === 0) return null;
@@ -21,6 +23,12 @@ export function createContestCard(contest, userId) {
  // Determino se current user è owner usando la funzione importata o comparando direttamente
  const isCurrentOwner = isCurrentUserOwner(contest, currentUserId);
  console.log('%c[DEBUG] currentUserId=', currentUserId, 'isCurrentOwner=', isCurrentOwner);
+
+  // ──────────────── GESTIONE PRIVATE LEAGUE ────────────────
+  if (contest.contest_type === 2) {
+    return renderPrivateLeagueCard(contest, currentUserId);
+  }
+  // ────────────────────────────────────────────────────────
 
  // Definisco dati per sinistra (my) e destra (opp)
  const my = {
