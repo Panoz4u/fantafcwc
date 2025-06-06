@@ -208,13 +208,10 @@ export function renderPrivateLeagueCard(contest, userId) {
       window.location.href = '/contest-creation.html';
       return;
     }
-    // Altrimenti, apro contest-details:
-    localStorage.setItem('contestId',    contest.contest_id);
-    localStorage.setItem('ownerId',      contest.owner_id);
-    localStorage.setItem('opponentId',   contest.opponent_id);
-    localStorage.setItem('eventUnitId',  contest.event_unit_id);
-    localStorage.setItem('userId',       userId);
-    window.location.href = '/contest-details.html';
+     // Altrimenti, apro league-details:
+       // Per Private League vogliamo redirigere a league-details.html:
+       localStorage.setItem('contestId', contest.contest_id);
+       window.location.href = '/league-details.html';
   });
 
   return card;

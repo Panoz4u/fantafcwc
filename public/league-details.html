@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>League Details - Fanteex</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,800;1,800&family=Barlow+Condensed:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/mobile.css">
+  <link rel="stylesheet" href="css/mobile2.css">
+</head>
+<body>
+  <!-- HEADER PRINCIPALE (idem a contest-details) -->
+  <header class="header">
+    <div class="user-profile">
+      <img
+        src="icons/freccia.png"
+        alt="Back"
+        id="backArrow"
+        style="width: 30px; height: 30px; cursor: pointer; margin-right: 12px;">
+      <div class="user-info">
+        <h1 class="user-name">LEAGUE DETAILS</h1>
+      </div>
+    </div>
+    <div class="header-stats">
+        <div class="stats-row">
+          <div class="label_m_small">Invited</div>
+          <div class="label_m_small">Rejected</div>
+          <div class="label_m_small">Confirmed</div>
+        </div>
+        <div class="stats-values">
+          <div class="square_cont_color scc_petrolio" id="countInvited">0</div>
+          <div class="square_cont_color scc_cyan" id="countRefused">0</div>
+          <div class="square_cont_color scc_porpora" id="countConfirmed">1</div>
+        </div>
+      </div>
+
+  </header>
+
+  <!-- 1) Header GIALLO specifico per Private League -->
+  <div id="leagueHeader" class="league-header"></div>
+
+  <!-- 2) NOME COMPLETO DEL CONTEST -->
+  <div id="contestNameFull" class="contest-name-full" style="padding:16px; font-size:1.2rem; font-weight:bold;"></div>
+
+  <!-- 3) LISTA FANTASY TEAMS -->
+  <div id="teamsContainer" class="teams-container"></div>
+
+  <!-- SCRIPT PRINCIPALE (index.js) -->
+  <script type="module" src="/js/user/leagueDetails/index.js"></script>
+</body>
+</html>

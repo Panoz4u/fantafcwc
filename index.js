@@ -17,10 +17,11 @@ const athleteRoutes = require('./routes/athletes');
 const { getAvatarUrl, getAvatarSrc } = require("./utils/avatarUtils");
 const matchController = require("./controllers/matchController");
 const leagueRoutes = require('./routes/leagueRoutes');
+const leagueDetailsRoutes  = require('./routes/leagueDetails');
 // 2) INIT
 const app  = express();
 app.use(express.json());
-const contestsRouter = require('./routes/contests');
+const contestsRouter       = require('./routes/contests');
 app.use('/contests', contestsRouter);
 
 app.use(express.urlencoded({ extended: true })); // se serve
@@ -50,6 +51,7 @@ app.use('/admin-api', adminContestRoutes);
 app.use('/api', userContestsRoutes);
 app.use('/api', athleteRoutes);
 app.use('/api/leagues', leagueRoutes);
+app.use('/contests', leagueDetailsRoutes);
 
 // 6) ROUTE AD HOC
 app.get('/gestione-sfide.html', (req, res) => {
