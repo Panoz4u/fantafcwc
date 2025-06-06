@@ -192,9 +192,47 @@ export function renderPrivateLeagueCard(contest, userId) {
   // 14) Click handler:
   card.addEventListener('click', () => {
     if (myTeam && myTeam.ft_status === 1) {
-      // Sei invitato: vai a league-recap.html passando i dati necessari
-      localStorage.setItem('recapContestId', contest.contest_id);
-      localStorage.setItem('recapContestName', contest.contest_name);
+      // Costruisco un unico oggetto con TUTTI i dati necessari in league-recap
+      const recapContestData = {
+        contestId:        contest.contest_id,
+        contestName:      contest.contest_name,
+        contestType:      contest.contest_type,
+        status:           contest.status,
+        stake:            contest.stake,
+        multiply:         contest.multiply,
+        eventUnitId:      contest.event_unit_id,
+
+        ownerId:          contest.owner_id,
+        ownerInfo: {
+          name:           contest.owner_name,
+          avatar:         contest.owner_avatar,
+          color:          contest.owner_color
+        },
+
+        opponentId:       contest.opponent_id,
+        opponentInfo: {
+          name:           contest.opponent_name,
+          avatar:         contest.opponent_avatar,
+          color:          contest.opponent_color
+        },
+
+        fantasyTeams:     contest.fantasy_teams,
+
+        currentUser: {
+          id:             contest.current_user_id,
+          avatar:         contest.current_user_avatar,
+          name:           contest.current_user_name,
+          cost:           parseFloat(contest.current_user_cost || 0).toFixed(1)
+        }
+      };
+
+      // Loggo per verifica
+      console.log('[DEBUG] Saving recapContestData →', recapContestData);
+
+      // Lo salvo in LocalStorage tutto insieme
+      localStorage.setItem('recapContestData', JSON.stringify(recapContestData));
+
+      // Redirect “pulito”
       window.location.href = '/league-recap.html';
       return;
     }

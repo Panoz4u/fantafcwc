@@ -1,4 +1,5 @@
-import {
+ 
+  import {
     loadChosenPlayers,
     saveChosenPlayers,
     enrichPlayerData,
@@ -7,7 +8,7 @@ import {
     getAvatarSrc
   } from './utils.js';
   
-  export function renderContestHeader(contest, userId) {
+  export function renderContestHeader(contest, userId, currentUserProfile = {}) {
     const {
       owner_name, owner_avatar,
       opponent_name, opponent_avatar,
@@ -15,105 +16,105 @@ import {
       status, multiply, contest_type,
       contest_name, invited_count,
       fantasy_teams = [],
-      owner_fantasy_team, opponent_fantasy_team
+      owner_fantasy_team, opponent_fantasy_team,
+      // Potresti avere anche contest.current_user_id qui, ma leggiamo da currentUserProfile
     } = contest;
-    const container = document.getElementById("contestHeaderContainer");
-
-    // Calcola currentUserId: se la API l'ha già messo in contest.current_user_id usalo,
-    // altrimenti usa il userId passato.
+  
+    // 1) Determino chi sono (owner vs opponent)
     const currentUserId = contest.current_user_id || userId;
-
-    // Determina se sei owner
     const isCurrentOwner = String(currentUserId) === String(contest.owner_user_id);
-
-    // Dati "my" e "opp" (come in createContestCard caso 1)
+  
+    // 2) Costruisco l’oggetto "my" usando SEMPRE i valori passati da currentUserProfile,
+    //    altrimenti ricaduta su dati di contest
     const my = {
-      name:   isCurrentOwner ? owner_name    : opponent_name,
-      avatar: isCurrentOwner ? owner_avatar  : opponent_avatar,
-      cost:   (() => {
-        if (status === 1) {
-          // stato INVITED/PENDING: prendi da fantasy_teams
-          const t = fantasy_teams.find(t => String(t.user_id) === String(currentUserId));
-          return t ? parseFloat(t.total_cost).toFixed(1) : '-';
-        }
-        // altri status: fallback su owner_cost/opponent_cost
-        return parseFloat(isCurrentOwner ? owner_cost : opponent_cost || 0).toFixed(1);
-      })()
+      name:   currentUserProfile.username
+              || (isCurrentOwner ? owner_name    : opponent_name),
+      avatar: currentUserProfile.avatar
+              || (isCurrentOwner ? owner_avatar  : opponent_avatar),
+      cost:   (currentUserProfile.initialCost != null
+               ? currentUserProfile.initialCost
+               : (() => {
+                  // fallback a seconda dello stato
+                  if (status === 1) {
+                    // pending: prendo dal fantasy_team
+                    const t = fantasy_teams.find(t => String(t.user_id) === String(currentUserId));
+                    return t ? parseFloat(t.total_cost).toFixed(1) : '0.0';
+                  }
+                  // altri status:
+                  return parseFloat(
+                    isCurrentOwner ? owner_cost : opponent_cost || 0
+                  ).toFixed(1);
+                })())
     };
-    
-    // Per contest di tipo league (2), usiamo il nome della lega e il numero di invitati
-    // invece delle informazioni dell'avversario
+  
+    // 3) Costruisco "opp" come prima (non toccato)
     const isLeague = contest_type === 2;
-    
-    // Recupera il numero di invitati dal localStorage se non è presente nei dati del contest
-    const invitedCount = invited_count -1 || parseInt(localStorage.getItem('invitedCount') || '0', 10);
-    
-    // Recupera il nome della lega dal localStorage se non è presente nei dati del contest
-    const leagueName = contest_name || localStorage.getItem('leagueName') || 'LEAGUE';
-    
-    const opp = isLeague ? {
-      // Per le leghe, usiamo il nome della lega e un cerchio giallo con il numero di invitati
-      name: leagueName,
-      avatar: 'league', // Useremo questo per mostrare un cerchio giallo invece dell'avatar
-      cost: '-' // Non mostriamo il costo per le leghe
-    } : {
-      // Per head-to-head, usiamo le informazioni dell'avversario come prima
-      name:   isCurrentOwner ? opponent_name : owner_name,
-      avatar: isCurrentOwner ? opponent_avatar : owner_avatar,
-      cost: (() => {
-        // 1) status=0: nessun avversario schierato → trattino
-        if (status === 0) {
-          return '-';
+    const invitedCount = invited_count - 1 || 0;
+    const leagueName   = contest_name || localStorage.getItem('leagueName') || '';
+  
+    const opp = isLeague
+      ? {
+          name: leagueName,
+          avatar: 'league',
+          cost: '-'
         }
-        // 2) status=1 & non-owner: mostra costo squadra owner
-        if (status === 1 && !isCurrentOwner && owner_fantasy_team) {
-          return parseFloat(owner_fantasy_team.total_cost).toFixed(1);
-        }
-        // 3) fallback generale (READY, LIVE, COMPLETED)
-        return parseFloat(
-          isCurrentOwner
-            ? opponent_cost  // se sei owner, opponent_cost già in contest
-            : owner_cost     // se sei invitato, owner_cost come fallback
-          || 0
-        ).toFixed(1);
-      })()
-    };
-
-    // Scegli l'etichetta di stato
+      : {
+          name:   isCurrentOwner ? opponent_name : owner_name,
+          avatar: isCurrentOwner ? opponent_avatar : owner_avatar,
+          cost: (() => {
+            if (status === 0) return '-';
+            if (status === 1 && !isCurrentOwner && owner_fantasy_team) {
+              return parseFloat(owner_fantasy_team.total_cost).toFixed(1);
+            }
+            return parseFloat(
+              isCurrentOwner ? opponent_cost : owner_cost || 0
+            ).toFixed(1);
+          })()
+        };
+  
+    // 4) Costruiamo l’HTML
     const statusLabels = ['CREATED','PENDING','READY','LIVE','COMPLETED'];
-    const badgeClass   = ['status-badge-created','status-badge-pending','status-badge-ready','status-badge-live','status-badge-completed'][status];
-
-    container.innerHTML = `
+    const badgeClass   = [
+      'status-badge-created','status-badge-pending',
+      'status-badge-ready','status-badge-live',
+      'status-badge-completed'
+    ][status];
+  
+    document.getElementById("contestHeaderContainer").innerHTML = `
       <div class="contest-container cc-header">
         <div class="contest-bar">
+          <!-- AVATAR SINISTRA -->
           <img src="${getAvatarSrc(my.avatar)}" class="player-avatar-contest left-avatar">
           <div class="triletter_contest left-name">${my.name.slice(0,3)}</div>
+  
           <div class="result_bold">VS</div>
-          ${isLeague ? `
-            <div class="triletter_contest right-name">${opp.name.slice(0,3)}</div>
-
-                  <div class="player-avatar-contest right-avatar league-avatar">
-                    <span class="MainNumber">0</span>
-                    <span class="SmallNumber">/${invitedCount}</span>
-                  </div>
-
-          ` : `
-            <div class="triletter_contest right-name">${opp.name.slice(0,3)}</div>
-            <img src="${getAvatarSrc(opp.avatar)}" class="player-avatar-contest right-avatar">
-          `}
+  
+          <!-- AVATAR DESTRA / LEAGUE -->
+          ${isLeague
+            ? `<div class="triletter_contest right-name">${opp.name.slice(0,3)}</div>
+               <div class="player-avatar-contest right-avatar league-avatar">
+                 <span class="MainNumber">0</span>
+                 <span class="SmallNumber">/${invitedCount}</span>
+               </div>`
+            : `<div class="triletter_contest right-name">${opp.name.slice(0,3)}</div>
+               <img src="${getAvatarSrc(opp.avatar)}" class="player-avatar-contest right-avatar">`
+          }
+  
+          <!-- COSTI -->
           <div class="teex_spent left-teex" id="currentUserScore">${my.cost}</div>
           <div class="teex_spent right-teex">${opp.cost}</div>
         </div>
+  
         <div class="status-badge-base ${badgeClass}">
           ${statusLabels[status]}
         </div>
-        ${multiply > 1 ? `<div class="multiply-contest-mini">${Math.floor(multiply)}</div>` : ''}
-      </div>`;
-
-    // Aggiungiamo stile CSS per il cerchio giallo con il numero di invitati
-
+  
+        ${multiply > 1
+          ? `<div class="multiply-contest-mini">${Math.floor(multiply)}</div>`
+          : ''}
+      </div>
+    `;
   }
-
 
   function welcomeTemplate() {
     return `

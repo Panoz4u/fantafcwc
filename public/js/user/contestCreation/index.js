@@ -1,71 +1,112 @@
 // public/js/user/contestCreation/index.js
+
 import { getContestDetails, getUserInfo } from "./api.js";
-import { setupEventListeners } from "./events.js";
+import { setupEventListeners }            from "./events.js";
 import { renderContestHeader, renderPlayerList, updateBudgetUI } from "./ui.js";
 
 async function init() {
-  const token = localStorage.getItem("authToken");
+  // ────────────────────────────────────────────────
+  // 1) DEBUG: cosa c'è in localStorage.contestData?
+  console.log('🔍 RAW contestData:', localStorage.getItem('contestData'));
 
-  // 1) Leggi i dati da localStorage
-  //    Se non c’è nulla in localStorage, prendo "{}" di default
-  const contestData = JSON.parse(localStorage.getItem("contestData") || "{}");
+  // definisco raw prima di usarlo
+  const raw = localStorage.getItem("contestData") || "{}";
 
-  // Destrutturiamo con un "fallback" esplicito su opponentId: se non esiste, lo mettiamo a 0
+  let contestData;
+  try {
+    contestData = JSON.parse(raw);
+  } catch (err) {
+    console.error("❌ Errore parsing contestData:", err);
+    contestData = {};
+  }
+  console.log("✅ Parsed contestData:", contestData);
+
+  // estraggo tutti i campi, compreso fantasyTeamId
   const {
-    contestId    = 0,
-    userId       = 0,
-    ownerId      = 0,
-    opponentId   = 0,
-    eventUnitId  = 0,
-    fantasyTeams = [],
-    multiply     = 1,
-    stake        = 0
+    contestId               = 0,
+    userId                  = 0,
+    ownerId                 = 0,
+    opponentId              = 0,
+    eventUnitId             = 0,
+    currentUserAvatar       = "",
+    currentUserName         = "",
+    currentUserInitialCost  = "0.0",
+    fantasyTeamId           = null
   } = contestData;
-  
-// Per ora riprendiamo i valori così come sono
-const opponentIdClean  = opponentId;
-const eventUnitIdClean = eventUnitId;
 
-console.log("⚙️ [DEBUG] contestData: ", contestData);
-console.log("⚙️ [DEBUG] contestId =", contestId,
-            "ownerId =", ownerId,
-            "opponentIdClean =", opponentIdClean,
-            "eventUnitIdClean =", eventUnitIdClean);
-
-  // 2) Gestione chosenPlayers
-  const existing = JSON.parse(localStorage.getItem("chosenPlayers") || "[]");
-  if (Array.isArray(existing) && existing.length > 0) {
-    console.log('Keeping existing chosenPlayers:', existing);
-  } else if (userId === ownerId && Array.isArray(fantasyTeams) && fantasyTeams.length) {
-    localStorage.setItem("chosenPlayers", JSON.stringify(fantasyTeams));
-  } else {
-    localStorage.removeItem("chosenPlayers");
-  }
-
-  // 3) Carica header utente (saldo teex)
-  const userInfo = await getUserInfo(token);
-  document.getElementById("teexBalance").textContent =
-    parseFloat(userInfo.teexBalance).toFixed(1);
-
-  // 4) Chiamata a getContestDetails → ora passiamo sempre un opponentId numerico
-  //    (0 significa “nessun avversario” per la Private League)
-  const { contest, ownerTeam, opponentTeam } = await getContestDetails(
+  console.log("📋 Breakdown →", {
     contestId,
+    userId,
     ownerId,
-    opponentIdClean,
-    eventUnitIdClean,
-    token
-  );
+    opponentId,
+    eventUnitId,
+    fantasyTeamId,
+    currentUserAvatar,
+    currentUserName,
+    currentUserInitialCost
+  });
+  // ────────────────────────────────────────────────
 
-  // 5) Se il server ha restituito ownerTeam/opponentTeam, li usiamo per popolare chosenPlayers
-  if (userId === ownerId && Array.isArray(ownerTeam) && ownerTeam.length) {
-    localStorage.setItem("chosenPlayers", JSON.stringify(ownerTeam));
-  } else if (userId === opponentId && Array.isArray(opponentTeam) && opponentTeam.length) {
-    localStorage.setItem("chosenPlayers", JSON.stringify(opponentTeam));
+  // proseguo con il flow originale…
+  const token = localStorage.getItem("authToken");
+  if (!token) {
+    console.error("Auth token mancante – impossibile proseguire");
+    return;
   }
 
-  // 6) Renderizzo header e lista giocatori (vuota o pre‐popolata)
-  renderContestHeader(contest, userId);
+  // pre-popolo chosenPlayers se presente
+  const chosenKey = "chosenPlayers";
+  const existing = JSON.parse(localStorage.getItem(chosenKey) || "[]");
+  if (Array.isArray(existing) && existing.length > 0) {
+    console.log("Keeping existing chosenPlayers:", existing);
+  } else {
+    localStorage.removeItem(chosenKey);
+  }
+
+  // carico saldo utente
+  try {
+    const userInfo = await getUserInfo(token);
+    document.getElementById("teexBalance").textContent =
+      parseFloat(userInfo.teexBalance).toFixed(1);
+  } catch (err) {
+    console.error("Errore recupero user-info:", err);
+  }
+
+  // carico dettagli contest
+  let contest, ownerTeam, opponentTeam;
+  try {
+    ({ contest, ownerTeam, opponentTeam } = await getContestDetails(
+      contestId,
+      ownerId,
+      opponentId,
+      eventUnitId,
+      token
+    ));
+  } catch (err) {
+    console.error("Errore getContestDetails:", err);
+    const errDiv = document.getElementById("errorMessage");
+    if (errDiv) {
+      errDiv.textContent = "Impossibile caricare i dettagli del contest.";
+      errDiv.style.display = "block";
+    }
+    return;
+  }
+
+  // sovrascrivo chosenPlayers con i team restituiti dal server
+  if (userId === ownerId && ownerTeam?.length) {
+    localStorage.setItem(chosenKey, JSON.stringify(ownerTeam));
+  } else if (userId === opponentId && opponentTeam?.length) {
+    localStorage.setItem(chosenKey, JSON.stringify(opponentTeam));
+  }
+
+  // render header passando il profilo corrente
+  renderContestHeader(contest, userId, {
+    avatar:      currentUserAvatar,
+    username:    currentUserName,
+    initialCost: currentUserInitialCost
+  });
+
+  // eventi e lista giocatori
   setupEventListeners(contestId, userId);
   await renderPlayerList();
   updateBudgetUI();
