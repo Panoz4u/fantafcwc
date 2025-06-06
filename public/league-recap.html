@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>League Recap</title>
+  <link rel="stylesheet" href="css/mobile.css">
+  <link rel="stylesheet" href="css/mobile2.css">
+</head>
+<body>
+  <header class="header">
+    <div class="user-profile">
+      <img src="icons/freccia.png" alt="Back" id="backArrow"
+           style="width:30px;height:30px;cursor:pointer;margin-right:12px;">
+      <div class="user-info">
+        <h1 class="user-name" id="leagueName">LEAGUE NAME</h1>
+      </div>
+    </div>
+    <div class="header-stats">
+      <div class="stats-row">
+        <div class="label_m_small">Members</div>
+        <div class="label_m_small">Rejected</div>
+        <div class="label_m_small">Confirmed</div>
+      </div>
+      <div class="stats-values">
+        <div class="square_cont_color scc_petrolio" id="countInvited">0</div>
+        <div class="square_cont_color scc_cyan" id="countRefused">0</div>
+        <div class="square_cont_color scc_porpora" id="countConfirmed">0</div>
+      </div>
+    </div>
+  </header>
+
+  <div id="teamsContainer" class="teams-container"></div>
+
+  <footer class="footer-nav" style="justify-content:flex-end; margin-top:48px;">
+    <button class="footer_button footer_button_blue" id="DiscardBtn">DISCARD</button>
+    <button class="footer_button footer_button_orange" id="AcceptBtn">ACCEPT</button>
+  </footer>
+
+  <script type="module" src="js/user/leagueRecap/index.js"></script>
+</body>
+</html>
