@@ -130,7 +130,26 @@ async function createPrivateLeague(ownerId, leagueName, competitorIds = []) {
   }
 }
 
+/**
+ * Imposta ft_status a -1 per il fantasy team dell'utente in un contest.
+ * @param {number} contestId
+ * @param {number} userId
+ * @returns {Promise<void>}
+ */
+async function rejectFantasyTeam(contestId, userId) {
+  const promisePool = pool.promise();
+  const sql = `
+    UPDATE fantasy_teams
+       SET ft_status = -1,
+           updated_at = NOW()
+     WHERE contest_id = ? AND user_id = ?
+  `;
+  await promisePool.query(sql, [contestId, userId]);
+}
+
+
 module.exports = {
   getPossibleCompetitors,
-  createPrivateLeague
+  createPrivateLeague,
+  rejectFantasyTeam
 };

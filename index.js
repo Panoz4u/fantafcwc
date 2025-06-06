@@ -51,7 +51,6 @@ app.use(authRoutes);
 app.use('/', adminRouter);
 app.use('/api', firebaseConfigRoutes);
 app.use('/admin-api', adminContestRoutes);
-app.use('/api', userContestsRoutes);
 app.use('/api', athleteRoutes);
 app.use('/api/leagues', leagueRoutes);
 app.use('/contests', leagueDetailsRoutes);

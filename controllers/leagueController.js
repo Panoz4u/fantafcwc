@@ -1,7 +1,12 @@
 // controllers/leagueController.js
 
 const jwt                        = require('jsonwebtoken');
-const { getPossibleCompetitors, createPrivateLeague } = require('../services/leagueService');
+const {
+  getPossibleCompetitors,
+  createPrivateLeague,
+  rejectFantasyTeam
+} = require('../services/leagueService');
+
 const { JWT_SECRET }             = process.env;
 
 /**
@@ -111,7 +116,34 @@ async function createLeague(req, res) {
   }
 }
 
+/**
+ * PUT /api/leagues/:contestId/:userId/status
+ * Imposta ft_status a -1 per il fantasy team indicato.
+ */
+async function updateFantasyTeamStatus(req, res) {
+  try {
+    const contestId = parseInt(req.params.contestId, 10);
+    const userId = parseInt(req.params.userId, 10);
+    const { status } = req.body;
+
+    if (Number.isNaN(contestId) || Number.isNaN(userId)) {
+      return res.status(400).json({ error: 'Parametri non validi' });
+    }
+
+    if (status !== -1) {
+      return res.status(400).json({ error: 'Status non supportato' });
+    }
+
+    await rejectFantasyTeam(contestId, userId);
+    return res.json({ message: 'Status aggiornato' });
+  } catch (err) {
+    console.error('leagueController.updateFantasyTeamStatus:', err);
+    return res.status(500).json({ error: 'Errore interno' });
+  }
+}
+
 module.exports = {
   getCompetitors,
-  createLeague
+  createLeague,
+  updateFantasyTeamStatus
 };

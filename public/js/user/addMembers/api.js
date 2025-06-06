@@ -1,6 +1,11 @@
-// public/js/user/addMembers/api.js
 export async function fetchAllAthletes() {
-    const res = await fetch('/api/all-active-athletes');    // ← aggiungi “/api”
-    if (!res.ok) throw new Error('Errore caricamento atleti');
-    return res.json();
+  const token = localStorage.getItem('authToken');
+  const headers = token ? { Authorization: `Bearer ${token}` } : {};
+  const res = await fetch('/api/all-active-athletes', { headers });
+  if (!res.ok) {
+    const text = await res.text();
+    console.error('fetchAllAthletes', res.status, text);
+    throw new Error(text || 'Errore caricamento atleti');
   }
+  return res.json();
+}

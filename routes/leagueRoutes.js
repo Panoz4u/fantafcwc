@@ -26,5 +26,14 @@ router.post(
   authenticateToken,
   leagueController.createLeague
 );
+// ------------------------------------------------------------------
+// 3) PUT /api/leagues/:contestId/:userId/status
+//    → Aggiorna lo status del fantasy team (usato per rifiutare un invito)
+// ------------------------------------------------------------------
+router.put(
+  '/:contestId/:userId/status',
+  authenticateToken,
+  leagueController.updateFantasyTeamStatus
+);
 
 module.exports = router;

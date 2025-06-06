@@ -2,6 +2,7 @@
 
 import { fetchLeagueRecap } from './api.js';
 import { initLeagueRecap }   from './ui.js';
+import { bindRecapEvents }   from './events.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
   const contestIdStr = localStorage.getItem('recapContestId');
@@ -33,17 +34,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     alert('Non è stato possibile caricare la recap della League.');
   }
 
-  // 3) Pulsante “Back”:
-  document.getElementById('backArrow')?.addEventListener('click', () => {
-    window.location.href = '/user-landing.html';
-  });
-  
-  // 4) Gestione bottoni DISCARD / ACCEPT
-  document.getElementById('DiscardBtn')?.addEventListener('click', () => {
-    // Logica di “rifiuta”: aggiorna ft_status in < 2 e torna alla landing
-    // (vedi sez. Rotta backend più avanti)
-  });
-  document.getElementById('AcceptBtn')?.addEventListener('click', () => {
-    // Logica “accetta”: redirige a contest-creation.html con i dati necessari
-  });
+  // 3) Associa gli eventi ai pulsanti
+  bindRecapEvents(contestId, userId);
 });

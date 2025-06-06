@@ -68,7 +68,7 @@ export function initLeagueRecap({ contestName, fantasyTeams, currentUserId }) {
             <div class="opponent-name">${ft.username}</div>
            </div>
         </div>
-       <div class="league-status">${label}</div>
+       <div class="league-status cnf">${label}</div>
       `;
     }
 

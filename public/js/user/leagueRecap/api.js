@@ -16,7 +16,7 @@ export async function fetchLeagueRecap(contestId, token) {
  */
 export async function updateFantasyTeamStatus(contestId, userId, status) {
   const token = localStorage.getItem('authToken');
-  const resp = await fetch(`/api/fantasyTeams/${contestId}/${userId}/status`, {
+  const resp = await fetch(`/api/leagues/${contestId}/${userId}/status`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',

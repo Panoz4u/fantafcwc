@@ -8,10 +8,10 @@ export function bindRecapEvents(contestId, userId) {
     window.location.href = '/user-landing.html';
   });
 
-  // Pulsante “Discard” → setta ft_status=2 e ritorna alla landing
+    // Pulsante “Discard” → setta ft_status=-1 e ritorna alla landing
   document.getElementById('DiscardBtn').addEventListener('click', async () => {
     try {
-      await updateFantasyTeamStatus(contestId, userId, 2);
+      await updateFantasyTeamStatus(contestId, userId, -1);
       window.location.href = '/user-landing.html';
     } catch (err) {
       console.error('Errore aggiornamento status:', err);

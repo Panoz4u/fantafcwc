@@ -221,8 +221,15 @@ async function getUserContests(userId) {
     }
 
 
-    // 5) Separazione active vs completed
-    const all = Object.values(map);
+    // 5) Filtra le private league rifiutate (contest_type=2 e ft_status=-1)
+    const all = Object.values(map).filter(c => {
+      if (c.contest_type !== 2) return true;
+      const myTeam = (c.fantasy_teams || []).find(ft =>
+        String(ft.user_id) === String(userId)
+      );
+      return !(myTeam && myTeam.ft_status === -1);
+    });
+
     const active = all.filter(c => c.status !== 5);
     const completed = all.filter(c => c.status === 5);
   

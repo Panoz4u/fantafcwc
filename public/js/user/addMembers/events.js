@@ -25,6 +25,21 @@ let currentSort = { field: null, asc: true };
 };
 
 export async function initAddMembers() {
+  const token = localStorage.getItem('authToken');
+  const userId = localStorage.getItem('userId');
+  if (!token || !userId) {
+    window.location.href = '/signin.html';
+    return;
+  }
+
+  try {
+    allAthletes = await fetchAllAthletes();
+  } catch (err) {
+    console.error('initAddMembers', err);
+    alert('Impossibile caricare gli atleti');
+    return;
+  }
+
   allAthletes = await fetchAllAthletes();
     // 1) copia array e imposta sort di default su Name ASC
     currentList = [...allAthletes];
