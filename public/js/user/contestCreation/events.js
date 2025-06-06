@@ -29,10 +29,10 @@ export function setupEventListeners(contestId, userId) {
   document.getElementById('confirmFooterBtn').addEventListener('click', () => {
   // 1) Prendi i dati della sfida
   const contestData = JSON.parse(localStorage.getItem('contestData') || '{}');
-  const isNewContest = contestData.status === 0;           // status=0 è “CREATED”
-  const isInvited    = contestData.status === 1            // status=1 è “PENDING”
-                      && contestData.userId !== contestData.ownerId;
-  const lockedMul    = isInvited ? contestData.multiply : null;
+     // NUOVA LOGICA: se status > 0, blocco al multiply arrivato dal server
+     const lockedMul = (contestData.status > 0)
+                       ? contestData.multiply
+                       : null;
 
     showMultiplyOverlay(getTotalCost, async (multiplier) => {     // callback invocata al confirm del moltiplicatore
       const squadData = {

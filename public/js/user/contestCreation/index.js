@@ -92,6 +92,21 @@ async function init() {
     return;
   }
 
+   // ──────────── aggiorno contestData con status e multiply ────────────
+   try {
+     const stored = JSON.parse(localStorage.getItem("contestData")|| "{}");
+     const merged = {
+       ...stored,
+       status:   contest.status,
+       multiply: contest.multiply
+     };
+     localStorage.setItem("contestData", JSON.stringify(merged));
+     console.log("🔄 [DEBUG] contestData after merge status/multiply:", merged);
+   } catch(e) {
+     console.error("❌ Errore merge contestData:", e);
+   }
+   // ────────────────────────────────────────────────────────────────
+
   // sovrascrivo chosenPlayers con i team restituiti dal server
   if (userId === ownerId && ownerTeam?.length) {
     localStorage.setItem(chosenKey, JSON.stringify(ownerTeam));
