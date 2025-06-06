@@ -9,7 +9,7 @@ async function init() {
   // 1) Leggi i dati da localStorage
   //    Se non c’è nulla in localStorage, prendo "{}" di default
   const contestData = JSON.parse(localStorage.getItem("contestData") || "{}");
-
+  console.log("🔎 [DEBUG] localStorage.contestData completa:", contestData);
   // Destrutturiamo con un "fallback" esplicito su opponentId: se non esiste, lo mettiamo a 0
   const {
     contestId    = 0,
@@ -23,8 +23,8 @@ async function init() {
   } = contestData;
   
 // Per ora riprendiamo i valori così come sono
-const opponentIdClean  = opponentId;
-const eventUnitIdClean = eventUnitId;
+const opponentIdClean = Number(opponentId) || 0;
+const eventUnitIdClean = Number(eventUnitId) || 0;
 
 console.log("⚙️ [DEBUG] contestData: ", contestData);
 console.log("⚙️ [DEBUG] contestId =", contestId,

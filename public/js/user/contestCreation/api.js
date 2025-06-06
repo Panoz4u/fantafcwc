@@ -45,7 +45,7 @@ export async function fetchCurrentEventUnit() {
       opponent_id:   parseInt(opponentId,   10),
       event_unit_id: parseInt(eventUnitId,  10)
     };
-    const resp = await fetch('/contests/contest-details', {
+    const resp = await fetch('/contests/details', {       // ← qui correggere
       method: 'POST',
       headers: {
         'Content-Type':  'application/json',
