@@ -8,4 +8,7 @@ const authenticateToken = require('../middleware/auth');
 // GET /api/user-contests
 router.get('/', authenticateToken, userContestsController.list);
 
+// GET /api/user-contests/:contestId
+router.get('/:contestId', authenticateToken, userContestsController.getById);
+
 module.exports = router;

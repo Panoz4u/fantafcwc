@@ -12,9 +12,13 @@ export function initLeagueRecap({ contestName, fantasyTeams, currentUserId }) {
   const refusedCount   = fantasyTeams.filter(ft => ft.ft_status === -1).length;
   const confirmedCount = fantasyTeams.filter(ft => ft.ft_status > 1).length;
 
-  document.getElementById('countInvited')?.textContent   = membersCount;
-  document.getElementById('countRefused')?.textContent   = refusedCount;
-  document.getElementById('countConfirmed')?.textContent = confirmedCount;
+    const invitedEl   = document.getElementById('countInvited');
+    const refusedEl   = document.getElementById('countRefused');
+    const confirmedEl = document.getElementById('countConfirmed');
+  
+    if (invitedEl)   invitedEl.textContent   = membersCount;
+    if (refusedEl)   refusedEl.textContent   = refusedCount;
+    if (confirmedEl) confirmedEl.textContent = confirmedCount;
 
   // 3) Costruisci la lista di tutti gli utenti
   const container = document.getElementById('teamsContainer');

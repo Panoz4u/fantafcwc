@@ -4,7 +4,7 @@
  * Recupera il recap di tutti i fantasy team per il contestId
  */
 export async function fetchLeagueRecap(contestId) {
-    const resp = await fetch(`/api/userContests/${contestId}`);
+  const resp = await fetch(`/api/user-contests/${contestId}`);
     if (!resp.ok) throw new Error('Errore caricamento league recap');
     return await resp.json();
   }

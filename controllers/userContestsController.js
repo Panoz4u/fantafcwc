@@ -1,5 +1,5 @@
 // controllers/userContestsController.js
-const { getUserContests } = require('../services/userContests');
+const { getUserContests, getContestById } = require('../services/userContests');
 
 async function list(req, res) {
   try {
@@ -12,5 +12,22 @@ async function list(req, res) {
   }
 }
 
-module.exports = { list };
+async function getById(req, res) {
+  try {
+    const contestId = parseInt(req.params.contestId, 10);
+    const userId = req.user.userId;        // viene dalla verifyToken middleware
+    
+    if (isNaN(contestId)) {
+      return res.status(400).json({ error: 'ID contest non valido' });
+    }
+    
+    const data = await getContestById(contestId, userId);
+    res.json(data);
+  } catch (err) {
+    console.error('userContestsController.getById:', err);
+    res.status(500).json({ error: 'Errore interno' });
+  }
+}
+
+module.exports = { list, getById };
 

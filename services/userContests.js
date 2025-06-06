@@ -240,4 +240,57 @@ async function getUserContests(userId) {
     return { user: userData, active, completed };
   }
 
-module.exports = { getUserContests };
+// Aggiungi questa funzione al file services/userContests.js
+
+async function getContestById(contestId, userId) {
+  // Ottieni i dati del contest
+  const [contestRows] = await pool
+    .promise()
+    .query(
+      `
+      SELECT 
+        c.contest_id, 
+        c.contest_name, 
+        c.owner_user_id, 
+        c.status,
+        c.contest_type
+      FROM contests c
+      WHERE c.contest_id = ?
+      `,
+      [contestId]
+    );
+
+  if (contestRows.length === 0) {
+    throw new Error(`Contest non trovato con ID: ${contestId}`);
+  }
+
+  const contest = contestRows[0];
+
+  // Ottieni tutti i fantasy teams per questo contest
+  const [teamRows] = await pool
+    .promise()
+    .query(
+      `
+      SELECT 
+        ft.fantasy_team_id,
+        ft.user_id,
+        ft.ft_status,
+        ft.total_cost,
+        u.username,
+        u.avatar,
+        u.color
+      FROM fantasy_teams ft
+      JOIN users u ON ft.user_id = u.user_id
+      WHERE ft.contest_id = ?
+      `,
+      [contestId]
+    );
+
+  return {
+    contest,
+    fantasyTeams: teamRows
+  };
+}
+
+// Assicurati di esportare la nuova funzione
+module.exports = { getUserContests, getContestById };

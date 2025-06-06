@@ -192,27 +192,16 @@ export function renderPrivateLeagueCard(contest, userId) {
   // 14) Click handler:
   card.addEventListener('click', () => {
     if (myTeam && myTeam.ft_status === 1) {
-      // Sono invitato: vado a contest-creation.html per completare la squadra
-      const payload = {
-        contestId:    contest.contest_id,
-        ownerId:      contest.owner_id,
-        opponentId:   contest.opponent_id,
-        eventUnitId:  contest.event_unit_id,
-        userId,
-        fantasyTeams: contest.fantasy_teams,
-        multiply:     contest.multiply,
-        stake:        contest.stake,
-        status:       contest.status
-      };
-      localStorage.setItem('contestData', JSON.stringify(payload));
-      window.location.href = '/contest-creation.html';
+      // Sei invitato: vai a league-recap.html passando i dati necessari
+      localStorage.setItem('recapContestId', contest.contest_id);
+      localStorage.setItem('recapContestName', contest.contest_name);
+      window.location.href = '/league-recap.html';
       return;
     }
-     // Altrimenti, apro league-details:
-       // Per Private League vogliamo redirigere a league-details.html:
-       localStorage.setItem('contestId', contest.contest_id);
-       window.location.href = '/league-details.html';
+    
+    // Altrimenti, comportamento attuale
+    localStorage.setItem('contestId', contest.contest_id);
+    window.location.href = '/league-details.html';
   });
-
   return card;
 }
