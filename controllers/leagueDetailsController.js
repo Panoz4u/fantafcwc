@@ -3,6 +3,11 @@
 const { fetchLeagueDetails } = require('../services/leagueDetailsService');
 
 async function getLeagueDetails(req, res) {
+console.log("🔎 [SERVER DEBUG] body.post:", req.body);
+console.log("🔎 [SERVER DEBUG] contest_id =", pid,
+            "owner_id =", pOwner,
+            "opponent_id =", pOpponent,
+            "event_unit_id =", pEventUnit);
   try {
     console.log('[leagueDetailsController] req.body =', req.body);
     const { contest_id } = req.body;
