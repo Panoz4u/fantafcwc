@@ -24,6 +24,7 @@ async function getUserContests(userId) {
     .query(
       `
       SELECT
+        c.contest_name AS contest_name,
         c.contest_id,
         c.owner_user_id,
         c.opponent_user_id,
@@ -61,6 +62,7 @@ async function getUserContests(userId) {
     .query(
       `
       SELECT
+        c.contest_name AS contest_name,
         c.contest_id,
         c.owner_user_id,
         c.opponent_user_id,
@@ -99,6 +101,7 @@ async function getUserContests(userId) {
   for (const r of allRows) {
     if (!map[r.contest_id]) {
       map[r.contest_id] = {
+        contest_name:    r.contest_name,
         contest_id:      r.contest_id,
         owner_id:        r.owner_user_id,
         opponent_id:     r.opponent_user_id,
@@ -202,6 +205,21 @@ async function getUserContests(userId) {
       }
     }
   }
+
+   // 4.b) Aggiungo a ogni contest l’attributo “current_user_cost”:
+   //      trovo il record fantasy_team corrispondente al current user e ne prendo total_cost
+    for (const contId of Object.keys(map)) {
+      const contestObj = map[contId];
+      // Trovo il fantasy_team del currentUserId dentro contestObj.fantasy_teams
+      const meTeam = (contestObj.fantasy_teams || []).find(ft =>
+        String(ft.user_id) === String(userId)
+      );
+      // Se esiste, assegno total_cost; altrimenti 0
+      contestObj.current_user_cost = meTeam
+        ? parseFloat(meTeam.total_cost || 0)
+        : 0;
+    }
+
 
     // 5) Separazione active vs completed
     const all = Object.values(map);
