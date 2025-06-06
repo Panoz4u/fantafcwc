@@ -9,7 +9,10 @@ export function bindBackArrowEvent() {
   const backEl = document.getElementById('backArrow');
   if (backEl) {
     backEl.addEventListener('click', () => {
-      window.location.href = '/user-landing.html';
+      // torna alla pagina precedente nel history
+      window.history.back();
+      // oppure, se preferisci sempre la landing:
+      // window.location.href = '/user-landing.html';
     });
   }
 }

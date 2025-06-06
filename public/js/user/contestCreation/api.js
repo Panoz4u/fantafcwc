@@ -106,3 +106,22 @@ export async function getUserInfo(token) {
     const resp = await fetch(`/athlete-details?id=${id}`);
     return resp.ok ? resp.json() : {};
   }
+
+/**
+ * Conferma un league contest (moltiplicatore + entities)
+ */
+export async function postConfirmLeague(payload) {
+  const resp = await fetch('/api/league/confirm-league', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+    },
+    body: JSON.stringify(payload)
+  });
+  if (!resp.ok) {
+    const err = await resp.json().catch(() => ({}));
+    throw new Error(err.error || `HTTP ${resp.status}`);
+  }
+  return resp.json();
+}

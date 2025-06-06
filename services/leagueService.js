@@ -148,8 +148,90 @@ async function rejectFantasyTeam(contestId, userId) {
 }
 
 
+// Conferma un contest di tipo “league”
+async function confirmLeagueContest({ contestId, userId, fantasyTeamId, players, multiplier }) {
+  const conn = await pool.promise().getConnection();
+  try {
+    await conn.beginTransaction();
+
+    // 1) Leggo contest.status e contest.stake
+    const [contestRows] = await conn.query(
+      'SELECT status, stake FROM contests WHERE contest_id = ? FOR UPDATE',
+      [contestId]
+    );
+    if (!contestRows.length) throw new Error('Contest non trovato');
+    const { status: oldStatus, stake: oldStake = 0 } = contestRows[0];
+
+    // 2) Nuovo status sempre = 2 (perché league è single-step)
+    const newStatus = oldStatus < 2 ? 2 : oldStatus;
+
+    // 3) Calcolo nuovo stake = oldStake + totalCost * multiplier
+    const totalCost = players.reduce((sum, p) => sum + (p.event_unit_cost||0), 0);
+    const added     = totalCost * multiplier;
+    const newStake  = parseFloat(oldStake) + added;
+
+    // 4) Aggiorno contests
+    await conn.query(
+      `UPDATE contests
+         SET status   = ?,
+             stake    = ?,
+             multiply = ?
+       WHERE contest_id = ?`,
+      [ newStatus, newStake, multiplier, contestId ]
+    );
+
+    // 5) Aggiorno fantasy_teams per il current user
+    await conn.query(
+      `UPDATE fantasy_teams
+         SET ft_status  = 2,
+             total_cost = ?
+       WHERE fantasy_team_id = ?`,
+      [ totalCost, fantasyTeamId ]
+    );
+
+    // 6) Ricreo le entità in fantasy_team_entities
+    //    (elimino prima eventuali righe già presenti)
+    await conn.query(
+      `DELETE FROM fantasy_team_entities
+       WHERE fantasy_team_id = ?`,
+      [ fantasyTeamId ]
+    );
+    if (players.length) {
+      const placeholders = players.map(() => '(?, ?, ?, ?)').join(', ');
+      const flatValues   = players.flatMap(p => [
+        fantasyTeamId,
+        p.athleteId,
+        p.event_unit_cost,
+        p.aep_id ?? null
+      ]);
+      await conn.query(
+        `INSERT INTO fantasy_team_entities
+           (fantasy_team_id, athlete_id, cost, aep_id)
+         VALUES ${placeholders}`,
+        flatValues
+      );
+    }
+
+    // 7) Commit
+    await conn.commit();
+    return {
+      message:        'Conferma league completata',
+      newStatus,
+      newStake,
+      baseCost:       totalCost,
+      multipliedCost: added
+    };
+  } catch (err) {
+    await conn.rollback();
+    throw err;
+  } finally {
+    conn.release();
+  }
+}
+
 module.exports = {
   getPossibleCompetitors,
   createPrivateLeague,
-  rejectFantasyTeam
+  rejectFantasyTeam,
+  confirmLeagueContest,    // ← export!
 };

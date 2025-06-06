@@ -3,7 +3,7 @@
 const express            = require('express');
 const router             = express.Router();
 const leagueController   = require('../controllers/leagueController');
-const authenticateToken  = require('../middleware/auth'); // middleware JWT o simile
+const authenticateToken  = require('../middleware/auth');
 
 // ------------------------------------------------------------------
 // 1) GET /api/leagues/competitors
@@ -34,6 +34,15 @@ router.put(
   '/:contestId/:userId/status',
   authenticateToken,
   leagueController.updateFantasyTeamStatus
+);
+
+// ───────────────────────────────────────────────────
+// 4) Conferma league contest (moltiplicatore + creazione entities)
+// ───────────────────────────────────────────────────
+router.post(
+  '/confirm-league',
+  authenticateToken,
+  leagueController.confirmLeagueController
 );
 
 module.exports = router;

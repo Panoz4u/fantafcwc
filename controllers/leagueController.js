@@ -4,7 +4,8 @@ const jwt                        = require('jsonwebtoken');
 const {
   getPossibleCompetitors,
   createPrivateLeague,
-  rejectFantasyTeam
+  rejectFantasyTeam,
+  confirmLeagueContest         // ← import nuovo service
 } = require('../services/leagueService');
 
 const { JWT_SECRET }             = process.env;
@@ -142,8 +143,44 @@ async function updateFantasyTeamStatus(req, res) {
   }
 }
 
+
+async function confirmLeagueController(req, res) {
+  try {
+    const {
+      contestId,
+      currentUserId,
+      fantasyTeamId,
+      players,
+      multiplier
+    } = req.body;
+
+    // chiave: invochi il service
+    const result = await confirmLeagueContest({
+      contestId:      Number(contestId),
+      userId:         Number(currentUserId),
+      fantasyTeamId:  Number(fantasyTeamId),
+      players:        players.map(p => ({
+                         athleteId:       Number(p.athleteId),
+                         event_unit_cost: Number(p.event_unit_cost),
+                         aep_id:          p.aep_id ?? null
+                       })),
+      multiplier:     Number(multiplier)
+    });
+
+    return res.json(result);
+  } catch (err) {
+    console.error('leagueController.confirmLeagueController error:', err);
+    if (err.name === 'TokenError') {
+      return res.status(401).json({ error: 'Token non valido o scaduto' });
+    }
+    return res.status(400).json({ error: err.message || 'Errore interno' });
+  }
+}
+
+
 module.exports = {
   getCompetitors,
   createLeague,
-  updateFantasyTeamStatus
+  updateFantasyTeamStatus,
+  confirmLeagueController     // ← esportalo qui
 };

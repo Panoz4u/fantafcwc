@@ -1,10 +1,13 @@
 // public/js/user/leagueRecap/index.js
 
-import { fetchLeagueRecap } from './api.js';
-import { initLeagueRecap }  from './ui.js';
-import { bindRecapEvents }  from './events.js';
+import { fetchLeagueRecap }    from './api.js';
+import { initLeagueRecap }     from './ui.js';
+import { bindRecapEvents,
+         bindBackArrowEvent }  from './events.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
+  // attacco subito il listener della freccia “back”
+  bindBackArrowEvent();
   const contestIdStr = localStorage.getItem('recapContestId');
   const contestName  = localStorage.getItem('recapContestName');
   const userIdStr    = localStorage.getItem('userId');
