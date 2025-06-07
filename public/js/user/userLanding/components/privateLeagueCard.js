@@ -63,10 +63,14 @@ export function renderPrivateLeagueCard(contest, userId) {
     // 2) Calcolo totalOpponents = totale fantasy_teams meno il mio
     const totalOpponents = (contest.fantasy_teams || []).length - 1;
 
-  // 3) Calcolo NCONF = numero di fantasy_teams con ft_status > 1
-  const NCONF = (contest.fantasy_teams || [])
-    .filter(ft => ft.ft_status > 1)
-    .length;
+  
+   // 3) Calcolo NCONF = numero di **opponent** confermati (ft_status > 1, escludendo il current user)
+   const NCONF = (contest.fantasy_teams || [])
+     .filter(ft =>
+       ft.ft_status > 1 &&
+       String(ft.user_id) !== String(userId)
+     )
+     .length;
 
   // 4) Calcolo maxCost = massimo total_cost di tutti gli altri (escludendo il currentUser)
   const otherCosts = (contest.fantasy_teams || [])

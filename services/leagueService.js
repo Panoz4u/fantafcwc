@@ -162,8 +162,12 @@ async function confirmLeagueContest({ contestId, userId, fantasyTeamId, players,
     if (!contestRows.length) throw new Error('Contest non trovato');
     const { status: oldStatus, stake: oldStake = 0 } = contestRows[0];
 
-    // 2) Nuovo status sempre = 2 (perché league è single-step)
-    const newStatus = oldStatus < 2 ? 2 : oldStatus;
+      // 2) Se era 0 → passo a 1; se era 1 → passo a 2; altrimenti lascio invariato
+      const newStatus = oldStatus === 0
+                        ? 1
+                        : oldStatus === 1
+                          ? 2
+                          : oldStatus;
 
     // 3) Calcolo nuovo stake = oldStake + totalCost * multiplier
     const totalCost = players.reduce((sum, p) => sum + (p.event_unit_cost||0), 0);
