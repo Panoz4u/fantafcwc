@@ -66,10 +66,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // 4) Inizializzo la UI: tutte le card (avatar + username)
   initLeagueRecap({
-    contestName,
-    fantasyTeams: data.fantasyTeams,
-    currentUserId: userId
-  });
+      contestName,
+      fantasyTeams:  data.fantasyTeams,
+      currentUserId: userId,
+      ownerId        // ← aggiungi questo
+    });
   console.log('✅ initLeagueRecap eseguito');
 
   // 5) Estraggo il fantasy-team corrente per preparare contestData

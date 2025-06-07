@@ -545,7 +545,7 @@
     margin-bottom: 60px;
   }
   .cc-header {
-    margin-bottom: 40px; /* Or whatever value works better for the header */
+    margin-bottom: 0px; /* Or whatever value works better for the header */
   }
   
   .contest-bar {

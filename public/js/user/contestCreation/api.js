@@ -112,7 +112,7 @@ export async function getUserInfo(token) {
  */
 export async function postConfirmLeague(payload) {
     // notare "leagues" al plurale, per allinearsi a routes/leagueRoutes.js
-    const resp = await fetch(`${BASE}/leagues/confirm-league`, {
+    const resp = await fetch(`/api/leagues/confirm-league`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

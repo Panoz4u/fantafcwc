@@ -98,22 +98,20 @@ async function init() {
     contest.current_user_id = userId;
    // ──────────── aggiorno contestData con status e multiply ────────────
    try {
-     const stored = JSON.parse(localStorage.getItem("contestData")|| "{}");
-       const merged = {
-          ...stored,
-          status:       contest.status,
-          multiply:     contest.multiply,
-          // ➡️ fondamentale per evitare NaN e sapere quale API usare
-          fantasyTeamId: userId === ownerId
-                          ? contest.owner_team_id
-                          : contest.opponent_team_id,
-          contestType:  contest.contest_type
-        };
-     localStorage.setItem("contestData", JSON.stringify(merged));
-     console.log("🔄 [DEBUG] contestData after merge status/multiply:", merged);
-   } catch(e) {
-     console.error("❌ Errore merge contestData:", e);
-   }
+    const stored = JSON.parse(localStorage.getItem("contestData")|| "{}");
+    console.log("🔍 [DEBUG] stored.fantasyTeamId prima del merge =", stored.fantasyTeamId);
+    const merged = {
+    ...stored,
+    status: contest.status,
+    multiply: contest.multiply,
+    // NON tocchiamo fantasyTeamId, lo lasciamo com’è in 'stored'
+    contestType: contest.contest_type
+    };
+    console.log("🔄 [DEBUG] contestData dopo il merge:", merged);
+    localStorage.setItem("contestData", JSON.stringify(merged));
+    } catch(e) {
+    console.error("❌ Errore merge contestData:", e);
+    }
    // ────────────────────────────────────────────────────────────────
 
   // sovrascrivo chosenPlayers con i team restituiti dal server

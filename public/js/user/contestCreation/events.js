@@ -15,7 +15,10 @@ export function setupEventListeners(contestId, userId) {
   if (backEl) {
     backEl.addEventListener('click', () => window.history.back());
   }
-
+    // — Recupero subito i dati del contest (in particolare contestType)
+    const contestData = JSON.parse(localStorage.getItem('contestData') || '{}');
+    console.log('🧩 [DEBUG] contestData.contestType =', contestData.contestType);
+  
   // ← Bottone “Add Players”
   const addBtn = document.getElementById('addPlayerBtn');
   if (addBtn) {
