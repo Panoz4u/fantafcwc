@@ -42,4 +42,21 @@ export function bindRecapEvents(contestId, userId, ownerId, opponentId, eventUni
     localStorage.setItem('contestData', JSON.stringify(merged));
     window.location.href = '/contest-creation.html';
   });
+
+    // 3) DiscardBtn: setta ft_status = -1 e torna alla landing
+    const discardBtn = document.getElementById('DiscardBtn');
+    if (discardBtn) {
+      discardBtn.addEventListener('click', async () => {
+        try {
+          await updateFantasyTeamStatus(contestId, userId, -1);
+          // dopo il discard, ricarico la landing
+          window.location.href = '/user-landing.html';
+        } catch (err) {
+          console.error('❌ Errore DISCARD:', err);
+          alert('Errore nel rifiuto della partecipazione.');
+        }
+      });
+    }
+
+
 }
