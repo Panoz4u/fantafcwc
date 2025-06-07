@@ -532,16 +532,17 @@
   }
   
   .contest-container {
-    position: relative;
-    margin-top: 40px; /* Aumentato da 20px a 36px (aggiunto 16px) */
+    margin-top: 20px; /* Aumentato da 20px a 36px (aggiunto 16px) */
   }
   
+
   .cc-list {
+    margin-top: 40px; 
     margin-bottom: 60px;
   }
   
   .cc-header {
-    margin-bottom: 50px; /* Or whatever value works better for the header */
+    margin-bottom: 40px; /* Or whatever value works better for the header */
   }
   
   .contest-bar {
@@ -960,10 +961,10 @@
       background-color: #2a2b2a;
       height: 36px;
       display: flex;
-      justify-content: space-between;
+      justify-content: center;
       align-items: center;
       padding: 0 15px;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       margin-top: 0px;
       position: relative;
       z-index: 1;

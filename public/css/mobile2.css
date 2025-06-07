@@ -51,7 +51,7 @@
 /* Sort Header Styles */
 .sort-header {
   position: fixed;
-  top: 160px;
+  top: 140px;
   left: 0;
   right: 0;
   z-index: 100;
@@ -294,7 +294,7 @@
 /* Player List Styles */
 .player-list {
   list-style: none;
-  padding-top: 130px; /* Add top padding to account for fixed headers */
+  padding-top: 110px; /* Add top padding to account for fixed headers */
   padding-bottom: 170px;
   margin: 0 16px;
   margin-bottom: 80px; /* Space for footer */
@@ -320,12 +320,7 @@
   margin-top: 18px; /* Add margin to push it down by 18px */
 }
 
-/* Make sure the contest container and power-up section are not fixed */
-.contest-container, .power-up-section-contest {
-  position: relative;
-  z-index: 99; /* Lower z-index than the fixed elements */
-  top: 0px;
-}
+
 
 /* Teams Section - Adjust positioning */
 .teams-section {
