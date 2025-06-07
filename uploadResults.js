@@ -103,16 +103,18 @@ function setLiveContests(eventUnitId) {
   return new Promise((resolve) => {
     console.log(`Verificando contest live per event_unit_id: ${eventUnitId}`);
     
-    // Verifichiamo prima tutti i contest associati a questo event_unit_id
-    const allContestsQuery = `
-      SELECT DISTINCT c.contest_id, c.status, c.owner_user_id, c.opponent_user_id
-      FROM contests c
-      JOIN fantasy_teams ft ON c.contest_id = ft.contest_id
-      JOIN fantasy_team_entities fte ON ft.fantasy_team_id = fte.fantasy_team_id
-      JOIN athlete_eventunit_participation aep
-        ON fte.aep_id = aep.aep_id
-      WHERE aep.event_unit_id = ?
-    `;
+        // Verifichiamo prima tutti i contest di tipo 1 associati a questo event_unit_id
+        const allContestsQuery = `
+          SELECT DISTINCT c.contest_id, c.status, c.owner_user_id, c.opponent_user_id
+          FROM contests c
+          JOIN fantasy_teams ft     ON c.contest_id = ft.contest_id
+          JOIN fantasy_team_entities fte ON ft.fantasy_team_id = fte.fantasy_team_id
+          JOIN athlete_eventunit_participation aep
+            ON fte.aep_id = aep.aep_id
+          WHERE aep.event_unit_id = ?
+            AND c.contest_type = 1
+        `;
+         
     
     pool.query(allContestsQuery, [eventUnitId], (allErr, allResults) => {
       if (allErr) {
@@ -121,23 +123,24 @@ function setLiveContests(eventUnitId) {
         console.log(`Tutti i contest associati a event_unit_id ${eventUnitId}:`, allResults);
       }
       
-      // Ora verifichiamo quali contest hanno atleti con is_ended = 1
-      const checkQuery = `
-      SELECT
-        ft.contest_id,
-        c.status,
-        SUM(CASE WHEN aep.is_ended = 1 THEN 1 ELSE 0 END) AS ended_athletes,
-        COUNT(fte.aep_id) AS total_athletes
-      FROM fantasy_team_entities fte
-      JOIN fantasy_teams ft
-        ON fte.fantasy_team_id = ft.fantasy_team_id
-      JOIN athlete_eventunit_participation aep
-        ON fte.aep_id = aep.aep_id
-      JOIN contests c
-        ON ft.contest_id = c.contest_id
-      WHERE aep.event_unit_id = ?
-      GROUP BY ft.contest_id, c.status
-      `;
+            // Ora verifichiamo quali contest di tipo 1 hanno almeno un atleta concluso
+            const checkQuery = `
+            SELECT
+              ft.contest_id,
+              c.status,
+              SUM(CASE WHEN aep.is_ended = 1 THEN 1 ELSE 0 END) AS ended_athletes,
+              COUNT(fte.aep_id) AS total_athletes
+            FROM fantasy_team_entities fte
+            JOIN fantasy_teams ft     ON fte.fantasy_team_id = ft.fantasy_team_id
+            JOIN athlete_eventunit_participation aep
+              ON fte.aep_id = aep.aep_id
+            JOIN contests c
+              ON ft.contest_id = c.contest_id
+            WHERE aep.event_unit_id = ?
+              AND c.contest_type = 1
+            GROUP BY ft.contest_id, c.status
+            `;
+      
       
       pool.query(checkQuery, [eventUnitId], (checkErr, checkResults) => {
         if (checkErr) {
@@ -150,19 +153,21 @@ function setLiveContests(eventUnitId) {
         
         // Ora procediamo con l'aggiornamento dei contest che hanno almeno un atleta con is_ended = 1
         // e sono in stato 2 (scheduled)
-        const updateQuery = `
-          UPDATE contests 
-          SET status = 4, updated_at = NOW()
-          WHERE status = 2
-            AND contest_id IN (
-              SELECT DISTINCT ft.contest_id
-              FROM fantasy_team_entities fte
-              JOIN fantasy_teams ft ON fte.fantasy_team_id = ft.fantasy_team_id
-              JOIN athlete_eventunit_participation aep
-              ON fte.aep_id = aep.aep_id
-              WHERE aep.event_unit_id = ? AND aep.is_ended = 1
-                      )
-        `;
+                const updateQuery = `
+                  UPDATE contests 
+                  SET status = 4, updated_at = NOW()
+                  WHERE status = 2
+                    AND contest_type = 1
+                    AND contest_id IN (
+                      SELECT DISTINCT ft.contest_id
+                      FROM fantasy_team_entities fte
+                      JOIN fantasy_teams ft     ON fte.fantasy_team_id = ft.fantasy_team_id
+                      JOIN athlete_eventunit_participation aep
+                        ON fte.aep_id = aep.aep_id
+                      WHERE aep.event_unit_id = ? 
+                        AND aep.is_ended = 1
+                    )
+                `;
         
         pool.query(updateQuery, [eventUnitId], (err, result) => {
           if (err) {
@@ -183,25 +188,26 @@ function closeContests(eventUnitId) {
     console.log(`Verificando contest da chiudere per event_unit_id: ${eventUnitId}`);
     
     // Verifichiamo lo stato di tutti gli atleti per ogni utente in ogni contest
-    const debugQuery = `
-      SELECT
-        ft.contest_id,
-        c.status,
-        ft.user_id,
-        COUNT(fte.aep_id) AS total_athletes,
-        SUM(CASE WHEN aep.is_ended = 1 THEN 1 ELSE 0 END) AS ended_athletes,
-        GROUP_CONCAT(CONCAT(fte.aep_id, ':', aep.is_ended)) AS athlete_details
-      FROM fantasy_teams ft
-      JOIN fantasy_team_entities fte
-        ON ft.fantasy_team_id = fte.fantasy_team_id
-      JOIN athlete_eventunit_participation aep
-        ON fte.aep_id = aep.aep_id
-      JOIN contests c
-        ON ft.contest_id = c.contest_id
-      WHERE c.status IN (2,4)
-      GROUP BY ft.contest_id, c.status, ft.user_id
-      ORDER BY ft.contest_id, ft.user_id
-    `;
+        const debugQuery = `
+          SELECT
+            ft.contest_id,
+            c.status,
+            ft.user_id,
+            COUNT(fte.aep_id) AS total_athletes,
+            SUM(CASE WHEN aep.is_ended = 1 THEN 1 ELSE 0 END) AS ended_athletes,
+            GROUP_CONCAT(CONCAT(fte.aep_id, ':', aep.is_ended)) AS athlete_details
+          FROM fantasy_teams ft
+          JOIN fantasy_team_entities fte
+            ON ft.fantasy_team_id = fte.fantasy_team_id
+          JOIN athlete_eventunit_participation aep
+            ON fte.aep_id = aep.aep_id
+          JOIN contests c
+            ON ft.contest_id = c.contest_id
+          WHERE c.status IN (2,4)
+            AND c.contest_type = 1
+          GROUP BY ft.contest_id, c.status, ft.user_id
+          ORDER BY ft.contest_id, ft.user_id
+        `;
     
     pool.query(debugQuery, [eventUnitId], (debugErr, debugResults) => {
       if (debugErr) {
