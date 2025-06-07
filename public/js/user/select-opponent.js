@@ -173,10 +173,11 @@ async function createContest(opponentId) {
     const contestId = json.contestId;
 
     localStorage.setItem('contestData', JSON.stringify({
-      contestId: contestId,
+      contestId:  contestId,
       eventUnitId: eventUnitId,
       opponentId: opponentId,
-      ownerId: ownerId
+      ownerId:    ownerId,
+      userId:     ownerId               // <── serve per orientare l'header
     }));
     window.location.href = 'contest-creation.html';
   } catch (e) {

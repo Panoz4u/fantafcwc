@@ -9,43 +9,36 @@
   } from './utils.js';
   
   export function renderContestHeader(contest, userId, currentUserProfile = {}) {
-    const {
-      owner_name, owner_avatar,
-      opponent_name, opponent_avatar,
-      owner_cost, opponent_cost,
-      status, multiply, contest_type,
-      contest_name, invited_count,
-      fantasy_teams = [],
-      owner_fantasy_team, opponent_fantasy_team,
-      // Potresti avere anche contest.current_user_id qui, ma leggiamo da currentUserProfile
-    } = contest;
-  
-    // 1) Determino chi sono (owner vs opponent)
-    const currentUserId = contest.current_user_id || userId;
-    const isCurrentOwner = String(currentUserId) === String(contest.owner_user_id);
+      const {
+        owner_user_id, opponent_user_id,
+        owner_name, owner_avatar,
+        opponent_name, opponent_avatar,
+        owner_cost, opponent_cost,
+        status, multiply, contest_type,
+        contest_name, invited_count,
+        fantasy_teams = [],
+        owner_fantasy_team, opponent_fantasy_team,
+      } = contest;
+    
+      // 1) Determino se l’utente loggato è l’owner
+      const isCurrentOwner = String(userId) === String(owner_user_id);
   
     // 2) Costruisco l’oggetto "my" usando SEMPRE i valori passati da currentUserProfile,
     //    altrimenti ricaduta su dati di contest
-    const my = {
-      name:   currentUserProfile.username
-              || (isCurrentOwner ? owner_name    : opponent_name),
-      avatar: currentUserProfile.avatar
-              || (isCurrentOwner ? owner_avatar  : opponent_avatar),
-      cost:   (currentUserProfile.initialCost != null
-               ? currentUserProfile.initialCost
-               : (() => {
-                  // fallback a seconda dello stato
-                  if (status === 1) {
-                    // pending: prendo dal fantasy_team
-                    const t = fantasy_teams.find(t => String(t.user_id) === String(currentUserId));
-                    return t ? parseFloat(t.total_cost).toFixed(1) : '0.0';
-                  }
-                  // altri status:
-                  return parseFloat(
-                    isCurrentOwner ? owner_cost : opponent_cost || 0
-                  ).toFixed(1);
-                })())
-    };
+      const my = {
+          name:   currentUserProfile.username || (isCurrentOwner ? owner_name : opponent_name),
+          avatar: currentUserProfile.avatar   || (isCurrentOwner ? owner_avatar : opponent_avatar),
+          cost:   currentUserProfile.initialCost != null
+                  ? currentUserProfile.initialCost
+                  : (() => {
+                      if (status === 1) {
+                        // pending: prendo dal fantasy_team del currentUser
+                        const team = fantasy_teams.find(t => String(t.user_id) === String(userId));
+                        return team ? parseFloat(team.total_cost).toFixed(1) : '0.0';
+                      }
+                      return parseFloat(isCurrentOwner ? owner_cost : opponent_cost || 0).toFixed(1);
+                            })()
+                       };  
   
     // 3) Costruisco "opp" come prima (non toccato)
     const isLeague = contest_type === 2;

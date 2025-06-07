@@ -92,6 +92,10 @@ async function init() {
     return;
   }
 
+   // ➡️ rendiamo espliciti i ruoli nel contest object
+    contest.owner_user_id   = ownerId;
+    contest.opponent_user_id = opponentId;
+    contest.current_user_id = userId;
    // ──────────── aggiorno contestData con status e multiply ────────────
    try {
      const stored = JSON.parse(localStorage.getItem("contestData")|| "{}");
