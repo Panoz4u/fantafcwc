@@ -5,7 +5,11 @@ const path = require("path");
 const fs = require("fs");
 const XLSX = require("xlsx");
 const pool = require('./services/db');
-
+const { 
+  setLiveLeagueContests, 
+  updateLeagueContests, 
+  closeLeagueContests 
+} = require('./processLeagueResults');
 
 // Configurazione di Multer per salvare i file nella cartella "uploads"
 const storage = multer.diskStorage({
@@ -91,10 +95,14 @@ async function processResults(data) {
   
   // Per ogni event_unit_id, aggiorna i contest
   for (const eventUnitId of eventUnitIds) {
-    // Dopo aver processato tutti i dati, chiama la funzione per settare i contest live
-    await setLiveContests(eventUnitId);
-    // Quando setLiveContests è terminata, chiama closeContests
-    await closeContests(eventUnitId);
+       // Head to Head
+       await setLiveContests(eventUnitId);
+       await closeContests(eventUnitId);
+       
+       // League
+          await setLiveLeagueContests(eventUnitId);
+          await closeLeagueContests(eventUnitId);
+          await updateLeagueContests(eventUnitId);
   }
 }
 
