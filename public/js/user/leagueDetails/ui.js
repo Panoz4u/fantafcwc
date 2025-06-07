@@ -250,6 +250,30 @@ export function initLeagueDetails({ contest, fantasyTeams }, currentUserId) {
       }
     });
   
+    
+      // ─── 3.3) Calcolo Teex vinti on-the-fly per posizioni 1–3 ───
+      const percentages = [0.6, 0.3, 0.1];
+      const stake = parseFloat(contest.stake) || 0;
+      const ppcMap = {};
+      // per ogni rank 1–3
+      [1,2,3].forEach(r => {
+        // raccogli tutti gli user_id con rank = r
+        const usersAtR = Object.entries(rankMap)
+          .filter(([uid, rank]) => rank === r)
+          .map(([uid]) => uid);
+        if (usersAtR.length === 0) return;
+        // somma le percentuali per i posti r, r+1, ..., r+count-1
+        const totalPct = usersAtR.reduce((sum, _, idx) => {
+          return sum + (percentages[r - 1 + idx] || 0);
+        }, 0);
+        // teex per ciascuno
+        const eachTeex = (stake * totalPct) / usersAtR.length;
+        usersAtR.forEach(uid => {
+          ppcMap[uid] = eachTeex;
+        });
+      });
+
+
     // ─── 3.2) Riordino fantasyTeams per posizione (i non confermati restano in fondo) ───
     fantasyTeams.sort((a, b) => {
       const ra = rankMap[String(a.user_id)] || Infinity;
@@ -298,18 +322,26 @@ export function initLeagueDetails({ contest, fantasyTeams }, currentUserId) {
       <div class="opponent-data">
         <h3 class="opponent-name">${username}</h3>
   `;
-    // ─── Se ft_status ≥ 2, aggiungiamo la league-rank con la posizione calcolata ───
-        if (ft_status >= 2) {
-            const pos = rankMap[String(user_id)] !== undefined
-              ? rankMap[String(user_id)]
-              : '-';
-      innerHTML += `
-        <div class="league-rank">
-          <p class="pos">Pos: ${pos}</p>
-          <img src="icons/sh.png" class="ppc-icon" alt="PPC"> Clubby: -
-        </div>
-      `;
-    }
+      // ─── Se ft_status ≥ 2, aggiungiamo la league-rank con posizione e, per pos≤3, i Teex ───
+      if (ft_status >= 2) {
+        const pos = rankMap[String(user_id)] || '-';
+        if (pos <= 3) {
+          const teexWon = ppcMap[String(user_id)] || 0;
+          innerHTML += `
+            <div class="league-rank">
+              <p class="pos">Pos: ${pos}</p>
+              <img src="icons/sh.png" class="ppc-icon" alt="PPC">
+              Clubby:&nbsp;<span class="ppc-value">${teexWon.toFixed(1)}</span>
+            </div>
+          `;
+        } else {
+          innerHTML += `
+            <div class="league-rank">
+              <p class="pos">Pos: ${pos}</p>
+            </div>
+          `;
+        }
+      }
 
   // ─── Chiudiamo i div di opponent-data e opponent-info ───
   innerHTML += `
