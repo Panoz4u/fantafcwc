@@ -34,7 +34,7 @@
     background-repeat: no-repeat;
     background-attachment: fixed;
     padding-bottom: 130px;
-    margin-top: -10px;
+    margin-top: 0px;
   }
   
   /* Fixed Header Container */
@@ -528,7 +528,7 @@
   
   /* Contest Card Styles */
   .contest-cell {
-    margin-bottom: 20px;
+    margin-bottom: 30px;
   }
   
   .contest-container {
@@ -537,10 +537,13 @@
   
 
   .cc-list {
+    margin-top: 20px; 
+    margin-bottom: 0px;
+  }
+  .cc-list-old {
     margin-top: 40px; 
     margin-bottom: 60px;
   }
-  
   .cc-header {
     margin-bottom: 40px; /* Or whatever value works better for the header */
   }
@@ -672,8 +675,8 @@
     font-family: 'Montserrat', sans-serif;
     font-weight: 700;
     font-size: 16px;
-    position: absolute;
-    bottom: -25px;
+    position: relative;
+    bottom: 8px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 1;
@@ -683,6 +686,7 @@
     justify-content: center;
     min-width: 100px; /* Larghezza minima fissa */
     text-transform: uppercase;
+    width: 150px; /* Larghezza massima fissa */;
   }
 
   

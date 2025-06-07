@@ -2,23 +2,23 @@
 const BASE = '/api';
 const JSON_HEADERS = { 'Content-Type': 'application/json' };
 
-
+// Conferma head-to-head sul path /contests (no /api)
 export async function postConfirmSquad(squadData) {
-  const token = localStorage.getItem('authToken');
-  const resp = await fetch(
-    `${BASE}/contests/confirm-squad`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(squadData)
-    }
-  );
-  if (!resp.ok) throw await resp.json();
-  return resp.json();
-}
+    const token = localStorage.getItem('authToken');
+    const resp = await fetch(
+      '/contests/confirm-squad',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(squadData)
+      }
+    );
+    if (!resp.ok) throw await resp.json();
+    return resp.json();
+  }
 
 // user/contestCreation/api.js
 export async function fetchCurrentEventUnit() {

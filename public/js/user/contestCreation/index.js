@@ -99,11 +99,16 @@ async function init() {
    // ──────────── aggiorno contestData con status e multiply ────────────
    try {
      const stored = JSON.parse(localStorage.getItem("contestData")|| "{}");
-     const merged = {
-       ...stored,
-       status:   contest.status,
-       multiply: contest.multiply
-     };
+       const merged = {
+          ...stored,
+          status:       contest.status,
+          multiply:     contest.multiply,
+          // ➡️ fondamentale per evitare NaN e sapere quale API usare
+          fantasyTeamId: userId === ownerId
+                          ? contest.owner_team_id
+                          : contest.opponent_team_id,
+          contestType:  contest.contest_type
+        };
      localStorage.setItem("contestData", JSON.stringify(merged));
      console.log("🔄 [DEBUG] contestData after merge status/multiply:", merged);
    } catch(e) {
