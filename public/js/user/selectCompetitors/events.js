@@ -202,10 +202,14 @@ export async function initPage() {
       alert('ENTER LEAGUE NAME is required');
       return;
     }
-    if (selectedSet.size === 0) {
-      alert('Seleziona almeno un competitor');
-      return;
-    }
+        // per le leghe servono almeno 2 utenti oltre a te
+        if (selectedSet.size < 2) {
+          alert(
+            'Servono almeno 2 utenti oltre a te per creare una lega.\n' +
+            'Se vuoi giocare un testa a testa scegli la modalità Head2Head'
+          );
+          return;
+        }
     // Preparo array di competitorIds
     const competitorIds = Array.from(selectedSet);
   
