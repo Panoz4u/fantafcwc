@@ -20,6 +20,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 2) Chiamata API per ottenere i dati
     const data = await fetchLeagueDetails(contestId, userId);
 
+   // ——— DEBUG: ispeziona il contest ricevuto ———
+  console.log('🌟 [DEBUG] leagueDetails contest object:', data.contest);
+  // ————————————————————————————————————————
+
     // 3) Rimuovo la chiamata a renderLeagueHeader che viene sovrascritta da initLeagueDetails
 
     // 4) Inizializzo la pagina passando direttamente i dati raccolti

@@ -6,7 +6,7 @@ async function fetchLeagueDetails({ contest_id, currentUserId }) {
     console.log('[leagueDetailsService] chiamato con contest_id =', contest_id, 'currentUserId =', currentUserId);
     // 1) Prendo i dati basilari del contest
   const contestSql = `
-    SELECT contest_id, contest_name, multiply, status
+    SELECT contest_id, contest_name, multiply, status, stake
     FROM contests
     WHERE contest_id = ?
   `;
@@ -15,9 +15,10 @@ async function fetchLeagueDetails({ contest_id, currentUserId }) {
   const contestData = contestRows[0];
 
   // 2) Recupero tutti i fantasy_teams relativi a questo contest, ordinati
-  const fantasyTeamsSql = `
-    SELECT ft.fantasy_team_id, ft.user_id, ft.total_cost, ft.total_points, ft.ft_status,
-           u.username, u.avatar
+     const fantasyTeamsSql = `
+       SELECT ft.fantasy_team_id, ft.user_id, ft.total_cost, ft.total_points, ft.ft_status,
+              ft.ft_teex_won,    -- << aggiunto
+              u.username, u.avatar
     FROM fantasy_teams ft
     JOIN users u ON ft.user_id = u.user_id
     WHERE ft.contest_id = ?
@@ -31,6 +32,16 @@ async function fetchLeagueDetails({ contest_id, currentUserId }) {
       u.username ASC
   `;
   const [fantasyTeams] = await pool.promise().query(fantasyTeamsSql, [contest_id, currentUserId]);
+
+     // 3) Se il contest è 'finished' (status 5), calcolo max total_points e my ft_teex_won
+     const maxTotalPoints = fantasyTeams
+       .reduce((max, t) => Math.max(max, parseFloat(t.total_points) || 0), 0);
+     const myTeam = fantasyTeams.find(t => t.user_id === currentUserId);
+     if (contestData.status > 3) {
+       contestData.maxTotalPoints = maxTotalPoints;
+       contestData.myFtTeexWon    = myTeam ? myTeam.ft_teex_won : 0;
+     }
+
 
   // 3) Per ciascun fantasy_team, prendo le `fantasy_team_entities`
   for (const team of fantasyTeams) {
@@ -51,8 +62,8 @@ async function fetchLeagueDetails({ contest_id, currentUserId }) {
     team.entities = entities;
   }
 
-  // 4) Ritorno tutto
-  return { contest: contestData, fantasyTeams };
+     // 5) Ritorno contest (+ eventuali maxPoints/myTeexWon) e fantasyTeams
+     return { contest: contestData, fantasyTeams };
 }
 
 module.exports = { fetchLeagueDetails };

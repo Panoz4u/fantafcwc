@@ -111,35 +111,87 @@ export function renderPrivateLeagueCard(contest, userId) {
   //    • Altrimenti → in base a contest.status (1=PENDING/INVITED, 2=stake, 4=LIVE, 5=FINISHED)
   let statusText;
   let statusClass = 'status-badge-base';
-
+  let vsHTML = `<div class="result_bold">VS</div>`;
+  
   if (myTeam && myTeam.ft_status === 1) {
+    // invitato
     statusText   = 'INVITED';
     statusClass  = 'status-badge-base status-badge-invited';
   } else {
     switch (contest.status) {
       case 1:
+        // owner dopo accept, ma non ancora confermato
         statusText  = isOwner ? 'PENDING' : 'INVITED';
         statusClass = `status-badge-base status-badge-${isOwner ? 'pending' : 'invited'}`;
         break;
+
       case 2:
-        // Qui mostro esattamente lo stake (il valore numerico)
-        statusText  = String(contest.stake ?? '-');
-        statusClass = 'status-badge-base status-badge-ready';
-        break;
-      case 4:
-        statusText  = 'LIVE';
-        statusClass = 'status-badge-base status-badge-live';
-        break;
+          // show stake
+          statusText  = String(contest.stake ?? '-');
+          statusClass = 'status-badge-base status-badge-ready';
+          break;
+   
+          case 4:
+            // LIVE ? replace VS con result-bignum
+            // calcolo punteggi
+            const allPts = (contest.fantasy_teams||[]).map(t => Number(t.total_points||0));
+            const myPts4 = Number(myTeam?.total_points||0);
+            const oppPts4= Math.max(...allPts.filter(p=>p!==myPts4), 0);
+            const [myI4,myD4]= myPts4.toFixed(1).split('.');
+            const [opI4,opD4]= oppPts4.toFixed(1).split('.');
+            // eseguo override del “VS”
+            vsHTML = `
+              <div class="result-bignum">
+                <div class="result_block left_block">
+                  <span class="result_bold left">${myI4}</span>
+                  <span class="win_index_perc left">.${myD4}</span>
+                </div>
+                <span class="vs-separator"> </span>
+                <div class="result_block right_block${opI4<10?' onedigit':''}">
+                  <span class="result_bold right">${opI4}</span>
+                  <span class="win_index_perc right">.${opD4}</span>
+                </div>
+              </div>
+            `;
+            statusText  = String(contest.stake ?? '-');
+            statusClass = 'status-badge-base status-badge-live';
+            break;
+            
       case 5:
-        statusText  = 'FINISHED';
-        statusClass = 'status-badge-base status-badge-finished';
-        break;
+        const allP5= (contest.fantasy_teams||[]).map(t=>Number(t.total_points||0));
+        const myP5 = Number(myTeam?.total_points||0);
+        const oppP5= Math.max(...allP5.filter(p=>p!==myP5),0);
+        const [mI,mD] = myP5.toFixed(1).split('.');
+        const [oI,oD] = oppP5.toFixed(1).split('.');
+        vsHTML = `
+        <div class="result-bignum">
+          <div class="result_block left_block">
+            <span class="result_bold left">${mI}</span>
+            <span class="win_index_perc left">.${mD}</span>
+          </div>
+          <span class="vs-separator"> </span>
+          <div class="result_block right_block${oI<10?' onedigit':''}">
+            <span class="result_bold right">${oI}</span>
+            <span class="win_index_perc right">.${oD}</span>
+          </div>
+        </div>
+      `;
+      const teex = Number(myTeam?.ft_teex_won||0);
+      statusText = (teex > 0 ? '+' : '') + teex.toFixed(1);
+      statusClass = teex>0
+      ? 'status-badge-base status-badge-win'
+      : teex<0
+        ? 'status-badge-base status-badge-loss'
+        : 'status-badge-base status-badge-draw';
+      break;
+
       default:
-        statusText  = contest.status_name || 'UNKNOWN';
-        statusClass = 'status-badge-base';
-        break;
-    }
-  }
+      // fallback genera VS normale
+      statusText  = contest.status_name || '';
+      statusClass = 'status-badge-base';
+      break;
+}
+}
 
   // 10) Se contest.multiply > 1, preparo la piccola etichetta “Multiply”
   const multiplyHTML = contest.multiply > 1

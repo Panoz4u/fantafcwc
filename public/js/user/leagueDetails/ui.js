@@ -49,13 +49,28 @@ export function renderLeagueHeader(contest, fantasyTeams, currentUserId) {
   let statusText  = '';
   let statusClass = 'status-badge-base';
 
-  if (myTeam && myTeam.ft_status === 1) {
-    statusText  = 'INVITED';
-    statusClass = 'status-badge-base status-badge-invited';
-  } else {
-    statusText  = 'PENDING';
-    statusClass = 'status-badge-base status-badge-pending';
-  }
+    if (myTeam && myTeam.ft_status === 1) {
+        // invitato
+        statusText  = 'INVITED';
+        statusClass = 'status-badge-base status-badge-invited';
+          } else if (contest.status >= 2) {
+              // se status>=2 mostro lo stake (o Won se finished)
+              if (contest.status === 5 && contest.myFtTeexWon != null) {
+                statusText  = `WON ${parseFloat(contest.myFtTeexWon).toFixed(1)}`;
+                statusClass = 'status-badge-base status-badge-finished';
+              } else {
+                statusText  = String(contest.stake ?? '-');
+                statusClass = contest.status === 2
+                            ? 'status-badge-base status-badge-ready'
+                            : contest.status === 4
+                              ? 'status-badge-base status-badge-live'
+                              : 'status-badge-base';
+              }
+      } else {
+        // fallback prima del confirm (still pending)
+        statusText  = 'PENDING';
+        statusClass = 'status-badge-base status-badge-pending';
+      }
 
   // ─── 7) Piccola etichetta Multiply (se > 1) ───
   const multiplyHTML = contest.multiply > 1
@@ -103,6 +118,11 @@ export function renderLeagueHeader(contest, fantasyTeams, currentUserId) {
 
       <!-- Etichetta Multiply se presente -->
       ${multiplyHTML}
+
+      <!-- Max Points (solo se finito) -->
+     ${contest.status > 3 && contest.maxTotalPoints != null
+       ? `<div class="max-points">Max Pts: ${contest.maxTotalPoints.toFixed(1)}</div>`
+       : ''}
     </div>
   `;
 }
