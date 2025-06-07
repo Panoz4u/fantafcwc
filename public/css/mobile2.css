@@ -333,7 +333,7 @@
   list-style: none;
   padding-top: 110px; /* Add top padding to account for fixed headers */
   padding-bottom: 80px;
-  margin: 0 16px;
+  margin: 0 0px;
 }
 
 .opponent-list.cmp {
@@ -348,6 +348,8 @@
   border-radius: 8px;
   padding: 12px;
   margin-bottom: 8px;
+  margin-left: 8px;
+  margin-right: 8px;;
   justify-content: space-between;
 }
 
@@ -965,3 +967,7 @@
   cursor: pointer;
 }
 
+
+.opponent-item.selected {
+  border: 2px solid #f1be48;
+}

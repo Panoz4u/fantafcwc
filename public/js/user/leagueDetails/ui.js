@@ -53,6 +53,39 @@ export function renderLeagueHeader(contest, fantasyTeams, currentUserId) {
   let statusText  = '';
   let statusClass = 'status-badge-base';
 
+   // ─── 6.1) Preparo vsHTML di default ───
+    let vsHTML = `<div class="result_bold">VS</div>`;
+  
+    // ─── 6.2) Calcolo result_bignum se LIVE (4) o FINISHED (5) ───
+    if (contest.status === 4 || contest.status === 5) {
+      // trovo il mio team
+      const myTeam = fantasyTeams.find(ft => String(ft.user_id) === String(currentUserId));
+      const myPts = Number(myTeam?.total_points || 0);
+      // calcolo il punti max degli altri
+      const otherPts = fantasyTeams
+      .filter(ft => String(ft.user_id) !== String(currentUserId))
+      .map(ft => Number(ft.total_points || 0));
+     const oppPts = otherPts.length ? Math.max(...otherPts) : 0;
+      // splitto interi e decimali
+      const [iMy, dMy] = myPts.toFixed(1).split('.');
+      const [iOp, dOp] = oppPts.toFixed(1).split('.');
+      vsHTML = `
+        <div class="result-bignum">
+          <div class="result_block left_block">
+            <span class="result_bold left">${iMy}</span>
+            <span class="win_index_perc left">.${dMy}</span>
+          </div>
+          <span class="vs-separator"></span>
+          <div class="result_block right_block${iOp<10?' onedigit':''}">
+            <span class="result_bold right">${iOp}</span>
+            <span class="win_index_perc right">.${dOp}</span>
+          </div>
+        </div>
+      `;
+    }
+   
+
+
     if (myTeam && myTeam.ft_status === 1) {
         // invitato
         statusText  = 'INVITED';
@@ -94,8 +127,8 @@ export function renderLeagueHeader(contest, fantasyTeams, currentUserId) {
           ${String(myName).substring(0,3).toUpperCase()}
         </div>
 
-        <!-- “VS” fisso al centro -->
-        <div class="result_bold">VS</div>
+        <!-- VS o result-bignum -->
+        ${vsHTML}
 
         <!-- Tri‐letter contest a destra -->
         <div class="triletter_contest right-name">
@@ -123,11 +156,7 @@ export function renderLeagueHeader(contest, fantasyTeams, currentUserId) {
       <!-- Etichetta Multiply se presente -->
       ${multiplyHTML}
 
-      <!-- Max Points (solo se finito) -->
-     ${contest.status > 3 && contest.maxTotalPoints != null
-       ? `<div class="max-points">Max Pts: ${contest.maxTotalPoints.toFixed(1)}</div>`
-       : ''}
-    </div>
+
   `;
 }
 
@@ -193,6 +222,8 @@ export function initLeagueDetails({ contest, fantasyTeams }, currentUserId) {
   if (countRefusedEl)   countRefusedEl.textContent   = refusedCount;
   if (countConfirmedEl) countConfirmedEl.textContent = confirmedCount;
 
+
+
   // ──────────── 2) HEADER GIALLO ────────────
   renderLeagueHeader(contest, fantasyTeams, currentUserId);
 
@@ -202,9 +233,34 @@ export function initLeagueDetails({ contest, fantasyTeams }, currentUserId) {
     nameEl.textContent = (contest.contest_name || '').toUpperCase();
   }
 
+    // ─── 3.1) Calcolo posizione classifica con parimerito (solo ft_status ≥ 2) ───
+    const confirmed = fantasyTeams.filter(ft => ft.ft_status >= 2);
+    confirmed.sort((a, b) => Number(b.total_points || 0) - Number(a.total_points || 0));
+    const rankMap = {};
+    let lastPts = null, lastRank = 0;
+    confirmed.forEach((ft, idx) => {
+      const pts = Number(ft.total_points || 0);
+      if (pts === lastPts) {
+        // stesso punteggio → stesso rank
+        rankMap[String(ft.user_id)] = lastRank;
+      } else {
+        lastRank = idx + 1;
+        rankMap[String(ft.user_id)] = lastRank;
+        lastPts = pts;
+      }
+    });
+  
+    // ─── 3.2) Riordino fantasyTeams per posizione (i non confermati restano in fondo) ───
+    fantasyTeams.sort((a, b) => {
+      const ra = rankMap[String(a.user_id)] || Infinity;
+      const rb = rankMap[String(b.user_id)] || Infinity;
+      return ra - rb;
+    });
+
   // ──────────── 4) LISTA FANTASY TEAMS ────────────
   const teamsContainer = document.getElementById('teamsContainer');
   teamsContainer.innerHTML = '';
+
 
   fantasyTeams.forEach(team => {
     const {
@@ -216,6 +272,8 @@ export function initLeagueDetails({ contest, fantasyTeams }, currentUserId) {
       ft_status,
       entities
     } = team;
+
+
 
   // ─── 4.1) Creiamo .opponent-item ───
   const item = document.createElement('div');
@@ -240,16 +298,18 @@ export function initLeagueDetails({ contest, fantasyTeams }, currentUserId) {
       <div class="opponent-data">
         <h3 class="opponent-name">${username}</h3>
   `;
-
-  // ─── Se ft_status ≥ 2, aggiungiamo la league-rank ───
-  if (ft_status >= 2) {
-    innerHTML += `
+    // ─── Se ft_status ≥ 2, aggiungiamo la league-rank con la posizione calcolata ───
+        if (ft_status >= 2) {
+            const pos = rankMap[String(user_id)] !== undefined
+              ? rankMap[String(user_id)]
+              : '-';
+      innerHTML += `
         <div class="league-rank">
-          <p class="pos">Pos: -</p>
+          <p class="pos">Pos: ${pos}</p>
           <img src="icons/sh.png" class="ppc-icon" alt="PPC"> Clubby: -
         </div>
-    `;
-  }
+      `;
+    }
 
   // ─── Chiudiamo i div di opponent-data e opponent-info ───
   innerHTML += `

@@ -135,13 +135,16 @@ export function renderPrivateLeagueCard(contest, userId) {
           break;
    
           case 4:
-            // LIVE ? replace VS con result-bignum
-            // calcolo punteggi
-            const allPts = (contest.fantasy_teams||[]).map(t => Number(t.total_points||0));
-            const myPts4 = Number(myTeam?.total_points||0);
-            const oppPts4= Math.max(...allPts.filter(p=>p!==myPts4), 0);
-            const [myI4,myD4]= myPts4.toFixed(1).split('.');
-            const [opI4,opD4]= oppPts4.toFixed(1).split('.');
+          // LIVE: calcolo punti mio e avversari
+          const myPts4 = Number(myTeam?.total_points || 0);
+          const otherPts = (contest.fantasy_teams || [])
+            .filter(t => String(t.user_id) !== String(userId))
+            .map(t => Number(t.total_points || 0));
+          const oppPts4 = otherPts.length ? Math.max(...otherPts) : 0;
+
+          // split delle cifre
+          const [myI4, myD4] = myPts4.toFixed(1).split('.');
+          const [opI4, opD4] = oppPts4.toFixed(1).split('.');
             // eseguo override del “VS”
             vsHTML = `
               <div class="result-bignum">
@@ -160,12 +163,16 @@ export function renderPrivateLeagueCard(contest, userId) {
             statusClass = 'status-badge-base status-badge-live';
             break;
             
-      case 5:
-        const allP5= (contest.fantasy_teams||[]).map(t=>Number(t.total_points||0));
-        const myP5 = Number(myTeam?.total_points||0);
-        const oppP5= Math.max(...allP5.filter(p=>p!==myP5),0);
-        const [mI,mD] = myP5.toFixed(1).split('.');
-        const [oI,oD] = oppP5.toFixed(1).split('.');
+            case 5:
+              // FINISHED: calcolo punti mio e avversari
+              const myP5 = Number(myTeam?.total_points || 0);
+              const otherPts5 = (contest.fantasy_teams || [])
+                .filter(t => String(t.user_id) !== String(userId))
+                .map(t => Number(t.total_points || 0));
+              const oppP5 = otherPts5.length ? Math.max(...otherPts5) : 0;
+            
+              const [mI, mD] = myP5.toFixed(1).split('.');
+              const [oI, oD] = oppP5.toFixed(1).split('.');
         vsHTML = `
         <div class="result-bignum">
           <div class="result_block left_block">
@@ -224,7 +231,7 @@ export function renderPrivateLeagueCard(contest, userId) {
           ${myName.substring(0,3)}
         </div>
 
-        <div class="result_bold">VS</div>
+        ${vsHTML}
 
         <div class="triletter_contest right-name">
           ${rightLabelName}
