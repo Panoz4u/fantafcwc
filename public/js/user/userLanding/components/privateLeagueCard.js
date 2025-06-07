@@ -59,10 +59,9 @@ export function renderPrivateLeagueCard(contest, userId) {
   card.className = 'contest-cell clickable';
   card.dataset.contestId = contest.contest_id;
 
-  // 2) Calcolo NINVIT = numero di fantasy_teams con ft_status > 0
-  const NINVIT = (contest.fantasy_teams || [])
-    .filter(ft => ft.ft_status > 0)
-    .length;
+
+    // 2) Calcolo totalOpponents = totale fantasy_teams meno il mio
+    const totalOpponents = (contest.fantasy_teams || []).length - 1;
 
   // 3) Calcolo NCONF = numero di fantasy_teams con ft_status > 1
   const NCONF = (contest.fantasy_teams || [])
@@ -98,13 +97,13 @@ export function renderPrivateLeagueCard(contest, userId) {
       class="player-avatar-contest left-avatar">
   `;
 
-  // 8) Avatar “giallo” a destra: NCONF/NINVIT
-  const rightAvatarHTML = `
-    <div class="player-avatar-contest right-avatar league-avatar">
-      <span class="MainNumber">${NCONF}</span>
-      <span class="SmallNumber">/${NINVIT}</span>
-    </div>
-  `;
+    // 8) Avatar “giallo” a destra: NCONF/totalOpponents
+      const rightAvatarHTML = `
+        <div class="player-avatar-contest right-avatar league-avatar">
+          <span class="MainNumber">${NCONF}</span>
+          <span class="SmallNumber">/${totalOpponents}</span>
+        </div>
+      `;
 
   // 9) Badge di status:
   //    • Se myTeam.ft_status === 1 → "INVITED"
@@ -113,7 +112,7 @@ export function renderPrivateLeagueCard(contest, userId) {
   let statusClass = 'status-badge-base';
   let vsHTML = `<div class="result_bold">VS</div>`;
   
-  if (myTeam && myTeam.ft_status === 1) {
+  if (myTeam && myTeam.ft_status < 2) {
     // invitato
     statusText   = 'INVITED';
     statusClass  = 'status-badge-base status-badge-invited';
@@ -242,8 +241,18 @@ export function renderPrivateLeagueCard(contest, userId) {
   `;
 
   // 14) Click handler:
-  card.addEventListener('click', () => {
-    if (myTeam && myTeam.ft_status === 1) {
+    card.addEventListener('click', () => {
+        // salvo sempre l’ID del contest
+        localStorage.setItem('contestId', contest.contest_id);
+    
+        // 1) se sono invitato (ft_status = 0) → creazione squadra
+        if (myTeam && myTeam.ft_status === 0) {
+          window.location.href = '/contest-creation.html';
+          return;
+        }
+    
+        // 2) se ft_status === 1 → league-recap (mantengo il tuo blocco esistente)
+        if (myTeam && myTeam.ft_status === 1) {
       // Costruisco un unico oggetto con TUTTI i dati necessari in league-recap
       const recapContestData = {
         contestId:        contest.contest_id,
@@ -287,11 +296,9 @@ export function renderPrivateLeagueCard(contest, userId) {
       // Redirect “pulito”
       window.location.href = '/league-recap.html';
       return;
-    }
-    
-    // Altrimenti, comportamento attuale
-    localStorage.setItem('contestId', contest.contest_id);
-    window.location.href = '/league-details.html';
-  });
+         }
+                // 3) tutti gli altri casi → dettagli contest
+          window.location.href = '/league-details.html';
+        });
   return card;
 }

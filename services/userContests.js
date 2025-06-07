@@ -123,17 +123,22 @@ async function getUserContests(userId) {
       };
     }
     // Se c’è una riga ft_user_id (left join o join), aggiungila
-    if (r.ft_user_id) {
-      map[r.contest_id].fantasy_teams.push({
-        contest_id:   r.contest_id,
-        user_id:      r.ft_user_id,
-        total_cost:   r.ft_cost,
-        total_points: r.ft_points,
-        ft_teex_won:  r.ft_teex_won,
-        ft_result:    r.ft_result,
-        ft_status:    null // verrà popolato nella query successiva
-      });
-    }
+      if (r.ft_user_id) {
+          const arr = map[r.contest_id].fantasy_teams;
+          // Evito il doppione controllando se esiste già un ft.user_id uguale
+          const exists = arr.some(ft => String(ft.user_id) === String(r.ft_user_id));
+          if (!exists) {
+            arr.push({
+              contest_id:   r.contest_id,
+              user_id:      r.ft_user_id,
+              total_cost:   r.ft_cost,
+              total_points: r.ft_points,
+              ft_teex_won:  r.ft_teex_won,
+              ft_result:    r.ft_result,
+              ft_status:    null // verrà popolato nella query successiva
+            });
+          }
+        }
   }
 
   // 4) Recupera i campi ft_status per tutti i fantasy_teams dei contest trovati
