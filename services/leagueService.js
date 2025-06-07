@@ -185,6 +185,9 @@ async function confirmLeagueContest({ contestId, userId, fantasyTeamId, players,
       [ newStatus, newStake, multiplier, contestId ]
     );
 
+
+
+    
     // 5) Aggiorno fantasy_teams per il current user
     await conn.query(
       `UPDATE fantasy_teams

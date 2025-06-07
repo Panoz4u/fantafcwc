@@ -32,9 +32,13 @@ export function renderLeagueHeader(contest, fantasyTeams, currentUserId) {
     ? parseFloat(myTeam.total_cost).toFixed(1)
     : '-';
 
-  // ─── 3) Calcola NINVIT (tutti i team) e NCONF (ft_status > 1) ───
-  const NINVIT = fantasyTeams.length;
-  const NCONF  = fantasyTeams.filter(ft => ft.ft_status > 1).length;
+      // ─── 3) Conta tutti gli altri team (meno il mio) e quelli confermati (ft_status > 1) ───
+      //    Escludiamo sempre il currentUserId
+      const otherTeams = fantasyTeams.filter(
+        ft => String(ft.user_id) !== String(currentUserId)
+      );
+      const NINVIT = otherTeams.length;
+      const NCONF  = otherTeams.filter(ft => ft.ft_status > 1).length;
 
   // ─── 4) Calcola Max cost degli altri team ───
   const otherCosts = fantasyTeams
