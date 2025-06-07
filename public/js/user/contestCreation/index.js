@@ -21,22 +21,28 @@ async function init() {
   }
   console.log("✅ Parsed contestData:", contestData);
 
-  // estraggo tutti i campi, compreso fantasyTeamId
-  const {
-    contestId               = 0,
-    userId                  = 0,
-    ownerId                 = 0,
-    opponentId              = 0,
-    eventUnitId             = 0,
-    currentUserAvatar       = "",
-    currentUserName         = "",
-    currentUserInitialCost  = "0.0",
-    fantasyTeamId           = null
-  } = contestData;
+    // estraggo tutti i campi, compreso fantasyTeamId e currentUserId/UserId
+   const {
+      contestId               = 0,
+      ownerId                 = 0,
+      opponentId              = 0,
+      eventUnitId             = 0,
+      currentUserAvatar       = "",
+      currentUserName         = "",
+      currentUserInitialCost  = "0.0",
+      fantasyTeamId           = null,
+      // il recap flow mette currentUserId, il create flow mette userId
+      currentUserId: fromRecap,
+      userId:        fromCreate = 0
+    } = contestData;
+  
+    // Se è arrivato currentUserId (da recap), lo uso, altrimenti fallback su userId
+    const currentUserId = fromRecap != null ? Number(fromRecap) : Number(fromCreate);
+    const userId        = currentUserId;
 
   console.log("📋 Breakdown →", {
     contestId,
-    userId,
+    userId,                // sarà sempre = currentUserId
     ownerId,
     opponentId,
     eventUnitId,
@@ -100,18 +106,26 @@ async function init() {
    try {
     const stored = JSON.parse(localStorage.getItem("contestData")|| "{}");
     console.log("🔍 [DEBUG] stored.fantasyTeamId prima del merge =", stored.fantasyTeamId);
+  
+    const fallbackFT = (userId === ownerId)
+      ? contest.owner_team_id
+      : contest.opponent_team_id;
+  
     const merged = {
-    ...stored,
-    status: contest.status,
-    multiply: contest.multiply,
-    // NON tocchiamo fantasyTeamId, lo lasciamo com’è in 'stored'
-    contestType: contest.contest_type
+      ...stored,
+      status:        contest.status,
+      multiply:      contest.multiply,
+      contestType:   contest.contest_type,
+      fantasyTeamId: stored.fantasyTeamId != null
+                      ? stored.fantasyTeamId   // rientro da recap (invitato)
+                      : fallbackFT            // creazione nuova challenge (owner)
     };
+  
     console.log("🔄 [DEBUG] contestData dopo il merge:", merged);
     localStorage.setItem("contestData", JSON.stringify(merged));
-    } catch(e) {
+  } catch(e) {
     console.error("❌ Errore merge contestData:", e);
-    }
+  }
    // ────────────────────────────────────────────────────────────────
 
   // sovrascrivo chosenPlayers con i team restituiti dal server
