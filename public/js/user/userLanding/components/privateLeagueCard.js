@@ -245,58 +245,51 @@ export function renderPrivateLeagueCard(contest, userId) {
         // salvo sempre l’ID del contest
         localStorage.setItem('contestId', contest.contest_id);
     
-        // 1) se sono invitato (ft_status = 0) → creazione squadra
-        if (myTeam && myTeam.ft_status === 0) {
-          window.location.href = '/contest-creation.html';
-          return;
-        }
+
     
-        // 2) se ft_status === 1 → league-recap (mantengo il tuo blocco esistente)
-        if (myTeam && myTeam.ft_status === 1) {
-      // Costruisco un unico oggetto con TUTTI i dati necessari in league-recap
-      const recapContestData = {
-        contestId:        contest.contest_id,
-        contestName:      contest.contest_name,
-        contestType:      contest.contest_type,
-        status:           contest.status,
-        stake:            contest.stake,
-        multiply:         contest.multiply,
-        eventUnitId:      contest.event_unit_id,
+       // 2) se ft_status === 1 → league-recap (mantengo il tuo blocco esistente)
+            // 1) se sono invitato (ft_status = 0) → PREPARO recapContestData e vado a league-recap
+            if (myTeam && myTeam.ft_status === 0) {
+              const recapContestData = {
+                contestId:        contest.contest_id,
+                contestName:      contest.contest_name,
+                contestType:      contest.contest_type,
+                status:           contest.status,
+                stake:            contest.stake,
+                multiply:         contest.multiply,
+                eventUnitId:      contest.event_unit_id,
+        
+                ownerId:          contest.owner_id,
+                ownerInfo: {
+                  name:    contest.owner_name,
+                  avatar:  contest.owner_avatar,
+                  color:   contest.owner_color
+                },
+        
+                opponentId:       contest.opponent_id,
+                opponentInfo: {
+                  name:    contest.opponent_name,
+                  avatar:  contest.opponent_avatar,
+                  color:   contest.opponent_color
+                },
+        
+                fantasyTeams:     contest.fantasy_teams,
+        
+                currentUser: {
+                  id:      contest.current_user_id,
+                  avatar:  contest.current_user_avatar,
+                  name:    contest.current_user_name,
+                  cost:    parseFloat(contest.current_user_cost || 0).toFixed(1)
+                }
+              };
+              // salvo i dati completi della league
+              localStorage.setItem('recapContestData', JSON.stringify(recapContestData));
+              window.location.href = '/league-recap.html';
+              return;
+            }
 
-        ownerId:          contest.owner_id,
-        ownerInfo: {
-          name:           contest.owner_name,
-          avatar:         contest.owner_avatar,
-          color:          contest.owner_color
-        },
 
-        opponentId:       contest.opponent_id,
-        opponentInfo: {
-          name:           contest.opponent_name,
-          avatar:         contest.opponent_avatar,
-          color:          contest.opponent_color
-        },
 
-        fantasyTeams:     contest.fantasy_teams,
-
-        currentUser: {
-          id:             contest.current_user_id,
-          avatar:         contest.current_user_avatar,
-          name:           contest.current_user_name,
-          cost:           parseFloat(contest.current_user_cost || 0).toFixed(1)
-        }
-      };
-
-      // Loggo per verifica
-      console.log('[DEBUG] Saving recapContestData →', recapContestData);
-
-      // Lo salvo in LocalStorage tutto insieme
-      localStorage.setItem('recapContestData', JSON.stringify(recapContestData));
-
-      // Redirect “pulito”
-      window.location.href = '/league-recap.html';
-      return;
-         }
                 // 3) tutti gli altri casi → dettagli contest
           window.location.href = '/league-details.html';
         });
