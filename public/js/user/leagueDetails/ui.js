@@ -334,7 +334,9 @@ export function initLeagueDetails({ contest, fantasyTeams }, currentUserId) {
       <div class="opponent-data">
         <h3 class="opponent-name">${username}</h3>
   `;
-      // ─── Se ft_status ≥ 2, aggiungiamo la league-rank con posizione e, per pos≤3, i Teex ───
+    // ─── Mostriamo Pos/Clubby solo se il contest è già live o chiuso (status > 2) ───
+    if (contest.status > 2) {
+      // E dentro controlliamo lo stato di ciascun fantasy team
       if (ft_status >= 2) {
         const pos = rankMap[String(user_id)] || '-';
         if (pos <= 3) {
@@ -353,7 +355,22 @@ export function initLeagueDetails({ contest, fantasyTeams }, currentUserId) {
             </div>
           `;
         }
+      } else if (ft_status === 1) {
+        // invitati in un contest già avviato
+        innerHTML += `
+          <div class="league-rank">
+            <p class="pos">INVITED</p>
+          </div>
+        `;
+      } else if (ft_status === -1) {
+        // rejected in contest già avviato
+        innerHTML += `
+          <div class="league-rank">
+            <p class="pos">REJECTED</p>
+          </div>
+        `;
       }
+    }
 
   // ─── Chiudiamo i div di opponent-data e opponent-info ───
   innerHTML += `
