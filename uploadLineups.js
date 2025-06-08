@@ -5,6 +5,62 @@ const path = require("path");
 const fs = require("fs");
 const XLSX = require("xlsx");
 const pool = require('./services/db');
+const moment = require('moment-timezone');
+const ALLOWED_COLUMNS = [
+  'athlete_id',
+  'event_unit_id',
+  'event_unit_cost',
+  'status',
+  'athlete_unit_points',
+  'is_ended',
+  'created_at',
+  'updated_at',
+  'valid_from',
+  'valid_to'
+];
+// colonne che vanno parse-date
+const DATE_COLUMNS = ['created_at','updated_at','valid_from','valid_to'];
+
+// Helper per normalizzare chiavi e parsare date da Excel
+// Helper per normalizzare chiavi e parsare date da Excel
+// dopo ALLOWED_COLUMNS e DATE_COLUMNS...
+function normalizeItem(raw) {
+  const item = {};
+
+  function excelDateToJSDate(serial) {
+    const utcDays = Math.floor(serial - 25569);
+    const utcMs   = utcDays * 86400 * 1000;
+    const fracDay = serial - Math.floor(serial);
+    const msFrac  = Math.round(86400 * 1000 * fracDay);
+    return new Date(utcMs + msFrac);
+  }
+
+  Object.entries(raw).forEach(([origKey, val]) => {
+    const key = origKey.trim().toLowerCase().replace(/[\s\-]+/g,'_');
+    if (!ALLOWED_COLUMNS.includes(key) || val == null || val === '') return;
+
+    if (DATE_COLUMNS.includes(key)) {
+      let m;
+      if (val instanceof Date) {
+        // già JS Date → assumilo in Europe/Rome
+        m = moment(val).tz('Europe/Rome');
+      } else if (typeof val === 'number') {
+        // serial Excel
+        m = moment(excelDateToJSDate(val)).tz('Europe/Rome');
+      } else {
+        // stringa "DD/MM/YYYY HH:mm"
+        m = moment.tz(val, 'DD/MM/YYYY HH:mm', 'Europe/Rome');
+      }
+      // salva in UTC
+      item[key] = m.utc().format('YYYY-MM-DD HH:mm:ss');
+    } else {
+      item[key] = val;
+    }
+  });
+
+  return item;
+}
+
 
 // Configurazione di Multer per salvare i file nella cartella "uploads"
 const storage = multer.diskStorage({
@@ -70,46 +126,22 @@ router.post("/", upload.single("lineupsFile"), async (req, res) => {
 // Funzione asincrona per processare i dati letti dal file
 async function processLineups(data) {
   const results = [];
-  
-  // Processa ogni riga del file
-  for (const item of data) {
+  for (let raw of data) {
+    const item = normalizeItem(raw);    // <-- qui la nuova normalizzazione
+
     try {
-      // Verifica se esiste già un record con questa combinazione athlete_id/event_unit_id
       const checkResult = await checkExistingRecord(item.athlete_id, item.event_unit_id);
-      
       if (checkResult.exists) {
-        // Se esiste, aggiorna il record
         const updateResult = await updateRecord(item);
-        results.push({
-          athlete_id: item.athlete_id,
-          event_unit_id: item.event_unit_id,
-          action: 'update',
-          success: updateResult.success,
-          error: updateResult.error
-        });
+        results.push({ athlete_id:item.athlete_id, event_unit_id:item.event_unit_id, action:'update', success:updateResult.success, error:updateResult.error });
       } else {
-        // Se non esiste, inserisci un nuovo record
         const insertResult = await insertRecord(item);
-        results.push({
-          athlete_id: item.athlete_id,
-          event_unit_id: item.event_unit_id,
-          action: 'insert',
-          success: insertResult.success,
-          error: insertResult.error
-        });
+        results.push({ athlete_id:item.athlete_id, event_unit_id:item.event_unit_id, action:'insert', success:insertResult.success, error:insertResult.error });
       }
     } catch (error) {
-      console.error(`Errore nel processare il record (athlete_id: ${item.athlete_id}, event_unit_id: ${item.event_unit_id}):`, error);
-      results.push({
-        athlete_id: item.athlete_id,
-        event_unit_id: item.event_unit_id,
-        action: 'unknown',
-        success: false,
-        error: error.message
-      });
+      results.push({ athlete_id:item.athlete_id, event_unit_id:item.event_unit_id, action:'unknown', success:false, error:error.message });
     }
   }
-  
   return results;
 }
 
@@ -135,63 +167,84 @@ function checkExistingRecord(athleteId, eventUnitId) {
 
 // Funzione per aggiornare un record esistente
 function updateRecord(item) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
+    // 1. Costruisci dinamicamente campo = ? per ogni proprietà valida
+    const sets = [];
+    const values = [];
+
+    Object.entries(item).forEach(([key, val]) => {
+      if (['athlete_id', 'event_unit_id'].includes(key)) return;
+      if (!ALLOWED_COLUMNS.includes(key)) return;
+      sets.push(`\`${key}\` = ?`);
+      values.push(val);
+    });
+
+    // 2. Assicuriamoci di aggiornare sempre updated_at
+    sets.push('`updated_at` = NOW()');
+
+    // 3. Monta la query
     const sql = `
-      UPDATE athlete_eventunit_participation 
-      SET 
-        event_unit_cost = ?,
-        status = ?,
-        updated_at = NOW(),
-        athlete_unit_points = ?,
-        is_ended = ?
+      UPDATE athlete_eventunit_participation
+      SET ${sets.join(', ')}
       WHERE athlete_id = ? AND event_unit_id = ?
     `;
-    
-    pool.query(sql, [
-      item.event_unit_cost,
-      item.status,
-      item.athlete_unit_points,
-      item.is_ended,
-      item.athlete_id,
-      item.event_unit_id
-    ], (err, result) => {
+    values.push(item.athlete_id, item.event_unit_id);
+
+    pool.query(sql, values, (err, result) => {
       if (err) {
         console.error("Errore nell'aggiornamento del record:", err);
         resolve({ success: false, error: err.message });
       } else {
-        console.log(`Record aggiornato per athlete_id ${item.athlete_id} e event_unit_id ${item.event_unit_id}`);
         resolve({ success: true });
       }
     });
   });
 }
 
-// Funzione per inserire un nuovo record
+
 function insertRecord(item) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
+    const cols = ['athlete_id', 'event_unit_id'];
+    const placeholders = ['?', '?'];
+    const values = [item.athlete_id, item.event_unit_id];
+
+    // Aggiungi tutte le proprietà valide (escluse chiavi PK)
+    Object.entries(item).forEach(([key, val]) => {
+      if (['athlete_id', 'event_unit_id'].includes(key)) return;
+      if (!ALLOWED_COLUMNS.includes(key)) return;
+      cols.push(`\`${key}\``);
+      placeholders.push('?');
+      values.push(val);
+    });
+
+    // Se il file non contiene created_at, lo mettiamo noi
+    if (!cols.includes('`created_at`')) {
+      cols.push('`created_at`');
+      placeholders.push('NOW()');
+    }
+
+    // Stesso per updated_at
+    if (!cols.includes('`updated_at`')) {
+      cols.push('`updated_at`');
+      placeholders.push('NOW()');
+    }
+
     const sql = `
-      INSERT INTO athlete_eventunit_participation 
-      (athlete_id, event_unit_id, event_unit_cost, status, created_at, updated_at, athlete_unit_points, is_ended)
-      VALUES (?, ?, ?, ?, NOW(), NOW(), ?, ?)
+      INSERT INTO athlete_eventunit_participation
+      (${cols.join(', ')})
+      VALUES (${placeholders.join(', ')})
     `;
-    
-    pool.query(sql, [
-      item.athlete_id,
-      item.event_unit_id,
-      item.event_unit_cost,
-      item.status,
-      item.athlete_unit_points || null,
-      item.is_ended || 0
-    ], (err, result) => {
+
+    pool.query(sql, values, (err, result) => {
       if (err) {
-        console.error("Errore nell'inserimento del nuovo record:", err);
+        console.error("Errore nell'inserimento del record:", err);
         resolve({ success: false, error: err.message });
       } else {
-        console.log(`Nuovo record inserito per athlete_id ${item.athlete_id} e event_unit_id ${item.event_unit_id}`);
         resolve({ success: true });
       }
     });
   });
 }
+
 
 module.exports = router;

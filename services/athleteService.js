@@ -2,6 +2,10 @@
 
 const pool = require('./db');
 
+// utilities per formattare la data UTC
+function nowUtcString() {
+  return new Date().toISOString().slice(0,19).replace('T',' ');
+}
 /**
  * Restituisce tutti gli atleti partecipanti a uno specifico event_unit_id
  * @param {string|number} eventUnitId
@@ -33,9 +37,15 @@ function getEventPlayers(eventUnitId) {
         ON m.home_team = ht.team_id
       LEFT JOIN teams at 
         ON m.away_team = at.team_id
-      WHERE aep.event_unit_id = ? AND aep.status = 1
+      WHERE
+        aep.event_unit_id = ?
+        AND (
+          aep.status = 1
+          OR (aep.valid_from <= ? AND aep.valid_to >= ?)
+        )
     `;
-    pool.query(sql, [eventUnitId], (err, rows) => {
+    const now = nowUtcString();
+    pool.query(sql, [ eventUnitId, now, now ], (err, rows) => {
       if (err) return reject(err);
       resolve(rows);
     });
@@ -97,12 +107,13 @@ function getAllActiveAthletes() {
         ON m.home_team = ht.team_id
       LEFT JOIN teams at 
         ON m.away_team = at.team_id
-
-      WHERE aep.status = 1
+      WHERE
+        aep.status = 1
+        OR (aep.valid_from <= ? AND aep.valid_to >= ?)
     `;
 
-    pool.query(sql, (err, rows) => {
-      if (err) return reject(err);
+    const now = nowUtcString();
+    pool.query(sql, [ now, now ], (err, rows) => {
       resolve(rows);
     });
   });
