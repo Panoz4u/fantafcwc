@@ -164,7 +164,7 @@ export function renderPrivateLeagueCard(contest, userId) {
             break;
             
             case 5:
-              // FINISHED: calcolo punti mio e avversari
+              // FINISHED: calcolo punti mio e avversari e preparo vsHTML
               const myP5 = Number(myTeam?.total_points || 0);
               const otherPts5 = (contest.fantasy_teams || [])
                 .filter(t => String(t.user_id) !== String(userId))
@@ -173,27 +173,36 @@ export function renderPrivateLeagueCard(contest, userId) {
             
               const [mI, mD] = myP5.toFixed(1).split('.');
               const [oI, oD] = oppP5.toFixed(1).split('.');
-        vsHTML = `
-        <div class="result-bignum">
-          <div class="result_block left_block">
-            <span class="result_bold left">${mI}</span>
-            <span class="win_index_perc left">.${mD}</span>
-          </div>
-          <span class="vs-separator"> </span>
-          <div class="result_block right_block${oI<10?' onedigit':''}">
-            <span class="result_bold right">${oI}</span>
-            <span class="win_index_perc right">.${oD}</span>
-          </div>
-        </div>
-      `;
-      const teex = Number(myTeam?.ft_teex_won||0);
-      statusText = (teex > 0 ? '+' : '') + teex.toFixed(1);
-      statusClass = teex>0
-      ? 'status-badge-base status-badge-win'
-      : teex<0
-        ? 'status-badge-base status-badge-loss'
-        : 'status-badge-base status-badge-draw';
-      break;
+              vsHTML = `
+                <div class="result-bignum">
+                  <div class="result_block left_block">
+                    <span class="result_bold left">${mI}</span>
+                    <span class="win_index_perc left">.${mD}</span>
+                  </div>
+                  <span class="vs-separator"> </span>
+                  <div class="result_block right_block${oI<10?' onedigit':''}">
+                    <span class="result_bold right">${oI}</span>
+                    <span class="win_index_perc right">.${oD}</span>
+                  </div>
+                </div>
+              `;
+            
+              // Ora calcolo il guadagno netto per il badge
+              const teexWon  = Number(myTeam?.ft_teex_won   || 0);
+              const cost     = parseFloat(contest.current_user_cost) || 0;
+              const multiply = parseFloat(contest.multiply)        || 1;
+              const net      = teexWon - (cost * multiply);
+            
+              // Imposto testo e classe in base al segno di net
+              statusText = net.toFixed(1);
+              if (net > 0) {
+                statusClass = 'status-badge-base status-badge-win';
+              } else if (net < 0) {
+                statusClass = 'status-badge-base status-badge-loss';
+              } else {
+                statusClass = 'status-badge-base status-badge-draw';
+              }
+              break;
 
       default:
       // fallback genera VS normale

@@ -112,9 +112,6 @@
       }
   
 
-      .opponent-item.selected {
-        border: 2px solid #f1be48;
-      }
       .opponent-info {
         display: flex;
         align-items: center;

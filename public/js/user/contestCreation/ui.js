@@ -40,9 +40,38 @@
                             })()
                        };  
   
-    // 3) Costruisco "opp" come prima (non toccato)
-    const isLeague = contest_type === 2;
-    const invitedCount = invited_count - 1 || 0;
+    // 3) Costruiamo "opp" come prima (non toccato)
+        const isLeague      = contest_type === 2;
+            // Y = total invited meno current user
+            const invitedCount = Math.max((invited_count || 1) - 1, 0);
+        
+            // 1) Proviamo a contare da contest.fantasy_teams
+            let ftArray = Array.isArray(fantasy_teams) ? fantasy_teams : [];
+        
+            // 2) Se è vuoto, prendo il dato dal localStorage (salvato da leagueRecap)
+            if (ftArray.length === 0) {
+              try {
+                const stored = JSON.parse(localStorage.getItem('contestData') || '{}');
+                ftArray = Array.isArray(stored.fantasyTeams) ? stored.fantasyTeams : [];
+              } catch {
+                ftArray = [];
+              }
+            }
+        
+            // X = confermati (ft_status >1) meno current user
+            const confirmedCount = ftArray
+              .filter(ft => ft.ft_status > 1 && String(ft.user_id) !== String(userId))
+              .length;
+              
+                  // ─── Calcolo Max total_cost degli altri team (escludo il mio) ───
+                  const otherCosts = ftArray
+                    .filter(ft => String(ft.user_id) !== String(userId))
+                    .map(ft => parseFloat(ft.total_cost || 0));
+                  const maxCost = otherCosts.length
+                    ? Math.max(...otherCosts)
+                    : 0;
+
+
     const leagueName   = contest_name || localStorage.getItem('leagueName') || '';
   
     const opp = isLeague
@@ -66,12 +95,13 @@
         };
   
     // 4) Costruiamo l’HTML
-    const statusLabels = ['CREATED','PENDING','READY','LIVE','COMPLETED'];
-    const badgeClass   = [
-      'status-badge-created','status-badge-pending',
-      'status-badge-ready','status-badge-live',
-      'status-badge-completed'
-    ][status];
+        // Ora status=4 → LIVE, status=5 → COMPLETED
+        const statusLabels = ['CREATED','PENDING','READY','SUSPENDED','LIVE'];
+        const badgeClass   = [
+          'status-badge-created','status-badge-pending',
+          'status-badge-ready','status-badge-suspended',
+          'status-badge-live'
+        ][status];
   
     document.getElementById("contestHeaderContainer").innerHTML = `
       <div class="contest-container cc-header">
@@ -86,7 +116,7 @@
           ${isLeague
             ? `<div class="triletter_contest right-name">${opp.name.slice(0,3)}</div>
                <div class="player-avatar-contest right-avatar league-avatar">
-                 <span class="MainNumber">0</span>
+                 <span class="MainNumber">${confirmedCount}</span>
                  <span class="SmallNumber">/${invitedCount}</span>
                </div>`
             : `<div class="triletter_contest right-name">${opp.name.slice(0,3)}</div>
@@ -95,7 +125,9 @@
   
           <!-- COSTI -->
           <div class="teex_spent left-teex" id="currentUserScore">${my.cost}</div>
-          <div class="teex_spent right-teex">${opp.cost}</div>
+        <div class="teex_spent right-teex">
+          Max: ${maxCost.toFixed(1)}
+        </div>
         </div>
   
         <div class="status-badge-base ${badgeClass}">

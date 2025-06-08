@@ -92,10 +92,22 @@ export function renderLeagueHeader(contest, fantasyTeams, currentUserId) {
         statusClass = 'status-badge-base status-badge-invited';
           } else if (contest.status >= 2) {
               // se status>=2 mostro lo stake (o Won se finished)
-              if (contest.status === 5 && contest.myFtTeexWon != null) {
-                statusText  = `WON ${parseFloat(contest.myFtTeexWon).toFixed(1)}`;
-                statusClass = 'status-badge-base status-badge-finished';
-              } else {
+                    if (contest.status === 5 && contest.myFtTeexWon != null) {
+                        // Calcolo guadagno netto: teex vinti – (costo * multiply)
+                        const teexWon     = parseFloat(contest.myFtTeexWon) || 0;
+                        const myCostNum   = parseFloat(myTeam.total_cost)   || 0;
+                        const multiplyNum = parseFloat(contest.multiply)    || 1;
+                        const net         = teexWon - (myCostNum * multiplyNum);
+                        // Testo e classe in base al segno del risultato
+                        statusText = net.toFixed(1);
+                        if (net >  0) {
+                          statusClass = 'status-badge-base status-badge-win';
+                        } else if (net <  0) {
+                          statusClass = 'status-badge-base status-badge-loss';
+                        } else {
+                          statusClass = 'status-badge-base status-badge-draw';
+                        }
+                      } else {
                 statusText  = String(contest.stake ?? '-');
                 statusClass = contest.status === 2
                             ? 'status-badge-base status-badge-ready'
