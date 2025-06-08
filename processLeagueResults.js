@@ -71,8 +71,6 @@ async function closeLeagueContests(eventUnitId) {
      if (incomplete === 0) {
       await updateLeagueContests(eventUnitId);
 
-      const [teams] = await pool.promise().query(
-              // Prendiamo solo i team non rejected (ft_status != -1)
               const [teams] = await pool.promise().query(
                 `SELECT fantasy_team_id, user_id, total_points 
                  FROM fantasy_teams
