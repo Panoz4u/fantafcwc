@@ -45,19 +45,25 @@ async function fetchLeagueDetails({ contest_id, currentUserId }) {
 
   // 3) Per ciascun fantasy_team, prendo le `fantasy_team_entities`
   for (const team of fantasyTeams) {
-    const entitiesSql = `
-      SELECT fte.*, a.athlete_shortname, a.picture, aep.athlete_unit_points,
-             ht.team_3letter AS home_team_code, at.team_3letter AS away_team_code
-      FROM fantasy_team_entities fte
-      JOIN athletes a ON fte.athlete_id = a.athlete_id
-      LEFT JOIN athlete_eventunit_participation aep ON fte.aep_id = aep.aep_id
-      LEFT JOIN matches m
-        ON m.event_unit_id = aep.event_unit_id
-       AND (m.home_team = aep.team_id OR m.away_team = aep.team_id)
-      LEFT JOIN teams ht ON m.home_team = ht.team_id
-      LEFT JOIN teams at ON m.away_team = at.team_id
-      WHERE fte.fantasy_team_id = ?
-    `;
+        const entitiesSql = `
+          SELECT
+            fte.*,
+            a.athlete_shortname,
+            a.picture,
+            aep.athlete_unit_points,
+            aep.is_ended               AS is_ended,
+            ht.team_3letter AS home_team_code,
+            at.team_3letter AS away_team_code
+          FROM fantasy_team_entities fte
+          JOIN athletes a ON fte.athlete_id = a.athlete_id
+          LEFT JOIN athlete_eventunit_participation aep ON fte.aep_id = aep.aep_id
+          LEFT JOIN matches m
+            ON m.event_unit_id = aep.event_unit_id
+           AND (m.home_team = aep.team_id OR m.away_team = aep.team_id)
+          LEFT JOIN teams ht ON m.home_team = ht.team_id
+          LEFT JOIN teams at ON m.away_team = at.team_id
+          WHERE fte.fantasy_team_id = ?
+        `;
     const [entities] = await pool.promise().query(entitiesSql, [team.fantasy_team_id]);
     team.entities = entities;
   }

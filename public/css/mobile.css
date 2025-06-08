@@ -650,7 +650,7 @@
   }
   
   .win_index_perc.left {
-    left: calc(50% - 4px);
+    left: calc(50% - 2px);
     top: -10px;
   }
   .win_index_perc.right {
@@ -1139,7 +1139,7 @@
   }
   
   .pos {
-    margin-right: 24px;
+    margin-right: 14px;
   }
   
   .league-rank {
