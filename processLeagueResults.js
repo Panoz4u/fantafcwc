@@ -67,50 +67,83 @@ async function closeLeagueContests(eventUnitId) {
     );
 
 
-       // 3) se non ci sono atleti incompleti, chiudo
-     if (incomplete === 0) {
-      await updateLeagueContests(eventUnitId);
-
-              const [teams] = await pool.promise().query(
-                `SELECT fantasy_team_id, user_id, total_points 
-                 FROM fantasy_teams
-                 WHERE contest_id = ? AND ft_status != -1
-                 ORDER BY total_points DESC`,
-                [contest_id]
+          // 3) se non ci sono atleti incompleti, valutiamo come chiudere
+          if (incomplete === 0) {
+            await updateLeagueContests(eventUnitId);
+    
+            // prima prendo solo i confirmed (ft_status >1)
+            const [confirmed] = await pool.promise().query(
+              `SELECT fantasy_team_id, user_id, total_points 
+               FROM fantasy_teams
+               WHERE contest_id = ? AND ft_status > 1
+               ORDER BY total_points DESC`,
+              [contest_id]
+            );
+    
+            if (confirmed.length === 2) {
+              // H2H: tutto lo stake al primo
+              const winner = confirmed[0];
+              await pool.promise().query(
+                `UPDATE fantasy_teams 
+                 SET ft_status = 5, ft_result = 1, ft_teex_won = ? 
+                 WHERE fantasy_team_id = ?`,
+                [stake, winner.fantasy_team_id]
               );
+              await pool.promise().query(
+                `UPDATE fantasy_teams 
+                 SET ft_status = 5, ft_result = 2, ft_teex_won = 0 
+                 WHERE fantasy_team_id = ?`,
+                [confirmed[1].fantasy_team_id]
+              );
+              // aggiorno i bilanci utenti
+              await pool.promise().query(
+                `UPDATE users SET teex_balance = teex_balance + ? WHERE user_id = ?`,
+                [stake, winner.user_id]
+              );
+            } else {
+              // fallback alla logica 60/30/10 per ≥3
+              const teams = confirmed; // già ordinati
+              const payouts = [0.6, 0.3, 0.1];
+              let positions = [];
+    
+              teams.forEach((team, idx) => {
+                if (idx === 0 || team.total_points !== teams[idx - 1].total_points) {
+                  positions.push({ rank: positions.length + 1, teams: [team] });
+                } else {
+                  positions[positions.length - 1].teams.push(team);
+                }
+              });
+    
+              for (const pos of positions) {
+                const totalPct = payouts
+                  .slice(pos.rank - 1, pos.rank - 1 + pos.teams.length)
+                  .reduce((a, b) => a + b, 0);
+                const teexEach = (stake * totalPct) / pos.teams.length;
+    
+                for (const team of pos.teams) {
+                  await pool.promise().query(
+                    `UPDATE fantasy_teams 
+                     SET ft_status = 5, ft_result = ?, ft_teex_won = ? 
+                     WHERE fantasy_team_id = ?`,
+                    [pos.rank, teexEach, team.fantasy_team_id]
+                  );
+                  await pool.promise().query(
+                    `UPDATE users SET teex_balance = teex_balance + ? WHERE user_id = ?`,
+                    [teexEach, team.user_id]
+                  );
+                }
+              }
+            }
+    
+            // chiudo il contest
+            await pool.promise().query(
+              `UPDATE contests SET status = 5, updated_at = NOW() WHERE contest_id = ?`,
+              [contest_id]
+            );
+          }
 
-      const payouts = [0.6, 0.3, 0.1];
-      let positions = [];
 
-      teams.forEach((team, idx) => {
-        if (idx === 0 || team.total_points !== teams[idx - 1].total_points) {
-          positions.push({ rank: positions.length + 1, teams: [team] });
-        } else {
-          positions[positions.length - 1].teams.push(team);
-        }
-      });
 
-      for (const pos of positions) {
-        const totalPct = payouts.slice(pos.rank - 1, pos.rank - 1 + pos.teams.length).reduce((a, b) => a + b, 0);
-        const teexEach = (stake * totalPct) / pos.teams.length;
-
-        for (const team of pos.teams) {
-          await pool.promise().query(
-            `UPDATE fantasy_teams SET ft_status = 5, ft_result = ?, ft_teex_won = ? WHERE fantasy_team_id = ?`,
-            [pos.rank, teexEach, team.fantasy_team_id]
-          );
-          await pool.promise().query(
-            `UPDATE users SET teex_balance = teex_balance + ? WHERE user_id = ?`,
-            [teexEach, team.user_id]
-          );
-        }
-      }
-
-      await pool.promise().query(
-        `UPDATE contests SET status = 5, updated_at = NOW() WHERE contest_id = ?`,
-        [contest_id]
-      );
-    }
   }
 }
 

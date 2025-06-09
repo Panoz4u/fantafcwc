@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Fanteex – Upload Partite</title>
+  <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+  <style>/* Stessi stili */</style>
+</head>
+<body>
+  <div class="container">
+    <header><h1>Upload Partite</h1></header>
+    <div class="info">
+      <p>Carica un file Excel (.xls, .xlsx) o JSON con i dati delle partite.</p>
+      <p>Headers: <code>match_id, event_unit_id, home_team, away_team, home_score, away_score, status, match_date, created_at, updated_at</code></p>
+    </div>
+
+    <form id="matchesForm"   
+      method="post"
+      enctype="multipart/form-data">
+      <label for="matchesFile">Seleziona il file:</label>
+      <input type="file" id="matchesFile" accept=".json,.xls,.xlsx" required>
+      <button type="submit">Carica Partite</button>
+    </form>
+    <a href="FanteexBackend.html" class="back-link">← Torna al pannello</a>
+  </div>
+
+  <script src="/uploadMatches.js"></script>
+</body>
+</html>

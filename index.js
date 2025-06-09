@@ -19,6 +19,15 @@ const matchController = require("./controllers/matchController");
 const leagueRoutes = require('./routes/leagueRoutes');
 const leagueDetailsRoutes  = require('./routes/leagueDetails');
 
+// upload bulk CSV/XLSX
+const multer  = require('multer');
+const XLSX    = require('xlsx');
+const fs      = require('fs');
+
+// i nostri nuovi router
+const uploadTeamsRoute    = require('./uploadTeams');
+const uploadAthletesRoute = require('./uploadAthletes');
+const uploadMatchesRoute  = require('./uploadMatches');
 
 
 // 2) INIT
@@ -482,6 +491,11 @@ const uploadLineupsRoute = require("./uploadLineups");
 app.post("/api/matches/upload", matchController.uploadMatches);
 app.post("/api/matches/update-past", matchController.updatePastMatches);
 app.use("/uploadLineups", uploadLineupsRoute);
+// → mount dei nuovi router bulk‐upload
+app.use("/uploadTeams",    uploadTeamsRoute);
+app.use("/uploadAthletes", uploadAthletesRoute);
+app.use("/uploadMatches",  uploadMatchesRoute);
+
 
 // Start the server
 app.listen(port, '0.0.0.0', () => {

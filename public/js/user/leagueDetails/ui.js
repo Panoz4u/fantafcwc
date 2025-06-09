@@ -285,7 +285,16 @@ export function initLeagueDetails({ contest, fantasyTeams }, currentUserId) {
         });
       });
 
-
+      
+        // ─── 3.4) Override H2H se solo 2 confirmed ───
+        if (confirmed.length === 2) {
+          // primo prende tutto, secondo zero
+          const [first, second] = confirmed.map(ft => String(ft.user_id));
+          ppcMap = {}; // reset
+          ppcMap[first]  = stake;
+          ppcMap[second] = 0;
+        }
+        
     // ─── 3.2) Riordino fantasyTeams per posizione (i non confermati restano in fondo) ───
     fantasyTeams.sort((a, b) => {
       const ra = rankMap[String(a.user_id)] || Infinity;
