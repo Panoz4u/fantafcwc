@@ -504,8 +504,8 @@ const isProd = process.env.NODE_ENV === 'production';
 
 if (isProd) {
   // percorsi Certbot – in prod i certificati sono già in /etc/letsencrypt
-  const key  = fs.readFileSync('/etc/letsencrypt/live/fantafcwc.it/privkey.pem',  'utf8');
-  const cert = fs.readFileSync('/etc/letsencrypt/live/fantafcwc.it/fullchain.pem','utf8');
+   const key  = fs.readFileSync('/etc/letsencrypt/live/www.fantafcwc.it/privkey.pem',  'utf8');
+   const cert = fs.readFileSync('/etc/letsencrypt/live/www.fantafcwc.it/fullchain.pem','utf8');
 
   // 1) HTTPS su 443
   https.createServer({ key, cert }, app)
