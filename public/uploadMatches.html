@@ -4,27 +4,132 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>Fanteex – Upload Partite</title>
-  <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
-  <style>/* Stessi stili */</style>
+
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,800;1,800&family=Barlow+Condensed:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Stessi stili di uploadAthletes.html e uploadTeams.html -->
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #260E3D;
+      background-image: url('images/GradientBG.png');
+      background-size: cover;
+      background-position: center top;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      color: #fff;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding: 20px;
+      background-color: rgba(10, 0, 52, 0.7);
+      border-radius: 10px;
+    }
+    h1 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 36px;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .info {
+      background-color: rgba(10, 0, 52, 0.7);
+      border-left: 6px solid #5DFDCB;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 0 10px 10px 0;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    }
+    .info p { margin: 8px 0; line-height: 1.5; opacity: 0.9; }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      background-color: rgba(10, 0, 52, 0.7);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      margin-bottom: 40px;
+    }
+    label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: #5DFDCB;
+    }
+    input[type="file"] {
+      padding: 12px;
+      border: 2px solid rgba(93, 253, 203, 0.3);
+      border-radius: 8px;
+      background-color: rgba(10, 0, 52, 0.5);
+      color: #fff;
+      font-family: 'Montserrat', sans-serif;
+    }
+    button {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      text-transform: uppercase;
+      border-radius: 50px;
+      padding: 12px 24px;
+      border: none;
+      cursor: pointer;
+      background-color: #FE4208;
+      color: white;
+      align-self: center;
+      transition: all 0.3s ease;
+    }
+    button:hover {
+      background-color: #ff5a28;
+      box-shadow: 0 5px 15px rgba(254,66,8,0.4);
+    }
+    .back-link {
+      display: inline-block;
+      margin-top: 20px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 18px;
+      color: #5DFDCB;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    .back-link:hover {
+      color: #7dffd5;
+      text-decoration: underline;
+    }
+  </style>
 </head>
+
 <body>
   <div class="container">
-    <header><h1>Upload Partite</h1></header>
+    <header>
+      <h1>Upload Partite</h1>
+    </header>
+
     <div class="info">
       <p>Carica un file Excel (.xls, .xlsx) o JSON con i dati delle partite.</p>
-      <p>Headers: <code>match_id, event_unit_id, home_team, away_team, home_score, away_score, status, match_date, created_at, updated_at</code></p>
+      <p>Il file deve contenere queste colonne (anche in parte):</p>
+      <p><code>match_id, event_unit_id, home_team, away_team, home_score, away_score, status, match_date</code></p>
     </div>
 
-    <form id="matchesForm"   
-      method="post"
-      enctype="multipart/form-data">
+    <!-- action="/uploadMatches" monta il router server‐side -->
+    <form action="/uploadMatches" method="post" enctype="multipart/form-data">
       <label for="matchesFile">Seleziona il file:</label>
-      <input type="file" id="matchesFile" accept=".json,.xls,.xlsx" required>
-      <button type="submit">Carica Partite</button>
+      <input type="file" id="matchesFile" name="matchesFile" accept=".json,.xls,.xlsx" required>
+      <button type="submit">Carica File</button>
     </form>
-    <a href="FanteexBackend.html" class="back-link">← Torna al pannello</a>
-  </div>
 
-  <script src="/uploadMatches.js"></script>
+    <a href="FanteexBackend.html" class="back-link">← Torna al pannello di amministrazione</a>
+  </div>
 </body>
 </html>

@@ -1,250 +1,188 @@
+// uploadLineups.js
 const express = require("express");
-const router = express.Router();
-const multer = require("multer");
-const path = require("path");
-const fs = require("fs");
-const XLSX = require("xlsx");
-const pool = require('./services/db');
-const moment = require('moment-timezone');
-const ALLOWED_COLUMNS = [
-  'athlete_id',
-  'event_unit_id',
-  'event_unit_cost',
-  'status',
-  'athlete_unit_points',
-  'is_ended',
-  'created_at',
-  'updated_at',
-  'valid_from',
-  'valid_to'
+const router  = express.Router();
+const multer  = require("multer");
+const path    = require("path");
+const fs      = require("fs");
+const XLSX    = require("xlsx");
+const pool    = require("./services/db");
+const moment  = require("moment-timezone");
+
+// Colonne ammesse (senza created_at/updated_at, gestite in DB)
+const ALLOWED = [
+  "athlete_id",
+  "event_unit_id",
+  "team_id",
+  "event_unit_cost",
+  "status",
+  "athlete_unit_points",
+  "is_ended",
+  "valid_from",
+  "valid_to"
 ];
-// colonne che vanno parse-date
-const DATE_COLUMNS = ['created_at','updated_at','valid_from','valid_to'];
 
-// Helper per normalizzare chiavi e parsare date da Excel
-// Helper per normalizzare chiavi e parsare date da Excel
-// dopo ALLOWED_COLUMNS e DATE_COLUMNS...
-function normalizeItem(raw) {
-  const item = {};
+// Colonne da trattare come date
+const DATE_COLS = ["valid_from","valid_to"];
 
-  function excelDateToJSDate(serial) {
-    const utcDays = Math.floor(serial - 25569);
-    const utcMs   = utcDays * 86400 * 1000;
-    const fracDay = serial - Math.floor(serial);
-    const msFrac  = Math.round(86400 * 1000 * fracDay);
-    return new Date(utcMs + msFrac);
-  }
+// Normalizza chiavi e converte date Excel→UTC string
+function normalize(raw) {
+  const out = {};
 
-  Object.entries(raw).forEach(([origKey, val]) => {
-    const key = origKey.trim().toLowerCase().replace(/[\s\-]+/g,'_');
-    if (!ALLOWED_COLUMNS.includes(key) || val == null || val === '') return;
+  // helper per serial Excel
+  const excelDate = serial => {
+    const d = new Date(Math.round((serial - 25569)*86400*1000));
+    return d;
+  };
 
-    if (DATE_COLUMNS.includes(key)) {
+  Object.entries(raw).forEach(([k,v]) => {
+    const key = k.trim().toLowerCase().replace(/[\s\-]+/g,"_");
+    if (!ALLOWED.includes(key)) return;      // scarta colonne non ammesse
+    if (v === "") return;                    // lascia passare null, scarta solo stringa vuota
+
+    if (DATE_COLS.includes(key)) {
       let m;
-      if (val instanceof Date) {
-        // già JS Date → assumilo in Europe/Rome
-        m = moment(val).tz('Europe/Rome');
-      } else if (typeof val === 'number') {
-        // serial Excel
-        m = moment(excelDateToJSDate(val)).tz('Europe/Rome');
+      if (typeof v === "number") {
+        m = moment(excelDate(v));
       } else {
-        // stringa "DD/MM/YYYY HH:mm"
-        m = moment.tz(val, 'DD/MM/YYYY HH:mm', 'Europe/Rome');
+        m = moment.tz(v, "DD/MM/YYYY HH:mm", "Europe/Rome");
       }
-      // salva in UTC
-      item[key] = m.utc().format('YYYY-MM-DD HH:mm:ss');
+      out[key] = m.utc().format("YYYY-MM-DD HH:mm:ss");
     } else {
-      item[key] = val;
+      out[key] = v;
     }
   });
 
-  return item;
+  return out;
 }
 
-
-// Configurazione di Multer per salvare i file nella cartella "uploads"
+// Multer: salva in /uploads
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/");  // assicurati che questa cartella esista
-  },
-  filename: function (req, file, cb) {
-    // Salva il file con nome univoco (es. timestamp + nome originale)
-    cb(null, Date.now() + "_" + file.originalname);
-  }
+  destination: (req,file,cb) => cb(null, "uploads/"),
+  filename:    (req,file,cb) => cb(null, `${Date.now()}_${file.originalname}`)
 });
-const upload = multer({ storage: storage });
+const upload = multer({ storage });
 
-// Route GET per mostrare il form di upload
+// GET → serve la pagina statica
 router.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "uploadLineups.html"));
+  res.sendFile(path.join(__dirname, "public", "uploadLineups.html"));
 });
 
-// Route POST per gestire l'upload
+// POST → legge JSON/XLSX, normalizza e fa upsert su athlete_eventunit_participation
 router.post("/", upload.single("lineupsFile"), async (req, res) => {
-  if (!req.file) {
-    return res.status(400).send("Nessun file caricato.");
-  }
+  if (!req.file) return res.status(400).send("Nessun file caricato.");
 
-  const filePath = req.file.path;
-  const ext = path.extname(req.file.originalname).toLowerCase();
-
+  // leggi dati
+  let data;
   try {
-    let lineupsData;
+    const ext = path.extname(req.file.originalname).toLowerCase();
     if (ext === ".json") {
-      // Se il file è JSON
-      const data = fs.readFileSync(filePath, "utf8");
-      lineupsData = JSON.parse(data);
-    } else if (ext === ".xls" || ext === ".xlsx") {
-      // Se il file è Excel
-      const workbook = XLSX.readFile(filePath);
-      const sheetName = workbook.SheetNames[0]; // Prendi il primo sheet
-      const worksheet = workbook.Sheets[sheetName];
-      lineupsData = XLSX.utils.sheet_to_json(worksheet);
+      data = JSON.parse(fs.readFileSync(req.file.path, "utf8"));
     } else {
-      return res.status(400).send("Tipo di file non supportato. Carica un file JSON o Excel.");
+      const wb = XLSX.readFile(req.file.path);
+      data = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: null });
     }
-
-    // Processa i dati dei lineup e attendi che tutti gli aggiornamenti siano completati
-    const results = await processLineups(lineupsData);
-    
-    // Prepara un riepilogo dei risultati
-    const summary = {
-      total: results.length,
-      inserted: results.filter(r => r.action === 'insert' && r.success).length,
-      updated: results.filter(r => r.action === 'update' && r.success).length,
-      failed: results.filter(r => !r.success).length
-    };
-
-    // Rispondi con un riepilogo
-    res.send(`File processato con successo. Totale record: ${summary.total}, Inseriti: ${summary.inserted}, Aggiornati: ${summary.updated}, Falliti: ${summary.failed}`);
-  } catch (err) {
-    console.error("Errore nel processing del file:", err);
-    res.status(500).send("Errore nel processing del file: " + err.message);
+  } catch (e) {
+    return res.status(500).send("Errore parsing file: " + e.message);
   }
-});
 
-// Funzione asincrona per processare i dati letti dal file
-async function processLineups(data) {
+  // processa tutte le righe
   const results = [];
   for (let raw of data) {
-    const item = normalizeItem(raw);    // <-- qui la nuova normalizzazione
-
+    const item = normalize(raw);
+    if (!item.athlete_id || !item.event_unit_id) {
+      results.push({ action: "skip", success: false });
+      continue;
+    }
     try {
-      const checkResult = await checkExistingRecord(item.athlete_id, item.event_unit_id);
-      if (checkResult.exists) {
-        const updateResult = await updateRecord(item);
-        results.push({ athlete_id:item.athlete_id, event_unit_id:item.event_unit_id, action:'update', success:updateResult.success, error:updateResult.error });
+      // esiste già?
+      const [[{count}]] = await pool.promise()
+        .query(
+          "SELECT COUNT(*) AS count FROM athlete_eventunit_participation WHERE athlete_id=? AND event_unit_id=?",
+          [item.athlete_id, item.event_unit_id]
+        );
+
+      if (count) {
+        // UPDATE dinamico
+        const sets = [], vals = [];
+        Object.entries(item).forEach(([k,v]) => {
+          if (k==="athlete_id"||k==="event_unit_id") return;
+          sets.push(`\`${k}\`=?`);
+          vals.push(v);
+        });
+        sets.push("`updated_at`=CURRENT_TIMESTAMP");
+        vals.push(item.athlete_id, item.event_unit_id);
+
+        await pool.promise().query(
+          `UPDATE athlete_eventunit_participation SET ${sets.join(", ")}
+           WHERE athlete_id=? AND event_unit_id=?`,
+          vals
+        );
+        results.push({ action: "update", success: true });
       } else {
-        const insertResult = await insertRecord(item);
-        results.push({ athlete_id:item.athlete_id, event_unit_id:item.event_unit_id, action:'insert', success:insertResult.success, error:insertResult.error });
+        // INSERT dinamico
+        const cols = ["`athlete_id`","`event_unit_id`"];
+        const phs  = ["?","?"];
+        const vals = [item.athlete_id, item.event_unit_id];
+
+        Object.entries(item).forEach(([k,v]) => {
+          if (k==="athlete_id"||k==="event_unit_id") return;
+          cols.push(`\`${k}\``);
+          phs.push("?");
+          vals.push(v);
+        });
+
+        await pool.promise().query(
+          `INSERT INTO athlete_eventunit_participation (${cols.join(",")})
+           VALUES (${phs.join(",")})`,
+          vals
+        );
+        results.push({ action: "insert", success: true });
       }
-    } catch (error) {
-      results.push({ athlete_id:item.athlete_id, event_unit_id:item.event_unit_id, action:'unknown', success:false, error:error.message });
+    } catch (err) {
+      console.error("Lineup error:", err);
+      results.push({ action: "error", success: false, error: err.message });
     }
   }
-  return results;
-}
 
-// Funzione per verificare se esiste già un record
-function checkExistingRecord(athleteId, eventUnitId) {
-  return new Promise((resolve, reject) => {
-    const sql = `
-      SELECT COUNT(*) as count 
-      FROM athlete_eventunit_participation 
-      WHERE athlete_id = ? AND event_unit_id = ?
-    `;
-    
-    pool.query(sql, [athleteId, eventUnitId], (err, result) => {
-      if (err) {
-        console.error("Errore nella verifica del record esistente:", err);
-        reject(err);
-      } else {
-        resolve({ exists: result[0].count > 0 });
-      }
-    });
-  });
-}
+  // rimuovi file
+  fs.unlink(req.file.path, () => {});
 
-// Funzione per aggiornare un record esistente
-function updateRecord(item) {
-  return new Promise((resolve) => {
-    // 1. Costruisci dinamicamente campo = ? per ogni proprietà valida
-    const sets = [];
-    const values = [];
+  const summary = {
+    total:    results.length,
+    inserted: results.filter(r=>r.action==="insert" ).length,
+    updated:  results.filter(r=>r.action==="update" ).length,
+    failed:   results.filter(r=>!r.success   ).length
+  };
 
-    Object.entries(item).forEach(([key, val]) => {
-      if (['athlete_id', 'event_unit_id'].includes(key)) return;
-      if (!ALLOWED_COLUMNS.includes(key)) return;
-      sets.push(`\`${key}\` = ?`);
-      values.push(val);
-    });
-
-    // 2. Assicuriamoci di aggiornare sempre updated_at
-    sets.push('`updated_at` = NOW()');
-
-    // 3. Monta la query
-    const sql = `
-      UPDATE athlete_eventunit_participation
-      SET ${sets.join(', ')}
-      WHERE athlete_id = ? AND event_unit_id = ?
-    `;
-    values.push(item.athlete_id, item.event_unit_id);
-
-    pool.query(sql, values, (err, result) => {
-      if (err) {
-        console.error("Errore nell'aggiornamento del record:", err);
-        resolve({ success: false, error: err.message });
-      } else {
-        resolve({ success: true });
-      }
-    });
-  });
-}
-
-
-function insertRecord(item) {
-  return new Promise((resolve) => {
-    const cols = ['athlete_id', 'event_unit_id'];
-    const placeholders = ['?', '?'];
-    const values = [item.athlete_id, item.event_unit_id];
-
-    // Aggiungi tutte le proprietà valide (escluse chiavi PK)
-    Object.entries(item).forEach(([key, val]) => {
-      if (['athlete_id', 'event_unit_id'].includes(key)) return;
-      if (!ALLOWED_COLUMNS.includes(key)) return;
-      cols.push(`\`${key}\``);
-      placeholders.push('?');
-      values.push(val);
-    });
-
-    // Se il file non contiene created_at, lo mettiamo noi
-    if (!cols.includes('`created_at`')) {
-      cols.push('`created_at`');
-      placeholders.push('NOW()');
-    }
-
-    // Stesso per updated_at
-    if (!cols.includes('`updated_at`')) {
-      cols.push('`updated_at`');
-      placeholders.push('NOW()');
-    }
-
-    const sql = `
-      INSERT INTO athlete_eventunit_participation
-      (${cols.join(', ')})
-      VALUES (${placeholders.join(', ')})
-    `;
-
-    pool.query(sql, values, (err, result) => {
-      if (err) {
-        console.error("Errore nell'inserimento del record:", err);
-        resolve({ success: false, error: err.message });
-      } else {
-        resolve({ success: true });
-      }
-    });
-  });
-}
-
+  // risposta HTML
+  res.send(`
+<!DOCTYPE html><html lang="it"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Risultato Upload Lineup</title>
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,800&family=Barlow+Condensed:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Montserrat',sans-serif;background:#f5f7fa;color:#333;padding:20px}
+  .container{max-width:600px;margin:0 auto;background:#fff;border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,0.1);padding:24px}
+  h1{margin-bottom:16px;color:#2c3e50}
+  .info p{margin:.5rem 0;font-weight:500}
+  a{display:inline-block;margin-top:20px;color:#007bff;text-decoration:none}
+  a:hover{text-decoration:underline}
+</style>
+</head><body>
+  <div class="container">
+    <h1>Upload Lineup – Risultato</h1>
+    <div class="info">
+      <p>Totale: ${summary.total}</p>
+      <p>🆕 Inseriti: ${summary.inserted}</p>
+      <p>🔄 Aggiornati: ${summary.updated}</p>
+      <p>❌ Falliti: ${summary.failed}</p>
+    </div>
+    <a href="/uploadLineups">← Torna a Upload Lineup</a>
+  </div>
+</body></html>
+  `);
+});
 
 module.exports = router;
