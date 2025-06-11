@@ -23,6 +23,8 @@ const leagueDetailsRoutes  = require('./routes/leagueDetails');
 const multer  = require('multer');
 const XLSX    = require('xlsx');
 const fs      = require('fs');
+const http  = require('http');
+const https = require('https');
 
 // i nostri nuovi router
 const uploadTeamsRoute    = require('./uploadTeams');
@@ -497,15 +499,29 @@ app.use("/uploadAthletes", uploadAthletesRoute);
 app.use("/uploadMatches",  uploadMatchesRoute);
 
 
-// Start the server
-app.listen(port, '0.0.0.0', () => {
-  console.log(`Server avviato su http://0.0.0.0:${port}`);
-}).on('error', (err) => {
-  if (err.code === 'EADDRINUSE') {
-    console.log(`La porta ${port} è già in uso. Assicurati che nessun altro processo stia utilizzando questa porta.`);
-    process.exit(1); // Termina il processo invece di provare la porta successiva
-  } else {
-    console.error('Server error:', err);
-  }
-});
+// Rileva se siamo in produzione
+const isProd = process.env.NODE_ENV === 'production';
 
+if (isProd) {
+  // percorsi Certbot – in prod i certificati sono già in /etc/letsencrypt
+  const key  = fs.readFileSync('/etc/letsencrypt/live/fantafcwc.it/privkey.pem',  'utf8');
+  const cert = fs.readFileSync('/etc/letsencrypt/live/fantafcwc.it/fullchain.pem','utf8');
+
+  // 1) HTTPS su 443
+  https.createServer({ key, cert }, app)
+       .listen(443, '0.0.0.0', () => console.log('✅ HTTPS su 443'));
+
+  // 2) HTTP su 80 che redirige a HTTPS
+  http.createServer((req, res) => {
+    const host = req.headers.host.split(':')[0];
+    res.writeHead(301, { Location: `https://${host}${req.url}` });
+    res.end();
+  }).listen(80, () => console.log('🔁 HTTP→HTTPS su 80'));
+
+} else {
+  // sviluppo: solo HTTP su porta da env o 3000
+  const port = process.env.PORT || 3000;
+  app.listen(port, '0.0.0.0', () => {
+    console.log(`⚙️  HTTP DEV su porta ${port}`);
+  });
+}
