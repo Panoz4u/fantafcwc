@@ -1,6 +1,6 @@
 // services/athleteService.js
 
-const pool = require('./db');
+const pool = require('./db'); 
 
 // utilities per formattare la data UTC
 function nowUtcString() {
