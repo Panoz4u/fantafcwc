@@ -87,9 +87,11 @@ function deleteSelectedContests() {
 
 // Filtra e ordina le sfide
 function filterAndSortContests() {
-  // Filtra per status
-  filteredContests = allContests.filter(contest => contest.status.toString() === currentStatus);
-  
+    // Filtra per status **e** solo contest_type = 1
+  filteredContests = allContests.filter(contest => 
+    contest.status.toString() === currentStatus 
+    && contest.contest_type === 1
+  );
   // Ordina per data di creazione
   filteredContests.sort((a, b) => {
     const dateA = new Date(a.created_at);

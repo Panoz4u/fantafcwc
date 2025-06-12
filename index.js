@@ -18,6 +18,7 @@ const { getAvatarUrl, getAvatarSrc } = require("./utils/avatarUtils");
 const matchController = require("./controllers/matchController");
 const leagueRoutes = require('./routes/leagueRoutes');
 const leagueDetailsRoutes  = require('./routes/leagueDetails');
+const expiredLeaguesRoutes = require('./routes/expiredLeagues');
 
 // upload bulk CSV/XLSX
 const multer  = require('multer');
@@ -65,7 +66,7 @@ app.use('/admin-api', adminContestRoutes);
 app.use('/api', athleteRoutes);
 app.use('/api/leagues', leagueRoutes);
 app.use('/contests', leagueDetailsRoutes);
-
+app.use('/admin-api', expiredLeaguesRoutes);
 // 6) ROUTE AD HOC
 app.get('/gestione-sfide.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'gestione-sfide.html'));
@@ -116,25 +117,7 @@ sfideRouter.post('/contests/bulk-delete', async (req, res) => {
   }
 });
 
-sfideRouter.get('/contests/count-expired', async (req, res) => {
-  try {
-    const count = await dbsfide.countExpiredContests();
-    res.json({ count });
-  } catch (error) {
-    console.error('Errore nel conteggio delle sfide scadute:', error);
-    res.status(500).json({ error: 'Errore nel conteggio delle sfide scadute' });
-  }
-});
 
-sfideRouter.post('/contests/delete-expired', async (req, res) => {
-  try {
-    const result = await dbsfide.deleteExpiredContests();
-    res.json(result);
-  } catch (error) {
-    console.error('Errore nella cancellazione delle sfide scadute:', error);
-    res.status(500).json({ error: 'Errore nella cancellazione delle sfide scadute' });
-  }
-});
 
 // Use the router for the API endpoints
 app.use('/api', sfideRouter);

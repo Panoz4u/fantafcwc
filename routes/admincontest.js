@@ -42,12 +42,25 @@ router.get('/contests', async (req, res) => {
 
 // 2. DELETE singola sfida
 router.delete('/contests/:id', async (req, res) => {
+  // 1) Carica la sfida
   const contestId = parseInt(req.params.id);
   try {
     const db = await getDb();
 
-    const [[contest]] = await db.execute(`SELECT * FROM contests WHERE contest_id = ?`, [contestId]);
-    if (!contest) return res.status(404).json({ error: 'Sfida non trovata' });
+        const [[contest]] = await db.execute(
+            `SELECT * FROM contests WHERE contest_id = ?`,
+            [contestId]
+          );
+          if (!contest) {
+            await db.end();
+            return res.status(404).json({ error: 'Sfida non trovata' });
+          }
+      
+          // ─── Verifica contest_type = 1 ───────────────────────────────────────────
+        if (contest.contest_type !== 1) {
+          await db.end();
+          return res.status(400).json({ error: 'Operazione consentita solo su contest_type = 1' });
+        }
 
     if (contest.status === 1 && contest.stake > 0 && contest.owner_user_id) {
       await db.execute(`UPDATE users SET teex_balance = teex_balance + ? WHERE user_id = ?`, [contest.stake, contest.owner_user_id]);
@@ -81,18 +94,34 @@ router.post('/contests/bulk-delete', async (req, res) => {
   try {
     const db = await getDb();
 
-    const [rows] = await db.query(`SELECT * FROM contests WHERE contest_id IN (${contestIds.map(() => '?').join(',')})`, contestIds);
+   
+        const [rows] = await db.query(
+            `SELECT * FROM contests WHERE contest_id IN (${contestIds.map(() => '?').join(',')})`,
+            contestIds
+          );
+      
+          // ─── Filtra solo contest_type = 1 ───────────────────────────────────────────
+          const toDelete = rows.filter(c => c.contest_type === 1);
+          if (toDelete.length === 0) {
+            await db.end();
+            return res.status(400).json({ error: 'Nessuna sfida con contest_type = 1 tra quelle selezionate' });
+          }
 
-    for (const contest of rows) {
+      for (const contest of toDelete) {
       if (contest.status === 1 && contest.stake > 0 && contest.owner_user_id) {
         await db.execute(`UPDATE users SET teex_balance = teex_balance + ? WHERE user_id = ?`, [contest.stake, contest.owner_user_id]);
       }
     }
 
-    await db.query(`DELETE FROM contests WHERE contest_id IN (${contestIds.map(() => '?').join(',')})`, contestIds);
-    await db.end();
+        await db.query(
+            `DELETE FROM contests WHERE contest_id IN (${toDelete.map(() => '?').join(',')})`,
+            toDelete.map(c => c.contest_id)
+          );
+      
+      await db.end();
 
-    res.json({ success: true, deleted: contestIds.length });
+         // restituisci davvero il numero di sfide di tipo 1 eliminate
+         res.json({ success: true, deleted: toDelete.length });
   } catch (error) {
     console.error('Errore nella cancellazione multipla:', error);
     res.status(500).json({ error: 'Errore nella cancellazione delle sfide' });
