@@ -516,7 +516,9 @@ if (isProd) {
     const host = req.headers.host.split(':')[0];
     res.writeHead(301, { Location: `https://${host}${req.url}` });
     res.end();
-  }).listen(80, () => console.log('🔁 HTTP→HTTPS su 80'));
+  }).listen(80, '0.0.0.0', () => {
+    console.log('🔁 HTTP→HTTPS su 0.0.0.0:80');
+  });
 
 } else {
   // sviluppo: solo HTTP su porta da env o 3000
