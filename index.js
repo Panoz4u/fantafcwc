@@ -39,7 +39,7 @@ const contestsRouter       = require('./routes/contests');
 app.use('/contests', contestsRouter);
 
 app.use(express.urlencoded({ extended: true })); // se serve
-const port = process.env.PORT || 3000;
+
 
 
 // 4) STATIC FILES
@@ -499,31 +499,34 @@ app.use("/uploadAthletes", uploadAthletesRoute);
 app.use("/uploadMatches",  uploadMatchesRoute);
 
 
-// Rileva se siamo in produzione
-const isProd = process.env.NODE_ENV === 'production';
+const port = process.env.PORT || 3000;
+const hostingProvider = process.env.HOSTING_PROVIDER;
 
-if (isProd) {
-  // percorsi Certbot – in prod i certificati sono già in /etc/letsencrypt
-   const key  = fs.readFileSync('/etc/letsencrypt/live/www.fantafcwc.it/privkey.pem',  'utf8');
-   const cert = fs.readFileSync('/etc/letsencrypt/live/www.fantafcwc.it/fullchain.pem','utf8');
+// 👉 Se siamo su Hetzner con certificati SSL
+if (hostingProvider === 'hetzner') {
+  const keyPath = '/etc/letsencrypt/live/www.fantafcwc.it/privkey.pem';
+  const certPath = '/etc/letsencrypt/live/www.fantafcwc.it/fullchain.pem';
 
-  // 1) HTTPS su 443
-  https.createServer({ key, cert }, app)
-       .listen(443, '0.0.0.0', () => console.log('✅ HTTPS su 443'));
+  const privateKey = fs.readFileSync(keyPath, 'utf8');
+  const certificate = fs.readFileSync(certPath, 'utf8');
+  const credentials = { key: privateKey, cert: certificate };
 
-  // 2) HTTP su 80 che redirige a HTTPS
+  https.createServer(credentials, app).listen(443, '0.0.0.0', () => {
+    console.log('✅ HTTPS attivo su porta 443 (Hetzner)');
+  });
+
   http.createServer((req, res) => {
     const host = req.headers.host.split(':')[0];
     res.writeHead(301, { Location: `https://${host}${req.url}` });
     res.end();
   }).listen(80, '0.0.0.0', () => {
-    console.log('🔁 HTTP→HTTPS su 0.0.0.0:80');
+    console.log('🔁 Redirect HTTP→HTTPS su porta 80');
   });
+}
 
-} else {
-  // sviluppo: solo HTTP su porta da env o 3000
-  const port = process.env.PORT || 3000;
+// 👉 Altrimenti (Render o locale), uso HTTP normale
+else {
   app.listen(port, '0.0.0.0', () => {
-    console.log(`⚙️  HTTP DEV su porta ${port}`);
+    console.log(`⚙️  Server HTTP attivo su porta ${port}`);
   });
 }
