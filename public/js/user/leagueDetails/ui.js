@@ -290,7 +290,7 @@ export function initLeagueDetails({ contest, fantasyTeams }, currentUserId) {
         if (confirmed.length === 2) {
           // primo prende tutto, secondo zero
           const [first, second] = confirmed.map(ft => String(ft.user_id));
-          ppcMap = {}; // reset
+          Object.keys(ppcMap).forEach(k => delete ppcMap[k]);
           ppcMap[first]  = stake;
           ppcMap[second] = 0;
         }
