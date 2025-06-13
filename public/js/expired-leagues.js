@@ -1,3 +1,70 @@
+// ─── HELPERS (copiati da gestione-sfide.js) ────────────────────────────────
+/**
+ * Mostra un messaggio di stato in alto nella pagina e lo nasconde dopo 3s.
+ * @param {string} msg 
+ * @param {'success'|'error'} type 
+ */
+function showStatusMessage(msg, type) {
+   const status = document.getElementById('statusMessage');
+   if (!status) return;
+   status.textContent = msg;
+    status.className = `status-message status-${type}`;
+    status.style.display = 'block';
+    setTimeout(() => status.style.display = 'none', 3000);
+  }
+  
+  /**
+   * Aggiorna i controlli di paginazione (prev/next e info pagina).
+   */
+  function updatePagination() {
+    const totalPages = Math.max(1, Math.ceil(filteredContests.length / itemsPerPage));
+    const info    = document.getElementById('pageInfo');
+    if (info) info.textContent = `Pagina ${currentPage} di ${totalPages}`;
+    const prevBtn = document.getElementById('prevPage');
+    const nextBtn = document.getElementById('nextPage');
+    if (prevBtn) prevBtn.disabled = currentPage <= 1;
+    if (nextBtn) nextBtn.disabled = currentPage >= totalPages;
+  }
+  
+  /**
+   * Esporta la tabella corrente in CSV.
+   */
+  function exportContestsToCSV() {
+    let csv = 'ID,Owner,Opponent,Status,Created At,Updated At\n';
+    filteredContests.forEach(c => {
+      const statusMap = {0:'Created',1:'Pending',2:'Ready',4:'Live',5:'Completed'};
+      const row = [
+        c.contest_id,
+        c.owner_username||c.owner_user_id,
+        c.opponent_username||c.opponent_user_id||'',
+        statusMap[c.status]||c.status,
+        new Date(c.created_at).toLocaleString('it-IT'),
+        new Date(c.updated_at).toLocaleString('it-IT')
+      ];
+      csv += row.join(',') + '\n';
+    });
+    const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = `expired-leagues-${new Date().toISOString().slice(0,10)}.csv`;
+   document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+  
+  /**
+   * Apre una modal coi dettagli di una league.
+   */
+  function viewContestDetails(contestId) {
+    const c = allContests.find(x => x.contest_id === contestId);
+    if (!c) return showStatusMessage('League non trovata', 'error');
+    // (esempio minimale: alert con JSON)
+    alert('Dettagli League #'+contestId+':\n'+JSON.stringify(c, null,2));
+  }
+  // ──────────────
+
+
 // Variabili globali
 let currentPage = 1;
 const itemsPerPage = 20; // 20 ligue per pagina
