@@ -12,7 +12,7 @@ let searchTimeout    = null;
 
 let allAthletes = [];
 let currentList = [];   // la lista filtrata+ordinata
-let currentSort      = { field: 'athlete_shortname', asc: true };
+let currentSort = { field: 'event_unit_cost', asc: false };
 
 
  // Funzione di toggle: aggiunge/rimuove il player da chosenPlayers
@@ -154,6 +154,15 @@ export async function initAddMembers() {
 
     // → setup listener e primo caricamento paginato
   setupEventListeners();
+  // — Highlight iniziale colonna “Cost” —
+  const costHeader = document.querySelector('.sort-item[data-sort="event_unit_cost"]');
+  if (costHeader) {
+    costHeader.classList.add('active');
+    const tri = document.createElement('div');
+    tri.className = 'sort-triangle desc';  // discendente
+    costHeader.appendChild(tri);
+  }
+
   loadAndRender(true);
   
 }

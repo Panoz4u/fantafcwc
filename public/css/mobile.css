@@ -1199,3 +1199,34 @@
         background-color: #6c6d5a;
       }
   
+
+      /* — Modale saldo insufficiente — */
+.modal-insuf {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.modal-insuf.open {
+  display: flex;
+}
+.modal-insuf-content {
+  position: relative;
+  background: #000000;
+  padding: 20px;
+  border-radius: 8px;
+  width: 80%;
+  max-width: 300px;
+  text-align: center;
+}
+.modal-insuf-content .close {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  font-size: 24px;
+  cursor: pointer;
+}

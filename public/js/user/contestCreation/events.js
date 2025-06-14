@@ -94,11 +94,34 @@ export function setupEventListeners(contestId, userId) {
           window.location.href = '/user-landing.html';
 
         } catch (err) {
-          console.error('❌ Errore conferma contest:', err);
-          alert('Errore nella conferma: ' + (err.message || err));
+                console.error('❌ Errore conferma contest:', err);
+                // --- Apri la modale con il messaggio di errore ---
+                const modal   = document.getElementById('insufficientBalanceModal');
+                const msgEl   = document.getElementById('insufficientBalanceMessage');
+                // se il server restituisce { error: '...' }
+                msgEl.textContent = err.error || err.message || 'Errore durante la conferma.';
+                modal.classList.add('open');
         }
       }, lockedMul);
     });
+  }
+
+
+  // — Chiusura modale “Saldo insufficiente” —
+  const insufficientModal = document.getElementById('insufficientBalanceModal');
+  if (insufficientModal) {
+    // clic sulla “×”
+    insufficientModal
+      .querySelector('.close')
+      .addEventListener('click', () =>
+        insufficientModal.classList.remove('open')
+      );
+    // clic su OK
+    document
+      .getElementById('insufficientBalanceClose')
+      .addEventListener('click', () =>
+        insufficientModal.classList.remove('open')
+      );
   }
 
   // ← Evento per rimozione dinamica di un giocatore dalla lista
