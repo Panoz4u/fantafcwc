@@ -20,9 +20,17 @@ export function updateHeaderStats() {
   }
 }
 
-export function renderPlayers(list, onToggle) {
-  const container = document.getElementById('playerList');
-  container.innerHTML = '';
+
+    /**
+     * list: array di player da renderizzare
+     * onToggle: callback su click
+     * append: se true, NON resetta il container ma aggiunge in coda
+     */
+    export function renderPlayers(list, onToggle, append = false) {
+      const container = document.getElementById('playerList');
+      // Se append=false (default), ripulisce; altrimenti mantiene i nodi esistenti
+      if (!append) container.innerHTML = '';
+
   const chosenAepIds = loadChosenPlayers().map(p => p.aep_id);
 
   list.forEach(player => {

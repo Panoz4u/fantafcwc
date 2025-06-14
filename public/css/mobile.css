@@ -1177,3 +1177,25 @@
     color: #1fd899;
   }
 
+      /* Stile per il pulsante "Carica altri" */
+      .load-more-button {
+        display: block;
+        width: 80%;
+        margin: 20px auto;
+        padding: 12px;
+        background-color: #282727;
+        color: white;
+        border: none;
+        border-radius: 24px;
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+      
+      .load-more-button:hover {
+        background-color: #6c6d5a;
+      }
+  
