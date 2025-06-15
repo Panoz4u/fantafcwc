@@ -2,6 +2,7 @@
 import { initFirebase } from './firebase-init.js';
 import { GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
 import { generateRandomColor, generateUniqueUsername } from './utils.js';
+import { showLoadingOverlay, hideLoadingOverlay } from './loadingOverlay.js';
 
 // Pre-initialize Firebase and the Google Auth Provider
 let auth;
@@ -26,6 +27,8 @@ async function handleGoogleAuth(e) {
     alert('Errore: il servizio di login con Google non è pronto. Riprova tra poco.');
     return;
   }
+  
+  showLoadingOverlay();
 
   try {
     const result = await signInWithPopup(auth, provider);
@@ -79,6 +82,8 @@ async function handleGoogleAuth(e) {
     } else {
       alert(`Errore durante il login con Google: ${err.message}`);
     }
+  } finally {
+    hideLoadingOverlay();
   }
 }
 
