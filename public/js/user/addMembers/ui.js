@@ -34,28 +34,32 @@ export function updateHeaderStats() {
   const chosenAepIds = loadChosenPlayers().map(p => p.aep_id);
 
   list.forEach(player => {
+    // DEBUG: stampo in console l'intero player e la posizione
+    console.log('DEBUG player object:', player);
+    console.log('DEBUG player.position:', player.position);
+  
     const li = document.createElement('li');
-
+  
     // 1) Calcola prima se è selezionato o affordabile
-    const isSelected   = chosenAepIds.includes(player.aep_id);
+    const isSelected    = chosenAepIds.includes(player.aep_id);
     const currentBudget = getAvailableBudget();
-    const isAffordable = player.event_unit_cost <= currentBudget;
-
+    const isAffordable  = player.event_unit_cost <= currentBudget;
+  
     // 2) Imposta classe principale
     li.className = `player-card ${(isAffordable || isSelected) ? 'clickable' : 'disabled'}`;
-    // evidenzia selezione
     if (isSelected) li.style.backgroundColor = "#9A6D19";
-
+  
+    // 2.b) left-team fisso per tutti (cerchio sempre a sinistra)
+    
+  
     // 3) Markup con match home vs away
-    //    - Se player.aep_team_id === home_team, uso 'match_3letter-team-bold' su home
-    //    - Altrimenti lo uso su away
     const homeClass = (player.aep_team_id === player.home_team)
                       ? 'match_3letter-team-bold'
                       : 'player-match';
     const awayClass = (player.aep_team_id === player.away_team)
                       ? 'match_3letter-team-bold'
                       : 'player-match';
-
+  
     li.innerHTML = `
       <div class="player-icon-container">
         <div class="player-icon">
@@ -68,15 +72,6 @@ export function updateHeaderStats() {
       </div>
       <div class="player-info-container">
         <div class="player-name">${player.athlete_shortname}</div>
-
-        <!-- Righe precedenti commentate: codice originario per mostrare solo il team_3letter da athlete -->
-        <!--
-        <div class="player-match">
-          <span>${player.player_team_code || ''}</span>
-        </div>
-        -->
-
-        <!-- Nuovo markup: home_team_code – away_team_code con classi condizionali -->
         <div class="player-match">
           <span class="${homeClass}">${player.home_team_code || ''}</span>
           -
@@ -85,13 +80,20 @@ export function updateHeaderStats() {
       </div>
       <div class="player-cost">${parseFloat(player.event_unit_cost).toFixed(1)}</div>
     `;
-
-    // 4) Click handler: ignora se non affordabile e non selezionato
+  
     li.addEventListener('click', () => {
       if (!isAffordable && !isSelected) return;
       onToggle(player, li);
     });
-
+  
+        // 4) Iniezione cerchietto posizione
+    // Cerchietto posizione
+    const posCircle = document.createElement('div');
+    // qui usi esattamente il valore di player.position
+    posCircle.className = `position_circle ${player.position}`; 
+    posCircle.textContent = player.position;
+    li.prepend(posCircle);
+  
     container.appendChild(li);
   });
 }

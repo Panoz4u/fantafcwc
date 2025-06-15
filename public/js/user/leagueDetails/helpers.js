@@ -28,8 +28,14 @@ export function createLeaguePlayerRow(player, side) {
       ? `pictures/${player.picture}`
       : `pictures/player_placeholder.png`;
     iconImg.onerror = () => (iconImg.src = "pictures/player_placeholder.png");
-    avatarContainer.appendChild(iconImg);
-    avatarBlock.appendChild(avatarContainer);
+        avatarContainer.appendChild(iconImg);
+        avatarBlock.appendChild(avatarContainer);
+    
+        // ─── Cerchietto con la posizione (classe base + variante P/D/C/A) ───
+        const posCircle = document.createElement("div");
+        posCircle.className = `position_circle ${player.position}`;
+        posCircle.textContent = player.position;
+        avatarBlock.appendChild(posCircle);
   
     // ─── Info block ───
     const infoBlock = document.createElement("div");

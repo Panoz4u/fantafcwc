@@ -140,6 +140,7 @@
   border-radius: 8px;
   padding: 12px;
   margin-bottom: 8px;
+  position: relative;
 }
 
 .player-card.disabled {

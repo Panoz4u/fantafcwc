@@ -807,18 +807,32 @@
       font-weight: 700;
       font-size: 16px;
       color: #2a2b2a;
-      padding-bottom: 2px;
+      padding-bottom: 4px;
+      padding-left: 2px;
+      padding-right: 2px;
       background-color: #FFD600; /* Yellow */
+      z-index: 2;
+      left: 6px;
+      top: 10px;  
     }
     
     .left-team .position_circle {
       left: -2px;
+      top: 0px; 
+      
     }
     
     .right-team .position_circle {
       right: -2px;
+      top: 0px;  
+      left:32px;
     }
     
+    .league .position_circle {
+      left: -2px;
+      top: -2px; 
+    }
+
     /* Position colors */
     .position_circle.P {
       background-color: #FFD600; /* Yellow */
@@ -826,6 +840,7 @@
     
     .position_circle.D {
       background-color: #00FF7F; /* Green */
+      
     }
     
     .position_circle.C {
@@ -835,6 +850,7 @@
     
     .position_circle.A {
       background-color: #FF4500; /* Red */
+      color: #ffffff;
     }
     
     /* Player Info Block */

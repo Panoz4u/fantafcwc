@@ -6,15 +6,6 @@ import { getAvatarSrc, generateColoredInitialsAvatar } from './utils.js';
  * Crea una riga "player-row" con:
  *  - avatar (player.picture oppure placeholder)
  *  - athlete_shortname
- *  - match (home_team_code – away_team_code) con le classi condizionali
- *  - punti (player.athlete_unit_points)
- *  - costo (player.event_unit_cost)
- *  - styling “ended” se player.is_ended === 1
- */
-/**
- * Crea una riga "player-row" con:
- *  - avatar (player.picture oppure placeholder)
- *  - athlete_shortname
  *  - match (home_team_code-away_team_code) con le classi condizionali
  *  - punti (player.athlete_unit_points)
  *  - costo (player.event_unit_cost)
@@ -39,6 +30,15 @@ export function createPlayerRow(player, side) {
   iconImg.onerror = () => (iconImg.src = "pictures/player_placeholder.png");
   avatarContainer.appendChild(iconImg);
   avatarBlock.appendChild(avatarContainer);
+
+
+  // ─── Cerchietto posizione ───
+  const posCircle = document.createElement("div");
+  posCircle.className = `position_circle ${player.position}`;
+  posCircle.textContent = player.position;
+  // sarà posizionato a sinistra o a destra automaticamente
+  // grazie alle classi .left-team / .right-team sul container esterno
+  avatarBlock.appendChild(posCircle);
 
   // ─── Info block ───
   const infoBlock = document.createElement("div");

@@ -46,9 +46,10 @@ async function fetchLeagueDetails({ contest_id, currentUserId }) {
   for (const team of fantasyTeams) {
         const entitiesSql = `
           SELECT
-            fte.*,
-            a.athlete_shortname,
-            a.picture,
+          fte.*,
+          a.athlete_shortname,
+          a.picture,
+          a.position               AS position,
             aep.athlete_unit_points,
             aep.is_ended               AS is_ended,
             ht.team_3letter AS home_team_code,
