@@ -145,9 +145,7 @@ async function updateFantasyTeamStatus(req, res) {
 
 
 async function confirmLeagueController(req, res) {
-  console.log('🛎️ [CTRL] confirmLeagueController ricevuto');
-  console.log('🛎️ Headers:', req.headers.authorization);
-  console.log('🛎️ Body:', req.body);
+
   try {
     const {
       contestId,

@@ -124,7 +124,6 @@ router.get("/landing-data", authenticateToken, (req, res) => {
             LEFT JOIN teams at ON m.away_team = at.team_id
             WHERE ft.contest_id = ? AND ft.user_id = ?
           `;
-          console.log("Eseguo query team owner per contest:", contest.contest_id, "event_unit:", contest.event_unit_id, "owner_id:", contest.owner_id);
           const eventUnit = contest.event_unit_id || 0;
           pool.query(sqlTeam, [eventUnit, contest.contest_id, contest.owner_id], (err2, owRows) => {
             if (err2) {
@@ -251,8 +250,6 @@ router.get("/contest-details", authenticateToken, (req, res) => {
       WHERE ft.contest_id = ? AND ft.user_id = ?
     `;
     const eventUnit = contestData.event_unit_id || eventUnitId || 0;
-    console.log(`OWNER query - contest_id: ${contestData.contest_id}, user: ${contestData.owner_id}, event_unit: ${eventUnit}`);
-    console.log(`OPPONENT query - contest_id: ${contestData.contest_id}, user: ${contestData.opponent_id}, event_unit: ${eventUnit}`);
     pool.query(sqlTeam, [eventUnit, cId, contestData.owner_id], (er2, owRows) => {
       if (er2) {
         console.error("Error in owner team query:", er2);

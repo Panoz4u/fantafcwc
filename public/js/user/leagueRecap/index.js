@@ -7,7 +7,7 @@ import { bindRecapEvents,
 import '../../session-expired-handler.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
-  console.log('📢 RAW recapContestData:', localStorage.getItem('recapContestData'));
+ 
 
   // 1) Leggo e valido recapContestData
   const rawRecap = localStorage.getItem('recapContestData');
@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     alert('Formato recapContestData non valido');
     return;
   }
-  console.log('✅ Parsed recapContestData:', recap);
+
 
   const {
     contestId,
@@ -56,10 +56,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   let data;
   try {
-    console.log(`⏳ Chiamata fetchLeagueRecap per contestId=${contestId}`);
+   
     data = await fetchLeagueRecap(contestId, token);
-    console.log('✅ fetchLeagueRecap restituito:', data);
-  } catch (err) {
+    } catch (err) {
     console.error('❌ Errore caricamento League Recap:', err);
     alert('Non è stato possibile caricare la recap della League.');
     return;
@@ -72,7 +71,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       currentUserId: userId,
       ownerId        // ← aggiungi questo
     });
-  console.log('✅ initLeagueRecap eseguito');
+
 
   // 5) Estraggo il fantasy-team corrente per preparare contestData
   const currentFT = data.fantasyTeams.find(ft => Number(ft.user_id) === userId) || {};
@@ -95,11 +94,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                              : '0.0'
   };
 
-  console.log('💾 [DEBUG] contestData salvato in localStorage:', contestData);
   localStorage.setItem('contestData', JSON.stringify(contestData));
 
   // 6) Associo gli eventi ai pulsanti (“Accept”, “Back”, ecc.)
-  console.log('💡 bindRecapEvents with', { contestId, userId, ownerId, opponentId, eventUnitId });
-  bindRecapEvents(contestId, userId, ownerId, opponentId, eventUnitId);
-  console.log('🎉 leagueRecap/index.js init completato');
+   bindRecapEvents(contestId, userId, ownerId, opponentId, eventUnitId);
+
 });

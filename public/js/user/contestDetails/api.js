@@ -2,8 +2,7 @@ const url = '/contests/contest-details';
 
 export async function fetchContestDetails(contestId, ownerId, opponentId, eventUnitId, authToken) {
     const body = { contest_id: contestId, owner_id: ownerId, opponent_id: opponentId, event_unit_id: eventUnitId };
-    console.log('Chiamo contest-details con', body);
-  
+   
     const resp = await fetch("/contests/contest-details", {
       method: "POST",
       headers: {

@@ -5,10 +5,9 @@ const { fetchLeagueDetails } = require('../services/leagueDetailsService');
 async function getLeagueDetails(req, res) {
 
   try {
-    console.log('[leagueDetailsController] req.body =', req.body);
+  
     const { contest_id } = req.body;
     const currentUserId = req.user.userId; // viene dal token JWT
-    console.log('[leagueDetailsController] contest_id =', contest_id, 'currentUserId =', currentUserId);
     const data = await fetchLeagueDetails({ contest_id, currentUserId });
     return res.json(data);
   } catch (error) {

@@ -8,7 +8,7 @@ import { getAvatarSrc }                    from '../utils/avatar.js';         //
 export async function initUserLanding() {
 
   const userId = localStorage.getItem('userId');
-  console.log('[loadUserLanding] userId from localStorage:', userId);
+
 
   const debugUserIdEl = document.getElementById('debugUserId');
   if (debugUserIdEl) {
@@ -104,7 +104,7 @@ export async function initUserLanding() {
 // 4) Render delle liste di sfide
 // --------------------------
 export function renderContestList(list, container, userId) {
-  console.log('[renderContestList] Received userId parameter:', userId);
+
   if (!Array.isArray(list)) {
     console.error('renderContestList: list non è un array', list);
     return;
@@ -120,10 +120,7 @@ export function renderContestList(list, container, userId) {
 
   list.forEach(contest => {
     const userIdToPass = userId || localStorage.getItem('userId');
-    console.log(
-      '[renderContestList] For contest_id:', contest.contest_id,
-      'Passing userIdToPass to createContestCard:', userIdToPass
-    );
+
     const contestCard = createContestCard(contest, userIdToPass);
     if (contestCard) container.appendChild(contestCard);
   });

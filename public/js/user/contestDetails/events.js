@@ -64,20 +64,11 @@ export async function initContestDetails() {
     opponentId !== null && !isNaN(opponentId) ? opponentId : null;
 
   try {
-    console.log(
-      'Parametri fetchContestDetails:',
-      { contestId, ownerId, opponentId: validOpponentId, eventUnitId }
-    );
+
     const [data, balance] = await Promise.all([
       fetchContestDetails(contestId, ownerId, validOpponentId, eventUnitId, authToken),
       fetchTeexBalance(authToken)
     ]);
-
-       // —–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
-       // Loggo per vedere in dettaglio la struttura dei team:
-       console.log("🏷️ ownerTeam raw data:", data.ownerTeam);
-       console.log("🏷️ opponentTeam raw data:", data.opponentTeam);
-       // —
 
 
     // 1) Mostro bilancio

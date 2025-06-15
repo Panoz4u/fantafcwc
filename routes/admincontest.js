@@ -32,7 +32,6 @@ router.get('/contests', async (req, res) => {
     
     await db.end();
     res.json(rows);
-    console.log("Chiamata GET /admin-api/contests ricevuta");
 
   } catch (error) {
     console.error('Errore nel caricamento delle sfide:', error);

@@ -8,7 +8,7 @@ import '../../session-expired-handler.js';
 async function init() {
   // ────────────────────────────────────────────────
   // 1) DEBUG: cosa c'è in localStorage.contestData?
-  console.log('🔍 RAW contestData:', localStorage.getItem('contestData'));
+  
 
   // definisco raw prima di usarlo
   const raw = localStorage.getItem("contestData") || "{}";
@@ -20,7 +20,7 @@ async function init() {
     console.error("❌ Errore parsing contestData:", err);
     contestData = {};
   }
-  console.log("✅ Parsed contestData:", contestData);
+  
 
     // estraggo tutti i campi, compreso fantasyTeamId e currentUserId/UserId
    const {
@@ -41,17 +41,7 @@ async function init() {
     const currentUserId = fromRecap != null ? Number(fromRecap) : Number(fromCreate);
     const userId        = currentUserId;
 
-  console.log("📋 Breakdown →", {
-    contestId,
-    userId,                // sarà sempre = currentUserId
-    ownerId,
-    opponentId,
-    eventUnitId,
-    fantasyTeamId,
-    currentUserAvatar,
-    currentUserName,
-    currentUserInitialCost
-  });
+
   // ────────────────────────────────────────────────
 
   // proseguo con il flow originale…
@@ -65,7 +55,7 @@ async function init() {
   const chosenKey = "chosenPlayers";
   const existing = JSON.parse(localStorage.getItem(chosenKey) || "[]");
   if (Array.isArray(existing) && existing.length > 0) {
-    console.log("Keeping existing chosenPlayers:", existing);
+    
   } else {
     localStorage.removeItem(chosenKey);
   }
@@ -106,7 +96,6 @@ async function init() {
    // ──────────── aggiorno contestData con status e multiply ────────────
    try {
     const stored = JSON.parse(localStorage.getItem("contestData")|| "{}");
-    console.log("🔍 [DEBUG] stored.fantasyTeamId prima del merge =", stored.fantasyTeamId);
   
     const fallbackFT = (userId === ownerId)
       ? contest.owner_team_id
@@ -122,7 +111,7 @@ async function init() {
                       : fallbackFT            // creazione nuova challenge (owner)
     };
   
-    console.log("🔄 [DEBUG] contestData dopo il merge:", merged);
+    
     localStorage.setItem("contestData", JSON.stringify(merged));
   } catch(e) {
     console.error("❌ Errore merge contestData:", e);

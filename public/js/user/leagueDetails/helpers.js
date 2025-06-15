@@ -72,13 +72,7 @@ export function createLeaguePlayerRow(player, side) {
   
     const pointsContainer = document.createElement("div");
     pointsContainer.classList.add("points-container");
-        // DEBUG: loggo il valore raw e il coerced boolean di is_ended
-        console.log(
-          '[DBG] createLeaguePlayerRow:',
-          'player_id=', player.athlete_id || player.id,
-          'raw is_ended=', player.is_ended,
-          'coerced=', !!player.is_ended
-        );
+
         updateLeaguePointsDisplay(
           player.athlete_unit_points,
           !!player.is_ended,
@@ -115,9 +109,7 @@ export function createLeaguePlayerRow(player, side) {
   export function updateLeaguePointsDisplay(points, isEnded, container) {
     container.innerHTML = "";
   
-      // DEBUG: loggo il boolean che arriva qui
-      console.log('[DBG] updateLeaguePointsDisplay:', 'points=', points, 'isEnded=', isEnded);
-    // quindi usiamo (parseFloat(points) || 0) per default 0
+      // quindi usiamo (parseFloat(points) || 0) per default 0
     const ptsNumber = parseFloat(points) || 0;
     const ptsStr = ptsNumber.toFixed(1); // es. "0.0"
     const [ptsInt, ptsDec] = ptsStr.split(".");

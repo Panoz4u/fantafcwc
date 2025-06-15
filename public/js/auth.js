@@ -7,7 +7,7 @@
     // 2) Inizializza Firebase con la config dinamica
     firebase.initializeApp(cfg);
     const auth = firebase.auth();
-    console.log("✅ Firebase inizializzato da ENV");
+    
 
     // —————— QUI INIZIA IL VOSTRO CODICE AUTH ESISTENTE ——————
 
@@ -355,7 +355,7 @@
       .then(async function (result) {
         if (result.user) {
           const user = result.user;
-          console.log("User authenticated via redirect:", user.email);
+          
           try {
             const response = await fetch(
               `/user-by-email?email=${encodeURIComponent(user.email)}`

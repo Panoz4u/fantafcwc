@@ -24,7 +24,7 @@ export function bindRecapEvents(contestId, userId, ownerId, opponentId, eventUni
   document.getElementById('AcceptBtn').addEventListener('click', () => {
     // 1) recupero il contestData già salvato (con avatar, name, cost, fantasyTeamId…)
     const existing = JSON.parse(localStorage.getItem('contestData') || '{}');
-    console.log('🛠️ [DEBUG] existing contestData before merge:', existing);
+
 
     // 2) aggiorno/aggiungo solo i campi strettamente necessari
     const merged = {
@@ -36,7 +36,7 @@ export function bindRecapEvents(contestId, userId, ownerId, opponentId, eventUni
       eventUnitId: parseInt(eventUnitId, 10)
       // **non tocco** avatar/name/cost/fantasyTeamId: li tengo da existing
     };
-    console.log('🛠️ [DEBUG] merged contestData:', merged);
+ 
 
     // 3) risalvo e redirect
     localStorage.setItem('contestData', JSON.stringify(merged));

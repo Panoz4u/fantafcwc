@@ -17,7 +17,7 @@ export function setupEventListeners(contestId, userId) {
   }
     // — Recupero subito i dati del contest (in particolare contestType)
     const contestData = JSON.parse(localStorage.getItem('contestData') || '{}');
-    console.log('🧩 [DEBUG] contestData.contestType =', contestData.contestType);
+  
   
   // ← Bottone “Add Players”
   const addBtn = document.getElementById('addPlayerBtn');
@@ -75,7 +75,7 @@ export function setupEventListeners(contestId, userId) {
               players:       playerPayload,
               multiplier:    multiplier
             };
-            console.log('🚀 [DEBUG] postConfirmLeague payload:', payload);
+           
             await postConfirmLeague(payload);
           } else {
             // Contest head-to-head
@@ -85,7 +85,7 @@ export function setupEventListeners(contestId, userId) {
               multiplier:  multiplier,
               totalCost:   getTotalCost()
             };
-            console.log('🚀 [DEBUG] postConfirmSquad payload:', payload);
+            
             await postConfirmSquad(payload);
           }
 

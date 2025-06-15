@@ -18,11 +18,9 @@ export function createContestCard(contest, userId) {
    currentUserId = getCurrentUserId();
  }
  
- console.log('createContestCard chiamata con userId:', userId, 'currentUserId:', currentUserId, 'contest:', contest);
 
  // Determino se current user è owner usando la funzione importata o comparando direttamente
  const isCurrentOwner = isCurrentUserOwner(contest, currentUserId);
- console.log('%c[DEBUG] currentUserId=', currentUserId, 'isCurrentOwner=', isCurrentOwner);
 
   // ──────────────── GESTIONE PRIVATE LEAGUE ────────────────
   if (contest.contest_type === 2) {
@@ -53,8 +51,7 @@ export function createContestCard(contest, userId) {
     
   };
 
- console.log('Dati my (sinistra):', my);
- console.log('Dati opp (destra):', opp);
+
 
  const card = document.createElement('div');
  card.className = 'contest-cell clickable';
@@ -74,12 +71,6 @@ export function createContestCard(contest, userId) {
  // Switch sui vari status, usando ALWAYS my (left) e opp (right)
  switch (contest.status) {
    case 1:
-
-   console.log(
-     '%c[DEBUG case 1]', 'color:orange;',
-     'my=', my,
-     'opp=', opp
-   );
 
      // Determino i costi corretti per il caso 1
      let myCost = "-";

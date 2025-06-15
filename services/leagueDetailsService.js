@@ -3,7 +3,6 @@
 const pool = require('./db');
 
 async function fetchLeagueDetails({ contest_id, currentUserId }) {
-    console.log('[leagueDetailsService] chiamato con contest_id =', contest_id, 'currentUserId =', currentUserId);
     // 1) Prendo i dati basilari del contest
   const contestSql = `
     SELECT contest_id, contest_name, multiply, status, stake

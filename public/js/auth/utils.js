@@ -42,10 +42,7 @@ export function verifyToken(token) {
 
 /** Logga in localStorage e token per debug */
 export function debugLogin() {
-  console.log("=== DEBUG LOGIN ===");
-  console.log("authToken:", localStorage.getItem('authToken'));
-  console.log("userId:", localStorage.getItem('userId'));
-  console.log("userEmail:", localStorage.getItem('userEmail'));
+
   const token = localStorage.getItem('authToken');
   if (token) console.log("decoded:", verifyToken(token));
 }

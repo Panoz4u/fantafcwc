@@ -3,11 +3,11 @@ import { initFirebase } from './firebase-init.js';
 import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
 import { showLoadingOverlay, hideLoadingOverlay } from './loadingOverlay.js';
 
-console.log('✅ login-email.js caricato, form id=', document.getElementById('loginForm'));
+
 
 async function handleLogin(e) {
   e.preventDefault();
-  console.log("Tentativo di login con email");
+
   showLoadingOverlay();
 
   const auth = await initFirebase();

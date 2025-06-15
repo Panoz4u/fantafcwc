@@ -78,7 +78,7 @@ async function handleGoogleAuth(e) {
       alert('Hai annullato più richieste di popup. Riprova il login.');
     } else if (err.code === 'auth/popup-closed-by-user') {
       // L'utente ha chiuso il popup, potrebbe non essere necessario un alert aggressivo
-      console.log('Popup di login chiuso dall\'utente.');
+
     } else {
       alert(`Errore durante il login con Google: ${err.message}`);
     }

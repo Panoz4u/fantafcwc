@@ -25,13 +25,13 @@ async function checkAdminAuth() {
               resolve(true);
             } else {
               // L'utente non è l'amministratore
-              console.log('Utente non autorizzato:', user.email);
+              
               window.location.href = '/FanteexBackend.html';
               resolve(false);
             }
           } else {
             // L'utente non è autenticato
-            console.log('Nessun utente autenticato');
+            
             window.location.href = '/FanteexBackend.html';
             resolve(false);
           }

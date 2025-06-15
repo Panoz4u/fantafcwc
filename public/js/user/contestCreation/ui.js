@@ -318,7 +318,7 @@
     btnCancel.onclick  = () => overlay.style.display = "none";
     btnConfirm.onclick = () => {
       overlay.style.display = "none";
-      console.log("DEBUG: confermo multiplier =", selectedMultiplier);
+      
       onConfirm(selectedMultiplier);
     };
     

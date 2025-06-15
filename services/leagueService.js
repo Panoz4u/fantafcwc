@@ -150,7 +150,6 @@ async function rejectFantasyTeam(contestId, userId) {
 
 // Conferma un contest di tipo “league”
 async function confirmLeagueContest({ contestId, userId, fantasyTeamId, players, multiplier }) {
-  console.log('🔧 [SRV] confermo lega:', { contestId, userId, fantasyTeamId, multiplier, playersCount: players.length });
   const conn = await pool.promise().getConnection();
   try {
     await conn.beginTransaction();

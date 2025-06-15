@@ -2,7 +2,6 @@
 
 const express            = require('express');
 const router             = express.Router();
-console.log('🔌 [ROUTE] Mounting /api/leagues routes');
 const leagueController   = require('../controllers/leagueController');
 const authenticateToken  = require('../middleware/auth');
 

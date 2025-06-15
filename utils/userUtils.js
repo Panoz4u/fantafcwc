@@ -6,8 +6,6 @@ function updateUserBalance(connection, userId, totalCost, multiplier, callback) 
       return callback(new Error('Costo finale non valido'));
     }
   
-    console.log(`Aggiornamento Teex per userId: ${userId}, costo base: ${totalCost}, moltiplicatore: ${multiplier}, costo finale: ${finalCost}`);
-  
     const sqlUser = `
       UPDATE users
       SET teex_balance = teex_balance - ?
@@ -25,7 +23,6 @@ function updateUserBalance(connection, userId, totalCost, multiplier, callback) 
         return callback(new Error('Saldo Teex insufficiente o utente non trovato'));
       }
   
-      console.log(`Saldo Teex aggiornato con successo per userId: ${userId}`);
       callback(null);
     });
   }

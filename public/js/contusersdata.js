@@ -6,8 +6,6 @@
  */
 export async function fetchContestUserData(userId, opponentId = null) {
   try {
-    console.log("fetchContestUserData chiamata con userId:", userId, "opponentId:", opponentId);
-    
     // Ottieni il token di autenticazione
     const authToken = localStorage.getItem('authToken');
     
@@ -16,7 +14,6 @@ export async function fetchContestUserData(userId, opponentId = null) {
       
       // Crea utenti fittizi per il debug in ambiente di sviluppo
       if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        console.log("Ambiente di sviluppo rilevato, utilizzo dati utente fittizi");
         
         // Crea un utente fittizio per l'utente corrente
         const mockCurrentUser = {
@@ -61,7 +58,6 @@ export async function fetchContestUserData(userId, opponentId = null) {
         
         // Se siamo in ambiente di sviluppo, usa dati fittizi
         if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-          console.log("Ambiente di sviluppo rilevato, utilizzo dati utente fittizi");
           
           const mockCurrentUser = {
             user_id: userId,
@@ -94,11 +90,11 @@ export async function fetchContestUserData(userId, opponentId = null) {
     }
     
     const allUsers = await usersResp.json();
-    console.log("Dati utenti ricevuti:", allUsers);
+    
     
     // Verifica che allUsers sia un array prima di utilizzare find()
     if (!Array.isArray(allUsers)) {
-      console.log("I dati utente ricevuti non sono un array:", allUsers);
+    
       
       // Se allUsers è un oggetto con una proprietà che contiene l'array degli utenti
       // (ad esempio allUsers.users o allUsers.data), prova a utilizzare quella
@@ -113,7 +109,7 @@ export async function fetchContestUserData(userId, opponentId = null) {
           for (const key in allUsers) {
             if (Array.isArray(allUsers[key])) {
               usersArray = allUsers[key];
-              console.log("Trovato array di utenti nella proprietà:", key);
+             
               break;
             }
           }
@@ -132,16 +128,7 @@ export async function fetchContestUserData(userId, opponentId = null) {
         throw new Error(`Utente con ID ${userId} non trovato`);
       }
       
-      console.log("Dati utente filtrati:", { 
-        currentUser: { 
-          user_id: currentUser.user_id, 
-          username: currentUser.username 
-        }, 
-        opponent: opponent ? { 
-          user_id: opponent.user_id, 
-          username: opponent.username 
-        } : null 
-      });
+;
       
       return {
         currentUser,
@@ -157,16 +144,6 @@ export async function fetchContestUserData(userId, opponentId = null) {
       throw new Error(`Utente con ID ${userId} non trovato`);
     }
     
-    console.log("Dati utente filtrati:", { 
-      currentUser: { 
-        user_id: currentUser.user_id, 
-        username: currentUser.username 
-      }, 
-      opponent: opponent ? { 
-        user_id: opponent.user_id, 
-        username: opponent.username 
-      } : null 
-    });
     
     return {
       currentUser,
@@ -177,7 +154,6 @@ export async function fetchContestUserData(userId, opponentId = null) {
     
     // Restituiamo un oggetto con dati fittizi per consentire il funzionamento dell'app in modalità debug
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-      console.log("Ambiente di sviluppo rilevato, utilizzo dati utente fittizi per gestire l'errore");
       
       return {
         currentUser: {
