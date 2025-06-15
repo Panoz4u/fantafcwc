@@ -1,4 +1,5 @@
 import { getAvatarSrc } from './utils/avatar.js';
+import '../session-expired-handler.js';
 
 // Variabili globali
 const pageSize     = 30;

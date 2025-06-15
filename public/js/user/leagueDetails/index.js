@@ -3,6 +3,7 @@
 import { fetchLeagueDetails } from './api.js';
 import { initLeagueDetails } from './ui.js';
 import { bindLeagueEvents   } from './events.js';
+import '../../session-expired-handler.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
   // 1) Leggo contestId da localStorage

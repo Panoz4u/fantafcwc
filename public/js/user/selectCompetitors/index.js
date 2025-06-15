@@ -6,5 +6,6 @@
 // —————————————————————————————————————————————————————————————————————————
 
 import { initPage } from './events.js';
+import '../../session-expired-handler.js';
 
 window.addEventListener('DOMContentLoaded', initPage);

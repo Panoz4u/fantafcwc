@@ -4,6 +4,7 @@ import { fetchLeagueRecap }    from './api.js';
 import { initLeagueRecap }     from './ui.js';
 import { bindRecapEvents,
          bindBackArrowEvent }  from './events.js';
+import '../../session-expired-handler.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
   console.log('📢 RAW recapContestData:', localStorage.getItem('recapContestData'));

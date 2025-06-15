@@ -3,6 +3,7 @@
 import { getContestDetails, getUserInfo } from "./api.js";
 import { setupEventListeners }            from "./events.js";
 import { renderContestHeader, renderPlayerList, updateBudgetUI } from "./ui.js";
+import '../../session-expired-handler.js';
 
 async function init() {
   // ────────────────────────────────────────────────

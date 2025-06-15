@@ -1,6 +1,6 @@
 import { initUserLanding, showActive, showCompleted } from './ui.js';
 import { initGameTypeModal, showGameTypeModal } from './gameTypeModal.js';
-
+import '../../session-expired-handler.js';
 
 // ENTRYPOINT
 document.addEventListener('DOMContentLoaded', () => {
