@@ -149,11 +149,20 @@ function deleteSelectedContests() {
 
 // Filtra e ordina le league
 function filterAndSortContests() {
-  // Filtra per status e solo contest_type = 2
-  filteredContests = allContests.filter(contest => 
-    contest.status.toString() === currentStatus 
-    && contest.contest_type === 2
-  );
+    // Filtra in base al tab selezionato e solo contest_type = 2
+    if (currentStatus === 'ready-live') {
+      // Sfide “Ready” (2) **e** “Live” (4)
+      filteredContests = allContests.filter(c => 
+        (c.status === 2 || c.status === 4) 
+        && c.contest_type === 2
+      );
+    } else {
+      // Pending (1) o Created (0)
+      filteredContests = allContests.filter(c => 
+        c.status.toString() === currentStatus 
+        && c.contest_type === 2
+      );
+    }
   
   filteredContests.sort((a, b) => {
     const dateA = new Date(a.created_at);
@@ -170,12 +179,18 @@ function displayContests() {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = Math.min(startIndex + itemsPerPage, filteredContests.length);
   
-  if (filteredContests.length === 0) {
-    const emptyRow = document.createElement('tr');
-    emptyRow.innerHTML = `<td colspan="8" style="text-align: center;">Nessuna league trovata con status ${currentStatus === "1" ? "Pending" : "Created"}</td>`;
-    sfideList.appendChild(emptyRow);
-    return;
-  }
+    if (filteredContests.length === 0) {
+        const emptyRow = document.createElement('tr');
+        // Scegli label in base al tab
+        const label = currentStatus === '1' 
+          ? 'Pending' 
+          : currentStatus === '0' 
+            ? 'Created' 
+            : 'Ready-Live';
+        emptyRow.innerHTML = `<td colspan="8" style="text-align: center;">Nessuna league trovata con status ${label}</td>`;
+        sfideList.appendChild(emptyRow);
+        return;
+      }
   
   for (let i = startIndex; i < endIndex; i++) {
     const contest = filteredContests[i];
@@ -202,7 +217,7 @@ function displayContests() {
       <td>${createdDate}</td>
       <td>${updatedDate}</td>
       <td>
-        <button class="btn btn-primary btn-small" onclick="deleteContest(${contest.contest_id})">Cancella</button>
+        <button class="btn btn-primary btn-small" onclick="forceCloseSelectedContests([${contest.contest_id}])">Chiudi</button>
         <button class="btn btn-info btn-small" onclick="viewContestDetails(${contest.contest_id})">Dettagli</button>
       </td>
     `;
@@ -251,3 +266,33 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('deleteSelectedBtn').addEventListener('click', deleteSelectedContests);
   document.getElementById('exportCsvBtn').addEventListener('click', exportContestsToCSV);
 });
+
+function forceCloseSelectedContests(contestIds = null) {
+  if (!contestIds) {
+    const checkboxes = document.querySelectorAll('.contest-checkbox:checked');
+    contestIds = Array.from(checkboxes).map(cb => cb.getAttribute('data-id'));
+  }
+
+  if (contestIds.length === 0) {
+    showStatusMessage('Nessuna league selezionata', 'error');
+    return;
+  }
+
+  if (!confirm(`Sei sicuro di voler chiudere forzatamente ${contestIds.length} league?`)) return;
+
+  fetch('/admin-api/expired-leagues/force-close', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ contestIds })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      showStatusMessage(`Chiuse forzatamente ${data.closed} league`, 'success');
+      loadContests();
+    } else {
+      showStatusMessage(`Errore: ${data.error}`, 'error');
+    }
+  })
+  .catch(err => showStatusMessage('Errore nella chiusura forzata', 'error'));
+}

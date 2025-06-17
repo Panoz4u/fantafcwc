@@ -2,6 +2,7 @@
 const express = require('express');
 const router  = express.Router();
 const mysql   = require('mysql2/promise');
+const { forceCloseLeagueContests } = require('../processLeagueResults');
 require('dotenv').config();
 
 // parsing JSON
@@ -27,8 +28,8 @@ router.get('/expired-leagues', async (req, res) => {
       FROM contests c
       LEFT JOIN users o  ON c.owner_user_id   = o.user_id
       LEFT JOIN users op ON c.opponent_user_id = op.user_id
-      WHERE c.contest_type = 2
-        AND c.status IN (0,1)
+    WHERE c.contest_type = 2
+      AND c.status IN (0,1,2,4)
     `);
     await db.end();
     res.json(rows);
@@ -193,6 +194,16 @@ router.post('/expired-leagues/bulk-delete', async (req, res) => {
   } catch (err) {
     console.error('Errore BULK DELETE /expired-leagues/bulk-delete:', err);
     res.status(500).json({ error: 'Errore nella cancellazione multipla' });
+  }
+});
+
+router.post('/expired-leagues/force-close', async (req, res) => {
+  const { contestIds } = req.body;
+  try {
+    await forceCloseLeagueContests(contestIds);
+    res.json({ success: true, closed: contestIds.length });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
   }
 });
 

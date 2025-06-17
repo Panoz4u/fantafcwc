@@ -60,13 +60,16 @@ app.use(bodyParser.json());
 app.use('/api/users',        require('./routes/users'));
 app.use('/api/user-contests', require('./routes/userContests')); 
 app.use(authRoutes);
-app.use('/', adminRouter);
 app.use('/api', firebaseConfigRoutes);
-app.use('/admin-api', adminContestRoutes);
 app.use('/api', athleteRoutes);
 app.use('/api/leagues', leagueRoutes);
 app.use('/contests', leagueDetailsRoutes);
+app.use('/admin-api', adminContestRoutes);
 app.use('/admin-api', expiredLeaguesRoutes);
+
+// Solo dopo, monta l’interfaccia admin
+app.use('/', adminRouter);
+
 // 6) ROUTE AD HOC
 app.get('/gestione-sfide.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'gestione-sfide.html'));

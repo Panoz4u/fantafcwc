@@ -147,8 +147,97 @@ async function closeLeagueContests(eventUnitId) {
   }
 }
 
+// FORCE CLOSE LEAGUE CONTESTS (contest_type=2)
+async function forceCloseLeagueContests(contestIds) {
+  const db = pool.promise();
+
+  for (const contestId of contestIds) {
+    // 1. Imposta contest status = 5
+    await db.query(
+      `UPDATE contests SET status = 5, updated_at = NOW() WHERE contest_id = ? AND contest_type = 2`,
+      [contestId]
+    );
+
+    // 2. Aggiorna ft_status fantasy teams
+    await db.query(
+      `UPDATE fantasy_teams SET ft_status = -1 WHERE contest_id = ? AND ft_status = 0`,
+      [contestId]
+    );
+    await db.query(
+      `UPDATE fantasy_teams SET ft_status = 5 WHERE contest_id = ? AND ft_status IN (1,2,4)`,
+      [contestId]
+    );
+
+    // 3. Calcola total_points
+    const [teams] = await db.query(
+      `SELECT fantasy_team_id FROM fantasy_teams WHERE contest_id = ? AND ft_status = 5`,
+      [contestId]
+    );
+    for (const team of teams) {
+      await db.query(
+        `UPDATE fantasy_teams ft
+         SET total_points = (SELECT IFNULL(SUM(aep.athlete_unit_points),0)
+                             FROM fantasy_team_entities fte
+                             JOIN athlete_eventunit_participation aep ON fte.aep_id = aep.aep_id
+                             WHERE fte.fantasy_team_id = ft.fantasy_team_id)
+         WHERE fantasy_team_id = ?`,
+        [team.fantasy_team_id]
+      );
+    }
+
+    // 4. Prendi i team ordinati per punti
+    const [rankedTeams] = await db.query(
+      `SELECT fantasy_team_id, user_id, total_points FROM fantasy_teams
+       WHERE contest_id = ? AND ft_status = 5 ORDER BY total_points DESC`,
+      [contestId]
+    );
+
+    // 4.1 Gestisci posizioni con parimerito
+    let positions = [];
+    rankedTeams.forEach((team, idx) => {
+      if (idx === 0 || team.total_points !== rankedTeams[idx - 1].total_points) {
+        positions.push({ rank: positions.length + 1, teams: [team] });
+      } else {
+        positions[positions.length - 1].teams.push(team);
+      }
+    });
+
+    // Prendi stake del contest
+    const [[contest]] = await db.query(`SELECT stake FROM contests WHERE contest_id = ?`, [contestId]);
+    const stake = contest.stake;
+
+    // 4.2 Calcola Teex vinti e aggiorna utenti
+    if (rankedTeams.length === 2) {
+      const [first, second] = rankedTeams;
+      if (first.total_points === second.total_points) {
+        const halfStake = stake / 2;
+        for (const team of [first, second]) {
+          await db.query(`UPDATE fantasy_teams SET ft_result=1, ft_teex_won=? WHERE fantasy_team_id=?`, [halfStake, team.fantasy_team_id]);
+          await db.query(`UPDATE users SET teex_balance=teex_balance+? WHERE user_id=?`, [halfStake, team.user_id]);
+        }
+      } else {
+        await db.query(`UPDATE fantasy_teams SET ft_result=1, ft_teex_won=? WHERE fantasy_team_id=?`, [stake, first.fantasy_team_id]);
+        await db.query(`UPDATE users SET teex_balance=teex_balance+? WHERE user_id=?`, [stake, first.user_id]);
+        await db.query(`UPDATE fantasy_teams SET ft_result=2, ft_teex_won=0 WHERE fantasy_team_id=?`, [second.fantasy_team_id]);
+      }
+    } else {
+      const payouts = [0.6, 0.3, 0.1];
+      for (const pos of positions) {
+        const totalPct = payouts.slice(pos.rank - 1, pos.rank - 1 + pos.teams.length).reduce((a, b) => a + b, 0);
+        const teexEach = (stake * totalPct) / pos.teams.length;
+
+        for (const team of pos.teams) {
+          await db.query(`UPDATE fantasy_teams SET ft_result=?, ft_teex_won=? WHERE fantasy_team_id=?`, [pos.rank, teexEach, team.fantasy_team_id]);
+          await db.query(`UPDATE users SET teex_balance=teex_balance+? WHERE user_id=?`, [teexEach, team.user_id]);
+        }
+      }
+    }
+  }
+}
+
 module.exports = {
   setLiveLeagueContests,
   updateLeagueContests,
-  closeLeagueContests
+  closeLeagueContests,
+  forceCloseLeagueContests // <-- Aggiungi questa esportazione
 };
