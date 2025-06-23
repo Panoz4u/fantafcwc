@@ -206,8 +206,24 @@ async function forceCloseLeagueContests(contestIds) {
     const [[contest]] = await db.query(`SELECT stake FROM contests WHERE contest_id = ?`, [contestId]);
     const stake = contest.stake;
 
-    // 4.2 Calcola Teex vinti e aggiorna utenti
-    if (rankedTeams.length === 2) {
+        // 4.2 Calcola Teex vinti e aggiorna utenti
+       if (rankedTeams.length === 1) {
+          // Solo un partecipante → rimborso 100%
+          const only = rankedTeams[0];
+          await db.query(
+            `UPDATE fantasy_teams 
+               SET ft_result = 1,
+                   ft_teex_won = ?
+             WHERE fantasy_team_id = ?`,
+            [stake, only.fantasy_team_id]
+          );
+          await db.query(
+            `UPDATE users 
+               SET teex_balance = teex_balance + ?
+             WHERE user_id = ?`,
+            [stake, only.user_id]
+          );
+        } else if (rankedTeams.length === 2) {
       const [first, second] = rankedTeams;
       if (first.total_points === second.total_points) {
         const halfStake = stake / 2;
