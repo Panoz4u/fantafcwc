@@ -139,32 +139,42 @@ export async function initPage() {
     });
   });
 
-    // 4c) “Carica altri” via event delegation su #opponentList
-    document.getElementById('opponentList').addEventListener('click', function(ev) {
-      const btn = ev.target;
-      if (btn.id !== 'loadMoreBtn' || isLoading) return;
-  
-      const inp = document.getElementById('searchInput');
-      // Se c’era una ricerca attiva, resetto filteredUsers ma NON resetto currentPage
-      if (inp.value.trim()) {
-        inp.value = '';
-        document.getElementById('clearSearch').style.display = 'none';
-        filteredUsers = allUsers.slice();
-        applySort();
-        totalPages = Math.ceil(filteredUsers.length / pageSize);
-      }
-  
-      // carico pagina successiva in append
-      if (currentPage < totalPages) {
-        currentPage++;
-        const start = (currentPage - 1) * pageSize;
-        const slice = filteredUsers.slice(start, start + pageSize);
-        renderCompetitorList(slice, selectedSet, true);
-        if (currentPage >= totalPages) {
-          btn.style.display = 'none';
-        }
-      }
-    });
+// 4c) “Carica altri” via event delegation su #opponentList
+document.getElementById('opponentList').addEventListener('click', function(ev) {
+  const btn = ev.target;
+  if (btn.id !== 'loadMoreBtn' || isLoading) return;
+
+  // Se c’era una ricerca attiva, resetto filteredUsers ma NON resetto currentPage
+  const inp = document.getElementById('searchInput');
+  if (inp.value.trim()) {
+    inp.value = '';
+    document.getElementById('clearSearch').style.display = 'none';
+    filteredUsers = allUsers.slice();
+    applySort();
+    totalPages = Math.ceil(filteredUsers.length / pageSize);
+  }
+
+  // carico pagina successiva in append
+  if (currentPage < totalPages) {
+    currentPage++;
+    const start = (currentPage - 1) * pageSize;
+    const slice = filteredUsers.slice(start, start + pageSize);
+    renderCompetitorList(slice, selectedSet, true);
+
+    // ➤ Qui mostro o nascondo il NUOVO bottone in base alle pagine rimanenti
+    const newBtn = document.getElementById('loadMoreBtn');
+    if (currentPage < totalPages) {
+      newBtn.style.display = 'block';
+    } else {
+      newBtn.style.display = 'none';
+    }
+
+    // Rimuovo il vecchio btn (cliccato) se siamo all’ultima pagina
+    if (currentPage >= totalPages) {
+      btn.style.display = 'none';
+    }
+  }
+});
 
   // 4d) Selezione / Deselezione utente (click su riga intera)
   document.getElementById('opponentList').addEventListener('click', function(ev) {
