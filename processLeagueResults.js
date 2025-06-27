@@ -152,6 +152,12 @@ async function forceCloseLeagueContests(contestIds) {
   const db = pool.promise();
 
   for (const contestId of contestIds) {
+    // ➜ salva lo status iniziale per capire se era Pending
+    const [[{ status: initialStatus }]] = await db.query(
+      `SELECT status FROM contests WHERE contest_id = ?`,
+      [contestId]
+    );
+
     // 1. Imposta contest status = 5
     await db.query(
       `UPDATE contests SET status = 5, updated_at = NOW() WHERE contest_id = ? AND contest_type = 2`,
@@ -247,6 +253,28 @@ async function forceCloseLeagueContests(contestIds) {
           await db.query(`UPDATE users SET teex_balance=teex_balance+? WHERE user_id=?`, [teexEach, team.user_id]);
         }
       }
+    }
+
+    // 5. Se veniva da Pending (initialStatus=1) ➜ elimina tutto
+    if (initialStatus === 1) {
+      // elimina le entity dei fantasy team
+      await db.query(
+        `DELETE fte
+           FROM fantasy_team_entities fte
+           JOIN fantasy_teams ft ON fte.fantasy_team_id = ft.fantasy_team_id
+          WHERE ft.contest_id = ?`,
+        [contestId]
+      );
+      // elimina i fantasy teams
+      await db.query(
+        `DELETE FROM fantasy_teams WHERE contest_id = ?`,
+        [contestId]
+      );
+      // infine elimina il contest
+      await db.query(
+        `DELETE FROM contests WHERE contest_id = ?`,
+        [contestId]
+      );
     }
   }
 }
